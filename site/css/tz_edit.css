@@ -1,0 +1,21 @@
+.edit form fieldset dt{
+    clear: none;
+    width: auto;
+}
+.current{
+    float: left;
+    width: 98%;
+}
+.current dd{
+    width: 100%;
+}
+.clr{
+    clear: both;
+}
+#tz_fields table{
+    border-collapse: inherit;
+    width: 100%;
+}
+#tz_fields tr td{
+    border: 0;
+}

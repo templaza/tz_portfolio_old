@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.0" type="plugin" group="content" method="upgrade">
+	<name>PLG_TZ_PORTFOLIO_VOTE</name>
+	<author>DuongTVTemPlaza</author>
+	<creationDate>Aug, 09th 2012</creationDate>
+	<copyright>Copyright (C) 2012 Open Source Matters. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>support@templaza.com</authorEmail>
+	<authorUrl>www.templaza.com</authorUrl>
+	<version>2.5.0</version>
+	<description>PLG_TZ_PORTFOLIO_VOTE_XML_DESCRIPTION</description>
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">assets/install.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">assets/uninstall.sql</file>
+		</sql>
+	</uninstall>
+	<files>
+		<filename plugin="tz_portfolio_vote">tz_portfolio_vote.php</filename>
+		<filename>index.html</filename>
+		<folder>assets</folder>
+		<folder>images</folder>
+	</files>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_content_tz_portfolio_vote.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_content_tz_portfolio_vote.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+
+			<fieldset name="basic">
+				<field name="display" type="list"
+					default="0"
+					label="Main Content Rating"
+					description="Display Rating Stars After the Title or After the Content">
+					<option value="0">afterTitle</option>
+					<option value="1">afterContent</option>
+  	    			<option value="2">none</option>
+				</field>
+				
+				<field name="extra" type="list"
+					default="1"
+					label="{extravote #} Code"
+					description="Extra Vote for Content">
+					<option value="0">Don't use</option>
+					<option value="1">Replace Allways</option>
+					<option value="2">Hide in Blog Views</option>
+				</field>
+				
+				<field name="main" type="list"
+					default="1"
+					label="{mainvote} Code"
+					description="Special Code for Main Content Rating">
+					<option value="0">Don't use</option>
+					<option value="1">Replace Allways</option>
+					<option value="2">Hide in Blog Views</option>
+				</field>
+				
+				<field name="counter" type="list"
+					default="1"
+					label="Votes Counter"
+					description="Show/Hide Votes Counter">
+					<option value="0">Hide</option>
+					<option value="1">Show All</option>
+					<option value="2">Show only on Mainvote</option>
+					<option value="3">Show only on Extravotes</option>
+				</field>
+				
+				<field name="unrated" type="radio"
+					default="1"
+					label="Show/Hide (0 Votes)"
+					description="Show/Hide (0 Votes) for Unrated Items">
+					<option value="1">Show</option>
+					<option value="0">Hide</option>
+				</field>
+				
+				<field name="access" type="radio"
+					default="0"
+					label="Rating Access"
+					description="Public or Registered Rating Access">
+					<option value="0">Public</option>
+					<option value="1">Registered</option>
+				</field>
+				
+				<field name="css" type="radio"
+					default="1"
+					label="Call ExtraVote Style"
+					description="Call ExtraVote Stylesheet">
+					<option value="0">No</option>
+					<option value="1">Yes</option>
+				</field>
+			</fieldset>
+
+		</fields>
+	</config>
+</extension>
