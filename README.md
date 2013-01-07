@@ -14,6 +14,8 @@ With TZ Portfolio you can own a smart blog, a flexible portfolio, and more than 
 
 Try it now to feel the perfection! 
 
+Hello
+
 Documentation can be found on the wiki project page: http://wiki.templaza.com/TZ_Portfolio:Overview
 
 *** Changelog ***
