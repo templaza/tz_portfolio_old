@@ -1,4 +1,4 @@
-# TZ Portfolio v3
+# TZ Portfolio v3 - Joomla 3.0
 
 If you are a Joomla lover, you must see that is the best Content management system in the world (com_content). But the reality is that this system has not satisfied all of our needs. That why we build TZ Portfolio, which is an ideal content management system to fulfill all weaknesses of com_content.
 
