@@ -2,7 +2,7 @@
 <extension type="component" version="3.0" method="upgrade">
 	<name>com_tz_portfolio</name>
 	<author>DuongTVTemPlaza</author>
-	<creationDate>November 22th 2012</creationDate>
+	<creationDate>January 09th 2013</creationDate>
 	<copyright>Copyright (C) 2012 TemPlaza. All rights reserved.</copyright>
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
