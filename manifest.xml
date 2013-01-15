@@ -2,12 +2,12 @@
 <extension type="component" version="3.0" method="upgrade">
 	<name>com_tz_portfolio</name>
 	<author>DuongTVTemPlaza</author>
-	<creationDate>November 22th 2012</creationDate>
+	<creationDate>January 15th 2013</creationDate>
 	<copyright>Copyright (C) 2012 TemPlaza. All rights reserved.</copyright>
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.0.3</version>
+	<version>3.0.4</version>
 	<description>TZ Portfolio native for Joomla! 3.0.x</description>
     
     <installfile>install.tz_portfolio.php</installfile>
