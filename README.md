@@ -16,7 +16,15 @@ Try it now to feel the perfection!
 
 Documentation can be found on the wiki project page: http://wiki.templaza.com/TZ_Portfolio:Overview
 
+Demo: http://demo.tzportfolio.com/
+
+Version for Joomla 2.5.x: https://github.com/templaza/tz_portfolio2
+
 *** Changelog ***
+
+01/15/13 - 3.0.4
+	
+	Fixed error for Facebook comment
 
 01/07/13 - 3.0.3 
 
