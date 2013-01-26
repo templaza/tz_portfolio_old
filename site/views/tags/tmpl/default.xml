@@ -228,7 +228,8 @@
         <fieldset name="tz_fieldset_basic" label="COM_TZ_PORTFOLIO_FIELDSET_BASIC_OPTIONS_LABEL">
             <field name="tz_article_limit"
                    type="text"
-                   label="COM_TZ_PORTFOLIO_TZ_ARTICLE_LIMIT"/>
+                   label="COM_TZ_PORTFOLIO_TZ_ARTICLE_LIMIT"
+                   description="COM_TZ_PORTFOLIO_TZ_ARTICLE_LIMIT_DESC"/>
             <field name="use_filter_first_letter" type="list"
                    label="COM_TZ_PORTFOLIO_USE_FILTER_FIRST_LETTER"
                    description="COM_TZ_PORTFOLIO_USE_FILTER_FIRST_LETTER_DESC">

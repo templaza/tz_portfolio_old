@@ -12,7 +12,8 @@
         <field name="tz_article_limit"
                 type="text"
                 default="10"
-                label="COM_TZ_PORTFOLIO_TZ_ARTICLE_LIMIT"/>
+                label="COM_TZ_PORTFOLIO_TZ_ARTICLE_LIMIT"
+                description="COM_TZ_PORTFOLIO_TZ_ARTICLE_LIMIT_DESC"/>
         <field name="use_filter_first_letter" type="radio" class="btn-group"
                 default="1" label="COM_TZ_PORTFOLIO_USE_FILTER_FIRST_LETTER"
                 description="COM_TZ_PORTFOLIO_USE_FILTER_FIRST_LETTER_DESC">
@@ -105,8 +106,6 @@
     <fieldset name="tz_fieldset_portfolio_timeline"
               label="COM_TZ_PORTFOLIO_FIELDSET_PORTFOLIO_TIMELINE"
               description="COM_TZ_PORTFOLIO_FIELDSET_PORTFOLIO_TIMELINE_DESC">
-        <field name="tz_portfolio_portfolio" type="spacer" class="spacer"
-               label="COM_TZ_PORTFOLIO_PORTFOLIO"/>
         <field type="list" name="tz_portfolio_layout"
                label="COM_TZ_PORTFOLIO_PORTFOLIO_TIMELINE_PAGINATION_LAYOUT"
                description="COM_TZ_PORTFOLIO_PORTFOLIO_TIMELINE_PAGINATION_LAYOUT_DESC">
@@ -190,21 +189,6 @@
             <option value="month-year">COM_TZ_PORTFOLIO_MONTH_YEAR</option>
         </field>
         <field name="spacer12" type="spacer" hr="true"/>
-
-        <field name="tz_portfolio_image_title" type="spacer"
-               class="spacer"
-                label="COM_TZ_PORTFOLIO_IMAGE_TITLE"/>
-        <field name="portfolio_image_featured_size" type="list"
-               default="L"
-                label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE"
-                description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE_DESC">
-            <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
-            <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
-            <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
-            <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
-            <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
-        </field>
-        <field name="spacer6" type="spacer" hr="true"/>
     </fieldset>
 
     <fieldset name="tz_fieldset_gallery" label="COM_TZ_PORTFOLIO_FIELDSET_GALLERY"
@@ -316,9 +300,6 @@
     <fieldset name="tz_fieldset_image"
               label="COM_TZ_PORTFOLIO_FIELDSET_IMAGE"
               description="COM_TZ_PORTFOLIO_CONFIG_SETTINGS_DESC">
-
-        <field name="tz_portfolio_title_image" type="spacer" class="spacer"
-               label="COM_TZ_PORTFOLIO_TITLE_IMAGE"/>
         <field name="show_image" type="radio"
                class="btn-group" default="1"
                label="COM_TZ_PORTFOLIO_SHOW_IMAGE"
@@ -361,6 +342,16 @@
                default="M"
                label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE"
                 description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE_DESC">
+            <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
+            <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
+            <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
+            <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
+            <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
+        </field>
+        <field name="portfolio_image_featured_size" type="list"
+               default="L"
+                label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE"
+                description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE_DESC">
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>

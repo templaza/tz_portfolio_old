@@ -295,6 +295,7 @@
 		<plugin plugin="tz_portfolio" group="user" />
 		<plugin plugin="tz_portfolio" group="search" folder="tz_portfolio_content" />
 		<plugin plugin="tz_portfolio" group="search" folder="tz_portfolio_categories" />
+		<plugin plugin="example" group="tz_portfolio" folder="example" />
     </plugins>
 
 </extension>
