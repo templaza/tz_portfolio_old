@@ -249,21 +249,22 @@ endif;
                             case 'vimeo':
                     ?>
                         <iframe src="http://player.vimeo.com/video/<?php echo $media[0] -> images;?>?title=0&amp;byline=0&amp;portrait=0"
-                            width="<?php echo ($params -> get('video_width'))?$params -> get('video_width'):'100%';?>"
-                            height="<?php echo ($params -> get('video_width'))?$params -> get('video_height'):'255';?>"
+                            width="<?php echo ($params -> get('video_width'))?$params -> get('video_width'):'600';?>"
+                            height="<?php echo ($params -> get('video_height'))?$params -> get('video_height'):'255';?>"
                             frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen>
                         </iframe>
                     <?php
                                 break;
                             case 'youtube':
                     ?>
-                            <iframe  width="<?php echo ($params -> get('video_width'))?$params -> get('video_width'):'100%';?>"
-                                    height="<?php echo ($params -> get('video_width'))?$params -> get('video_height'):'315';?>"
+                            <iframe  width="<?php echo ($params -> get('video_width'))?$params -> get('video_width'):'600';?>"
+                                    height="<?php echo ($params -> get('video_height'))?$params -> get('video_height'):'315';?>"
                                     src="http://www.youtube.com/embed/<?php echo $media[0] -> images;?><?php echo (!empty($media[0] -> imagetitle))?'?title='.$media[0] -> imagetitle:'';?>"
                                     frameborder="0" allowfullscreen>
                             </iframe>
                         <?php break;?>
                     <?php endswitch;?>
+                    <script type="text/javascript" src="components/com_tz_portfolio/js/fluidvids.min.js"></script>
                 </div>
             <?php endif;?>
         <?php endif;?>

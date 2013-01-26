@@ -35,6 +35,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
         $this -> setState('tags.catid',null);
         $params = $app -> getParams();
         $this -> setState('params',$params);
+        $this -> setState('char',JRequest::getString('char',null));
 
     }
     
@@ -46,22 +47,21 @@ class TZ_PortfolioModelTags extends JModelLegacy
         if($params -> get('tz_article_limit')){
             $limit  = $params -> get('tz_article_limit');
         }
-//        $menuParams = new JRegistry;
-//
-//        if ($menu = $app->getMenu()->getActive()) {
-//            $menuParams->loadString($menu->params);
-//        }
-//
-//        $mergedParams = clone $menuParams;
-//        $mergedParams->merge($params);
 
         $params -> set('access-view',true);
 
         $this->setState('params', $params);
 
+        $where  = null;
+
+        if($char   = $this -> getState('char')){
+            $where  .= ' AND ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII("'.mb_strtolower($char).'")';
+        }
+
         $query  = 'SELECT COUNT(*) FROM #__content AS c'
             .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON c.id=x.contentid'
-            .' WHERE x.tagsid='.$this -> getState('tags.id');
+            .' WHERE x.tagsid='.$this -> getState('tags.id')
+                  .$where;
         $db     = &JFactory::getDbo();
         $db -> setQuery($query);
         $total  = $db -> loadResult();
@@ -110,8 +110,9 @@ class TZ_PortfolioModelTags extends JModelLegacy
             .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON c.id=x.contentid'
             .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid'
             .' WHERE c.state=1 AND t.published=1 AND x.tagsid='.$this -> getState('tags.id')
+            .$where
             .' ORDER BY '.$orderby;
-        
+
         $db     = &JFactory::getDbo();
         $db -> setQuery($query,$this -> pagNav -> limitstart,$this -> pagNav -> limit);
 
@@ -121,6 +122,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
         }
         
         if($rows   = $db -> loadObjectList()){
+
             return $rows;
         }
         return '';

@@ -57,10 +57,15 @@ ob_start();
 <meta property="og:description" content="<?php echo $description;?>"/>
 <?php $meta = ob_get_contents();?>
 <?php ob_end_clean();?>
-<?php $doc -> addCustomTag($meta);?>
+<?php
+    $doc -> addCustomTag($meta);
+    $doc -> addCustomTag('<link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less"/>');
+        $doc -> addCustomTag('<script src="components/com_tz_portfolio/js/less-1.3.3.min.js"></script>');
+?>
 
-<link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">
-<script src="components/com_tz_portfolio/js/less-1.0.21.min.js" type="text/javascript"></script>
+<!--<script src="components/com_tz_portfolio/js/less-1.3.3.min.js" type="text/javascript"></script>-->
+<!--<link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">-->
+
     
 <div class="TzPortfolioItemPage item-page<?php echo $this->pageclass_sfx?>">
     <div class="TzItemPageInner">
@@ -179,7 +184,9 @@ ob_start();
                 <span class="TZCommentCount">
                     <?php echo JText::_('COM_TZ_PORTFOLIO_COMMENT_COUNT');?>
                     <?php if($params -> get('tz_comment_type') == 'facebook'):?>
-                        <fb:comments-count href="<?php echo JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this->item->slug,$this -> item -> catid));?>"></fb:comments-count>
+                        <?php if(isset($this -> item -> commentCount)):?>
+                            <?php echo $this -> item -> commentCount;?>
+                        <?php endif;?>
                     <?php endif;?>
                     <?php if($params -> get('tz_comment_type') == 'jcomment'): ?>
                         <?php
@@ -256,9 +263,13 @@ ob_start();
             </h2>
         <?php endif; ?>
 
-        <?php  if (!$params->get('show_intro')) :
-            echo $this->item->event->afterDisplayTitle;
-        endif; ?>
+        <?php if (!$params->get('show_intro',1)) : ?>
+            <?php
+                //Call event onContentAfterTitle and TZPluginDisplayTitle on plugin
+                echo $this->item->event->afterDisplayTitle;
+                echo $this->item->event->TZafterDisplayTitle;
+            ?>
+        <?php endif; ?>
 
         <?php if (isset ($this->item->toc)) : ?>
             <?php echo $this->item->toc; ?>
@@ -277,6 +288,12 @@ ob_start();
          endif;
         ?>
 
+        <?php
+            //Call event onContentBeforeDisplay and onTZPluginBeforeDisplay on plugin
+            echo $this->item->event->beforeDisplayContent;
+            echo $this->item->event->TZbeforeDisplayContent;
+        ?>
+                
         <?php $this -> item -> text = trim($this -> item -> text);
             $this -> item -> fulltext = trim($this -> item -> fulltext);?>
         <?php if(!empty($this -> item -> text)):?>
@@ -358,6 +375,11 @@ ob_start();
              echo $this->item->pagination;?>
         <?php endif; ?>
 
-        <?php echo $this->item->event->afterDisplayContent; ?>
+        <?php
+            //Call event onContentAfterDisplay and onTZPluginAfterDisplay on plugin
+            echo $this->item->event->afterDisplayContent;
+            echo $this->item->event->TZafterDisplayContent;
+        ?>
+    
     </div>
 </div>

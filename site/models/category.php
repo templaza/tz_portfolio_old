@@ -214,7 +214,9 @@ class TZ_PortfolioModelCategory extends JModelList
 			$this->setState('filter.subcategories', true);
 		}
 
-
+        //Filter by first letter of article's title
+        $this -> setState('filter.char',JRequest::getString('char',null));
+        $this -> setState('filter.use_filter_first_letter',$params -> get('use_filter_first_letter',1));
 
 		$this->setState('filter.language', $app->getLanguageFilter());
 
@@ -253,6 +255,10 @@ class TZ_PortfolioModelCategory extends JModelList
 			$model->setState('filter.max_category_levels', $this->setState('filter.max_category_levels'));
 			$model->setState('list.links', $this->getState('list.links'));
 
+            //Filter by first letter of article's title
+            $model -> setState('filter.tz_use_filter_letter',$this -> getState('filter.use_filter_first_letter'));
+            $model -> setState('filter.char',$this -> getState('filter.char'));
+
 			if ($limit >= 0) {
 				$this->_articles = $model->getItems();
 
@@ -264,10 +270,11 @@ class TZ_PortfolioModelCategory extends JModelList
 				$this->_articles=array();
 			}
 
+
 			$this->_pagination = $model->getPagination();
 		}
 
-		return $this->_articles;
+		return $this -> _articles;
 	}
 
 	/**

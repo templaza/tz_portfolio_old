@@ -30,7 +30,7 @@ JHtml::_('behavior.tooltip');
 ?>
 
 <link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">
-<script src="components/com_tz_portfolio/js/less-1.0.21.min.js" type="text/javascript"></script>
+<script src="components/com_tz_portfolio/js/less-1.3.3.min.js" type="text/javascript"></script>
 
 <?php if($lists):?>
     <div class="TzTag">
@@ -40,19 +40,29 @@ JHtml::_('behavior.tooltip');
                 <?php echo JText::sprintf('COM_TZ_PORTFOLIO_TAG_HEADING',$this -> tag -> name);?>
             </h1>
             <?php endif;?>
+
+            <?php if($params -> get('use_filter_first_letter',1)):?>
+                <div class="TzLetters">
+                    <div class="breadcrumb">
+                        <?php echo $this -> loadTemplate('letters');?>
+                    </div>
+                </div>
+            <?php endif;?>
+
+            <?php if($params -> get('show_limit_box',1)):?>
             <form action="index.php?option=com_tz_portfolio&view=tags&id=<?php echo JRequest::getInt('id')?>&Itemid=<?php echo JRequest::getInt('Itemid')?>"
                   id="adminForm"
                   name="adminForm"
                   method="post">
 
-                <?php if($params -> get('show_limit_box',1)):?>
+
                     <div class="display-limit">
                         <fieldset class="filters">
                             <?php echo  JText::_('JGLOBAL_DISPLAY_NUM');?>
                             <?php echo $this -> pagination -> getLimitBox();?>
                         </fieldset>
                     </div>
-                <?php endif;?>
+            <?php endif;?>
 
                 <?php $i=0;?>
                 <?php foreach($lists as $row):?>
@@ -139,11 +149,6 @@ JHtml::_('behavior.tooltip');
                                     </div>
                                 </div>
                                 <?php endif; ?>
-                            <?php //else : ?>
-                            <!--                                <div class="pull-right">-->
-                            <!--                                    --><?php //echo JHtml::_('icon.print_screen',  $row, $params); ?>
-                            <!--                                </div>-->
-                            <?php //endif; ?>
 
                              <?php if($params -> get('show_title')): ?>
                                 <h3 class="TzTagTitle">
@@ -165,6 +170,12 @@ JHtml::_('behavior.tooltip');
                                     <?php endif; ?>
                                 </h3>
                             <?php endif;?>
+
+                            <?php if (!$params->get('show_intro',1)) : ?>
+                                <?php //Call event onContentAfterTitle and TZPluginDisplayTitle on plugin?>
+                                <?php echo $row -> event -> afterDisplayTitle; ?>
+                                <?php echo $row -> event -> TZafterDisplayTitle; ?>
+                            <?php endif; ?>
 
                             <?php if (($params->get('show_author')) or ($params->get('show_category')) or ($params->get('show_create_date')) or ($params->get('show_modify_date')) or ($params->get('show_publish_date')) or ($params->get('show_parent_category')) or ($params->get('show_hits'))) : ?>
                                 <div class="TzTagArticleInfo">
@@ -196,7 +207,7 @@ JHtml::_('behavior.tooltip');
                             <?php endif; ?>
 
                             <span class="TzVote">
-                                <?php echo $row -> event -> beforeDisplayContent; ?>
+                                <?php echo $row -> event -> TZPortfolioVote; ?>
                                 <span class="TzMilling">,&nbsp;</span>
                             </span>
 
@@ -272,7 +283,7 @@ JHtml::_('behavior.tooltip');
                             $app    = &JFactory::getApplication();
                             $menus  = $app -> getMenu('site');
                             $_menu  = $menus ->getItem($itemId);
-                            $exParams   = $params;
+                            $exParams   = clone($params);
                             $exParams -> merge($_menu -> params);
 
                             $extraFields    = &JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
@@ -286,7 +297,7 @@ JHtml::_('behavior.tooltip');
                                 $extraParams -> set('tz_fieldsid',$itemParams -> get('tz_fieldsid'));
 
                             $extraFields -> setState('params',$extraParams);
-                            $extraFields -> setState('orderby',$exParams -> get('fields_order'));
+                            $extraFields -> setState('orderby',$exParams -> get('fields_order',null));
                             $this -> item -> params = $extraParams;
                             $this -> assign('tagFields',$extraFields -> getExtraFields());
                             ?>
@@ -294,9 +305,9 @@ JHtml::_('behavior.tooltip');
 
                              <?php echo $row -> text;?>
 
-                            <?php  if (!$params->get('show_intro')) :
-                                echo $row->event->afterDisplayTitle;
-                            endif; ?>
+                            <?php //Call event onContentBeforeDisplay and onTZPluginBeforeDisplay on plugin?>
+                            <?php echo $row -> event -> beforeDisplayContent; ?>
+                            <?php echo $row -> event -> TZbeforeDisplayContent; ?>
 
                             <?php if ($params->get('show_readmore') && $row->readmore) :
                                 if ($params->get('access-view')) :
@@ -343,7 +354,9 @@ JHtml::_('behavior.tooltip');
                             <?php endif; ?>
                             <div class="clr"></div>
 
-                            <?php echo $row->event->afterDisplayContent; ?>
+                            <?php //Call event onContentAfterDisplay and onTZPluginAfterDisplay on plugin?>
+                            <?php echo $row -> event -> afterDisplayContent; ?>
+                            <?php echo $row -> event -> TZafterDisplayContent; ?>
 
                         </div>
                     </div>
@@ -362,7 +375,9 @@ JHtml::_('behavior.tooltip');
                     <?php endif; ?>
                 </div>
                 <?php endif;?>
+            <?php if($params -> get('show_limit_box',1)):?>
             </form>
+            <?php endif;?>
         </div>
     </div>
 <?php endif;?>

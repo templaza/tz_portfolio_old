@@ -68,10 +68,10 @@ class plgContentTZ_Portfolio_Comment extends JPlugin
     /*Facebook*/
     function TZPortfolioFacebookComment($context,&$article,$params,$page=0){
         if($params -> get('tz_portfolio_redirect') == 'p_article'){
-            $link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article->slug, $article->catid),true, -1);
+            $link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article->slug, $article->catid),true,-1);
         }
         else{
-            $link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($article->slug, $article->catid),true, -1);
+            $link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($article->slug, $article->catid),true,-1);
         }
         $html   = null;
         $html   = '<div class="tz_portfolio_comment">';

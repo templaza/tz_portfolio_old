@@ -16,7 +16,10 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
+
+// no direct access
+defined('_JEXEC') or die('Restricted access');
+
 $doc    = &JFactory::getDocument();
 $doc -> addStyleSheet('components/com_tz_portfolio/css/tz_portfolio.css');
 
@@ -25,7 +28,6 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 $lang   = &JFactory::getLanguage();
 $lang -> load('com_users');
-$lang -> load('com_tz_portfolio',JPATH_ADMINISTRATOR);
 
 ?>
 
@@ -64,11 +66,11 @@ $lang -> load('com_tz_portfolio',JPATH_ADMINISTRATOR);
                         <?php echo $field->input; ?>
                     </div>
                 </div>
-            
+
                 <?php if(($field-> fieldname) == 'email2'):?>
                     <div class="control-group">
                         <div class="control-label">
-                            <label title="<?php echo JText::_('COM_TZ_PORTFOLIO_USER_FIELD_GENDER_LABEL');?>::<?php echo JText::_('COM_TZ_PORTFOLIO_USER_FIELD_GENDER_LABEL_DESC');?>"
+                            <label title="<?php echo preg_replace('/\:+$/','',JText::_('COM_TZ_PORTFOLIO_USER_FIELD_GENDER_LABEL'));?>::<?php echo JText::_('COM_TZ_PORTFOLIO_USER_FIELD_GENDER_LABEL_DESC');?>"
                                    class="hasTip required"
                                    >
                                 <?php echo JText::_('COM_TZ_PORTFOLIO_USER_FIELD_GENDER_LABEL');?>
@@ -182,13 +184,13 @@ $lang -> load('com_tz_portfolio',JPATH_ADMINISTRATOR);
                     </div>
 
                 <?php endif;?>
-                
+
 			<?php endif;?>
 		<?php endforeach;?>
 	</fieldset>
 	<?php endif;?>
 <?php endforeach;?>
-        
+
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary validate"><span><?php echo JText::_('JSUBMIT'); ?></span></button>

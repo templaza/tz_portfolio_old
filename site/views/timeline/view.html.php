@@ -42,15 +42,19 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
         $this -> assign('pagination',$this -> get('Pagination'));
         $this -> assign('Itemid',$active -> id);
         $this -> assign('limitstart',$state -> get('offset'));
+        $model  = JModelLegacy::getInstance('Portfolio','TZ_PortfolioModel',array('ignore_request' => true));
+        $model -> setState('params',$params);
+        $this -> assign('char',$state -> get('char'));
+        $this -> assign('availLetter',$model -> getAvailableLetter());
 
         $params = $this -> get('Params');
 
         $doc    = &JFactory::getDocument();
         $doc -> addStyleSheet('components/com_tz_portfolio/css/timeline/blog.css');
-        if($params -> get('tz_timeline_layout') == 'default'):
+        if($params -> get('tz_timeline_layout',null) == 'classic'):
 
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.easing.1.3.js"></script>');
-            $doc -> addCustemTag('<script type="text/javascript" src="components/com_tz_portfolio/js/blog.js"></script>');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/blog.js"></script>');
         else:
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.infinitescroll.min.js"></script>');
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.isotope.js"></script>');
@@ -75,43 +79,46 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
                 }
             ');
         endif;
-        if($params -> get('tz_timeline_layout') == 'ajaxButton' || $params -> get('tz_timeline_layout') == 'ajaxInfiScroll'){
-            if($params -> get('tz_timeline_layout') == 'ajaxButton'){
-                $doc->addStyleDeclaration('
-                    #infscr-loading {
-                        position: absolute;
-                        padding: 0;
-                        left: 35%;
-                        bottom:0;
-                        background:none;
-                    }
-                    #infscr-loading div,#infscr-loading img{
-                        display:inline-block;
-                    }
-                ');
-            }
-            if($params -> get('tz_timeline_layout') == 'ajaxInfiScroll'){
-                $doc->addStyleDeclaration('
-                    #tz_append{
-                        cursor: auto;
-                    }
-                    #tz_append a{
-                        color:#000;
-                        cursor:auto;
-                    }
-                    #tz_append a:hover{
-                        color:#000 !important;
-                    }
-                    #infscr-loading {
-                        position: absolute;
-                        padding: 0;
-                        left: 38%;
-                        bottom:-35px;
-                    }
+        if($params -> get('tz_timeline_layout',null) != 'classic'){
+            if($params -> get('tz_portfolio_layout') == 'ajaxButton' || $params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'){
+                if($params -> get('tz_portfolio_layout') == 'ajaxButton'){
+                    $doc->addStyleDeclaration('
+                        #infscr-loading {
+                            position: absolute;
+                            padding: 0;
+                            left: 35%;
+                            bottom:0;
+                            background:none;
+                        }
+                        #infscr-loading div,#infscr-loading img{
+                            display:inline-block;
+                        }
+                    ');
+                }
+                if($params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'){
+                    $doc->addStyleDeclaration('
+                        #tz_append{
+                            cursor: auto;
+                        }
+                        #tz_append a{
+                            color:#000;
+                            cursor:auto;
+                        }
+                        #tz_append a:hover{
+                            color:#000 !important;
+                        }
+                        #infscr-loading {
+                            position: absolute;
+                            padding: 0;
+                            left: 38%;
+                            bottom:-35px;
+                        }
 
-                ');
+                    ');
+                }
             }
         }
+        
         if($params -> get('tz_use_lightbox',1) == 1){
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.fancybox.pack.js"></script>');
             $doc -> addStyleSheet('components/com_tz_portfolio/assets/jquery.fancybox.css');
@@ -153,6 +160,10 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
                 });
                 </script>
             ');
+        }
+
+        if ($layout = $params -> get('tz_timeline_layout','default')) {
+            $this->setLayout($layout);
         }
 
         // Add feed links

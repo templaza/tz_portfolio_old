@@ -78,3 +78,10 @@ CREATE TABLE IF NOT EXISTS `#__tz_portfolio_users` (
 `google_one` TEXT NOT NULL,
 `description` TEXT NOT NULL
 ) ENGINE = MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `#__tz_portfolio_plugin` (
+`id`  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+`contentid` INT NOT NULL ,
+`pluginid` INT NOT NULL,
+`params` TEXT NULL
+) ENGINE = MYISAM  DEFAULT CHARSET=utf8;

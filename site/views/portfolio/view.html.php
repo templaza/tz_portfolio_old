@@ -149,6 +149,8 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         $this -> assignRef('mediaParams',$state -> params);
         $this -> assign('pagination',$this -> get('Pagination'));
         $this -> assign('Itemid',$active -> id);
+        $this -> assign('char',$state -> get('char'));
+        $this -> assign('availLetter',$this -> get('AvailableLetter'));
 
         // Add feed links
 		if ($params->get('show_feed_link', 1)) {

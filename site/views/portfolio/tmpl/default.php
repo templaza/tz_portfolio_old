@@ -26,9 +26,11 @@ $doc    = &JFactory::getDocument();
 <?php if($this -> listsArticle):?>
 
     <?php $params = &$this -> params; ?>
-
-    <link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">
-    <script src="components/com_tz_portfolio/js/less-1.0.21.min.js" type="text/javascript"></script>
+    <?php
+        $doc -> addCustomTag('<link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less"/>');
+        $doc -> addCustomTag('<script src="components/com_tz_portfolio/js/less-1.3.3.min.js" type="text/javascript"></script>');
+        $doc -> addCustomTag('<script src="components/com_tz_portfolio/js/tz_portfolio.js" type="text/javascript"></script>');
+    ?>
 
     <script type="text/javascript">
         function tz_init(defaultwidth){
@@ -79,6 +81,13 @@ $doc    = &JFactory::getDocument();
     </script>
 
     <div id="TzContent">
+        <?php if($params -> get('use_filter_first_letter',1)):?>
+            <div class="TzLetters">
+                <div class="breadcrumb">
+                    <?php echo $this -> loadTemplate('letters');?>
+                </div>
+            </div>
+        <?php endif;?>
         <div id="tz_options" class="clearfix">
             <?php if($params -> get('tz_show_filter',1)):?>
             <div class="option-combo">
@@ -86,15 +95,10 @@ $doc    = &JFactory::getDocument();
 
 
                 <div id="filter" class="option-set clearfix" data-option-key="filter">
-
-                    <a href="#show-all" data-option-value="*" class="btn btn-small selected">
-                        <?php echo JText::_('COM_TZ_PORTFOLIO_SHOW_ALL');?>
-                    </a>
-
+                    <a href="#show-all" data-option-value="*" class="btn btn-small selected"><?php echo JText::_('COM_TZ_PORTFOLIO_SHOW_ALL');?></a>
                     <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
                         <?php echo $this -> loadTemplate('tags');?>
                     <?php endif;?>
-                    
                     <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
                         <?php echo $this -> loadTemplate('categories');?>
                     <?php endif;?>
@@ -106,8 +110,8 @@ $doc    = &JFactory::getDocument();
                 <div class="option-combo">
                   <h2><?php echo JText::_('COM_TZ_PORTFOLIO_SORT')?></h2>
                   <div id="sort" class="option-set clearfix" data-option-key="sortBy">
-                      <a class="btn btn-small" href="#title" data-option-value="name"><?php echo JText::_('Title');?></a>
-                      <a class="btn btn-small" href="#date" data-option-value="date"><?php echo JText::_('Date');?></a>
+                      <a class="btn btn-small" href="#title" data-option-value="name"><?php echo JText::_('COM_TZ_PORTFOLIO_TITLE');?></a>
+                      <a class="btn btn-small selected" href="#date" data-option-value="date"><?php echo JText::_('COM_TZ_PORTFOLIO_DATE');?></a>
                   </div>
                 </div>
             <?php endif;?>
@@ -118,9 +122,9 @@ $doc    = &JFactory::getDocument();
                     <div id="layouts" class="option-set clearfix" data-option-key="layoutMode">
                     <?php
                         if(count($params -> get('layout_type',array('masonry','fitRows','straightDown')))>0):
-                            foreach($params -> get('layout_type',array('masonry','fitRows','straightDown')) as $param):
+                            foreach($params -> get('layout_type',array('masonry','fitRows','straightDown')) as $i => $param):
                     ?>
-                            <a class="btn btn-small" href="#<?php echo $param?>" data-option-value="<?php echo $param?>">
+                            <a class="btn btn-small<?php if($i == 0) echo ' selected';?>" href="#<?php echo $param?>" data-option-value="<?php echo $param?>">
                                 <?php echo $param?>
                             </a>
                         <?php endforeach;?>
@@ -130,13 +134,15 @@ $doc    = &JFactory::getDocument();
             <?php endif;?>
 
             <?php if($params -> get('tz_portfolio_layout') == 'default'):?>
-                <div class="TzShow">
-                  <span class="title"><?php echo strtoupper(JText::_('JSHOW'));?></span>
-                    <form name="adminForm" method="post" id="TzShowItems"
-                          action="index.php?option=com_tz_portfolio&view=portfolio&Itemid=<?php echo $this -> Itemid?>">
-                          <?php echo $this -> pagination -> getLimitBox();?>
-                    </form>
-                </div>
+                <?php if($params -> get('show_limit_box',1)):?>
+                    <div class="TzShow">
+                      <span class="title"><?php echo strtoupper(JText::_('JSHOW'));?></span>
+                        <form name="adminForm" method="post" id="TzShowItems"
+                              action="index.php?option=com_tz_portfolio&view=portfolio&Itemid=<?php echo $this -> Itemid?>">
+                              <?php echo $this -> pagination -> getLimitBox();?>
+                        </form>
+                    </div>
+                <?php endif;?>
             <?php endif;?>
         </div>
 
@@ -155,6 +161,7 @@ $doc    = &JFactory::getDocument();
 
                     <?php echo $this->pagination->getPagesLinks(); ?>
                 </div>
+                <div class="clearfix"></div>
             <?php endif;?>
         <?php endif;?>
 
@@ -164,7 +171,6 @@ $doc    = &JFactory::getDocument();
 
 <?php $layout = $params -> get('layout_type',array('masonry'));?>
 <script type="text/javascript">
-
      var resizeTimer = null;
     jQuery(window).bind('load resize', function() {
         if (resizeTimer) clearTimeout(resizeTimer);
@@ -190,6 +196,11 @@ $doc    = &JFactory::getDocument();
 
                 }
             }
+        },function(){
+            <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>
+                //Sort tags or categories filter
+                tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
+            <?php endif;?>
         });
         tz_init('<?php echo $params -> get('tz_column_width',233);?>');
     });
@@ -216,7 +227,7 @@ $doc    = &JFactory::getDocument();
 
             value = value === 'false' ? false : value;
             options[ key ] = value;
-              
+
             if ( key === 'layoutMode' && typeof changeLayoutMode === 'function' ) {
 
               // changes in layout modes need extra logic

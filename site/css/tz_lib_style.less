@@ -1,4 +1,3 @@
-//
 @tzborder: 1px solid #e4e4ec;
 
 @tzpadding: 15px;
@@ -49,7 +48,6 @@
 
 @tzfloat: inherit;
 @tztexttransform: uppercase;
-//@tzlineheight: normal;
 
 .TzLessSize(@tzwidth: auto,@tzheight: auto){
     width: @tzwidth;
@@ -165,6 +163,9 @@
         a{
             .TzLessAllMargin(0,0,7px,0);
         }
+        a.selected{
+            .TzLessBackground(#E6E6E6);
+        }
         form{
             float: left;
         }
@@ -213,6 +214,11 @@
         }
         span.TzArticleImage img{
             padding: 0;
+        }
+    }
+    .pagination{
+        ul{
+            display: block;
         }
     }
 }
@@ -410,7 +416,16 @@ ul.TzVote-stars li a:hover, ul.TzVote-stars-small li a:hover{
         .TzIcon a{
             color: #333;
         }
+        .TzLetters{
+            a{
+                color: #0088CC;
+            }
+            .disabled{
+                color: #999999;
+            }
+        }
     }
+
 }
 
 .TzPagination{
@@ -680,4 +695,20 @@ ul.TzVote-stars li a:hover, ul.TzVote-stars-small li a:hover{
 #infscr-loading{
     .TzLessFontColor(#000,normal,15px,verdana);
     .TzLessHalfPadding(9px,0);
+}
+
+.TzLetters{
+    .breadcrumb{
+        .nav{
+            margin-bottom: 0;
+        }
+        .active{
+            background: #e5e5e5;
+            color: #0088CC;
+        }
+        .disabled:hover{
+            background: none;
+        }
+
+    }
 }

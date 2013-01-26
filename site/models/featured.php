@@ -73,6 +73,12 @@ class TZ_PortfolioModelFeatured extends TZ_PortfolioModelArticles
 			$featuredCategories = $params->get('featured_categories');
  			$this->setState('filter.frontpage.categories', $featuredCategories);
  		}
+
+        //Filter by first letter of article's title
+        $this -> setState('filter.char',JRequest::getString('char',null));
+        $this -> setState('filter.use_filter_first_letter',$params -> get('use_filter_first_letter',1));
+
+
 	}
 
 	/**

@@ -66,7 +66,7 @@ ob_start();
 <?php endif;?>
 
 <link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">
-<script src="components/com_tz_portfolio/js/less-1.0.21.min.js" type="text/javascript"></script>
+<script src="components/com_tz_portfolio/js/less-1.3.3.min.js" type="text/javascript"></script>
     
 <div class="TzItemPage item-page<?php echo $this->pageclass_sfx?>">
     <div class="TzItemPageInner">
@@ -107,7 +107,7 @@ ob_start();
                 <span class="TzVote">
                     <span class="TzLine">|</span>
                     <span><?php echo JText::_('COM_TZ_PORTFOLIO_RATING');?></span>
-                    <?php echo $this->item->event->beforeDisplayContent; ?>
+                    <?php echo $this->item->event->TZPortfolioVote; ?>
                 </span>
             <?php endif;?>
 
@@ -264,9 +264,13 @@ ob_start();
             </h2>
         <?php endif; ?>
 
-        <?php  if (!$params->get('show_intro')) :
-            echo $this->item->event->afterDisplayTitle;
-        endif; ?>
+        <?php if (!$params->get('show_intro',1)) : ?>
+            <?php
+                //Call event onContentAfterTitle and TZPluginDisplayTitle on plugin
+                echo $this->item->event->afterDisplayTitle;
+                echo $this->item->event->TZafterDisplayTitle;
+            ?>
+        <?php endif; ?>
 
         <?php if (isset ($this->item->toc)) : ?>
             <?php echo $this->item->toc; ?>
@@ -283,6 +287,12 @@ ob_start();
         if (!empty($this->item->pagination) AND $this->item->pagination AND !$this->item->paginationposition AND !$this->item->paginationrelative):
             echo $this->item->pagination;
          endif;
+        ?>
+
+        <?php
+            //Call event onContentBeforeDisplay and onTZPluginBeforeDisplay on plugin
+            echo $this->item->event->beforeDisplayContent;
+            echo $this->item->event->TZbeforeDisplayContent;
         ?>
 
         <?php $this -> item -> text = trim($this -> item -> text);
@@ -366,6 +376,11 @@ ob_start();
              echo $this->item->pagination;?>
         <?php endif; ?>
         
-        <?php echo $this->item->event->afterDisplayContent; ?>
+        <?php
+            //Call event onContentAfterDisplay and onTZPluginAfterDisplay on plugin
+            echo $this->item->event->afterDisplayContent;
+            echo $this->item->event->TZafterDisplayContent;
+        ?>
+
     </div>
 </div>

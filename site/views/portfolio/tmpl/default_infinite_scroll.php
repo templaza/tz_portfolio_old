@@ -28,7 +28,8 @@ $params = $this -> params;
 
 
 <div id="loadaj" style="display: none;">
-    <a href="<?php echo JURI::root().'index.php?option=com_tz_portfolio&view=portfolio&task=portfolio.ajax&layout=item&Itemid='.$this -> Itemid.'&page=2'; ?>">
+    <a href="<?php echo JURI::root().'index.php?option=com_tz_portfolio&view=portfolio&task=portfolio.ajax'
+                        .'&layout=item'.(($this -> char)?'&char='.$this -> char:'').'&Itemid='.$this -> Itemid.'&page=2'; ?>">
     </a>
 </div>
 
@@ -58,26 +59,7 @@ $params = $this -> params;
 
 
             var $container = tz('#portfolio');
-
-            $container.imagesLoaded(function(){
-                $container.isotope({
-                    itemSelector : '.element',
-                    getSortData: {
-                        name: function( $elem ) {
-                            var name = $elem.find('.name'),
-                                itemText = name.length ? name : $elem;
-                            return itemText.text();
-                        },
-                        date: function($elem){
-                            var number = $elem.hasClass('element') ?
-                              $elem.find('.create').text() :
-                              $elem.attr('data-date');
-                            return number;
-
-                        }
-                    }
-                });
-            });
+            
             <?php if($this -> params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'):?>
                 tz('#tz_append').css({'border':0,'background':'none'});
             <?php endif;?>
@@ -153,6 +135,11 @@ $params = $this -> params;
                             });
                         <?php endif;?>
 
+                        <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>
+                            //Sort tags or categories filter
+                            tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
+                        <?php endif;?>
+
                         //if there still more item
                         if($newElems.length){
 
@@ -175,6 +162,5 @@ $params = $this -> params;
 
             <?php endif;?>
         });
-
 
   </script>
