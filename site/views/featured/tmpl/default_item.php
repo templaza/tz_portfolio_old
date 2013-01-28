@@ -79,7 +79,7 @@ else{
         <span class="TzVote">
             <span class="TzLine">|</span>
             <span><?php echo JText::_('COM_TZ_PORTFOLIO_RATING');?></span>
-            <?php echo $this->item->event->beforeDisplayContent; ?>
+            <?php echo $this -> item -> event -> TZPortfolioVote;?>
         </span>
     <?php endif;?>
 
@@ -212,7 +212,11 @@ else{
 <?php endif; ?>
 
 <?php if (!$params->get('show_intro',1)) : ?>
-	<?php echo $this->item->event->afterDisplayTitle; ?>
+    <?php
+        //Call event onContentAfterTitle and TZPluginDisplayTitle on plugin
+        echo $this->item->event->afterDisplayTitle;
+        echo $this->item->event->TZafterDisplayTitle;
+    ?>
 <?php endif; ?>
 
 <?php // to do not that elegant would be nice to group the params ?>
@@ -235,9 +239,17 @@ else{
 ?>
 <?php echo $this -> loadTemplate('extrafields');?>
 
-<div class="TzDescription">
-<?php echo $this->item->introtext; ?>
-</div>
+<?php
+    //Call event onContentBeforeDisplay and onTZPluginBeforeDisplay on plugin
+    echo $this->item->event->beforeDisplayContent;
+    echo $this->item->event->TZbeforeDisplayContent;
+?>
+
+<?php if($this -> item -> introtext):?>
+    <div class="TzDescription">
+    <?php echo $this->item->introtext; ?>
+    </div>
+<?php endif;?>
 
 <?php if ($params->get('show_readmore',1) && $this->item->readmore) :
 	if ($params->get('access-view')) :
@@ -273,9 +285,12 @@ else{
     <?php endif;?>
 <?php endif; ?>
 
+<?php //Call event onContentAfterDisplay and onTZPluginAfterDisplay on plugin?>
+<?php echo $this->item->event->afterDisplayContent; ?>
+<?php echo $this->item->event->TZafterDisplayContent; ?>
+
 <?php if ($this->item->state == 0) : ?>
 </div>
 <?php endif; ?>
 
 <div class="item-separator"></div>
-<?php echo $this->item->event->afterDisplayContent; ?>

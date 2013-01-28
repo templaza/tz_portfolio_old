@@ -23,7 +23,7 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 ?>
 <link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">
-<script src="components/com_tz_portfolio/js/less-1.0.21.min.js" type="text/javascript"></script>
+<script src="components/com_tz_portfolio/js/less-1.3.3.min.js" type="text/javascript"></script>
 
 <div class="TzBlog blog<?php echo $this->pageclass_sfx;?>">
     <div class="TzBlogInner">
@@ -41,6 +41,14 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
             <?php endif; ?>
         </h2>
         <?php endif; ?>
+
+        <?php if($this->params -> get('use_filter_first_letter',1)):?>
+            <div class="TzLetters">
+                <div class="breadcrumb">
+                    <?php echo $this -> loadTemplate('letters');?>
+                </div>
+            </div>
+        <?php endif;?>
 
         <?php if ($this->params->get('show_description', 1) || $this->params->def('show_description_image', 1)) : ?>
             <div class="TzCategoryDesc">

@@ -34,15 +34,20 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
     function populateState(){
         $app        = &JFactory::getApplication();
-        $this -> params = $app -> getParams();
-        $limit  = $this -> params -> get('tz_timeline_article_limit');
-        if(empty($limit)){
-            $this -> params -> set('tz_timeline_article_limit',10);
+        $params = $app -> getParams();
+        $this -> params = $params;
+        if($params -> get('show_limit_box',0) && $params -> get('tz_timeline_layout','default') == 'classic'){
+            $limit  = $app->getUserStateFromRequest('com_tz_portfolio.timeline.limit','limit',$params -> get('tz_article_limit',10));
         }
-        $this -> params -> set('useCloudZoom',0);
+        else{
+            $limit  = $params -> get('tz_article_limit',10);
+        }
+        $params -> set('useCloudZoom',0);
         $this -> setState('offset',JRequest::getUInt('limitstart',0));
-        $this -> setState('limit',$this -> params -> get('tz_timeline_article_limit'));
+        $this -> setState('limit',$limit);
         $this -> setState('params',$this -> params);
+        $this -> setState('char',JRequest::getString('char',null));
+        
     }
 
     function ajax(){
@@ -53,19 +58,21 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         $Itemid     = JRequest::getInt('Itemid');
         $page       = JRequest::getInt('page');
         $layout     = JRequest::getString('layout');
+        $char       = JRequest::getString('char');
 
         $menu       = JMenu::getInstance('site');
         $menuParams = $menu -> getParams($Itemid);
 
         $params -> merge($menuParams);
 
-        $limit  = $params -> get('tz_timeline_article_limit');
+        $limit  = $params -> get('tz_article_limit');
 
         $offset = $limit * ($page - 1);
 
         $this -> setState('limit',$limit);
         $this -> setState('offset',$offset);
         $this -> setState('params',$params);
+        $this -> setState('char',$char);
 
         require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'timeline'.DIRECTORY_SEPARATOR.'view.html.php';
         $view   = new TZ_PortfolioViewTimeLine();
@@ -105,7 +112,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
         $params -> merge($menuParams);
 
-        $limit      =   $params -> get('tz_timeline_article_limit');
+        $limit      =   $params -> get('tz_article_limit');
         $limitstart =   $limit * ($page-1);
 
         $offset = (int) $limitstart;
@@ -164,7 +171,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
         $params -> merge($menuParams);
 
-        $limit      =   $params -> get('tz_timeline_article_limit');
+        $limit      =   $params -> get('tz_article_limit');
         $limitstart =   $limit * ($page-1);
 
         $offset = (int) $limitstart;
@@ -250,6 +257,12 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         return false;
     }
 
+    //Get first letter of title
+    function getFirstLetter(){
+        
+    }
+
+
     //Get Categories
     function getDateCategories($artItem=null){
         if($this -> articles){
@@ -261,7 +274,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                   .' FROM #__categories AS cc'
                   .' LEFT JOIN #__content AS c ON c.catid=cc.id'
                   .' WHERE cc.extension="com_content" AND cc.published=1 AND c.state=1'
-                  .' ORDER BY tz_date DESC';
+                  .' ORDER BY c.created DESC';
         $db     = &JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
@@ -310,6 +323,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         if($catids){
             $catids = ' AND c.catid IN('.implode(',',$catids).')';
         }
+        
 //        $query  = 'SELECT c.*'
 //                  .' FROM #__content AS c'
 //                  .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
@@ -416,6 +430,10 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
             $where = ' AND c.catid IN('.implode(',',$catids).')';
         }
 
+        if($char   = $this -> getState('char')){
+            $where  .= ' AND ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII("'.mb_strtolower($char).'")';
+        }
+
         $query  = 'SELECT c.*,CONCAT_WS(":",YEAR(c.created),MONTH(c.created)) AS tz_date'
                   .' FROM #__content AS c'
                   .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
@@ -490,7 +508,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                   .' GROUP BY c.id'
                   .' ORDER BY c.created DESC,'.$orderby;
 
-        if($params -> get('tz_timeline_layout') == 'default')
+        if($params -> get('tz_portfolio_layout') == 'default')
             $db -> setQuery($query,$this -> pagNav -> limitstart,$this -> pagNav -> limit);
         else
             $db -> setQuery($query,$limitstart,$limit);
@@ -508,6 +526,10 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
                 $fetch       = new Services_Yadis_PlainHTTPFetcher();
             }
+            
+            //Get Plugins Model
+            $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
+            
             foreach($rows as $i => $item){
                 if ($params->get('show_intro', '1')=='1') {
                     $item->text = $item->introtext.' '.$item->fulltext;
@@ -517,12 +539,6 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 }
                 else  {
                     $item->text = $item->introtext;
-                }
-
-                if($params -> get('tz_article_intro_limit',20)){
-                    $intro  = strip_tags($item -> introtext);
-                    $intro  = explode(' ',$intro);
-                    $item -> text    = implode(' ',array_splice($intro,0,$params -> get('tz_article_intro_limit',20)));
                 }
 
                 $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
@@ -579,16 +595,6 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                     }
                 }
 
-                if ($params->get('show_intro', '1')=='1') {
-                    $item->text = $item->introtext.' '.$item->fulltext;
-                }
-                elseif ($item->fulltext) {
-                    $item->text = $item->fulltext;
-                }
-                else  {
-                    $item->text = $item->introtext;
-                }
-
                 // Add feed links
                 if (!JRequest::getCmd('format',null) AND !JRequest::getCmd('type',null)) {
                     $dispatcher	= JDispatcher::getInstance();
@@ -596,21 +602,43 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                     // Process the content plugins.
                     //
                     JPluginHelper::importPlugin('content');
-                    $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.portfolio', &$item, &$params, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('offset')));
 
                     $item->event = new stdClass();
-                    $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.portfolio', &$item, &$params, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('offset')));
                     $item->event->afterDisplayTitle = trim(implode("\n", $results));
 
-                    $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.portfolio', &$item, &$params, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('offset')));
                     $item->event->beforeDisplayContent = trim(implode("\n", $results));
 
-                    $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.portfolio', &$item, &$params, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('offset')));
                     $item->event->afterDisplayContent = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.timeline', &$item, &$params, 0));
+				    $item->event->TZPortfolioVote = trim(implode("\n", $results));
+
+                    //Get plugin Params for this article
+                    $pmodel -> setState('filter.contentid',$item -> id);
+                    $pluginItems    = $pmodel -> getItems();
+                    $pluginParams   = &$pmodel -> getParams();
+
+                    JPluginHelper::importPlugin('tz_portfolio');
+                    $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.timeline', &$item, &$this->params,&$pluginParams,$offset));
+
+                    $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('offset')));
+                    $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('offset')));
+                    $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('offset')));
+                    $item->event->TZafterDisplayContent = trim(implode("\n", $results));
                 }
 
-                $text   = new AutoCutText($item -> text,$params -> get('tz_article_intro_limit',20));
-                $item -> text   = $text -> getIntro();
+                if($introLimit = $params -> get('tz_article_intro_limit')){
+                    $text   = new AutoCutText($item -> text,$introLimit);
+                    $item -> text   = $text -> getIntro();
+                }
 
                 $this -> articles[]   = $item -> id;
                 $model  = null;

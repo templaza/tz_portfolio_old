@@ -74,9 +74,17 @@ class plgSystemTZ_Portfolio extends JPlugin {
                 require_once (JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_users'.DIRECTORY_SEPARATOR.'controller.php');
                 $controller = new UsersController;
                 $views = $controller->getView($view, 'html');
-                $views->addTemplatePath(JPATH_SITE.DIRECTORY_SEPARATOR.'components'
-                                       .DIRECTORY_SEPARATOR.'com_tz_portfolio'
-                                       .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'tmpl');
+                $tplName    = JFactory::getApplication() -> getTemplate();
+                $tplPath    = JPATH_THEMES.DIRECTORY_SEPARATOR.$tplName.DIRECTORY_SEPARATOR.'html'
+                              .DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'users';
+                if(!JFile::exists($tplPath.DIRECTORY_SEPARATOR.'register.php')){
+                    $tplPath    = JPATH_SITE.DIRECTORY_SEPARATOR.'components'
+                                  .DIRECTORY_SEPARATOR.'com_tz_portfolio'
+                                  .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'tmpl';
+                }
+            
+                $views -> addTemplatePath($tplPath);
+            
                 $views->setLayout('register');
 
                 ob_start();
@@ -94,9 +102,18 @@ class plgSystemTZ_Portfolio extends JPlugin {
             $controller = new UsersController;
 
             $views = $controller->getView($view, 'html');
-            $views->addTemplatePath(JPATH_SITE.DIRECTORY_SEPARATOR.'components'
-                                   .DIRECTORY_SEPARATOR.'com_tz_portfolio'
-                                   .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'tmpl');
+
+            $tplName    = JFactory::getApplication() -> getTemplate();
+            $tplPath    = JPATH_THEMES.DIRECTORY_SEPARATOR.$tplName.DIRECTORY_SEPARATOR.'html'
+                          .DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'users';
+            if(!JFile::exists($tplPath.DIRECTORY_SEPARATOR.'profile.php')){
+                $tplPath    = JPATH_SITE.DIRECTORY_SEPARATOR.'components'
+                              .DIRECTORY_SEPARATOR.'com_tz_portfolio'
+                              .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'tmpl';
+            }
+
+            $views -> addTemplatePath($tplPath);
+            
             $views->setLayout('profile');
 
             require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'

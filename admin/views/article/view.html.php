@@ -31,6 +31,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 	protected $form;
 	protected $item;
 	protected $state;
+    protected $pluginsTab;
 
 	/**
 	 * Display the view
@@ -67,6 +68,11 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 //            $this -> assign('listsFields',$this -> get('ListsFields'));
             $this -> assign('listAttach',$this -> get('Attachment'));
             $this -> assign('listEdit',$this -> get('FieldsContent'));
+
+            if($model  = JModelLegacy::getInstance('Plugin','TZ_PortfolioModel',array('ignore_request' => true))){
+                $model -> setState('com_tz_portfolio.plugin.articleId',JRequest::getInt('id',null));
+                $this -> pluginsTab = $model -> getForm();
+            }
 
             $this->addToolbar();
         }

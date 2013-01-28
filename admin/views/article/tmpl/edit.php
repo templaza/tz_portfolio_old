@@ -67,6 +67,8 @@ if($list){
     $type   = $list -> type;
 }
 
+$pluginsTab = $this -> pluginsTab;
+
 ?>
 
 <script type="text/javascript">
@@ -1263,7 +1265,7 @@ if($list){
                     <li><a href="#tztabsMedia" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_MEDIA');?></a></li>
                     <li><a href="#tztabsFields" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_FIELDS');?></a></li>
                     <li><a href="#tztabsAttachment" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_ATTACHMENTS');?></a></li>
-
+                    <?php echo $this -> loadTemplate('plugin_title_tab');?>
                 </ul>
                 <div class="span11">
                     <!-- Begin Content -->
@@ -1393,9 +1395,12 @@ if($list){
                                 <table id="tz_attachments_table"></table>
                             </div>
                         </div>
+
+                         <?php echo $this -> loadTemplate('plugin_content_tab');?>
                          <!-- End Tabs -->
                      </div>
                     <!-- End Content -->
+
                 </div>
             </div>
             <div class="tab-pane" id="permissions">

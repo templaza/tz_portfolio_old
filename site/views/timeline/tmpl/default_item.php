@@ -23,7 +23,6 @@ JFactory::getLanguage()->load('com_content');
 JFactory::getLanguage()->load('com_tz_portfolio');
 
 $list       = $this -> listsArticle;
-$params     = $this -> params;
 $categories = $this -> listsCatDate;
  
 ?>
@@ -32,12 +31,14 @@ $categories = $this -> listsCatDate;
 ?>
     <?php foreach($list as $i => $row):?>
         <?php
+            $params = clone($this -> params);
             $tmpl   = null;
             if($params -> get('tz_use_lightbox',1) == 1){
                 $tmpl   = '&tmpl=component';
             }
             $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
             $itemParams = new JRegistry($row -> attribs); //Get Article's Params
+            $params -> merge($itemParams);
             //Check redirect to view article
             if($itemParams -> get('tz_portfolio_redirect')){
                 $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
@@ -98,6 +99,7 @@ $categories = $this -> listsCatDate;
                             }
                         }
                     }
+                    
                 endif;
             elseif($params -> get('tz_timeline_time_type') == 'year'):
                 if(($i == 0) OR ($i != 0 AND $list[$i-1] -> year  != $list[$i] -> year)):
@@ -109,6 +111,7 @@ $categories = $this -> listsCatDate;
                             }
                         }
                     }
+
                 endif;
             elseif($params -> get('tz_timeline_time_type') == 'month-year'):
                 if(($i == 0) OR ($i != 0 AND $list[$i-1] -> tz_date  != $list[$i] -> tz_date)):
@@ -124,14 +127,17 @@ $categories = $this -> listsCatDate;
                     }
                 endif;
             endif;
+    
             if($params -> get('tz_filter_type','tags') == 'categories'){
                 if($data){
+                    $data   = array_unique($data);
                     $data   = implode(' ',$data);
                 }
             }
         ?>
         <?php if($year OR $strMonth):?>
-            <div class="element TzDate <?php if($data) echo $data;?>" data-category="<?php echo $dataCategory?>">
+            <div class="element TzDate <?php if($data) echo $data;?>"
+                 data-category="<?php echo $dataCategory?>">
                 <h2 id="<?php echo strtolower(date('M',strtotime($row -> created))).$year;?>">
                     <span><?php echo JText::_(trim($strMonth)).'&nbsp;'.$year;?></span>
                 </h2>
@@ -175,13 +181,23 @@ $categories = $this -> listsCatDate;
                         </h3>
                     <?php endif;?>
 
+                    <?php if(!$params -> get('show_intro')):?>
+                        <?php //Call event onContentAfterTitle and TZPluginDisplayTitle on plugin?>
+                        <?php echo $row -> event -> afterDisplayTitle;?>
+                        <?php echo $row -> event -> TZafterDisplayTitle;?>
+                    <?php endif;?>
+
+                    <?php //Show voting?>
+                    <?php echo $row->event->TZPortfolioVote;?>
+
+                    <?php //Call event onContentBeforeDisplay and onTZPluginBeforeDisplay on plugin?>
                     <?php echo $row -> event -> beforeDisplayContent; ?>
+                    <?php echo $row -> event -> TZbeforeDisplayContent; ?>
+
 
                     <?php  if ($params->get('show_intro',1) == 1) :?>
                         <div class="TzPortfolioIntrotext">
-                            <?php  if (!$params->get('show_intro',1)) :
-                                echo $row->event->afterDisplayTitle;
-                            else:
+                            <?php  if ($params->get('show_intro',1)) :
                                 echo $row -> text;
                             endif; ?>
                         </div>
@@ -285,12 +301,18 @@ $categories = $this -> listsCatDate;
                         ?>
                         <?php echo $this -> loadTemplate('extrafields');?>
 
-                        <?php if (($params->get('show_author',1)) or ($params->get('show_category',1)) or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1)) or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1)) or ($params->get('show_hits',1))) :?>
+                        <?php if (($params->get('show_author',1)) or ($params->get('show_category',1)) or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1)) or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1)) or ($params->get('show_hits',1))) : ?>
                             </div>
                         <?php endif; ?>
+                    <?php if($params -> get('show_readmore',1)):?>
                     <a class="TzPortfolioReadmore<?php if($params -> get('tz_use_lightbox') == 1){echo ' fancybox fancybox.iframe';}?>" href="<?php echo $row ->link; ?>">
                         <?php echo JText::sprintf('COM_TZPORTFOLIO_READMORE'); ?>
                     </a>
+                    <?php endif;?>
+
+                    <?php //Call event onContentAfterDisplay and onTZPluginAfterDisplay on plugin?>
+                    <?php echo $row->event->afterDisplayContent; ?>
+                    <?php echo $row->event->TZafterDisplayContent; ?>
                 </div>
             </div><!--Inner-->
         </div>

@@ -33,16 +33,17 @@ $url    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> sl
             <?php if($params -> get('show_facebook_button',1) == 1): ?>
                 <!-- Facebook Button -->
                 <div class="FacebookButton">
+                    <?php if(!$params -> get('show_comment') AND $params -> get('tz_comment_type') != 'facebook'):?>
                     <div id="fb-root"></div>
-                    <script type="text/javascript">
-                        (function(d, s, id) {
-                          var js, fjs = d.getElementsByTagName(s)[0];
-                          if (d.getElementById(id)) {return;}
-                          js = d.createElement(s); js.id = id;
-                          js.src = "//connect.facebook.net/en_US/all.js#appId=177111755694317&xfbml=1";
-                          fjs.parentNode.insertBefore(js, fjs);
-                        }(document, 'script', 'facebook-jssdk'));
+                    <script>(function(d, s, id) {
+                        var js, fjs = d.getElementsByTagName(s)[0];
+                        if (d.getElementById(id)) {return;}
+                        js = d.createElement(s); js.id = id;
+                        js.src = "//connect.facebook.net/en_US/all.js#appId=177111755694317&xfbml=1";
+                        fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));
                     </script>
+                    <?php endif;?>
                     <div class="fb-like" data-send="false" data-width="200" data-show-faces="true"
                           data-layout="button_count" data-href="<?php echo $url;?>"></div>
                 </div>

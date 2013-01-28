@@ -57,6 +57,24 @@ class TZ_PortfolioModelGallery extends JModelLegacy
             $where  = ' AND c.catid IN('.$catids.')';
         }
 
+        if($params -> get('use_filter_first_letter',0)){
+            $letters    = null;
+            if($_letters = $params -> get('tz_letters')){
+                $letters    = explode(',',$_letters);
+                if(is_array($letters)){
+                    foreach($letters as $i => &$arr){
+                        if(!trim($arr)){
+                            unset($letters[$i]);
+                        }
+                        $arr    = 'LOWER( c.title ) LIKE "'.mb_strtolower($arr).'%"';
+                    }
+
+                }
+                $letters    = implode(' OR ',$letters);
+                $where      .= ' AND ('.$letters.')';
+            }
+        }
+
         $total      = null;
         $limit      = $this -> getState('limit');
         $limitstart = $this -> getState('offset');
@@ -121,8 +139,6 @@ class TZ_PortfolioModelGallery extends JModelLegacy
                   .' FROM #__content AS c'
                   .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
                   .' LEFT JOIN #__users AS u ON u.id=c.created_by'
-//                  .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON x.contentid=c.id'
-//                  .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid'
                   .' WHERE c.state=1'
                   .$where
                   .' GROUP BY c.id'

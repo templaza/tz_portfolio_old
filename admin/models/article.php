@@ -1383,7 +1383,7 @@ function deleteAttachment(){
 			$form->setFieldAttribute('state', 'filter', 'unset');
 
 		}
-
+        
 		return $form;
 	}
 
@@ -1663,6 +1663,7 @@ function deleteAttachment(){
             $this -> setError($db -> getErrorMsg());
             return false;
         }
+
 
         if(count($tagsIds)>0){
             $value  = array();
@@ -2943,6 +2944,13 @@ function deleteAttachment(){
         }
 
         if(parent::save($data)){
+
+            //Save parameter of plugins in group tzportfolio
+            $plgData    = JRequest::getVar('tzplgform');
+            $model  = JModelLegacy::getInstance('Plugin','TZ_PortfolioModel',array('ignore_request' => true));
+            $model -> setState('com_tz_portfolio.plugin.articleId',$this -> getState('article.id'));
+            $model -> save($plgData);
+            
             !$this -> _save();
             if (isset($data['featured'])) {
                 $this->featured($this->getState($this->getName().'.id'), $data['featured']);

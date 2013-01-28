@@ -36,6 +36,10 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                 require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
                 $fetch       = new Services_Yadis_PlainHTTPFetcher();
             }
+            
+            //Get Plugins Model
+            $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
+
             foreach($list as $row){
                 $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
                 $itemParams = new JRegistry($row -> attribs); //Get Article's Params
@@ -111,6 +115,26 @@ class TZ_PortfolioViewUsers extends JViewLegacy
 
                 $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.users', &$row, &$params, $state -> get('offset')));
                 $row->event->afterDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.users', &$row, &$params, $state -> get('offset')));
+                $row->event->TZPortfolioVote = trim(implode("\n", $results));
+
+                //Get plugin Params for this article
+                $pmodel -> setState('filter.contentid',$row -> id);
+                $pluginItems    = $pmodel -> getItems();
+                $pluginParams   = &$pmodel -> getParams();
+
+                JPluginHelper::importPlugin('tz_portfolio');
+                $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.users', &$row, &$params,&$pluginParams, $state -> get('offset')));
+
+                $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.users', &$row, &$params,&$pluginParams, $state -> get('offset')));
+                $row->event->TZafterDisplayTitle = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.users', &$row, &$params,&$pluginParams, $state -> get('offset')));
+                $row->event->TZbeforeDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.users', &$row, &$params,&$pluginParams, $state -> get('offset')));
+                $row->event->TZafterDisplayContent = trim(implode("\n", $results));
             }
         }
         
@@ -123,6 +147,12 @@ class TZ_PortfolioViewUsers extends JViewLegacy
         $author = $author -> getUserId(JRequest::getInt('created_by'));
         $this -> assign('listAuthor',$author);
         $params = $this -> get('state') -> params;
+
+        $model  = JModelLegacy::getInstance('Portfolio','TZ_PortfolioModel',array('ignore_request' => true));
+        $model -> setState('params',$params);
+        $model -> setState('filter.userId',$state -> get('users.id'));
+        $this -> assign('char',$state -> get('char'));
+        $this -> assign('availLetter',$model -> getAvailableLetter());
         
         if($params -> get('tz_use_image_hover',1) == 1):
             $doc -> addStyleDeclaration('
