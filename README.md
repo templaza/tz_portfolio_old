@@ -22,6 +22,15 @@ Version for Joomla 2.5.x: https://github.com/templaza/tz_portfolio2
 
 *** Changelog ***
 
+01/26/13 - 3.0.5
+
+	Register and Profile user on front-end can change in template (Change Plugin Tz_portfolio in system).
+	Sort Tag and Category filter for Portfolio and Timeline Page.
+	Filter with first letter of Article title for Portfolio, Time Line, Tag, User,Blog, Feature Page.
+	Can create Plugins on group tz_portfolio with events:
+	+ onTZPluginPrepare, onTZPluginAfterTitle, onTZPluginBeforeDisplay and
+	+ onTZPluginAfterDisplay (A plugin created: "example" in this group).
+
 01/15/13 - 3.0.4
 	
 	Fixed error for Facebook comment
