@@ -29,26 +29,37 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.framework');
 ?>
 <link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">
-<script src="components/com_tz_portfolio/js/less-1.0.21.min.js" type="text/javascript"></script>
+<script src="components/com_tz_portfolio/js/less-1.3.3.min.js" type="text/javascript"></script>
 
 <?php if($lists):?>
 
     <div class="TzUser">
         <div class="TzUserInner">
+
             <?php echo  $this -> loadTemplate('author');?>
+
+            <?php if($params -> get('use_filter_first_letter',1)):?>
+                <div class="TzLetters">
+                    <div class="breadcrumb">
+                        <?php echo $this -> loadTemplate('letters');?>
+                    </div>
+                </div>
+            <?php endif;?>
+
+            <?php if($params -> get('show_limit_box',1)):?>
             <form action="index.php?option=com_tz_portfolio&amp;view=users&amp;created_by=<?php echo JRequest::getCmd('created_by')?>&amp;Itemid=<?php echo JRequest::getInt('Itemid')?>"
                   id="adminForm"
                   name="adminForm"
                   method="post">
 
-                <?php if($params -> get('show_limit_box',1)):?>
+
                     <div class="display-limit">
                         <fieldset class="filters">
                             <?php echo  JText::_('JGLOBAL_DISPLAY_NUM');?>
                             <?php echo $this -> pagination -> getLimitBox();?>
                         </fieldset>
                     </div>
-                <?php endif;?>
+            <?php endif;?>
 
                 <?php $i=0;?>
                 <?php foreach($lists as $row):?>
@@ -142,6 +153,12 @@ JHtml::_('behavior.framework');
                                 </h3>
                             <?php endif;?>
 
+                            <?php if (!$params->get('show_intro',1)) : ?>
+                                <?php //Call event onContentAfterTitle and TZPluginDisplayTitle on plugin?>
+                                <?php echo $row -> event -> afterDisplayTitle; ?>
+                                <?php echo $row -> event -> TZafterDisplayTitle; ?>
+                            <?php endif; ?>
+
                             <?php if (($params->get('show_author',1)) or ($params->get('show_category',1)) or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1)) or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1)) or ($params->get('show_hits',1))) : ?>
                                 <div class="TzUserArticleInfo">
                             <?php endif; ?>
@@ -153,7 +170,7 @@ JHtml::_('behavior.framework');
                             <?php endif; ?>
 
                             <span class="TzVote">
-                                <?php echo $row -> event -> beforeDisplayContent; ?>
+                                <?php echo $row -> event -> TZPortfolioVote; ?>
                                 <span class="TzMilling">,&nbsp;</span>
                             </span>
 
@@ -260,6 +277,10 @@ JHtml::_('behavior.framework');
 
                             <?php echo $row -> text;?>
 
+                            <?php //Call event onContentBeforeDisplay and onTZPluginBeforeDisplay on plugin?>
+                            <?php echo $row -> event -> beforeDisplayContent; ?>
+                            <?php echo $row -> event -> TZbeforeDisplayContent; ?>
+
                             <?php  if (!$params->get('show_intro')) :
                                 echo $row->event->afterDisplayTitle;
                             endif; ?>
@@ -300,7 +321,10 @@ JHtml::_('behavior.framework');
                             <?php endif; ?>
                             <div class="clr"></div>
 
-                            <?php echo $row->event->afterDisplayContent; ?>
+                            <?php //Call event onContentAfterDisplay and onTZPluginAfterDisplay on plugin?>
+                            <?php echo $row -> event -> afterDisplayContent; ?>
+                            <?php echo $row -> event -> TZafterDisplayContent; ?>
+                        
                         </div>
                     </div>
                     <?php $i++;?>
@@ -318,7 +342,10 @@ JHtml::_('behavior.framework');
                         <?php endif; ?>
                     </div>
                 <?php endif;?>
+
+            <?php if($params -> get('show_limit_box',1)):?>
             </form>
+            <?php endif;?>
         </div>
     </div>
 <?php endif;?>

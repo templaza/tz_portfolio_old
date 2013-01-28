@@ -204,49 +204,34 @@
 		</fieldset>
 
         <!--TZ Portfolio Options-->
-        <fieldset name="basic_portfolio" label="COM_TZ_PORTFOLIO_ATTRIBS_MEDIA_FIELDSET_LABEL">
-            <field name="tz_portfolio_portfolio" type="spacer" class="spacer"
-					label="COM_TZ_PORTFOLIO_PORTFOLIO"/>
-            <field name="tz_portfolio_redirect" type="list" label="COM_TZ_PORTFOLIO_REDIRECT"
-               description="COM_TZ_PORTFOLIO_REDIRECT_DESC">
-                <option value="">JGLOBAL_USE_GLOBAL</option>
-                <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
-                <option value="article">COM_TZ_PORTFOLIO_BLOG_ARTICLE</option>
-                <option value="p_article">COM_TZ_PORTFOLIO_PORTFOLIO_ARTICLE</option>
-            </field>
+        <fieldset name="tz_fieldset_lightbox" label="COM_TZ_PORTFOLIO_FIELDSET_LIGHTBOX_OPTIONS_LABEL">
             <field type="list" name="tz_use_lightbox"
-                   default=""
-                    label="COM_TZ_PORTFOLIO_USE_LIGHTBOX"
-                    description="COM_TZ_PORTFOLIO_USE_LIGHTBOX_DESC">
+                   label="COM_TZ_PORTFOLIO_USE_LIGHTBOX"
+                   description="COM_TZ_PORTFOLIO_USE_LIGHTBOX_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
             <field name="tz_lightbox_transition" type="list"
-                    default=""
-                    label="COM_TZ_PORTFOLIO_LIGHT_BOX_TRANSITION"
-                    description="COM_TZ_PORTFOLIO_LIGHT_BOX_TRANSITION_DESC">
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_TRANSITION"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_TRANSITION_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="none">COM_TZ_PORTFOLIO_NONE</option>
                 <option value="elastic">COM_TZ_PORTFOLIO_ELASTIC</option>
                 <option value="fade">COM_TZ_PORTFOLIO_FADE</option>
             </field>
             <field name="tz_lightbox_speed" type="text"
-                   default=""
-                    label="COM_TZ_PORTFOLIO_LIGHT_BOX_SPEED"
-                    description="COM_TZ_PORTFOLIO_LIGHT_BOX_SPEED_DESC"/>
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_SPEED"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_SPEED_DESC"/>
             <field name="tz_lightbox_opacity" type="text"
-                    default=""
-                    label="COM_TZ_PORTFOLIO_OPACITY"
-                    description="COM_TZ_PORTFOLIO_OPACITY_DESC"/>
+                   label="COM_TZ_PORTFOLIO_OPACITY"
+                   description="COM_TZ_PORTFOLIO_OPACITY_DESC"/>
             <field name="tz_lightbox_width" type="text"
-                   default=""
-                    label="COM_TZ_PORTFOLIO_LIGHT_BOX_WIDTH"
-                    description="COM_TZ_PORTFOLIO_LIGHT_BOX_WIDTH_DESC"/>
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_WIDTH"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_WIDTH_DESC"/>
             <field name="tz_lightbox_height" type="text"
-                   default=""
-                    label="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT"
-                    description="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT_DESC"/>
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT_DESC"/>
         </fieldset>
 
 	</fields>

@@ -6,12 +6,12 @@
 	method="upgrade">
 	<name>mod_tz_portfolio_articles_news</name>
 	<author>DuongTVTemplaza</author>
-	<creationDate>November 22th 2012</creationDate>
+	<creationDate>January 25th 2013</creationDate>
 	<copyright>Copyright (C) 2012 TemPlaza. All rights reserved.</copyright>
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.0.3</version>
+	<version>3.0.5</version>
 	<description>MOD_ARTICLES_NEWS_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_tz_portfolio_articles_news">mod_tz_portfolio_articles_news.php</filename>

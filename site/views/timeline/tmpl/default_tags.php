@@ -24,7 +24,6 @@
         <a class="btn btn-small" href="#<?php echo str_replace(' ','-',$item -> name)?>"
            data-option-value=".<?php echo str_replace(' ','-',$item -> name)?>">
             <?php echo $item -> name;?>
-        </a>
-    <?php endforeach;?>
+        </a><?php endforeach;?>
 <?php endif;?>
 

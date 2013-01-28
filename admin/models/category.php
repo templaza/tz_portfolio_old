@@ -21,6 +21,8 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
+jimport('joomla.filesytem.folder');
+jimport('joomla.filesytem.file');
 
 /**
  * Categories Component Category Model
@@ -748,6 +750,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 			$this->setError($table->getError());
 			return false;
 		}
+
 
 		// Bind the rules.
 		if (isset($data['rules']))

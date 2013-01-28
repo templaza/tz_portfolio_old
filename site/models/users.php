@@ -37,6 +37,7 @@ class TZ_PortfolioModelUsers extends JModelLegacy
         $this -> setState('params',$params);
         $this -> setState('limit',$limit);
         $this -> setState('users.catid',null);
+        $this -> setState('char',JRequest::getString('char',null));
 
     }
 
@@ -54,8 +55,14 @@ class TZ_PortfolioModelUsers extends JModelLegacy
 
         $this->setState('params', $params);
 
-        $query  = 'SELECT COUNT(*) FROM #__content'
-                  .' WHERE created_by='.$this -> getState('users.id');
+        $where  = null;
+        if($char   = $this -> getState('char')){
+            $where  = ' AND ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII("'.mb_strtolower($char).'")';
+        }
+
+        $query  = 'SELECT COUNT(*) FROM #__content AS c'
+                  .' WHERE c.created_by='.$this -> getState('users.id')
+                  .$where;
         $db     = &JFactory::getDbo();
         $db -> setQuery($query);
         $total  = $db -> loadResult();
@@ -101,9 +108,8 @@ class TZ_PortfolioModelUsers extends JModelLegacy
             .' CASE WHEN CHAR_LENGTH(c.fulltext) THEN c.fulltext ELSE null END as readmore'
             .' FROM #__content AS c'
             .' LEFT JOIN #__categories AS cc ON cc.id = c.catid'
-//            .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON c.id=x.contentid'
-//            .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid'
             .' WHERE c.state=1 AND c.created_by='.$this -> getState('users.id')
+            .$where
             .' ORDER BY '.$orderby;
 
 

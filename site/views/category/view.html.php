@@ -21,6 +21,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
+require_once(JPATH_SITE.'/components/com_tz_portfolio/helpers/article.php');
 
 /**
  * HTML View class for the Content component.
@@ -96,9 +97,14 @@ class TZ_PortfolioViewCategory extends JViewLegacy
             require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
             $fetch       = new Services_Yadis_PlainHTTPFetcher();
         }
+
+        //Get Plugins Model
+        $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
+
 		for ($i = 0, $n = count($items); $i < $n; $i++)
 		{
 			$item = &$items[$i];
+            
 			$item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
 
             $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
@@ -167,14 +173,36 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 			if ($i < $numLeading + $numIntro) {
 				$item->introtext = JHtml::_('content.prepare', $item->introtext, '', 'com_tz_portfolio.category');
 
-				$results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.article', &$item, &$item->params, 0));
+				$results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.category', &$item, &$item->params, 0));
 				$item->event->afterDisplayTitle = trim(implode("\n", $results));
 
-                $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$item->params, 0));
+                $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.category', &$item, &$item->params, 0));
 			    $item->event->beforeDisplayContent = trim(implode("\n", $results));
 
-				$results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$item->params, 0));
+				$results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.category', &$item, &$item->params, 0));
 				$item->event->afterDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.category', &$item, &$item->params, 0));
+				$item->event->TZPortfolioVote = trim(implode("\n", $results));
+
+                //Get plugin Params for this article
+                $pmodel -> setState('filter.contentid',$item -> id);
+                $pluginItems    = $pmodel -> getItems();
+                $pluginParams   = &$pmodel -> getParams();
+
+                //Call trigger in group tz_portfolio
+                JPluginHelper::importPlugin('tz_portfolio');
+                $item->introtext = JHtml::_('article.tzprepare', $item->introtext, '',$pluginParams, 'com_tz_portfolio.category');
+                
+                $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.article', &$item, &$params,&$pluginParams, 0));
+                $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.article', &$item, &$params,&$pluginParams, 0));
+                $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.article', &$item, &$params,&$pluginParams, 0));
+                $item->event->TZafterDisplayContent = trim(implode("\n", $results));
+
 			}
 		}
 
@@ -242,6 +270,13 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 		$this->assignRef('pagination', $pagination);
 		$this->assignRef('user', $user);
         $this -> assign('listImage',$this -> get('CatImages'));
+
+        $model  = JModelLegacy::getInstance('Portfolio','TZ_PortfolioModel',array('ignore_request' => true));
+        $pParams    = clone($params);
+        $pParams -> set('tz_catid',array($category -> id));
+        $model -> setState('params',$pParams);
+        $this -> assign('char',$state -> get('char'));
+        $this -> assign('availLetter',$model -> getAvailableLetter());
 
         $catParams  = $category -> params;
         $params -> merge($catParams);

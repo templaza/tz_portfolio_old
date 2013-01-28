@@ -118,6 +118,10 @@ class TZ_PortfolioModelArticles extends JModelList
 			$this->setState('filter.access', false);
 		}
 
+        //filter with first letter of title
+        $this -> setState('filter.tz_use_filter_letter',$params -> get('use_filter_first_letter',0));
+        $this -> setState('filter.char',JRequest::getString('char',null));
+        
 		$this->setState('layout', JRequest::getCmd('layout'));
 	}
 
@@ -467,6 +471,13 @@ class TZ_PortfolioModelArticles extends JModelList
 					break;
 			}
 		}
+
+        // Filter by first letter of title
+        if($this -> getState('filter.tz_use_filter_letter')){
+            if($char = $this -> getState('filter.char')){
+                $query -> where('ASCII(SUBSTR(LOWER(a.title),1,1)) = ASCII("'.mb_strtolower($char).'")');
+            }
+        }
 
 		// Filter by language
 		if ($this->getState('filter.language')) {

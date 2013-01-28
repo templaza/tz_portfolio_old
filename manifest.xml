@@ -2,12 +2,12 @@
 <extension type="component" version="3.0" method="upgrade">
 	<name>com_tz_portfolio</name>
 	<author>DuongTVTemPlaza</author>
-	<creationDate>November 22th 2012</creationDate>
+	<creationDate>January 25th 2013</creationDate>
 	<copyright>Copyright (C) 2012 TemPlaza. All rights reserved.</copyright>
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.0.3</version>
+	<version>3.0.5</version>
 	<description>TZ Portfolio native for Joomla! 3.0.x</description>
     
     <installfile>install.tz_portfolio.php</installfile>
@@ -91,8 +91,6 @@
             <field name="show_sort" default="1"/>
             <field name="show_layout" default="1"/>
             <field name="tz_column_width" default="233"/>
-            <field name="tz_article_intro_limit" default="20"/>
-            <field name="tz_timeline_article_limit" default="10"/>
             <field name="show_image" default="1"/>
             <field name="show_image_gallery" default="1"/>
             <field name="show_arrows_image_gallery" default="1"/>
@@ -223,7 +221,7 @@
 
             <field name="tz_use_image_hover" default="1"/>
             <field name="tz_image_timeout" default="0.35"/>
-            <field name="tz_timeline_layout" default="ajaxButton"/>
+            <field name="tz_timeline_layout" default="default"/>
             <field name="tz_timeline_time_type" default="month-year"/>
 
             <field name="portfolio_image_size" default="M"/>
@@ -261,7 +259,7 @@
             <field name="show_feed_image" default="1"/>
             <field name="feed_image_size" default="S"/>
             <field name="tz_portfolio_layout" default="ajaxButton"/>
-            
+
             <field name="show_related_article" default="1"/>
             <field name="show_related_heading" default="1"/>
             <field name="show_related_type" default="title_image"/>
@@ -270,6 +268,9 @@
             <field name="related_orderby" default="rdate"/>
 
             <field name="fields_order" default="rid"/>
+            <field name="use_filter_first_letter" default="1"/>
+            <field name="tz_letters" default="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z"/>
+            <field name="filter_tags_categories_order" default="auto"/>
 
         </fields>
     </config>
@@ -294,6 +295,7 @@
 		<plugin plugin="tz_portfolio" group="user" />
 		<plugin plugin="tz_portfolio" group="search" folder="tz_portfolio_content" />
 		<plugin plugin="tz_portfolio" group="search" folder="tz_portfolio_categories" />
+		<plugin plugin="example" group="tz_portfolio" folder="example" />
     </plugins>
 
 </extension>

@@ -211,6 +211,14 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 				}
             }
         }
+//
+//        $tzparams->soundcloud->get('title');
+//        $tzparams->soundcloud->get('alias');
+//        $tzparams->media->get('title');
+//
+//        JPluginHelper::importPlugin('tzportfolio');
+//        $results = $dispatcher->trigger('onTZPortfolioPrepare', array ('com_tz_portfolio.article', &$item, &$this->tzparams, $offset));
+
 
 		//
 		// Process the content plugins.
@@ -230,6 +238,28 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 
         $results = $dispatcher -> trigger('onTZPortfolioCommentDisplay',array('com_tz_portfolio.comment',&$item,&$item -> params,$offset));
         $item -> event -> onTZPortfolioCommentDisplay  = trim(implode("\n",$results));
+
+        $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.article', &$item, &$item -> params, $offset));
+        $item->event->TZPortfolioVote = trim(implode("\n", $results));
+
+        //Get Plugins Model
+        $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
+        //Get plugin Params for this article
+        $pmodel -> setState('filter.contentid',$item -> id);
+        $pluginItems    = $pmodel -> getItems();
+        $pluginParams   = &$pmodel -> getParams();
+
+        JPluginHelper::importPlugin('tz_portfolio');
+        $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams,$offset));
+
+        $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams, $offset));
+        $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
+
+        $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams, $offset));
+        $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
+
+        $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams, $offset));
+        $item->event->TZafterDisplayContent = trim(implode("\n", $results));
         
 
 		// Increment the hit counter of the article.

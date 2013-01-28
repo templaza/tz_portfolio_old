@@ -21,6 +21,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
+require_once(JPATH_SITE.'/components/com_tz_portfolio/helpers/article.php');
 
 /**
  * Frontpage View class.
@@ -76,6 +77,10 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
             require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
             $fetch       = new Services_Yadis_PlainHTTPFetcher();
         }
+
+        //Get Plugins Model
+        $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
+        
 		foreach ($items as $i => & $item)
 		{
             $item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
@@ -168,14 +173,35 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
 			{
 				$item->introtext = JHtml::_('content.prepare', $item->introtext, '', 'com_tz_portfolio.featured');
 
-				$results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.article', &$item, &$item->params, 0));
+				$results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.featured', &$item, &$item->params, 0));
 				$item->event->afterDisplayTitle = trim(implode("\n", $results));
 
-				$results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$item->params, 0));
+				$results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.featured', &$item, &$item->params, 0));
 				$item->event->beforeDisplayContent = trim(implode("\n", $results));
 
-				$results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$item->params, 0));
+				$results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.featured', &$item, &$item->params, 0));
 				$item->event->afterDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.category', &$item, &$item->params, 0));
+				$item->event->TZPortfolioVote = trim(implode("\n", $results));
+
+                //Get plugin Params for this article
+                $pmodel -> setState('filter.contentid',$item -> id);
+                $pluginItems    = $pmodel -> getItems();
+                $pluginParams   = &$pmodel -> getParams();
+
+                //Call trigger in group tz_portfolio
+                JPluginHelper::importPlugin('tz_portfolio');
+                $item->introtext = JHtml::_('article.tzprepare', $item->introtext, '',$pluginParams, 'com_tz_portfolio.featured');
+
+                $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.featured', &$item, &$params,&$pluginParams, 0));
+                $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.featured', &$item, &$params,&$pluginParams, 0));
+                $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.featured', &$item, &$params,&$pluginParams, 0));
+                $item->event->TZafterDisplayContent = trim(implode("\n", $results));
 			}
 		}
 
@@ -220,6 +246,14 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
 		$this->assignRef('items', $items);
 		$this->assignRef('pagination', $pagination);
 		$this->assignRef('user', $user);
+
+        $model  = JModelLegacy::getInstance('Portfolio','TZ_PortfolioModel',array('ignore_request' => true));
+        $pParams    = clone($params);
+        $pParams -> set('tz_catid',$params -> get('featured_categories'));
+        $model -> setState('params',$pParams);
+        $model -> setState('filter.featured',1);
+        $this -> assign('char',$state -> get('char'));
+        $this -> assign('availLetter',$model -> getAvailableLetter());
 
         if(isset($catParams2)){
             if($catParams2){

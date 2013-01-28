@@ -39,7 +39,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $offset = JRequest::getUInt('limitstart',0);
 
 
-        if($params -> get('show_limit_box',0)){
+        if($params -> get('show_limit_box',0)  && $params -> get('tz_portfolio_layout') == 'default'){
             $limit  = $app->getUserStateFromRequest('com_tz_portfolio.portfolio.limit','limit',$params -> get('tz_article_limit',10));
         }
         else{
@@ -51,6 +51,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $this -> setState('Itemid',$params -> get('id'));
         $this -> setState('limit',$limit);
         $this -> setState('tz_catid',$params -> get('tz_catid'));
+        $this -> setState('char',JRequest::getString('char',null));
+        $this -> setState('filter.tagId',null);
+        $this -> setState('filter.userId',null);
+        $this -> setState('filter.featured',null);
     }
 
     function ajaxtags($limitstart=null) {
@@ -59,6 +63,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
 
         $Itemid = JRequest::getInt('Itemid');
         $page   = JRequest::getInt('page');
+        $char       = JRequest::getString('char');
         $curTags    = JRequest::getString('tags');
         $curTags    = json_decode($curTags);
 
@@ -75,6 +80,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $this -> setState('limit',$limit);
         $this -> setState('offset',$offset);
         $this -> setState('params',$params);
+        $this -> setState('char',$char);
 
         $this -> getArticle();
 
@@ -122,6 +128,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $Itemid     = JRequest::getInt('Itemid');
         $page       = JRequest::getInt('page');
         $layout     = JRequest::getString('layout');
+        $char       = JRequest::getString('char');
 
         $menu       = JMenu::getInstance('site');
         $menuParams = $menu -> getParams($Itemid);
@@ -135,6 +142,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $this -> setState('limit',$limit);
         $this -> setState('offset',$offset);
         $this -> setState('params',$params);
+        $this -> setState('char',$char);
 
         require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'portfolio'.DIRECTORY_SEPARATOR.'view.html.php';
         $view   = new TZ_PortfolioViewPortfolio();
@@ -333,6 +341,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
         if($catids){
             $where  = ' AND c.catid IN('.$catids.')';
         }
+        
+        if($char   = $this -> getState('char')){
+            $where  .= ' AND ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII("'.mb_strtolower($char).'")';
+        }
 
         $total      = null;
         $limit      = $this -> getState('limit');
@@ -428,6 +440,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
                 $fetch       = new Services_Yadis_PlainHTTPFetcher();
             }
+
+            //Get Plugins Model
+            $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
+
             foreach($rows as $key => $item){
                 if ($params->get('show_intro', '1')=='1') {
                     $item->text = $item->introtext.' '.$item->fulltext;
@@ -439,12 +455,6 @@ class TZ_PortfolioModelPortfolio extends JModelList
                     $item->text = $item->introtext;
                 }
 
-                if($params -> get('tz_article_intro_limit',20)){
-                    $intro  = strip_tags($item -> introtext);
-                    $intro  = explode(' ',$intro);
-                    $item -> text    = implode(' ',array_splice($intro,0,$params -> get('tz_article_intro_limit',20)));
-                }
-                
                 $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
                 $itemParams = new JRegistry($item -> attribs); //Get Article's Params
                 //Check redirect to view article
@@ -501,19 +511,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
                     }
                 }
 
-                if ($params->get('show_intro', '1')=='1') {
-                    $item->text = $item->introtext.' '.$item->fulltext;
-                }
-                elseif ($item->fulltext) {
-                    $item->text = $item->fulltext;
-                }
-                else  {
-                    $item->text = $item->introtext;
-                }
-
                 // Add feed links
                 if (!JRequest::getCmd('format',null) AND !JRequest::getCmd('type',null)) {
                     $dispatcher	= JDispatcher::getInstance();
+
                     //
                     // Process the content plugins.
                     //
@@ -529,15 +530,32 @@ class TZ_PortfolioModelPortfolio extends JModelList
 
                     $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.portfolio', &$item, &$params, $this -> getState('offset')));
                     $item->event->afterDisplayContent = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.portfolio', &$item, &$params, 0));
+				    $item->event->TZPortfolioVote = trim(implode("\n", $results));
+
+                    //Get plugin Params for this article
+                    $pmodel -> setState('filter.contentid',$item -> id);
+                    $pluginItems    = $pmodel -> getItems();
+                    $pluginParams   = &$pmodel -> getParams();
+
+                    JPluginHelper::importPlugin('tz_portfolio');
+                    $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.portfolio', &$item, &$this->params,&$pluginParams,$offset));
+
+                    $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.portfolio', &$item, &$params,&$pluginParams, $this -> getState('offset')));
+                    $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.portfolio', &$item, &$params,&$pluginParams, $this -> getState('offset')));
+                    $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.portfolio', &$item, &$params,&$pluginParams, $this -> getState('offset')));
+                    $item->event->TZafterDisplayContent = trim(implode("\n", $results));
                 }
 
-                $text   = new AutoCutText($item -> text,$params -> get('tz_article_intro_limit',20));
-                $item -> text   = $text -> getIntro();
-//                if($params -> get('tz_article_intro_limit',20)){
-//                    $intro  = strip_tags($item -> text);
-//                    $intro  = explode(' ',$intro);
-//                    $item -> text    = implode(' ',array_splice($intro,0,$params -> get('tz_article_intro_limit',20)));
-//                }
+                if($introLimit = $params -> get('tz_article_intro_limit')){
+                    $text   = new AutoCutText($item -> text,$introLimit);
+                    $item -> text   = $text -> getIntro();
+                }
 
                 if(!empty($rows[$key] -> tagName)){
                     $contentId[]    = $rows[$key] -> id;
@@ -571,6 +589,75 @@ class TZ_PortfolioModelPortfolio extends JModelList
 
             return $rows;
         }
+    }
+
+    function getAvailableLetter(){
+        $params = $this -> getState('params');
+        if($params -> get('use_filter_first_letter',1)){
+            if($letters = $params -> get('tz_letters','a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z')){
+                $db = &JFactory::getDbo();
+                $letters = explode(',',$letters);
+                $arr    = null;
+                if($catids = $params -> get('tz_catid')){
+                    if(count($catids) > 1){
+                        if(empty($catids[0])){
+                            array_shift($catids);
+                        }
+                        $catids = implode(',',$catids);
+                    }
+                    else{
+                        if(!empty($catids[0])){
+                            $catids = $catids[0];
+                        }
+                        else
+                            $catids = null;
+                    }
+                }
+
+                $where  = null;
+                if($catids){
+                    $where  = ' AND c.catid IN('.$catids.')';
+                }
+
+                if($featured = $this -> getState('filter.featured')){
+                    if(is_array($featured)){
+                        $featured   = implode(',',$featured);
+                    }
+                    $where  .= ' AND c.featured IN('.$featured.')';
+                }
+
+                if($tagId = $this -> getState('filter.tagId')){
+                    $where  .= ' AND t.id='.$tagId;
+                }
+
+                if($userId = $this -> getState('filter.userId')){
+                    $where  .= ' AND c.created_by='.$userId;
+                }
+
+                foreach($letters as $i => $letter){
+                    $query  = 'SELECT c.*'
+                          .' FROM #__content AS c'
+                          .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
+                          .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON x.contentid=c.id'
+                          .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid'
+                          .' LEFT JOIN #__users AS u ON c.created_by=u.id'
+                          .' WHERE c.state=1'
+                              .$where
+                              .' AND ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII("'.mb_strtolower($letter).'")'
+                          .' GROUP BY c.id';
+                    $db -> setQuery($query);
+                    $count  = $db -> loadResult();
+                    $arr[$i]    = false;
+                    if($count){
+                        $arr[$i]  = true;
+                    }
+                }
+
+                return $arr;
+
+            }
+        }
+        return false;
     }
 
     function getPagination(){
