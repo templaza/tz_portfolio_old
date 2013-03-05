@@ -31,12 +31,8 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 JHtml::_('formbehavior.chosen', 'select');
 $doc    = JFactory::getDocument();
-$doc -> addscript(JUri::base(true).'/components/com_tz_portfolio/js/tz-chosen.js');
-$doc -> addScriptDeclaration('
-    jQuery(document).ready(function(){
-        jQuery(".suggest").tzChosen({ source: '.$this -> tagsSuggest.', sourceEdit: '.$this -> listsTags.'});
-    })
-');
+//$doc -> addCustomTag('<script src="'.JUri::root().'administrator/components/com_tz_portfolio/js/ajax-chosen.min.js"></script>');
+$doc -> addScript(JUri::root().'administrator/components/com_tz_portfolio/js/ajax-chosen.min.js');
 
 // Create shortcut to parameters.
 	$params = $this->state->get('params');
@@ -79,6 +75,50 @@ $pluginsTab = $this -> pluginsTab;
 ?>
 
 <script type="text/javascript">
+//jQuery("#tzTags").ajaxChosen({
+//            type: "GET",
+//			url: "index.php?option=com_tz_portfolio&task=article.tags",
+//			dataType: "json",
+//			afterTypeDelay: 800
+//        },function(data){
+//            var terms = {};
+//
+//			jQuery.each(data, function (i, val) {
+//				terms[i] = val;
+//			});
+//
+//			return terms;
+//        })
+
+    jQuery(document).ready(function(){
+        jQuery('.tztypeahead').typeahead({
+            source: function(typeahead,query){
+                var a   = new Array('New York','Alaska');
+                typeahead.process(a);
+            },
+            onselect: function(obj){
+                alert('hgh');
+            }
+        });
+        var addElement  = function($value){
+                jQuery('#tz_tags').find('.chzn-choices').prepend("<li class=\"search-choice\"><input type=\"hidden\" name=\"tz_tags[]\" value=\""+$value+"\"/><span>"+$value+"</span><a rel=\"0\" class=\"search-choice-close\" href=\"javascript:void(0)\"></a></li>");
+                jQuery('.typeahead').find('li.active').remove();
+            
+        };
+        jQuery('#tz_tags .chzn-choices').width(jQuery('#tz_tags').find(".search-field input").width());
+
+        jQuery('#tz_tags').find(".search-field input").bind("keyup",function(event){
+            if(event.which == 13){
+                var $value  = null;
+                $value  = jQuery(this).attr('value');
+                jQuery("<li class=\"search-choice\"><input type=\"hidden\" name=\"tz_tags[]\" value=\""+$value+"\"/><span>"+$value+"</span><a rel=\"0\" class=\"search-choice-close\" href=\"javascript:void(0)\"></a></li>").insertBefore(jQuery('#tz_tags').find(".search-field"));
+                jQuery('.typeahead').find('li.active').remove();
+                jQuery(this).attr('value','');
+            }
+        });
+
+    });
+
 	Joomla.submitbutton = function(task) {
 		if (task == 'article.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
 			<?php echo $this->form->getField('articletext')->save(); ?>
@@ -1173,14 +1213,27 @@ $pluginsTab = $this -> pluginsTab;
                                     <label><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_TAGS');?></label>
                                 </div>
                                 <div class="controls">
+
 <!--                                    <div id="tz_tags" class="chzn-container chzn-container-multi">-->
 <!--                                        <ul class="chzn-choices">-->
 <!--                                            <li class="search-field">-->
-                                                <input type="text" name="tz_tags[]" class="suggest"
-                                                       data-provide="typeahead"/>
+<!--                                                <input type="text" class="default" data-provide="tztypeahead"-->
+<!--                                                   data-source='["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]'>-->
 <!--                                            </li>-->
 <!--                                        </ul>-->
 <!--                                    </div>-->
+
+                                    <div id="tz_tags" class="chzn-container chzn-container-multi">
+                                        <ul class="chzn-choices">
+                                            <li class="search-field">
+                                                <input type="text" class="default" data-provide="typeahead"
+                                                   data-source='["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]'>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+<!--                                    <select name="tz_tags[]" multiple="true" id="tzTags">-->
+<!--                                    </select>-->
                                 </div>
                             </div>
                             <div class="control-group">

@@ -23,6 +23,11 @@ jimport('joomla.application.component.view');
 
 class TZ_PortfolioViewUsers extends JViewLegacy
 {
+    protected $item = null;
+    function __construct($config = array()){
+        $this -> item   = new stdClass();
+        parent::__construct($config);
+    }
     function display($tpl = null){
         $doc    = JFactory::getDocument();
         $doc -> addStyleSheet('components/com_tz_portfolio/css/tz_portfolio.css');
@@ -122,7 +127,8 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                 //Get plugin Params for this article
                 $pmodel -> setState('filter.contentid',$row -> id);
                 $pluginItems    = $pmodel -> getItems();
-                $pluginParams   = &$pmodel -> getParams();
+                $pluginParams   = $pmodel -> getParams();
+                $row -> pluginparams    = $pluginParams;
 
                 JPluginHelper::importPlugin('tz_portfolio');
                 $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.users', &$row, &$params,&$pluginParams, $state -> get('offset')));

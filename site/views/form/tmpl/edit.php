@@ -30,7 +30,7 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.calendar');
 JHtml::_('behavior.formvalidation');
 
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
 $doc -> addStyleSheet(JURI::base().'components/com_tz_portfolio/css/tz_edit.css');
 $lang   = JFactory::getLanguage();
 $lang -> load('com_tz_portfolio',JPATH_ADMINISTRATOR);

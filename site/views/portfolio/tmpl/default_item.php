@@ -19,28 +19,37 @@
 
 defined('_JEXEC') or die();
 
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
  JFactory::getLanguage()->load('com_content');
 JFactory::getLanguage()->load('com_tz_portfolio');
+
 ?>
 
 <?php if($this -> listsArticle):?>
-    <?php $i=0;?>
+    <?php
+        $categories = JCategories::getInstance('Content');
+        $media      = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+        $i=0;
+    ?>
     <?php foreach($this -> listsArticle as $row):?>
         <?php
+            $category   = $categories->get($row -> catid);
             $params = clone($this -> params);
+
+            $catParams  = new JRegistry($category -> params);
+
+            $params -> merge($catParams);
+        
+            $itemParams = new JRegistry($row -> attribs); //Get Article's Params
+            $params -> merge($itemParams);
+
             $tmpl   = null;
             if($params -> get('tz_use_lightbox',1) == 1){
                 $tmpl   = '&tmpl=component';
             }
-            $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-            $itemParams = new JRegistry($row -> attribs); //Get Article's Params
-            $params -> merge($itemParams);
             //Check redirect to view article
-            if($itemParams -> get('tz_portfolio_redirect')){
-                $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-            }
-            if($tzRedirect == 'article'){
+            if($params -> get('tz_portfolio_redirect','p_article') == 'article'){
                 $row ->link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);
                 $commentLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
             }
@@ -79,13 +88,10 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                 ?>
 
                 <?php
-                    $media          = &JModelLegacy::getInstance('Media','TZ_PortfolioModel');
-                    $mediaParams    = $this -> mediaParams;
-                    $mediaParams -> merge($media -> getCatParams($row -> catid));
 
-                    $media -> setParams($mediaParams);
                     $listMedia      = $media -> getMedia($row -> id);
 
+                    $this -> assign('mediaParams',$params);
                     $this -> assign('listMedia',$listMedia);
                     $this -> assign('itemLink',$row ->link);
                 ?>
@@ -117,12 +123,11 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                     <?php //Call event onContentBeforeDisplay and onTZPluginBeforeDisplay on plugin?>
                     <?php echo $row -> event -> beforeDisplayContent; ?>
                     <?php echo $row -> event -> TZbeforeDisplayContent; ?>
-
+                    <?php  if ($params->get('show_intro',1) AND !empty($row -> introtext)) :?>
                     <div class="TzPortfolioIntrotext">
-                        <?php  if ($params->get('show_intro',1)) :
-                            echo $row -> text;
-                        endif; ?>
+                       <?php echo $row -> introtext;?>
                     </div>
+                    <?php endif; ?>
 
                     <div class="TzSeparator"></div>
 
@@ -204,19 +209,12 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                     <?php endif;?>
 
                     <?php
-                        $extraFields    = &JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+
                         $extraFields -> setState('article.id',$row -> id);
-                        $extraFields -> setState('category.id',$row -> catid);
-                        $extraFields -> setState('orderby',$params -> get('fields_order'));
 
-                        $extraParams    = $extraFields -> getParams();
-                        $itemParams     = new JRegistry($row -> attribs);
+                        $extraFields -> setState('params',$params);
 
-                        if($itemParams -> get('tz_fieldsid'))
-                            $extraParams -> set('tz_fieldsid',$itemParams -> get('tz_fieldsid'));
-
-                        $extraFields -> setState('params',$extraParams);
-                        $this -> item -> params = $extraParams;
+                        $this -> item -> params = clone($params);
                         $this -> assign('listFields',$extraFields -> getExtraFields());
                     ?>
                     <?php echo $this -> loadTemplate('extrafields');?>

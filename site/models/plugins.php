@@ -48,7 +48,7 @@ class TZ_PortfolioModelPlugins extends TZ_PortfolioModelPlugin
 
 
     function getListQuery(){
-        $db = &JFactory::getDbo();
+        $db = JFactory::getDbo();
         $query  = $db -> getQuery(true);
         $query -> select('p.*,x.element');
         $query -> from('`#__tz_portfolio_plugin` AS p');
@@ -75,7 +75,7 @@ class TZ_PortfolioModelPlugins extends TZ_PortfolioModelPlugin
             }
         }
         
-         $db = &JFactory::getDbo();
+         $db = JFactory::getDbo();
         $db -> setQuery($this -> getListQuery());
         
         if($rows = $db -> loadObjectList()){

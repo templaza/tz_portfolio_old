@@ -101,7 +101,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                   .$where
                   .' GROUP BY f.id';
 
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -119,7 +119,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             $where  = ' WHERE catid IN('.$catid.')';
         $query  = 'SELECT * FROM #__tz_portfolio_categories'
                   .$where;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -136,7 +136,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             $where  = ' WHERE contentid IN('.$articleId.')';
         $query  = 'SELECT contentid,groupid FROM #__tz_portfolio_xref_content'
                   .$where;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -203,7 +203,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             $where  = ' WHERE id='.$fieldId;
         }
         $query  = 'SELECT * FROM #__tz_portfolio_fields'.$where;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -257,7 +257,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         if($catid){
             $query  = 'SELECT params FROM #__categories'
                       .' WHERE id='.$catid;
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 var_dump($db -> getErrorMsg());
@@ -385,7 +385,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 			// Get the new item ID
 			$newId = $table->get('id');
 
-            $db = &JFactory::getDbo();
+            $db = JFactory::getDbo();
             // Store new article to table tz_portfolio
             $query2  = 'SELECT * FROM #__tz_portfolio'
                        .' WHERE contentid='.$pk;
@@ -676,7 +676,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 	 * @return	void
 	 * @since	1.6
 	 */
-	protected function prepareTable(&$table)
+	protected function prepareTable($table)
 	{
 		// Set the publish date to now
 		$db = $this->getDbo();
@@ -701,7 +701,7 @@ function deleteAttachment(){
     $json 		= JRequest::getString('json', null, null, 2);
     $obj_json 	= json_decode($json);
 
-    $db     = &JFactory::getDbo();
+    $db     = JFactory::getDbo();
     $query  = 'SELECT attachfiles,attachtitle FROM #__tz_portfolio_xref_content'
                 .' WHERE contentid = '.$obj_json -> id;
     $db -> setQuery($query);
@@ -806,7 +806,7 @@ function deleteAttachment(){
                       .' WHERE contentid = '.$this -> contentid
                       .' AND fieldsid = '.$fieldsid;
 
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
 
             if(!$db -> query()){
@@ -830,7 +830,7 @@ function deleteAttachment(){
         if($this -> contentid){
             $query  = 'SELECT attachfiles,attachtitle,attachold FROM #__tz_portfolio_xref_content'
                 .' WHERE contentid = '.$this -> contentid;
-            $db     = &JFactory::getDbo();
+            $db     = $this -> getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 $this -> setError($db -> getErrorMsg());
@@ -866,6 +866,8 @@ function deleteAttachment(){
 
     function getFieldsContent(){
         $data   = new stdClass();
+        $data -> gallery    = new stdClass();
+        $data -> video    = new stdClass();
         $data -> images             = '';
         $data -> imagetitle         = '';
         $data -> images_hover       = '';
@@ -880,7 +882,7 @@ function deleteAttachment(){
                 .' WHERE contentid = '.$this -> contentid;
             //.' GROUP BY contentid';
 
-            $db     = &JFactory::getDbo();
+            $db     = $this -> getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 $this -> setError($db -> getErrorMsg());
@@ -983,7 +985,7 @@ function deleteAttachment(){
     // Render control
     public function renderFields($groupId=null,$catid=null){
 
-        $lang   = &JFactory::getLanguage();
+        $lang   = JFactory::getLanguage();
         $lang -> load('com_tz_portfolio',JPATH_ADMINISTRATOR);
         $html   = '';
 
@@ -1003,7 +1005,7 @@ function deleteAttachment(){
         }
 
 
-        $db = &JFactory::getDbo();
+        $db = JFactory::getDbo();
         $db -> setQuery($query);
 
         if(!$db -> query()){
@@ -1170,11 +1172,11 @@ function deleteAttachment(){
     // Show tags
     public function getTags(){
         $artid  = JRequest::getInt('id',null);
-        $db     = &JFactory::getDbo();
+        $db     = $this -> getDbo();
         $tags   = null;
 
         if($artid){
-            $query  = 'SELECT t.* FROM #__tz_portfolio_tags AS t'
+            $query  = 'SELECT t.name FROM #__tz_portfolio_tags AS t'
                       .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON x.tagsid=t.id'
                       .' WHERE x.contentid='.$artid;
 
@@ -1183,18 +1185,20 @@ function deleteAttachment(){
                 var_dump($db -> getErrorMsg());
                 return false;
             }
-            $rows   = $db -> loadObjectList();
+            $rows   = $db -> loadColumn();
 
+            
             if(count($rows)>0){
-                foreach($rows as $row){
-                    $tags[]    = trim($row -> name);
-                }
+                return array_unique($rows);
+//                foreach($rows as $row){
+//                    $tags[]    = trim($row -> name);
+//                }
             }
-            if(!empty($tags) && count($tags)>0)
-                $tags  = implode(',',$tags);
+//            if(!empty($tags) && count($tags)>0)
+//                $tags  = implode(',',$tags);
         }
 
-        return $tags;
+        return null;
 
     }
 
@@ -1205,9 +1209,9 @@ function deleteAttachment(){
         $artid          = $this -> getState('article.id');
         $fieldsgroup    = '';
 
-        $lang           = &JFactory::getLanguage();
+        $lang           = JFactory::getLanguage();
         $lang -> load('com_tz_portfolio',JPATH_ADMINISTRATOR);
-        $dbo            = &JFactory::getDbo();
+        $dbo            = $this -> getDbo();
         $rows           = array();
         $arr            = array();
 
@@ -1416,7 +1420,7 @@ function deleteAttachment(){
             $articleId  = implode(',',$articleId);
             $query  = 'DELETE FROM #__tz_portfolio_tags_xref'
                       .' WHERE contentid IN('.$articleId.')';
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 var_dump($db -> getErrorMsg());
@@ -1431,7 +1435,7 @@ function deleteAttachment(){
         $sizes  = $this -> getState('size');
         $query  ='SELECT * FROM #__tz_portfolio_xref_content'
                  .' WHERE contentid IN('.implode(',',$artId).')';
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             echo $db -> getErrorMsg();
@@ -1496,7 +1500,7 @@ function deleteAttachment(){
     public function delete(&$pks){
 
         if($pks){
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $this -> deleteImage($pks);
 
             foreach($pks as $item){
@@ -1531,7 +1535,7 @@ function deleteAttachment(){
 
         $query      = 'SELECT * FROM #__tz_portfolio_tags';
 
-        $db         = &JFactory::getDbo();
+        $db         = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             $this -> setError($db -> getErrorMsg());
@@ -1572,7 +1576,7 @@ function deleteAttachment(){
             $query  = 'INSERT INTO #__tz_portfolio_tags(`name`,`published`)'
                       .' VALUES '.$value;
 
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
 
             if(!$db -> query()){
@@ -1590,7 +1594,7 @@ function deleteAttachment(){
 
         $query  = 'SELECT * FROM #__tz_portfolio_tags';
 
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
 
         if(!$db -> query()){
@@ -1656,7 +1660,7 @@ function deleteAttachment(){
 
         $query  = 'DELETE FROM #__tz_portfolio_tags_xref'
                   .' WHERE contentid='.(int) $articleId;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
 
         if(!$db -> query()){
@@ -2529,7 +2533,7 @@ function deleteAttachment(){
             }
             $query  = 'SELECT videothumb FROM #__tz_portfolio_xref_content'
                       .$where;
-            $db = &JFactory::getDbo();
+            $db = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 echo $db -> getErrorMsg();
@@ -2795,7 +2799,7 @@ function deleteAttachment(){
                     $m++;
                 }
 
-                $db     = &JFactory::getDbo();
+                $db     = JFactory::getDbo();
 
                 // Store fields group
                 //// Get images
@@ -2885,7 +2889,12 @@ function deleteAttachment(){
             //////////////////
 
         // Tags
-        $this -> _saveTags($this -> getState($this -> getName().'.id'),$post['tz_tags']);
+        $tags   = JRequest::getVar('tz_tags',null);
+        $tags   = array_unique($tags);
+        if($tags){
+            $tags   = implode(',',$tags);
+        }
+        $this -> _saveTags($this -> getState($this -> getName().'.id'),$tags);
 
         return true;
 
@@ -2947,9 +2956,11 @@ function deleteAttachment(){
 
             //Save parameter of plugins in group tzportfolio
             $plgData    = JRequest::getVar('tzplgform');
-            $model  = JModelLegacy::getInstance('Plugin','TZ_PortfolioModel',array('ignore_request' => true));
-            $model -> setState('com_tz_portfolio.plugin.articleId',$this -> getState('article.id'));
-            $model -> save($plgData);
+            if($plgData){
+                $model  = JModelLegacy::getInstance('Plugin','TZ_PortfolioModel',array('ignore_request' => true));
+                $model -> setState('com_tz_portfolio.plugin.articleId',$this -> getState('article.id'));
+                $model -> save($plgData);
+            }
             
             !$this -> _save();
             if (isset($data['featured'])) {

@@ -36,7 +36,7 @@ class TZ_PortfolioModelMedia extends JModelLegacy
         if($catid){
             $query  = 'SELECT params FROM #__categories'
                       .' WHERE id='.(int) $catid;
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 var_dump($db -> getErrorMsg());
@@ -61,7 +61,7 @@ class TZ_PortfolioModelMedia extends JModelLegacy
         $query  = 'SELECT c.featured,xc.*,c.catid,c.attribs AS param FROM #__tz_portfolio_xref_content AS xc'
                   .' LEFT JOIN #__content AS c ON c.id=xc.contentid'
                   .' WHERE c.state=1 AND xc.contentid='.$articleId;
-        $db = &JFactory::getDbo();
+        $db = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -78,28 +78,22 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                 $params -> merge($this -> _params);
 
             if(!empty($rows -> type)){
-                $data[0] -> type           = strtolower($rows -> type);
 
                 if($rows -> type == 'image'){
+                    $data[0]    = new stdClass();
                     $data[0] -> type           = strtolower($rows -> type);
                     $data[0] -> featured       = $rows -> featured;
                     $data[0] -> images         = $rows -> images;
                     $data[0] -> imagetitle     = $rows -> imagetitle;
                     $data[0] -> images_hover    = $rows -> images_hover;
                     $data[0] -> articleId   = $articleId;
-
-//                    if($params -> get('detail_article_image_size'))
-//                        $params -> set('article_image_resize',$params -> get('detail_article_image_size'));
-//                    if($params -> get('article_leading_image_size'))
-//                        $params -> set('article_leading_image_resize',$params -> get('article_leading_image_size'));
-//                    if($params -> get('article_secondary_image_size'))
-//                        $params -> set('article_secondary_image_resize',$params -> get('article_secondary_image_size'));
                 }
                 if(strtolower($rows -> type) == 'imagegallery'){
                     if(!empty($rows -> gallery)){
                         $gallery    = explode('///',$rows -> gallery);
                         $title      = explode('///',$rows -> gallerytitle);
                         foreach($gallery as $i => $item){
+                            $data[$i]    = new stdClass();
                             $data[$i] -> type           = strtolower($rows -> type);
                             $data[$i] -> featured       = $rows -> featured;
                             $data[$i] -> images         = $item;
@@ -124,6 +118,7 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                                 }
                             }
 
+                            $data[0]    = new stdClass();
                             $data[0] -> type        = $rows -> type;
                             $data[0] -> featured    = $rows -> featured;
                             $data[0] -> images      = substr($rows -> video,$pos + 1,strlen($rows -> video));

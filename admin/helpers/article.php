@@ -25,7 +25,7 @@ jimport('joomla.html.editor');
 class ArticleHTML
 {
 
-    public function renderImg($src,$width = null,$height = null,$crop = null,$title = null,$alt = null,$attribute = null){
+    static function renderImg($src,$width = null,$height = null,$crop = null,$title = null,$alt = null,$attribute = null){
         $_width     = null;
         $_height    = null;
         $_crop      = null;
@@ -51,7 +51,7 @@ class ArticleHTML
     }
 
     // extra text field, date
-    public function renderTextField($name,$value=null,$id=null,$javascript=null){
+    static function renderTextField($name,$value=null,$id=null,$javascript=null){
         $html   = '<input type="text" name="'.$name.'" value="'.$value.'"'
                   .(($id)?' id="'.$id.'"':'')
                   .(($javascript)?' '.$javascript:'')
@@ -60,7 +60,7 @@ class ArticleHTML
     }
 
     // extra text area
-    public function renderTextArea($name,$value=null,$id=null,$_editor=null,$width=null,$height=null,$rows=null,$col=null,$button=true,$javascript=null){
+    static function renderTextArea($name,$value=null,$id=null,$_editor=null,$width=null,$height=null,$rows=null,$col=null,$button=true,$javascript=null){
 
         $rows   = ($rows)?$rows:'5';
         $col    = ($col)?$col:'5';
@@ -85,7 +85,7 @@ class ArticleHTML
     }
 
     // extra drop down select, multiple select
-    public function renderDropDown($name,$rows,$selected=null,$id=null,$multiple=null,$size=null,$javascript=null,$prefix='@[{(&*_'){
+    static function renderDropDown($name,$rows,$selected=null,$id=null,$multiple=null,$size=null,$javascript=null,$prefix='@[{(&*_'){
         $multiple   = ($multiple)?' multiple = "multiple"':'';
         $size       = ($size)?$size:'1';
         $id     = ($id)?' id = "'.$id.'"':'';
@@ -130,7 +130,7 @@ class ArticleHTML
     }
 
     // extra radio button
-    public function renderRadio($name,$rows,$checked=null,$id=null,$javascript=null
+    static function renderRadio($name,$rows,$checked=null,$id=null,$javascript=null
             ,$image=false,$imageWidth=null,$imageHeight = null,$imageCrop = null,$prefix='@[{(&*_'){
         $html   = '<table>';
         $str    = '';
@@ -181,7 +181,7 @@ class ArticleHTML
     }
 
     // extra radio button
-    public function renderCheckBox($name,$rows,$id=null,$checked=null,$javascript=null
+    static function renderCheckBox($name,$rows,$id=null,$checked=null,$javascript=null
             ,$image=false,$imageWidth=null,$imageHeight = null,$imageCrop = null,$prefix='@[{(&*_'){
         $html   = '<table cellspacing="0" cellpadding="0">';
         $str    = '';
@@ -232,7 +232,7 @@ class ArticleHTML
     }
 
     // extra link
-    public  function renderLink($name,$text=null,$url=null,$target=null){
+    static  function renderLink($name,$text=null,$url=null,$target=null){
         $target = ($target)?$target:'_self';
         $url    = (isset($url) && $url!=null)?$url:'';
 
@@ -268,13 +268,13 @@ class ArticleHTML
 //    }
 
     // extra file
-    public function renderFile($name,$size=null,$javascript=null){
+    static function renderFile($name,$size=null,$javascript=null){
         $size   = ($size)?$size:'40';
         $html   = '<input type="file" name="'.$name.'" size="'.$size.'"'.$javascript.'/>';
         return $html;
     }
 
-    public function  renderDate(){
+    static function  renderDate(){
         //$html   = JHtml::calendar( '2012-04-07 23:26:28', 'tz_test', 'tz_test');
         //$html   = JHtml::_('behavior.calendar');
 //        //return JHtml::calendar( '2012-04-07 23:26:28', 'tz_test', 'tz_test');

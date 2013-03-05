@@ -163,7 +163,7 @@ class TZ_PortfolioModelUser extends JModelAdmin
 
         $query  = 'SELECT * FROM #__tz_portfolio_users'
                   .' WHERE usersid='.$userId;
-        $db     = &JFactory::getDbo();
+        $db     = $this -> getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             $this -> setError($db -> getErrorMsg());
@@ -322,7 +322,7 @@ class TZ_PortfolioModelUser extends JModelAdmin
         $query  = 'DELETE FROM #__tz_portfolio_users'
             .' WHERE usersid='.$data['usersid'];
 
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             $this -> setError($db -> getErrorMsg());

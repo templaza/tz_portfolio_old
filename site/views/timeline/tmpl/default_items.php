@@ -20,7 +20,7 @@
 //no direct access
 defined('_JEXEC') or die();
 
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
 $list   = $this -> listsArticle;
 $params = &$this -> params;
 
@@ -148,7 +148,7 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                         <?php endif; ?>
 
                         <?php
-                            $extraFields    = &JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+                            $extraFields    = &JModel::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
                             $extraFields -> setState('article.id',$row -> id);
                             $extraFields -> setState('category.id',$row -> catid);
 
@@ -225,7 +225,7 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                         <?php endif; ?>
 
                         <?php
-                            $extraFields    = &JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+                            $extraFields    = &JModel::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
                             $extraFields -> setState('article.id',$row -> id);
                             $extraFields -> setState('category.id',$row -> catid);
 

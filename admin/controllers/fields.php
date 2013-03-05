@@ -38,14 +38,14 @@ class TZ_PortfolioControllerFields extends JControllerLegacy
     public function display($cachable = false, $urlparams = array()){
         $this -> _link      = 'index.php?option='.$this -> _option.'&view='.$this -> getTask();
 
-        $doc        = &JFactory::getDocument();
+        $doc        = JFactory::getDocument();
         $type       = $doc -> getType();
         
-        if(!$view       = &$this -> getView($this -> getTask(),$type)){
+        if(!$view       = $this -> getView($this -> getTask(),$type)){
             $this -> setRedirect($this -> _link,$this -> getError(),'error');
             $this -> redirect();
         }
-        if(!$this -> model   = &$this -> getModel(ucfirst($this -> getTask()))){
+        if(!$this -> model   = $this -> getModel(ucfirst($this -> getTask()))){
             $this -> setRedirect($this -> _link,$this->getError(),'error');
             $this -> redirect();
         }

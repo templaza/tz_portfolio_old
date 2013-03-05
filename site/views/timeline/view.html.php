@@ -25,7 +25,11 @@ require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIREC
 
 class TZ_PortfolioViewTimeLine extends JViewLegacy
 {
+    protected $item = null;
+    
     function display($tpl=null){
+        $this -> item   = new stdClass();
+        
         $menus		= JMenu::getInstance('site');
         $active     = $menus->getActive();
         $state      = $this -> get('State');
@@ -49,7 +53,7 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
 
         $params = $this -> get('Params');
 
-        $doc    = &JFactory::getDocument();
+        $doc    = JFactory::getDocument();
         $doc -> addStyleSheet('components/com_tz_portfolio/css/timeline/blog.css');
         if($params -> get('tz_timeline_layout',null) == 'classic'):
 

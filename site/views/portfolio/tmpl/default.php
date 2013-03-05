@@ -20,7 +20,7 @@
 //no direct access
 defined('_JEXEC') or die();
 
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
 ?>
 
 <?php if($this -> listsArticle):?>

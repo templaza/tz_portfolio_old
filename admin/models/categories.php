@@ -137,7 +137,7 @@ class TZ_PortfolioModelCategories extends JModelList
         $catid          = $this -> getState('filter.group');
         $fieldsgroup    = array();
 
-        $dbo            = &JFactory::getDbo();
+        $dbo            = JFactory::getDbo();
 
         $query          = 'SELECT * FROM #__tz_portfolio_fields_group';
         $dbo -> setQuery($query);

@@ -16,7 +16,7 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
+
 //no direct access
 defined('_JEXEC') or die('Restricted access');
 $fields = $this -> defvalue;

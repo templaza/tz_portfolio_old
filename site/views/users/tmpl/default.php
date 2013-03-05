@@ -75,6 +75,7 @@ JHtml::_('behavior.framework');
                 
                         $_itemId     = $this -> get('FindItemId');
 
+                        $tzRedirect = null;
                         if($itemParams -> get('tz_portfolio_redirect')){
                             $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
                         }
@@ -103,7 +104,7 @@ JHtml::_('behavior.framework');
                                          OR $params -> get('show_video',1) == 1):
                             ?>
                                 <?php
-                                $media          = &JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+                                $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
                                 $mediaParams    = $this -> mediaParams;
                                 $mediaParams -> merge($media -> getCatParams($row -> catid));
 
@@ -252,13 +253,13 @@ JHtml::_('behavior.framework');
                             <?php endif; ?>
 
                             <?php
-                                $app    = &JFactory::getApplication();
+                                $app    = JFactory::getApplication();
                                 $menus  = $app -> getMenu('site');
                                 $_menu  = $menus ->getItem($_itemId);
                                 $exParams   = $params;
                                 $exParams -> merge($_menu -> params);
 
-                                $extraFields    = &JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+                                $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
                                 $extraFields -> setState('article.id',$row -> id);
                                 $extraFields -> setState('category.id',$row -> catid);
 

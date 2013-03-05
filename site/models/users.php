@@ -31,7 +31,7 @@ class TZ_PortfolioModelUsers extends JModelLegacy
         $this -> setState('users.id',$pk);
         $offset = JRequest::getUInt('limitstart',0);
 		$this->setState('offset', $offset);
-        $app    = &JFactory::getApplication('site');
+        $app    = JFactory::getApplication('site');
         $params = $app -> getParams();
         $limit  = $app->getUserStateFromRequest('com_tz_portfolio.users.limit','limit',10);
         $this -> setState('params',$params);
@@ -42,7 +42,7 @@ class TZ_PortfolioModelUsers extends JModelLegacy
     }
 
     function getUsers(){
-        $app    = &JFactory::getApplication('site');
+        $app    = JFactory::getApplication('site');
         $limit  = $app->getUserStateFromRequest('com_tz_portfolio.users.limit','limit',10);
 
         $params = $this -> getState('params');
@@ -63,7 +63,7 @@ class TZ_PortfolioModelUsers extends JModelLegacy
         $query  = 'SELECT COUNT(*) FROM #__content AS c'
                   .' WHERE c.created_by='.$this -> getState('users.id')
                   .$where;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         $total  = $db -> loadResult();
 

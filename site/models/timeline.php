@@ -33,7 +33,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
     protected $articles     = null;
 
     function populateState(){
-        $app        = &JFactory::getApplication();
+        $app        = JFactory::getApplication();
         $params = $app -> getParams();
         $this -> params = $params;
         if($params -> get('show_limit_box',0) && $params -> get('tz_timeline_layout','default') == 'classic'){
@@ -243,7 +243,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                   .' WHERE cc.published=1 AND cc.extension="com_content" AND c.state=1'
                   .$where
                   .' GROUP BY cc.id';
-        $db = &JFactory::getDbo();
+        $db = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -275,7 +275,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                   .' LEFT JOIN #__content AS c ON c.catid=cc.id'
                   .' WHERE cc.extension="com_content" AND cc.published=1 AND c.state=1'
                   .' ORDER BY c.created DESC';
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             echo $db -> getErrorMsg();
@@ -323,29 +323,8 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         if($catids){
             $catids = ' AND c.catid IN('.implode(',',$catids).')';
         }
-        
-//        $query  = 'SELECT c.*'
-//                  .' FROM #__content AS c'
-//                  .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
-//                  .' WHERE c.state = 1'
-//                  .$catids;
-//
-//        $db     = &JFactory::getDbo();
-//        $db -> setQuery($query);
-//
-//        if(!$db -> query()){
-//            var_dump($db -> getErrorMsg());
-//            die();
-//        }
-//
-//        if($db -> query())
-//            $total  = $db -> getNumRows($db -> query());
-//        else
-//            $total  = 0;
-//
-//        $this -> pagNav = new JPagination($total,$limitStart,$limit);
 
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $query  = 'SELECT c.created,YEAR(c.created) AS year,MONTH(c.created) AS month,'
                   .'CONCAT_WS(":",YEAR(c.created),MONTH(c.created)) AS tz_date'
                   .' FROM #__content AS c'
@@ -371,7 +350,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
             $query  = 'SELECT t.* FROM #__tz_portfolio_tags AS t'
                       .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON x.tagsid=t.id'
                       .' WHERE x.contentid='.$contentId;
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             $tagName    = array();
             if($db -> query()){
@@ -444,7 +423,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                   .$where
                   .' GROUP BY c.id';
 
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
 
         if(!$db -> query()){
@@ -595,6 +574,12 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                     }
                 }
 
+                //Get plugin Params for this article
+                $pmodel -> setState('filter.contentid',$item -> id);
+                $pluginItems    = $pmodel -> getItems();
+                $pluginParams   = $pmodel -> getParams();
+                $item -> pluginparams   = $pluginParams;
+                
                 // Add feed links
                 if (!JRequest::getCmd('format',null) AND !JRequest::getCmd('type',null)) {
                     $dispatcher	= JDispatcher::getInstance();
@@ -617,13 +602,10 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                     $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.timeline', &$item, &$params, 0));
 				    $item->event->TZPortfolioVote = trim(implode("\n", $results));
 
-                    //Get plugin Params for this article
-                    $pmodel -> setState('filter.contentid',$item -> id);
-                    $pluginItems    = $pmodel -> getItems();
-                    $pluginParams   = &$pmodel -> getParams();
+
 
                     JPluginHelper::importPlugin('tz_portfolio');
-                    $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.timeline', &$item, &$this->params,&$pluginParams,$offset));
+                    $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.timeline', &$item, &$this->params,&$pluginParams,$this -> getState('offset')));
 
                     $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('offset')));
                     $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
@@ -652,7 +634,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 //Get Catid
                 $this -> categories[]   = $item -> catid;
 
-                if($model  = &JModelLegacy::getInstance('Media','TZ_PortfolioModel')){
+                if($model  = JModelLegacy::getInstance('Media','TZ_PortfolioModel')){
                     if($media  = $model -> getMedia($item -> id)){
 
                         if($media[0] -> type != 'video'){
@@ -719,7 +701,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         $query  = 'SELECT c.*,t.name AS tagName FROM #__content AS c'
                   .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON c.id=x.contentid'
                   .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid';
-        $db = &JFactory::getDbo();
+        $db = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -773,7 +755,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON t.id=x.tagsid'
                 .' WHERE x.contentid IN('.$contentId.')'
                 .' GROUP BY t.id';
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 var_dump($db -> getErrorMsg());

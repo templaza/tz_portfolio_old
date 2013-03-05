@@ -29,9 +29,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
     function populateState(){
         $pk = JRequest::getInt('id');
         $this -> setState('article.id',$pk);
-        $this -> setState('category.id',null);
         $this -> setState('params',null);
-        $this -> setState('orderby',null);
     }
 
     public function getExtraFields($articleId=null){
@@ -64,7 +62,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
             }
         }
         $orderBy    = null;
-        switch($this -> getState('orderby')){
+        switch($params -> get('fields_order')){
             default:
                 $orderBy    = 'f.id DESC';
                 break;
@@ -84,7 +82,9 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
                 $orderBy    = 'f.ordering ASC';
                 break;
         }
-        $orderBy    = ' ORDER BY '.$orderBy;
+        if($orderBy){
+            $orderBy    = ' ORDER BY '.$orderBy;
+        }
 
         $data   = array();
         $query  = 'SELECT t.*,f.title FROM #__tz_portfolio AS t'
@@ -94,7 +94,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
                   .$where
                   .$orderBy;
 
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
 
         if(!$db -> query()){
@@ -109,14 +109,16 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
                 $tg     = array();
                 $images = array();
                 $count  = 0;
+
                 for($j=0;$j<count($rows);$j++){
-                    if(($rows[$i] -> fieldsid) == ($rows[$j] -> fieldsid)){
+                    if(($rows[$i] -> fieldsid) == ($rows[$j] -> fieldsid) && ($rows[$i] -> contentid) == ($rows[$j] -> contentid)){
                         $tg[$count]     = $rows[$j] -> value;
                         $images[$count] = $rows[$j] -> images;
                         $count++;
                         $i=$j;
                     }
                 }
+                $data[$k]   = new stdClass();
 
                 $data[$k] -> id             = $rows[$i] -> id;
                 $data[$k] -> contentid      = $rows[$i] -> contentid;
@@ -124,6 +126,8 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
                 $data[$k] -> title          = $rows[$i] -> title;
                 $data[$k] -> value          = $tg;
                 $data[$k] -> images         = $images;
+
+
                 $k++;
             }
         }
@@ -137,7 +141,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
         }
         $query  = 'SELECT groupid FROM #__tz_portfolio_xref_content'
                   .$where;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -152,7 +156,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
     function getCatParams(){
         $query  = 'SELECT * FROM #__categories'
                   .' WHERE published=1 AND id='.$this -> getState('category.id');
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());

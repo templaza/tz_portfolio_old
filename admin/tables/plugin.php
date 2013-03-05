@@ -43,7 +43,7 @@ class TZ_PortfolioTablePlugin extends JTable
              }
             $query  = 'DELETE FROM #__tz_portfolio_plugin'
                 .' WHERE contentid IN('.$contenid.')';
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 var_dump($db -> getErrorMsg());

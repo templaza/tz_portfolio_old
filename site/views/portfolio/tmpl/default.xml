@@ -361,7 +361,6 @@
                    multiple="true"
                    name="layout_type"
                    label="COM_TZ_PORTFOLIO_PORTFOLIO_LAYOUT_TYPE">
-                <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="masonry">COM_TZ_PORTFOLIO_PORTFOLIO_MASONRY</option>
                 <option value="fitRows">COM_TZ_PORTFOLIO_PORTFOLIO_FITROWS</option>
                 <option value="straightDown">COM_TZ_PORTFOLIO_PORTFOLIO_STRAIGHTDOWN</option>

@@ -35,6 +35,7 @@ class TZ_PortfolioModelPlugin extends JModelAdmin{
         parent::populateState();
         $this -> setState('com_tz_portfolio.plugin.articleId',null);
         $this -> setState('com_tz_portfolio.plugin.pluginid',null);
+
     }
     
     public function getForm($data = array(), $loadData = true)
@@ -83,7 +84,7 @@ class TZ_PortfolioModelPlugin extends JModelAdmin{
 	}
 
     protected function _getPluginQuery(){
-        $db = &JFactory::getDbo();
+        $db = JFactory::getDbo();
         $query  = $db -> getQuery(true);
         $query -> select('*');
         $query -> where('`enabled`=1');
@@ -94,7 +95,7 @@ class TZ_PortfolioModelPlugin extends JModelAdmin{
     }
 
     function getPluginItems(){
-        $db = &JFactory::getDbo();
+        $db = JFactory::getDbo();
         $db -> setQuery($this -> _getPluginQuery());
         if($rows = $db -> loadObjectList()){
             return $rows;
@@ -107,7 +108,8 @@ class TZ_PortfolioModelPlugin extends JModelAdmin{
             $pluginId   = $this -> getState('com_tz_portfolio.plugin.pluginid');
         }
         if($pluginId){
-            $db     = &JFactory::getDbo();
+            $db     = $this -> getDbo();
+            $where  = null;
             if($contentid = $this -> getState('com_tz_portfolio.plugin.articleId')){
                 $where  = ' AND contentid='.$contentid;
             }
@@ -152,7 +154,7 @@ class TZ_PortfolioModelPlugin extends JModelAdmin{
             $contentid  = $this -> getState('com_tz_portfolio.plugin.articleId',0);
 
             if($plugins = $this -> _getPluginItem()){
-                $db         = &JFactory::getDbo();
+                $db         = JFactory::getDbo();
 
                 $plgParams  = new JRegistry();
 
@@ -189,7 +191,7 @@ class TZ_PortfolioModelPlugin extends JModelAdmin{
             if(is_array($contentid)){
                 $contentid  = implode(',',$contentid);
             }
-            $db = &JFactory::getDbo();
+            $db = JFactory::getDbo();
             $query  = 'DELETE FROM '.$db -> quoteName('#__tz_portfolio_plugin')
                       .' WHERE contentid IN('.$contentid.')';
             $db -> setQuery($query);
@@ -207,7 +209,7 @@ class TZ_PortfolioModelPlugin extends JModelAdmin{
             if(is_array($contentid)){
                 $contentid  = implode(',',$contentid);
             }
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $query  = 'SELECT COUNT(*) FROM '.$db -> quoteName('#__tz_portfolio_plugin')
                       .' WHERE contentid IN('.$contentid.')';
             $db -> setQuery($query);

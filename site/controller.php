@@ -54,12 +54,9 @@ class TZ_PortfolioController extends JControllerLegacy
 	public function display($cachable = false, $urlparams = false)
 	{
 
-        $doc    = &JFactory::getDocument();
         JFactory::getLanguage() -> load('com_content');
 		$cachable = true;
 
-//        var_dump($doc);
-//        $doc -> addStyleSheet('components/com_tz_portfolio/css/tz_portfolio.css');
 
 		JHtml::_('behavior.caption');
 

@@ -152,7 +152,7 @@ $categories = $this -> listsCatDate;
                          OR $params -> get('show_video',1) == 1):
                 ?>
                     <?php
-                        $media          = &JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+                        $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
                         $mediaParams    = $this -> params;
                         $mediaParams -> merge($media -> getCatParams($row -> catid));
 
@@ -195,11 +195,9 @@ $categories = $this -> listsCatDate;
                     <?php echo $row -> event -> TZbeforeDisplayContent; ?>
 
 
-                    <?php  if ($params->get('show_intro',1) == 1) :?>
+                    <?php  if ($params->get('show_intro',1) == 1 AND !empty($row -> introtext)) :?>
                         <div class="TzPortfolioIntrotext">
-                            <?php  if ($params->get('show_intro',1)) :
-                                echo $row -> text;
-                            endif; ?>
+                                <?php echo $row -> introtext;?>
                         </div>
                     <?php endif; ?>
 
@@ -211,12 +209,13 @@ $categories = $this -> listsCatDate;
 
                         <?php if ($params->get('show_category',1)) : ?>
                         <div class="TZcategory-name">
-                            <?php $title = $this->escape($row->category_title);
+                            <?php
+                            $title = $this->escape($row->category_title);
                             $url = '<a href="' . JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($row->catid)) . '">' . $title . '</a>'; ?>
                             <?php if ($params->get('link_category',1)) : ?>
                             <?php echo JText::sprintf('COM_CONTENT_CATEGORY', $url); ?>
                             <?php else : ?>
-                            <?php echo JText::sprintf('COM_CONTENT_CATEGORY', $title); ?>
+                            <?php  echo JText::sprintf('COM_CONTENT_CATEGORY',$title); ?>
                             <?php endif; ?>
                         </div>
                         <?php endif; ?>
@@ -284,7 +283,7 @@ $categories = $this -> listsCatDate;
                         <?php endif;?>
 
                         <?php
-                            $extraFields    = &JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+                            $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
                             $extraFields -> setState('article.id',$row -> id);
                             $extraFields -> setState('category.id',$row -> catid);
                             $extraFields -> setState('orderby',$params -> get('fields_order'));

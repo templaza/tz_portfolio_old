@@ -280,7 +280,7 @@ JHtml::_('behavior.tooltip');
                             <?php endif; ?>
 
                             <?php
-                            $app    = &JFactory::getApplication();
+                            $app    = JFactory::getApplication();
                             $menus  = $app -> getMenu('site');
                             $_menu  = $menus ->getItem($itemId);
                             $exParams   = clone($params);

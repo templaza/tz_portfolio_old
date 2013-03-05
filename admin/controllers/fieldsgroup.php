@@ -35,19 +35,19 @@ class TZ_PortfolioControllerFieldsGroup extends JControllerLegacy
 
          parent::__construct($config);
     }
-    function display(){
+    function display($cachable = false, $urlparams = array()){
 
         $this->_link     = 'index.php?option='.$this -> _option.'&view='.($this->getTask());
 
-        $doc    = &JFactory::getDocument();
+        $doc    = JFactory::getDocument();
         $type   = $doc->getType();
 
-        if(!$view   = &$this -> getView($this -> getTask(),$type)){
+        if(!$view   = $this -> getView($this -> getTask(),$type)){
             $this -> setRedirect($this -> link,$this -> getError(),'error');
             $this -> redirect();
         }
 
-        if($this -> model   = & $this -> getModel($this -> getTask()))
+        if($this -> model   = $this -> getModel($this -> getTask()))
             $view   -> setModel($this -> model,true);
         
         $this -> model -> _link     = $this -> _link;

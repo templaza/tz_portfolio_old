@@ -195,7 +195,7 @@ class TZ_PortfolioViewCategories extends JViewLegacy
 		JToolBarHelper::help($ref_key, JComponentHelper::getParams( $component )->exists('helpURL'), $url);
         JHtmlSidebar::setAction('index.php?option=com_tz_portfolio&view=categories');
 
-        $doc    = &JFactory::getDocument();
+        $doc    = JFactory::getDocument();
         $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/assets/style.css');
         // Special HTML workaround to get send popup working
         $videoTutorial    ='<a class="btn btn-small" onclick="Joomla.popupWindow(\'http://www.youtube.com/channel/UCykS6SX6L2GOI-n3IOPfTVQ/videos\', \''
@@ -206,7 +206,7 @@ class TZ_PortfolioViewCategories extends JViewLegacy
             .JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS').'\', 800, 500, 1)"'.' href="#">'
             .'<i class="icon-14-wikipedia"></i>&nbsp;'
             .JText::_('COM_TZ_PORTFOLIO_WIKIPEDIA_TUTORIALS').'</a>';
-        $bar=& JToolBar::getInstance( 'toolbar' );
+        $bar= JToolBar::getInstance( 'toolbar' );
         $bar->appendButton('Custom',$videoTutorial);
         $bar->appendButton('Custom',$wikiTutorial);
 

@@ -36,6 +36,12 @@ $tmpl           = JRequest::getString('tmpl');
         
 
         ?>
+        <?php
+            $target = '';
+            if(isset($tmpl) AND !empty($tmpl)):
+                $target = ' target="_blank"';
+            endif;
+        ?>
         <div class="clr"></div>
         <div class="tz_portfolio_user tz_portfolio_clear">
             <h3 class="TzArticleAuthorTitle"><?php echo JText::_('ARTICLE_AUTHOR_TITLE'); ?></h3>
@@ -89,12 +95,6 @@ $tmpl           = JRequest::getString('tmpl');
                             </span>
                         <?php endif;?>
                         
-                        <?php
-                            $target = '';
-                            if(isset($tmpl) AND !empty($tmpl)):
-                                $target = ' target="_blank"';
-                            endif;
-                        ?>
                         <?php if(!empty($this -> listAuthor -> twitter) OR !empty($this -> listAuthor -> facebook)
                                 OR !empty($this -> listAuthor -> google_one)):?>
                             <span class="TzLine">|</span>

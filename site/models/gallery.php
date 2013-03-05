@@ -25,7 +25,7 @@ jimport('joomla.html.pagination');
 class TZ_PortfolioModelGallery extends JModelLegacy
 {
     function populateState(){
-        $app    = &JFactory::getApplication();
+        $app    = JFactory::getApplication();
         $params = JComponentHelper::getParams('com_tz_portfolio');
         $params -> merge($app -> getParams());
         $this -> setState('params',$params);
@@ -90,7 +90,7 @@ class TZ_PortfolioModelGallery extends JModelLegacy
                   .' WHERE c.state=1'
                   .$where
                   .' GROUP BY c.id';
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if($db -> query())
             $total  = $db -> getNumRows($db -> query());

@@ -20,14 +20,14 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
 $doc -> addStyleSheet('components/com_tz_portfolio/css/tz_portfolio.css');
 
 JHtml::_('behavior.keepalive');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
-$editor = &JFactory::getEditor();
-$lang   = &JFactory::getLanguage();
+$editor = JFactory::getEditor();
+$lang   = JFactory::getLanguage();
 $lang -> load('com_users');
 
 ?>

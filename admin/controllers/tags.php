@@ -30,13 +30,13 @@ class TZ_PortfolioControllerTags extends JControllerLegacy
         parent::__construct();
         $this -> cids   = JRequest::getVar('cid',array(),'','array');
     }
-    function display(){
+    function display($cachable = false, $urlparams = array()){
         $this->_link     = 'index.php?option=com_tz_portfolio&view=tags';
 
-        $doc    = &JFactory::getDocument();
+        $doc    = JFactory::getDocument();
         $type   = $doc -> getType();
-        $view   = &$this -> getView('Tags',$type);
-        if($this -> model = &$this -> getModel('Tags')){
+        $view   = $this -> getView('Tags',$type);
+        if($this -> model = $this -> getModel('Tags')){
             $view -> setModel($this -> model,true);
         }
 

@@ -117,6 +117,7 @@ class TZ_PortfolioViewTags extends JViewLegacy
                 $pmodel -> setState('filter.contentid',$row -> id);
                 $pluginItems    = $pmodel -> getItems();
                 $pluginParams   = &$pmodel -> getParams();
+                $row -> pluginparams    = $pluginParams;
 
                 JPluginHelper::importPlugin('tz_portfolio');
                 $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.tags', &$row, &$params,&$pluginParams,$state -> offset));
@@ -134,7 +135,7 @@ class TZ_PortfolioViewTags extends JViewLegacy
 
         $this -> assign('tag',$this -> get('Tag'));
         $this -> assign('listsTags',$list);
-        $this -> assignRef('pagination',$this -> get('Pagination'));
+        $this -> assign('pagination',$this -> get('Pagination'));
         $this -> assignRef('tagsParams',$params);
         $this -> assignRef('mediaParams',$params);
         $model  = JModelLegacy::getInstance('Portfolio','TZ_PortfolioModel',array('ignore_request' => true));
@@ -143,7 +144,7 @@ class TZ_PortfolioViewTags extends JViewLegacy
         $this -> assign('char',$state -> get('char'));
         $this -> assign('availLetter',$model -> getAvailableLetter());
 
-        $doc    = &JFactory::getDocument();
+        $doc    = JFactory::getDocument();
 
         if($params -> get('tz_use_image_hover',1) == 1):
             $doc -> addStyleDeclaration('

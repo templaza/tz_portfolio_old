@@ -28,10 +28,11 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
 {
     protected $item = null;
     function display($tpl=null){
+        $this -> item   = new stdClass();
         $menus		= JMenu::getInstance('site');
         $active     = $menus->getActive();
 
-        $doc    = &JFactory::getDocument();
+        $doc    = JFactory::getDocument();
         
         $doc -> addStyleSheet('components/com_tz_portfolio/css/style.css');
         $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.isotope.js"></script>');
@@ -146,7 +147,6 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         $this -> assign('listsCategories',$this -> get('Categories'));
         $this -> assign('listsArticle',$list);
         $this -> assignRef('params',$state -> params);
-        $this -> assignRef('mediaParams',$state -> params);
         $this -> assign('pagination',$this -> get('Pagination'));
         $this -> assign('Itemid',$active -> id);
         $this -> assign('char',$state -> get('char'));
