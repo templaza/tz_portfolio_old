@@ -22,7 +22,7 @@ defined('_JEXEC') or die('Restricted access');
 
 $list   = $this -> lists;
 $params = $this -> params;
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
 $doc -> addCustomTag('
     <script id="previewTmpl" type="text/x-jquery-tmpl">
         <div id="ib-img-preview" class="ib-preview">
@@ -179,7 +179,7 @@ endswitch;
                         $itemParams     = $params;
                         $itemParams -> merge(new JRegistry($row -> attribs));
                         $mediaParams    = null;
-                        $media          = &JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+                        $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
                         $mediaParams    = $params;
 
                         $mediaParams -> merge(new JRegistry($row -> attribs));
@@ -739,4 +739,4 @@ endswitch;
 
         });
     </script>
-<?php endif;?>                             
+<?php endif;?>

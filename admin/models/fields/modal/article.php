@@ -53,7 +53,7 @@ class JFormFieldModal_Article extends JFormField
 
 		// Add the script to the document head.
 		JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
-        $lang   = &JFactory::getLanguage();
+        $lang   = JFactory::getLanguage();
         $lang -> load('com_content');
 
 

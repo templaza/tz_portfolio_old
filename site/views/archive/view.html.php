@@ -108,7 +108,7 @@ class TZ_PortfolioViewArchive extends JViewLegacy
 		$this->assignRef('pagination', $pagination);
 
         if($params -> get('tz_use_lightbox') == 1){
-            $doc    = &JFactory::getDocument();
+            $doc    = JFactory::getDocument();
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.fancybox.pack.js"></script>');
             $doc -> addStyleSheet('components/com_tz_portfolio/assets/jquery.fancybox.css');
 

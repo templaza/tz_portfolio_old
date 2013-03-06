@@ -19,7 +19,7 @@
 
 // No direct access.
 defined('_JEXEC') or die;
-$lang   = &JFactory::getLanguage();
+$lang   = JFactory::getLanguage();
 $lang -> load('com_plugins');
 ?>
 <?php if($pluginsTab = $this -> pluginsTab):?>

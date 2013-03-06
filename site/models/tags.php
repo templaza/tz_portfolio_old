@@ -27,7 +27,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
     protected $pagNav   = null;
 
     function populateState(){
-        $app    = &JFactory::getApplication('site');
+        $app    = JFactory::getApplication('site');
         $pk = JRequest::getInt('id');
         $this -> setState('tags.id',$pk);
         $offset = JRequest::getUInt('limitstart',0);
@@ -40,7 +40,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
     }
     
     function getTags(){
-        $app    = &JFactory::getApplication('site');
+        $app    = JFactory::getApplication('site');
         $limit  = $app->getUserStateFromRequest('com_tz_portfolio.tags.limit','limit',10);
         $params = $this -> getState('params');
 
@@ -62,7 +62,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
             .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON c.id=x.contentid'
             .' WHERE x.tagsid='.$this -> getState('tags.id')
                   .$where;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         $total  = $db -> loadResult();
 
@@ -113,7 +113,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
             .$where
             .' ORDER BY '.$orderby;
 
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query,$this -> pagNav -> limitstart,$this -> pagNav -> limit);
 
         if(!$db -> query()){
@@ -236,7 +236,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
         $tagId  = $this -> getState('tags.id');
         $query  = 'SELECT * FROM #__tz_portfolio_tags'
             .' WHERE id='.$tagId;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db ->  setQuery($query);
         if(!$db -> query()){
             $this -> setError($db -> getErrorMsg());

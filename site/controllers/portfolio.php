@@ -24,7 +24,7 @@ jimport('joomla.application.component.controller');
 
 class TZ_PortfolioControllerPortfolio extends JControllerLegacy
 {
-    function display(){
+    function display($cachable = false, $urlparams = array()){
         switch ($this -> getTask()){
             case 'portfolio.ajax':
             case 'ajax':

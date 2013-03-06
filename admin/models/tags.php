@@ -29,7 +29,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
     var $paNav  = null;
 
     function populateState(){
-        $app    = &JFactory::getApplication();
+        $app    = JFactory::getApplication();
 
         $state  = $app -> getUserStateFromRequest('com_tz_portfolio.tags.filter_state','filter_state',null,'string');
         $this -> setState('filter_state',$state);
@@ -55,7 +55,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
         $filter_order   = $this -> getState('filter_order');
         $order_Dir      = $this -> getState('filter_order_Dir');
 
-        $db             = &JFactory::getDbo();
+        $db             = JFactory::getDbo();
 
         $where          = array();
 
@@ -130,7 +130,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
             if($id){
                 $query  = 'SELECT * FROM #__tz_portfolio_tags'
                     .' WHERE id='.$id;
-                $db     = &JFactory::getDbo();
+                $db     = JFactory::getDbo();
                 $db -> setQuery($query);
 
                 if(!$rows = $db -> loadObject()){
@@ -142,13 +142,25 @@ class TZ_PortfolioModelTags extends JModelLegacy
         return $rows;
     }
 
+    function getTagsName(){
+        $db = JFactory::getDbo();
+        $query  = $db -> getQuery(true);
+        $query -> select('name');
+        $query -> from('#__tz_portfolio_tags');
+        $db -> setQuery($query);
+        if($rows = $db -> loadColumn()){
+            return json_encode($rows);
+        }
+        return null;
+    }
+
     function publishTags($cids,$state){
         if(count($cids)>0){
             $count  = count($cids);
             $cids   = implode(',',$cids);
             $query  = 'UPDATE #__tz_portfolio_tags SET published='.$state
                 .' WHERE id IN('.$cids.')';
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 $this -> setError($db -> getErrorMsg());
@@ -169,7 +181,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
 
             $query  = 'DELETE FROM #__tz_portfolio_tags_xref'
                 .' WHERE tagsid IN('.$cids.')';
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
 
             $db -> setQuery($query);
             if(!$db -> query()){
@@ -195,10 +207,10 @@ class TZ_PortfolioModelTags extends JModelLegacy
     function checkTags($name=null){
         $name   = trim($name);
         if(!empty($name)){
-            $name   = strtolower($name);
+            $name   = mb_strtolower($name);
             $query  = 'SELECT COUNT(*) FROM #__tz_portfolio_tags'
                       .' WHERE name="'.$name.'"';
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 $this -> setError($db -> getErrorMsg());
@@ -224,15 +236,20 @@ class TZ_PortfolioModelTags extends JModelLegacy
         if($cid)
             $post['id'] = $cid[0];
 
-//        $post['name']   = strtolower($post['name']);
         $post['name']   = str_replace(array(',','\'','"','.','?'
                                            ,'/','\\','<','>','(',')','*','&','^','%','$','#','@','!','-','+','|','`','~'),'',$post['name']);
 
         $post['published'] = $post['published'] == 'P'?1:0;
 
-        if(!$this -> checkTags($post['name'])){
-            $this -> _link  = $this -> _link.'&task=add';
-            return false;
+        $post['name']   = mb_strtolower($post['name']);
+        $post['old_name']   = mb_strtolower($post['old_name']);
+
+
+        if($post['name'] != $post['old_name']){
+            if(!$this -> checkTags($post['name'])){
+                $this -> _link  = $this -> _link.'&task=edit&id='.$post['id'];
+                return false;
+            }
         }
         if(!$row -> bind($post)){
             $this -> setError($row -> getError());
@@ -246,7 +263,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
 
         switch ($task){
             case 'apply':
-                $this -> _link  = $this -> _link.'&task=edit&cid[]='.$row->id;
+                $this -> _link  = $this -> _link.'&task=edit&id='.$row->id;
                 $this -> msg    = JText::_('COM_TZ_PORTFOLIO_TAGS_SUCCESS');
                 break;
             case 'save':

@@ -35,7 +35,7 @@ class TZ_PortfolioModelUser extends JModelLegacy
                   .' LEFT JOIN #__tz_portfolio_users AS tu ON tu.usersid=u.id'
                   .' LEFT JOIN #__content AS c ON c.created_by=u.id'
                   .' WHERE c.id='.$articleId;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -55,7 +55,7 @@ class TZ_PortfolioModelUser extends JModelLegacy
                       .'tu.twitter,tu.facebook,tu.google_one FROM #__users AS u'
                       .' LEFT JOIN #__tz_portfolio_users AS tu ON tu.usersid=u.id'
                       .' WHERE u.id='.$id;
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             
             if(!$db -> query()){

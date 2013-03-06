@@ -49,12 +49,12 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         $doc -> addStyleSheet('components/com_tz_portfolio/css/tz_portfolio.css');
         $doc -> addStyleSheet("components/com_tz_portfolio/css/flexslider.css");
 
-        $media          = &JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
         $listMedia      = $media -> getMedia();
 
-        $attach         = &JModelLegacy::getInstance('Attachments','TZ_PortfolioModel');
-        $tzUser         = &JModelLegacy::getInstance('User','TZ_PortfolioModel');
-        $tzTags         = &JModelLegacy::getInstance('Tag','TZ_PortfolioModel');
+        $attach         = JModelLegacy::getInstance('Attachments','TZ_PortfolioModel');
+        $tzUser         = JModelLegacy::getInstance('User','TZ_PortfolioModel');
+        $tzTags         = JModelLegacy::getInstance('Tag','TZ_PortfolioModel');
 
         $this -> assign('listMedia',$listMedia);
         $this -> assign('listAttach',$attach -> getAttachments());
@@ -252,7 +252,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         //Get plugin Params for this article
         $pmodel -> setState('filter.contentid',$item -> id);
         $pluginItems    = $pmodel -> getItems();
-        $pluginParams   = &$pmodel -> getParams();
+        $pluginParams   = $pmodel -> getParams();
 
         JPluginHelper::importPlugin('tz_portfolio');
         $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.p_article', &$item, &$item -> params,&$pluginParams,$offset));
@@ -277,8 +277,8 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
             if(isset($_SERVER['HTTP_REFERER'])){
                 $referLink  = $_SERVER['HTTP_REFERER'];
                 if(!empty($referLink)){
-                    $router     =& JSite::getRouter();
-                    $url        =& JURI::getInstance($referLink);
+                    $router     = JSite::getRouter();
+                    $url        = JURI::getInstance($referLink);
                     if($url != JUri::root() && JRequest::getCmd('tmpl')){
                         $parseUrl   = $router->parse($url);
                         if($parseUrl){
@@ -303,7 +303,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
             }
         }
 
-		$extraFields    = &JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+		$extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
         $extraFields -> setState('article.id',JRequest::getInt('id'));
         $extraFields -> setState('params',$item -> params);
         $extraFields -> setState('orderby',$item -> params -> get('fields_order'));
@@ -379,7 +379,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         $this -> assign('mediaParams',$params);
         $this -> assign('authorParams',$params);
 
-        $extraFields    = &JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+        $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
         $extraFields -> setState('article.id',JRequest::getInt('id'));
         $extraFields -> setState('params',$params);
 //        $extraFields -> setState('fieldsId',$params -> get('tz_fieldsid'));

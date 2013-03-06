@@ -64,10 +64,12 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                 return false;
             }
             $this -> assign('listsGroup',$this -> get('FieldsGroup'));
-            $this -> assign('listsTags',$this -> get('Tags'));
+            $this -> assign('listsTags',json_encode($this -> get('Tags')));
 //            $this -> assign('listsFields',$this -> get('ListsFields'));
             $this -> assign('listAttach',$this -> get('Attachment'));
             $this -> assign('listEdit',$this -> get('FieldsContent'));
+            $modelTag   = JModelLegacy::getInstance('Tags','TZ_PortfolioModel');
+            $this -> assign('tagsSuggest',$modelTag -> getTagsName());
 
             if($model  = JModelLegacy::getInstance('Plugin','TZ_PortfolioModel',array('ignore_request' => true))){
                 $model -> setState('com_tz_portfolio.plugin.articleId',JRequest::getInt('id',null));

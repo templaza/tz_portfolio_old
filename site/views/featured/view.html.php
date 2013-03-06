@@ -168,6 +168,12 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
 
 			$dispatcher = JDispatcher::getInstance();
 
+            //Get plugin Params for this article
+            $pmodel -> setState('filter.contentid',$item -> id);
+            $pluginItems    = $pmodel -> getItems();
+            $pluginParams   = $pmodel -> getParams();
+            $item -> pluginparams   = $pluginParams;
+            
 			// Ignore content plugins on links.
 			if ($i < $numLeading + $numIntro)
 			{
@@ -185,10 +191,7 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
                 $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.category', &$item, &$item->params, 0));
 				$item->event->TZPortfolioVote = trim(implode("\n", $results));
 
-                //Get plugin Params for this article
-                $pmodel -> setState('filter.contentid',$item -> id);
-                $pluginItems    = $pmodel -> getItems();
-                $pluginParams   = &$pmodel -> getParams();
+
 
                 //Call trigger in group tz_portfolio
                 JPluginHelper::importPlugin('tz_portfolio');
@@ -280,7 +283,7 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
 
         $this -> assign('mediaParams',$params);
 
-        $doc    = &JFactory::getDocument();
+        $doc    = JFactory::getDocument();
         if($params -> get('tz_use_image_hover',1) == 1):
             $doc -> addStyleDeclaration('
                 .tz_image_hover{

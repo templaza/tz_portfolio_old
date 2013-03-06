@@ -138,7 +138,7 @@ class TZ_PortfolioViewArticles extends JViewLegacy
 
 		JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
 
-        $doc    = &JFactory::getDocument();
+        $doc    = JFactory::getDocument();
         $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/assets/style.css');
         // Special HTML workaround to get send popup working
         $videoTutorial    ='<a class="btn btn-small" onclick="Joomla.popupWindow(\'http://www.youtube.com/channel/UCykS6SX6L2GOI-n3IOPfTVQ/videos\', \''
@@ -151,7 +151,7 @@ class TZ_PortfolioViewArticles extends JViewLegacy
             .JText::_('COM_TZ_PORTFOLIO_WIKIPEDIA_TUTORIALS').'</a>';
 
 
-        $bar=& JToolBar::getInstance( 'toolbar' );
+        $bar    = JToolBar::getInstance( 'toolbar' );
         $bar->appendButton('Custom',$videoTutorial);
         $bar->appendButton('Custom',$wikiTutorial);
 
@@ -170,7 +170,7 @@ class TZ_PortfolioViewArticles extends JViewLegacy
 		);
 
         require_once(JPATH_COMPONENT_ADMINISTRATOR.'/models/categories.php');
-        $model      = &JModelLegacy::getInstance('Categories','TZ_PortfolioModel',array('ignore_request' => true));
+        $model      = JModelLegacy::getInstance('Categories','TZ_PortfolioModel',array('ignore_request' => true));
         $model -> setState('filter.group',$this -> state -> get('filter.group'));
         $listGroup  = $model -> getFieldsGroup();
 

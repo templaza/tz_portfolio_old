@@ -22,7 +22,7 @@ defined('_JEXEC') or die('Restricted access');
 $params = $this -> item -> params;
 $list   = $this -> listFields;
 ?>
-<?php if($params -> get('show_extra_fields') != '0'):?>
+<?php if($params -> get('show_extra_fields')):?>
     <?php if($this -> listFields):?>
         <div class="TzPortfolioExtraField">
             <span class="ExtraFieldTitle"><?php echo JText::_('COM_TZ_PORTFOLIO_ADDITIONAL_INFO');?></span>

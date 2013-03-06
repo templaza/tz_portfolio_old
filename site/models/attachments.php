@@ -35,7 +35,7 @@ class TZ_PortfolioModelAttachments extends JModelLegacy
                   .' LEFT JOIN #__content AS c ON c.id=xc.contentid'
                   .' WHERE c.state=1 AND xc.contentid='.$this -> getState('article.id');
         
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());

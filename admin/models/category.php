@@ -21,8 +21,8 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
-jimport('joomla.filesytem.folder');
-jimport('joomla.filesytem.file');
+jimport('joomla.filesystem.folder');
+jimport('joomla.filesystem.file');
 
 /**
  * Categories Component Category Model
@@ -98,7 +98,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
                   .' LEFT JOIN #__tz_portfolio_categories AS c ON c.groupid=x.groupid'
                   .$where
                   .' GROUP BY f.id';
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -160,7 +160,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
             $where  = ' WHERE catid='.$catid;
         $query  = 'SELECT groupid FROM #__tz_portfolio_categories'
                   .$where;
-        $db = &JFactory::getDbo();
+        $db = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -178,7 +178,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 
         $fieldsgroup    = '';
         
-        $dbo            = &JFactory::getDbo();
+        $dbo            = JFactory::getDbo();
         $rows           = array();
         $arr            = array();
 
@@ -502,18 +502,18 @@ class TZ_PortfolioModelCategory extends JModelAdmin
         $where  = null;
         if($catId = $this -> getState($this->getName() . '.id')){
             $where  = ' WHERE catid ='.$catId;
-        }
 
-        $query  = 'SELECT * FROM #__tz_portfolio_categories'
-                  .$where;
-        $db     = &JFactory::getDbo();
-        $db -> setQuery($query);
-        if(!$db -> query()){
-            echo $db -> getErrorMsg();
-            die();
-        }
-        if($row = $db -> loadObject()){
-            return $row;
+            $query  = 'SELECT * FROM #__tz_portfolio_categories'
+                      .$where;
+            $db     = JFactory::getDbo();
+            $db -> setQuery($query);
+            if(!$db -> query()){
+                echo $db -> getErrorMsg();
+                die();
+            }
+            if($row = $db -> loadObject()){
+                return $row;
+            }
         }
         return false;
     }
@@ -566,9 +566,17 @@ class TZ_PortfolioModelCategory extends JModelAdmin
                 if($params -> get('tz_catimage_width',400))
                     $newWidth  = $params -> get('tz_catimage_width',400);
 
+                $type       = strtolower(JFile::getExt($file));
+                $_type  = null;
+                if($type == 'gif'){
+                    $_type  = IMAGETYPE_GIF;
+                }
+                elseif($type == 'png'){
+                    $_type  = IMAGETYPE_PNG;
+                }
                 $height     = ceil( ( ($image -> getHeight()) * $newWidth ) / ($image -> getWidth()) );
                 $image      = $image -> resize($newWidth,$height);
-                $image -> toFile($desPath);
+                $image -> toFile($desPath,$_type);
 
                 return 'media/'.$tzFolder.'/'.$tzUserFolder.'/'.$desFileName;
             }
@@ -602,7 +610,9 @@ class TZ_PortfolioModelCategory extends JModelAdmin
                     $newWidth    = $params -> get('tz_catimage_width',400);
                     $newHeight  = ceil( ( ($image -> getHeight()) * $newWidth ) / ($image -> getWidth()) );
                     $newImage   = $image -> resize((int) $neWidth,$newHeight,false);
-                    $newImage -> toFile($desPath);
+                    $type       = strtolower(JFile::getExt($file));
+                    $_type  = ($type == 'gif')?IMAGETYPE_GIF:($type == 'png')?IMAGETYPE_PNG:null;
+                    $newImage -> toFile($desPath,$_type);
                     return 'media/'.$tzFolder.'/'.$tzUserFolder.'/'.$desFileName;
                 }
             }
@@ -610,12 +620,12 @@ class TZ_PortfolioModelCategory extends JModelAdmin
         return true;
     }
 
-    function delete($pks){
+    function delete(&$pks){
         if($pks){
             $catId  = implode(',',$pks);
             $query  = 'SELECT * FROM #__tz_portfolio_categories'
                       .' WHERE catid IN('.$catId.')';
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 $this -> setError($db -> getErrorMsg());
@@ -705,7 +715,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
                 if(empty($groupid[0])){
                     $groupid[0] = 0;
                 }
-                $db     = &JFactory::getDbo();
+                $db     = JFactory::getDbo();
 
                 $image  = '';
                 if(!empty($post['tz_category_image_server'])){
@@ -791,7 +801,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 
                     $query  ='DELETE FROM #__tz_portfolio_categories'
                              .' WHERE catid='.(int) $table -> id;
-                    $db     = &JFactory::getDbo();
+                    $db     = JFactory::getDbo();
                     $db -> setQuery($query);
 
                     if(!$db -> query()){

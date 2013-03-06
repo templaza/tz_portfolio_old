@@ -25,7 +25,7 @@ jimport('joomla.application.component.view');
 class TZ_PortfolioViewGallery extends JViewLegacy
 {
     function display($tpl=null){
-        $doc    = &JFactory::getDocument();
+        $doc    = JFactory::getDocument();
         $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.tmpl.min.js"></script>');
         $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.kinetic.js"></script>');
         $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.easing.1.3.js"></script>');
