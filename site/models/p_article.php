@@ -73,7 +73,7 @@ class TZ_PortfolioModelP_Article extends TZ_PortfolioModelArticle
         $query  = 'SELECT * FROM #__tz_portfolio_xref_content'
                   .' WHERE contentid='.JRequest::getInt('id');
 
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             $this -> setError($db -> getErrorMsg());

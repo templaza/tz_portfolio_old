@@ -238,23 +238,8 @@
 				description="COM_CATEGORIES_FIELD_IMAGE_DESC" />
 		</fieldset>
 
-        <fieldset name="tz_article" label="COM_TZ_PORTFOLIO_TZ_ARTICLE">
-            <field name="tz_portfolio_image_title" type="spacer"
-               class="spacer"
-                label="COM_TZ_PORTFOLIO_IMAGE_TITLE"
-            />
-            <field name="detail_article_image_size"
-                   type="list"
-                   label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE"
-                   description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE_DESC"
-            >
-                <option value="">JGLOBAL_USE_GLOBAL</option>
-                <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
-                <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
-                <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
-                <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
-                <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
-            </field>
+
+        <fieldset name="tz_fieldset_image" label="COM_TZ_PORTFOLIO_FIELDSET_IMAGE_OPTIONS_LABEL">
             <field name="portfolio_image_size" type="list"
                     label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE"
                     description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE_DESC">
@@ -265,9 +250,20 @@
                 <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
                 <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
             </field>
-             <field name="portfolio_image_featured_size" type="list"
+            <field name="portfolio_image_featured_size" type="list"
                     label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE"
                     description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
+                <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
+                <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
+                <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
+                <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
+            </field>
+            <field name="detail_article_image_size"
+                   type="list"
+                   label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE"
+                   description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
                 <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
@@ -278,8 +274,7 @@
             <field name="article_leading_image_size"
                    type="list"
                    label="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_SIZE"
-                   description="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_SIZE_DESC"
-            >
+                   description="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_SIZE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
                 <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
@@ -290,8 +285,7 @@
             <field name="article_secondary_image_size"
                    type="list"
                    label="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_SIZE"
-                   description="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_SIZE_DESC"
-            >
+                   description="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_SIZE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
                 <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
@@ -299,76 +293,44 @@
                 <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
                 <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
             </field>
-            <field name="spacer1" type="spacer" hr="true"/>
-
-            <field name="tz_portfolio_image_gallery_title" type="spacer"
-               class="spacer"
-                label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_TITLE"
-            />
-            <field name="detail_article_image_gallery_size"
-               type="list"
-               label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE"
-               description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE_DESC"
-        >
-            <option value="">JGLOBAL_USE_GLOBAL</option>
-            <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
-            <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
-            <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
-            <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
-            <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
-        </field>
-        <field name="article_leading_image_gallery_size"
-               type="list"
-               label="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_SIZE"
-               description="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_SIZE_DESC"
-        >
-            <option value="">JGLOBAL_USE_GLOBAL</option>
-            <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
-            <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
-            <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
-            <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
-            <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
-        </field>
-        <field name="article_secondary_image_gallery_size"
-               type="list"
-               label="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_SIZE"
-               description="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_SIZE_DESC"
-        >
-            <option value="">JGLOBAL_USE_GLOBAL</option>
-            <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
-            <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
-            <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
-            <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
-            <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
-        </field>
-            <!--<field name="detail_article_image_gallery_crop"-->
-                   <!--type="list"-->
-                   <!--default="0"-->
-                   <!--label="COM_TZ_PORTFOLIO_ARTICLE_DETAIL_IMAGE_GALLERY_CROP"-->
-                   <!--description="COM_TZ_PORTFOLIO_ARTICLE_DETAIL_IMAGE_GALLERY_CROP_DESC"-->
-            <!-->-->
-                <!--<option value="1">JYES</option>-->
-                <!--<option value="0">JNO</option>-->
-            <!--</field>-->
-            <!--<field name="article_leading_image_gallery_crop"-->
-                   <!--type="list"-->
-                   <!--default="0"-->
-                   <!--label="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_CROP"-->
-                   <!--description="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_CROP_DESC"-->
-            <!-->-->
-                <!--<option value="1">JYES</option>-->
-                <!--<option value="0">JNO</option>-->
-            <!--</field>-->
-            <!--<field name="article_secondary_image_gallery_crop"-->
-                   <!--type="list"-->
-                   <!--default="0"-->
-                   <!--label="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_CROP"-->
-                   <!--description="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_CROP_DESC"-->
-            <!-->-->
-                <!--<option value="1">JYES</option>-->
-                <!--<option value="0">JNO</option>-->
-            <!--</field>-->
         </fieldset>
+
+        <fieldset name="tz_fieldset_image_slider" label="COM_TZ_PORTFOLIO_FIELDSET_IMAGE_SLIDER_OPTIONS_LABEL">
+            <field name="detail_article_image_gallery_size"
+                   type="list"
+                   label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE"
+                   description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
+                <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
+                <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
+                <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
+                <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
+            </field>
+            <field name="article_leading_image_gallery_size"
+                   type="list"
+                   label="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_SIZE"
+                   description="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_SIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
+                <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
+                <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
+                <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
+                <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
+            </field>
+            <field name="article_secondary_image_gallery_size"
+                   type="list"
+                   label="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_SIZE"
+                   description="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_SIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
+                <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
+                <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
+                <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
+                <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
+            </field>
+        </fieldset>
+        
 	</fields>
 
 	<fields name="metadata">

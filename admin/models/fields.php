@@ -32,7 +32,7 @@ class TZ_PortfolioModelFields extends JModelLegacy
     protected $db   = null;
 
     function populateState(){
-        $app        = &JFactory::getApplication();
+        $app        = JFactory::getApplication();
         $context    = 'com_tz_portfolio.fields';
 
         $group  = $app -> getUserStateFromRequest($context.'.filter_group','filter_group',0,'int');
@@ -59,7 +59,7 @@ class TZ_PortfolioModelFields extends JModelLegacy
             $this -> cids   = JRequest::getVar('cid',array(),'','array');
         else
             $this -> cids[] = JRequest::getInt('id');
-        $this -> db     = &JFactory::getDbo();
+        $this -> db     = JFactory::getDbo();
     }
 
     function getArticleGroupFields($articleId=null){
@@ -68,7 +68,7 @@ class TZ_PortfolioModelFields extends JModelLegacy
         $query  = 'SELECT groupid, FROM #__tz_portfolio_xref'
                   .' WHERE contentid IN('.$articleId.')';
 //                  .' GROUP BY t.contentid';
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         $rows   = $db -> loadObjectList();
         return $rows;
@@ -96,7 +96,7 @@ class TZ_PortfolioModelFields extends JModelLegacy
                           .' LEFT JOIN #__tz_portfolio_fields_group AS fg'
                           .' ON fg.id=x.groupid'
                     .' WHERE f.id='.$this -> cids[0];
-                $this -> db     = &JFactory::getDbo();
+                $this -> db     = JFactory::getDbo();
                 $this -> db -> setQuery($query);
 
                 if(!$rows = $this -> db -> loadObjectList()){
@@ -113,17 +113,17 @@ class TZ_PortfolioModelFields extends JModelLegacy
             $where  = ' WHERE fieldsid ='.$fieldsId;
         if($articleId)
             $where  .= ' AND contentid='.$articleId;
-        
+
         $query  = 'SELECT * FROM #__tz_portfolio'
                   .$where;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
             die();
         }
         if($rows = $db -> loadObjectList()){
-            
+
             return $rows;
         }
 
@@ -161,24 +161,13 @@ class TZ_PortfolioModelFields extends JModelLegacy
                         $arr    = array();
                         $i=0;
                         foreach($values as $value){
+                            $list[$i]   = new stdClass();
                             $param  = new JRegistry($value);
                             $list[$i] -> type           = $rows -> type;
                             if(!empty($rows -> default_value))
                                 $list[$i] -> default_value  = explode(',',$rows -> default_value);
                             else
-                                $list[$i] -> default_value  = array(-1);
-
-                            if(isset($artOptFields) && $artOptFields){
-                                if(count($artOptFields)>0){
-                                    foreach($artOptFields as $j => $item){
-                                        if($param -> get('name') == $item -> value){
-                                            $arr[]  = $i;
-                                        }
-                                    }
-                                }
-                            }
-                            if(isset($arr))
-                                $list[$i] -> default_value  = $arr;
+                                $list[$i] -> default_value  = array();
 
                             $list[$i] -> name           = $param -> get('name');
                             $list[$i] -> value          = $param -> get('value');
@@ -355,7 +344,7 @@ class TZ_PortfolioModelFields extends JModelLegacy
         $query  = 'SELECT t.groupid,c.title FROM #__tz_portfolio_categories AS t'
                   .' LEFT JOIN #__categories AS c ON c.id=t.catid'
                   .$where;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -375,7 +364,7 @@ class TZ_PortfolioModelFields extends JModelLegacy
         $query  = 'SELECT c.catid,x.contentid,x.groupid FROM #__tz_portfolio_xref_content AS x'
                   .' LEFT JOIN #__content AS c ON c.id=x.contentid'
                   .$where;
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -388,121 +377,48 @@ class TZ_PortfolioModelFields extends JModelLegacy
         return false;
     }
 
-    protected function _saveArticleFields($groupid,$fieldsId,$articleId=null,$value = array(),$data = array()){
-        $db = &JFactory::getDbo();
-        
-        if(!$this -> _checkArticleFields($fieldsId,$articleId)){
-            if(is_array($value)&& count($value)>0){
-                foreach($value as $val){
-                   $_value[] = '('.$articleId.','.$val.')';
-                }
-                if($_value){
-                    $_value = implode(',',$_value);
-
-                    $query  = 'INSERT INTO #__tz_portfolio(`contentid`,`fieldsid`,`value`,`images`)'
-                              .' VALUES '.$_value;
-
-                    $db -> setQuery($query);
-                    if(!$db -> query()){
-                        var_dump($db -> getErrorMsg());
-                        die();
-                    }
-                }
-            } //if have $value
-
-        }// if not have article with this field in table tz_portfolio
-        else{
-            if(count($value)>0){
-                foreach($value as $item){
-                    $arr    = explode(',',$item);
-                    $m  = array_keys($data,str_replace('"','',$arr[1]));
-                    $data[$m[0]]    = str_replace('"','',$data[$m[0]]);
-                    $query  = 'UPDATE #__tz_portfolio SET value="'.$data[$m[0]].'",images='.$arr[2]
-                              .' WHERE fieldsid='.$arr[0].' AND contentid='.$articleId;
-                    $db -> setQuery($query);
-                    if(!$db -> query()){
-                        var_dump($db -> getErrorMsg());
-                        die();
-                    }
-                }
+    function getArticleFields($fieldsId=null){
+        if($fieldsId){
+            if(is_array($fieldsId)){
+                $fieldsId   = implode(',',$fieldsId);
             }
+            $where  = ' WHERE fieldsid IN('.$fieldsId.')';
         }
+
+        $query  = 'SELECT * FROM #__tz_portfolio'
+                  .$where;
+        $db = $this -> getDbo();
+        $db -> setQuery($query);
+        if($rows = $db -> loadObjectList()){
+            return $rows;
+        }
+        return null;
     }
 
-    function saveArticleFields($groupid,$fieldsId,$value = array(),$data = array()){
+    function saveArticleFields($groupid,$fieldsId,$data = array(),$value = array()){
+        if($listArticle = $this -> getArticleFields($fieldsId)){
+            $db = $this -> getDbo();
 
-        if($listArticle = $this -> getArticleGroupid()){
             foreach($listArticle as $item){
+                if(count($data)>0){
 
-                if($item -> groupid == 0){
-                    $_groupid   = $this -> getCatGroupId($item -> catid);
-                    if($_groupid && in_array($_groupid -> groupid,$groupid)){
-                        $this -> _saveArticleFields($groupid,$fieldsId,$item -> contentid,$value,$data);
-                    }
+                    foreach($data as $_value){
 
-                }// if article's groupid = 0
-                else{
-                    if(in_array($item -> groupid,$groupid)){
-                        $this -> _saveArticleFields($groupid,$fieldsId,$item -> contentid,$value,$data);
+                        if($_value -> name == $item -> value){
+                            $query  = 'UPDATE #__tz_portfolio SET images="'.$_value -> image
+                                  .'" WHERE fieldsid='.$fieldsId.' AND contentid='.$item -> contentid.' AND value="'.
+                                      $_value->name.'"';
+                            $db -> setQuery($query);
+                            if(!$db -> query()){
+                                var_dump($db -> getErrorMsg());
+                                die();
+                            }
+                        }
                     }
                 }
             }
 
         }
-
-        // Get all article ID have group fields from database
-//        $_value     = null;
-//        $groupid    = implode(',',$groupid);
-//        $query  = 'SELECT c.contentid FROM #__tz_portfolio_xref_content AS c'
-//                  .' LEFT JOIN #__tz_portfolio AS t ON t.contentid=c.contentid'
-//                  .' WHERE NOT t.fieldsid ='.$fieldsId
-//                  .' AND groupid IN('.$groupid.')'
-//                  .' GROUP BY c.contentid';
-//
-//        $db     = &JFactory::getDbo();
-//        $db -> setQuery($query);
-//        if(!$db -> query()){
-//            var_dump($db -> getErrorMsg());
-//            die();
-//        }
-//        if($rows = $db -> loadObjectList()){
-//            foreach($rows as $row){
-//               if(is_array($value)&& count($value)>0){
-//                    foreach($value as $val){
-//                       $_value[] = '('.$row -> contentid.','.$val.')';
-//                    }
-//                }
-//            }
-//        }
-//
-//        if($_value){
-//            $_value = implode(',',$_value);
-//
-//            $query  = 'INSERT INTO #__tz_portfolio(`contentid`,`fieldsid`,`value`,`images`)'
-//                      .' VALUES '.$_value;
-//
-//            $db -> setQuery($query);
-//            if(!$db -> query()){
-//                var_dump($db -> getErrorMsg());
-//                die();
-//            }
-//        }
-//        else{
-//            if(count($value)>0){
-//                foreach($value as $item){
-//                    $arr    = explode(',',$item);
-//                    $m  = array_keys($data,str_replace('"','',$arr[1]));
-//                    $data[$m[0]]    = str_replace('"','',$data[$m[0]]);
-//                    $query  = 'UPDATE #__tz_portfolio SET value="'.$data[$m[0]].'",images='.$arr[2]
-//                              .' WHERE fieldsid='.$arr[0].' AND value='.$arr[1];
-//                    $db -> setQuery($query);
-//                    if(!$db -> query()){
-//                        var_dump($db -> getErrorMsg());
-//                        die();
-//                    }
-//                }
-//            }
-//        }
         return true;
     }
 
@@ -525,15 +441,16 @@ class TZ_PortfolioModelFields extends JModelLegacy
         $data['title']              = JRequest::getString('title',null);
         $data['type']               = JRequest::getCmd('type',null);
         $data['published']          = JRequest::getCmd('published',null);
-        $default['default_value']   = '';
+        $data['default_value']   = '';
 
         $default                = JRequest::getVar('default',array(),'post','array');
+
 
         if($default){
             $_default    = implode(',',$default);
             $data['default_value']  = $_default;
         }
-
+        
         foreach($icon['image'] as $i => $item){
             if(empty($icon['image'][$i])){
                 $icon['image'][$i] = null;
@@ -636,16 +553,19 @@ class TZ_PortfolioModelFields extends JModelLegacy
                 return false;
             }
 
+//            $registry   = new JRegistry($data['value']);
+//            $tzvalue    = explode(',',$data['value']);
+            $tzvalues   = json_decode($data['value']);
+            
             if($row -> id){
-                if(isset($defautValue) && !empty($defautValue)){
-
-                    foreach($defautValue as $i => $val){
-                        $arr[]  = $row -> id.',"'.$val.'","'.$icon['image'][$i].'"';
-                    }
-                    $this -> saveArticleFields($groupid,$row -> id,$arr,$defautValue);
-                }
+//                if(isset($defautValue) && !empty($defautValue)){
+//
+//                    foreach($defautValue as $i => $val){
+//                        $arr[]  = $row -> id.',"'.$val.'","'.$icon['image'][$i].'"';
+//                    }
+                    $this -> saveArticleFields($groupid,$row -> id,$tzvalues);
+//                }
             }
-//             die();
 
             foreach($groupid as $item){
                     $value[] = '('.$row -> id.','.$item.')';

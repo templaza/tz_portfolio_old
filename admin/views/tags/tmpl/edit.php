@@ -54,6 +54,7 @@ $published  = $this -> listEdit -> published ==1?'P':'U';
                 <div class="controls">
                     <input type="text" title="" maxlength="50" size="50" value="<?php echo $this -> listEdit -> name;?>"
                            id="name" name="name"/>
+                    <input type="hidden" name="old_name" value="<?php echo $this -> listEdit -> name;?>"/>
                 </div>
             </div>
             <div class="control-group">

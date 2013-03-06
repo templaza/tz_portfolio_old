@@ -19,7 +19,7 @@
 
 // no direct access
 defined('_JEXEC') or die();
-jimport('joomla.application.component.model');
+jimport('joomla.application.component.modellist');
 jimport('joomla.html.pagination');
 
 require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'autocuttext.php');
@@ -31,8 +31,8 @@ class TZ_PortfolioModelPortfolio extends JModelList
     protected $categories   = null;
     public $test            = null;
 
-    function populateState(){
-        $app    = &JFactory::getApplication();
+    function populateState($ordering = 'ordering', $direction = 'ASC'){
+        $app    = JFactory::getApplication();
 //        $params = JComponentHelper::getParams('com_tz_portfolio');
         $params = $app -> getParams();
 
@@ -246,7 +246,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
                   .' WHERE published=1 AND extension="com_content"'
                   .$where
                   .' GROUP BY id';
-        $db = &JFactory::getDbo();
+        $db = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -273,7 +273,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
             $query  = 'SELECT t.* FROM #__tz_portfolio_tags AS t'
                       .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON x.tagsid=t.id'
                       .' WHERE x.contentid='.$contentId;
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             $tagName    = array();
             if($db -> query()){
@@ -299,7 +299,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON t.id=x.tagsid'
                 .' WHERE x.contentid IN('.$contentId.')'
                 .' GROUP BY t.id';
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 var_dump($db -> getErrorMsg());
@@ -364,7 +364,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
                   .' WHERE c.state=1'
                   .$where
                   .' GROUP BY c.id';
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if($db -> query())
             $total  = $db -> getNumRows($db -> query());
@@ -445,15 +445,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
             $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
 
             foreach($rows as $key => $item){
-                if ($params->get('show_intro', '1')=='1') {
-                    $item->text = $item->introtext.' '.$item->fulltext;
-                }
-                elseif ($item->fulltext) {
-                    $item->text = $item->fulltext;
-                }
-                else  {
-                    $item->text = $item->introtext;
-                }
+                $item->text = $item->introtext;
 
                 $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
                 $itemParams = new JRegistry($item -> attribs); //Get Article's Params
@@ -511,6 +503,12 @@ class TZ_PortfolioModelPortfolio extends JModelList
                     }
                 }
 
+                //Get plugin Params for this article
+                $pmodel -> setState('filter.contentid',$item -> id);
+                $pluginItems    = $pmodel -> getItems();
+                $pluginParams   = $pmodel -> getParams();
+                $item -> pluginparams   = $pluginParams;
+
                 // Add feed links
                 if (!JRequest::getCmd('format',null) AND !JRequest::getCmd('type',null)) {
                     $dispatcher	= JDispatcher::getInstance();
@@ -519,7 +517,8 @@ class TZ_PortfolioModelPortfolio extends JModelList
                     // Process the content plugins.
                     //
                     JPluginHelper::importPlugin('content');
-                    $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.portfolio', &$item, &$params, $this -> getState('offset')));
+                    $item->introtext = JHtml::_('content.prepare', $item->introtext, '', 'com_tz_portfolio.portfolio');
+//                    $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.portfolio', &$item, &$params, $this -> getState('offset')));
 
                     $item->event = new stdClass();
                     $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.portfolio', &$item, &$params, $this -> getState('offset')));
@@ -534,13 +533,8 @@ class TZ_PortfolioModelPortfolio extends JModelList
                     $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.portfolio', &$item, &$params, 0));
 				    $item->event->TZPortfolioVote = trim(implode("\n", $results));
 
-                    //Get plugin Params for this article
-                    $pmodel -> setState('filter.contentid',$item -> id);
-                    $pluginItems    = $pmodel -> getItems();
-                    $pluginParams   = &$pmodel -> getParams();
-
                     JPluginHelper::importPlugin('tz_portfolio');
-                    $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.portfolio', &$item, &$this->params,&$pluginParams,$offset));
+                    $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.portfolio', &$item, &$this->params,&$pluginParams,$this -> getState('offset')));
 
                     $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.portfolio', &$item, &$params,&$pluginParams, $this -> getState('offset')));
                     $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
@@ -553,8 +547,8 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 }
 
                 if($introLimit = $params -> get('tz_article_intro_limit')){
-                    $text   = new AutoCutText($item -> text,$introLimit);
-                    $item -> text   = $text -> getIntro();
+                    $text   = new AutoCutText($item -> introtext,$introLimit);
+                    $item -> introtext   = $text -> getIntro();
                 }
 
                 if(!empty($rows[$key] -> tagName)){
@@ -595,7 +589,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $params = $this -> getState('params');
         if($params -> get('use_filter_first_letter',1)){
             if($letters = $params -> get('tz_letters','a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z')){
-                $db = &JFactory::getDbo();
+                $db = JFactory::getDbo();
                 $letters = explode(',',$letters);
                 $arr    = null;
                 if($catids = $params -> get('tz_catid')){

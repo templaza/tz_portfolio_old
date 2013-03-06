@@ -104,7 +104,7 @@ class TZ_PortfolioModelCategory extends JModelList
     function getCatImages(){
         $query  = 'SELECT * FROM #__tz_portfolio_categories'
                   .' WHERE catid='.$this -> getState('category.id');
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             $this -> setError($db -> getErrorMsg());

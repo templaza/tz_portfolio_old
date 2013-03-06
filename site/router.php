@@ -106,7 +106,7 @@ function TZ_PortfolioBuildRoute(&$query)
 				$catid = $query['id'];
 			} else {
 
-                if($query['char']){
+                if(isset($query['char'])){
                     $segments[] = $query['char'];
                     unset($query['char']);
                 }

@@ -41,7 +41,7 @@ class TZ_PortfolioControllerArticle extends JControllerForm
         $file       = JPATH_ROOT.DIRECTORY_SEPARATOR.'media'.DIRECTORY_SEPARATOR.$model;
 
 
-        $mainframe  = &JFactory::getApplication();
+        $mainframe  = JFactory::getApplication();
         
         if(JFile::exists($file)){
 

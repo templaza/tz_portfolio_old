@@ -31,7 +31,7 @@ $urls       = json_decode($this->item->urls);
 $canEdit	= $this->item->params->get('access-edit');
 JHtml::_('behavior.caption');
 $user		= JFactory::getUser();
-$doc        = &JFactory::getDocument();
+$doc        = JFactory::getDocument();
 
 $tmpl   = JRequest::getString('tmpl',null);
 if($this -> listTags):
@@ -122,7 +122,7 @@ ob_start();
                         $target = ' target="_blank"';
                     endif;
                     $needle = 'index.php?option=com_tz_portfolio&view=users&created_by=' . $this->item->created_by;
-                    $item = JSite::getMenu()->getItems('link', $needle, true);
+                    $item = JMenu::getInstance('site')->getItems('link', $needle, true);
                     $cntlink = !empty($item) ? $needle . '&Itemid=' . $item->id : $needle;
                 ?>
                 <?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', JHtml::_('link', JRoute::_($cntlink), $author,$target)); ?>

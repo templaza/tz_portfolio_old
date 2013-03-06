@@ -17,7 +17,7 @@
 
 -------------------------------------------------------------------------*/
 
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
 $params = $this -> item -> params;
 if($params -> get('tz_show_gmap',1) == 1):
     

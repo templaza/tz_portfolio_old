@@ -36,12 +36,12 @@ class TZ_PortfolioModelFieldsGroup extends JModelLegacy
             $this -> cids   = JRequest::getVar('cid',array(),'','array');
         else
             $this -> cids[] = JRequest::getInt('id');
-        $this -> db     = &JFactory::getDbo();
+        $this -> db     = JFactory::getDbo();
     }
 
     function populateState(){
         
-        $app        = &JFactory::getApplication();
+        $app        = JFactory::getApplication();
         $context    = 'com_tz_portfolio.fieldsgroup';
 
         $state  = $app -> getUserStateFromRequest($context.'filter_state','filter_state',null,'string');
@@ -89,7 +89,7 @@ class TZ_PortfolioModelFieldsGroup extends JModelLegacy
                           .$where
                           .$orderby;
 
-        $db             = &JFactory::getDBO();
+        $db             = JFactory::getDBO();
         $db -> setQuery($query);
         $total          = $db->loadResult();
 
@@ -115,7 +115,7 @@ class TZ_PortfolioModelFieldsGroup extends JModelLegacy
             $cid    = $this -> cids;
             $query  = 'SELECT * FROM #__tz_portfolio_fields_group'
                       .' WHERE id='.$cid[0];
-            $db     = &JFactory::getDBO();
+            $db     = JFactory::getDBO();
             $db -> setQuery($query);
             $row    = $db -> loadObject();
             return $row;
@@ -133,7 +133,7 @@ class TZ_PortfolioModelFieldsGroup extends JModelLegacy
     function removeFieldsGroup($cids=array()){
         if(count($cids)>0){
             $cids       = implode(',',$cids);
-            $db         = &JFactory::getDbo();
+            $db         = JFactory::getDbo();
             $query      = 'SELECT fg.*, COUNT( x.groupid ) AS numcat FROM #__tz_portfolio_fields_group AS fg'
                           .' LEFT JOIN #__tz_portfolio_xref AS x'
                           .' ON fg.id=x.groupid'

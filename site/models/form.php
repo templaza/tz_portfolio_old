@@ -164,6 +164,7 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
         parent::getFieldsContent();
         $this -> contentid  = $this -> getState('article.id');
         $data   = new stdClass();
+        $data -> gallery = $data -> video   = new stdClass();
         $data -> images             = '';
         $data -> imagetitle         = '';
         $data -> images_hover       = '';
@@ -178,7 +179,7 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
                 .' WHERE contentid = '.$this -> contentid;
             //.' GROUP BY contentid';
 
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 $this -> setError($db -> getErrorMsg());
@@ -242,7 +243,7 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
         if($id){
             $query  = 'SELECT attachfiles,attachtitle,attachold FROM #__tz_portfolio_xref_content'
                 .' WHERE contentid = '.$id;
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 $this -> setError($db -> getErrorMsg());
@@ -279,7 +280,7 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
     // Show tags
     public function getTags(){
         $artid  = $this -> getState('article.id');
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $tags   = null;
 
         if($artid){

@@ -45,7 +45,7 @@ class TZ_PortfolioViewUser extends JViewLegacy
 		$this->grouplist	= $this->get('Groups');
 		$this->groups		= $this->get('AssignedGroups');
 		$this->state		= $this->get('State');
-        $editor             = &JFactory::getEditor();
+        $editor             = JFactory::getEditor();
         $this -> assign('editor',$editor);
         $this -> assign('listsUsers',$this -> get('Users'));
 //        $editor -> display();

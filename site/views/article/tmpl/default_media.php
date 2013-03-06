@@ -177,7 +177,7 @@ endif;
                         ';
                 }
 
-                $doc    = &JFactory::getDocument();
+                $doc    = JFactory::getDocument();
                 $doc -> addScriptDeclaration('
                     jQuery(document).ready(function(){
                         jQuery(\'.flexslider\').flexslider({

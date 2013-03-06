@@ -20,7 +20,7 @@
 //no direct access
 defined('_JEXEC') or die();
 
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
 ?>
 
 <?php if($this -> listsArticle):?>
@@ -63,7 +63,7 @@ $doc    = &JFactory::getDocument();
             }
 
             jQuery('.element').width(newColWidth);
-            jQuery('.tz_item').each(function(){
+            jQuery('.tz_item .TzPortfolioMedia').each(function(){
                 jQuery(this).find('img').first().attr('width','100%');
             });
 

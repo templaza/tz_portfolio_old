@@ -32,7 +32,7 @@ class TZ_PortfolioModelTag extends JModelLegacy
             .' INNER JOIN #__tz_portfolio_tags_xref AS x ON t.id=x.tagsid'
             .' WHERE t.published=1 AND x.contentid='.$this -> getState('article.id');
 
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
 
         if(!$db -> query()){

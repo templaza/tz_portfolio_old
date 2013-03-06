@@ -20,7 +20,7 @@
  // no direct access
 defined('_JEXEC') or die('Restricted access');
 $params = $this -> item -> params;
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
 //$url    = JURI::getInstance() -> toString();
 $url    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> slug,$this -> item -> catid),true,-1);
 ?>

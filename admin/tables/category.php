@@ -41,7 +41,7 @@ class CategoriesTableCategory extends JTableCategory
         if($pk){
             $query  = 'DELETE FROM #__tz_portfolio_categories'
                 .' WHERE catid = '.$pk;
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
             if(!$db -> query()){
                 var_dump($db -> getErrorMsg());

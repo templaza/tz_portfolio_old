@@ -19,7 +19,7 @@
 
 // no direct access
 defined('_JEXEC') or die;
-$doc    = &JFactory::getDocument();
+$doc    = JFactory::getDocument();
 
 $lists  = $this -> itemMore;
 // Create shortcuts to some parameters.
@@ -58,7 +58,7 @@ if($lists):
                 $item -> _link = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid).$tmpl);
             }
 
-            $media          = &JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+            $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
             $mediaParams    = $this -> mediaParams;
             $mediaParams -> merge($media -> getCatParams($item -> catid));
 

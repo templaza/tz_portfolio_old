@@ -56,13 +56,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
         </div>
     <?php endif; ?>
 
-    <?php if (!empty($this->children[$this->category->id])&& $this->maxLevel != 0) : ?>
-		<div class="TzCatChildren">
-		    <h3><?php echo JTEXT::_('JGLOBAL_SUBCATEGORIES'); ?></h3>
-			<?php echo $this->loadTemplate('children'); ?>
-		</div>
-	<?php endif; ?>
-
     <?php $leadingcount=0 ; ?>
     <?php if (!empty($this->lead_items)) : ?>
     <div class="TzItemsLeading">

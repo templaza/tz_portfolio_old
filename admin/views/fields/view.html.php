@@ -29,15 +29,10 @@ class TZ_PortfolioViewFields extends JViewLegacy
 
     function display($tpl=null){
 
-        $doc    = &JFactory::getDocument();
-//        $doc -> addStyleSheet(JURI::root().'administrator/components/com_tz_portfolio/assets/dd.css');
-//        $doc -> addScript(JURI::root().'components/com_tz_portfolio/js/jquery-1.7.1.min.js');
-//        $doc -> addScript(JURI::root().'administrator/components/com_tz_portfolio/js/jquery.dd.js');
-
         $state  = $this -> get('state');
         $this -> assign('state',$state);
          //Get editor
-        $editor =& JFactory::getEditor();
+        $editor = JFactory::getEditor();
         if ($this->getLayout() !== 'modal')
 		{
 			TZ_PortfolioHelper::addSubmenu('fields');
@@ -45,11 +40,11 @@ class TZ_PortfolioViewFields extends JViewLegacy
 
         $this -> assign('lists',$this -> get(ucfirst($this -> _view)));
 
-        $this -> assignRef('defvalue',$this -> get('Params'));
+        $this -> assign('defvalue',$this -> get('Params'));
         //var_dump($this -> get('Params'));
-        $this -> assignRef('listsEdit',$this -> get(ucfirst($this -> _view).'Edit'));
-        $this -> assignRef('listsGroup',$this -> get('FieldsGroup'));
-        $this -> assignRef('pagination',$this -> get('Pagination'));
+        $this -> assign('listsEdit',$this -> get(ucfirst($this -> _view).'Edit'));
+        $this -> assign('listsGroup',$this -> get('FieldsGroup'));
+        $this -> assign('pagination',$this -> get('Pagination'));
         $this -> assignRef('editor',$editor);
         $this -> assignRef('option',$this -> _option);
         $this -> assignRef('view',$this -> _view);
@@ -57,8 +52,8 @@ class TZ_PortfolioViewFields extends JViewLegacy
         $this -> assignRef('order_Dir',$state -> filter_order_Dir);
         $this -> assign('filter_state',$state -> get('filter_state'));
         $this -> assign('filter_search',$state -> get('filter_search'));
-        $this -> assignRef('filter_type',$state -> get('filter_type'));
-        $this -> assignRef('filter_group',$state -> get('filter_group'));
+        $this -> assign('filter_type',$state -> get('filter_type'));
+        $this -> assign('filter_group',$state -> get('filter_group'));
         $this -> setToolBar();
         $this -> sidebar    = JHtmlSidebar::render();
 
@@ -77,7 +72,7 @@ class TZ_PortfolioViewFields extends JViewLegacy
                 JToolBarHelper::deleteList(JText::_('COM_TZ_PORTFOLIO_QUESTION_DELETE'));
                 JToolBarHelper::preferences('com_tz_portfolio');
                     
-                $doc    = &JFactory::getDocument();
+                $doc    = JFactory::getDocument();
                 $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/assets/style.css');
                 // Special HTML workaround to get send popup working
                 $videoTutorial    ='<a class="btn btn-small" onclick="Joomla.popupWindow(\'http://www.youtube.com/channel/UCykS6SX6L2GOI-n3IOPfTVQ/videos\', \''
@@ -88,7 +83,7 @@ class TZ_PortfolioViewFields extends JViewLegacy
                     .JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS').'\', 800, 500, 1)"'.' href="#">'
                     .'<i class="icon-14-wikipedia"></i>&nbsp;'
                     .JText::_('COM_TZ_PORTFOLIO_WIKIPEDIA_TUTORIALS').'</a>';
-                $bar=& JToolBar::getInstance( 'toolbar' );
+                $bar= JToolBar::getInstance( 'toolbar' );
                 $bar->appendButton('Custom',$videoTutorial);
                 $bar->appendButton('Custom',$wikiTutorial);
                 break;

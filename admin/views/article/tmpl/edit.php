@@ -30,6 +30,16 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 JHtml::_('formbehavior.chosen', 'select');
+$doc    = JFactory::getDocument();
+$doc -> addscript(JUri::base(true).'/components/com_tz_portfolio/js/tz-chosen.js');
+if(!$this -> tagsSuggest){
+    $this -> tagsSuggest    = 'null';
+}
+$doc -> addScriptDeclaration('
+    jQuery(document).ready(function(){
+        jQuery(".suggest").tzChosen({ source: '.$this -> tagsSuggest.', sourceEdit: '.$this -> listsTags.'});
+    })
+');
 
 // Create shortcut to parameters.
 	$params = $this->state->get('params');
@@ -1166,9 +1176,14 @@ $pluginsTab = $this -> pluginsTab;
                                     <label><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_TAGS');?></label>
                                 </div>
                                 <div class="controls">
-                                    <input type="text" name="tz_tags" value="<?php echo $this -> listsTags;?>"
-                                           size="50"
-                                            placeholder="<?php echo JText::_('COM_TZ_PORTFOLIO_FORM_TAGS_DESC');?>"/>
+<!--                                    <div id="tz_tags" class="chzn-container chzn-container-multi">-->
+<!--                                        <ul class="chzn-choices">-->
+<!--                                            <li class="search-field">-->
+                                                <input type="text" name="tz_tags[]" class="suggest"
+                                                       data-provide="typeahead"/>
+<!--                                            </li>-->
+<!--                                        </ul>-->
+<!--                                    </div>-->
                                 </div>
                             </div>
                             <div class="control-group">
@@ -1295,7 +1310,7 @@ $pluginsTab = $this -> pluginsTab;
                                         </td>
                                         <td>
                                             <input type="text" name="tz_image_title" id="tz_image_title"
-                                                   value="<?php echo $list -> imagetitle;?>"
+                                                   value="<?php echo stripslashes($list -> imagetitle);?>"
                                                    />
                                             <input type="hidden" name="tz_img_image" value="image" style="margin-bottom: 10px;"/>
                                         </td>
