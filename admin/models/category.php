@@ -502,18 +502,18 @@ class TZ_PortfolioModelCategory extends JModelAdmin
         $where  = null;
         if($catId = $this -> getState($this->getName() . '.id')){
             $where  = ' WHERE catid ='.$catId;
-        }
 
-        $query  = 'SELECT * FROM #__tz_portfolio_categories'
-                  .$where;
-        $db     = JFactory::getDbo();
-        $db -> setQuery($query);
-        if(!$db -> query()){
-            echo $db -> getErrorMsg();
-            die();
-        }
-        if($row = $db -> loadObject()){
-            return $row;
+            $query  = 'SELECT * FROM #__tz_portfolio_categories'
+                      .$where;
+            $db     = JFactory::getDbo();
+            $db -> setQuery($query);
+            if(!$db -> query()){
+                echo $db -> getErrorMsg();
+                die();
+            }
+            if($row = $db -> loadObject()){
+                return $row;
+            }
         }
         return false;
     }

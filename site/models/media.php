@@ -84,7 +84,7 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                     $data[0] -> type           = strtolower($rows -> type);
                     $data[0] -> featured       = $rows -> featured;
                     $data[0] -> images         = $rows -> images;
-                    $data[0] -> imagetitle     = $rows -> imagetitle;
+                    $data[0] -> imagetitle     = htmlspecialchars($rows -> imagetitle);
                     $data[0] -> images_hover    = $rows -> images_hover;
                     $data[0] -> articleId   = $articleId;
                 }
@@ -98,7 +98,7 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                             $data[$i] -> featured       = $rows -> featured;
                             $data[$i] -> images         = $item;
                             if(isset($title[$i]))
-                                $data[$i] -> imagetitle     = trim($title[$i]);
+                                $data[$i] -> imagetitle     = htmlspecialchars(trim($title[$i]));
                             else
                                 $data[$i] -> imagetitle     = '';
 
@@ -123,7 +123,7 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                             $data[0] -> featured    = $rows -> featured;
                             $data[0] -> images      = substr($rows -> video,$pos + 1,strlen($rows -> video));
                             $data[0] -> from        = substr($rows -> video,0,$pos);
-                            $data[0] -> imagetitle  = $rows -> videotitle;
+                            $data[0] -> imagetitle  = htmlspecialchars($rows -> videotitle);
                             $data[0] -> thumb       = $rows -> videothumb;
                         }
                     }

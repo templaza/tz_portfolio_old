@@ -28,22 +28,24 @@ $categories = $this -> listsCatDate;
 ?>
 <?php
     if($list):
+        $categories = JCategories::getInstance('Content');
+        $media      = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
 ?>
     <?php foreach($list as $i => $row):?>
         <?php
+            $category   = $categories->get($row -> catid);
             $params = clone($this -> params);
-            $tmpl   = null;
-            if($params -> get('tz_use_lightbox',1) == 1){
-                $tmpl   = '&tmpl=component';
-            }
-            $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
+
+            $catParams  = new JRegistry($category -> params);
+
+            $params -> merge($catParams);
+
             $itemParams = new JRegistry($row -> attribs); //Get Article's Params
             $params -> merge($itemParams);
+    
             //Check redirect to view article
-            if($itemParams -> get('tz_portfolio_redirect')){
-                $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-            }
-            if($tzRedirect == 'article'){
+            if($params -> get('tz_portfolio_redirect') == 'article'){
                 $row ->link     = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);
                 $commentLink    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
             }
@@ -152,14 +154,10 @@ $categories = $this -> listsCatDate;
                          OR $params -> get('show_video',1) == 1):
                 ?>
                     <?php
-                        $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
-                        $mediaParams    = $this -> params;
-                        $mediaParams -> merge($media -> getCatParams($row -> catid));
 
-                        $media -> setParams($mediaParams);
                         $listMedia      = $media -> getMedia($row -> id);
 
-                        $this -> assign('mediaParams',$mediaParams);
+                        $this -> assign('mediaParams',$params);
                         $this -> assign('listMedia',$listMedia);
                         $this -> assign('itemLink',$row ->link);
 
@@ -283,19 +281,10 @@ $categories = $this -> listsCatDate;
                         <?php endif;?>
 
                         <?php
-                            $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
                             $extraFields -> setState('article.id',$row -> id);
-                            $extraFields -> setState('category.id',$row -> catid);
-                            $extraFields -> setState('orderby',$params -> get('fields_order'));
+                            $extraFields -> setState('params',$params);
+                            $this -> item -> params = clone($params);
 
-                            $extraParams    = $extraFields -> getParams();
-                            $itemParams     = new JRegistry($row -> attribs);
-
-                            if($itemParams -> get('tz_fieldsid'))
-                                $extraParams -> set('tz_fieldsid',$itemParams -> get('tz_fieldsid'));
-
-                            $extraFields -> setState('params',$extraParams);
-                            $this -> item -> params = $extraParams;
                             $this -> assign('listFields',$extraFields -> getExtraFields());
                         ?>
                         <?php echo $this -> loadTemplate('extrafields');?>

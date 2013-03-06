@@ -29,6 +29,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
     function populateState(){
         $pk = JRequest::getInt('id');
         $this -> setState('article.id',$pk);
+        $this -> setState('category.id',null);
         $this -> setState('params',null);
     }
 

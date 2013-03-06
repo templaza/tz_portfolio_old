@@ -30,9 +30,8 @@ JFactory::getLanguage()->load('com_tz_portfolio');
         $categories = JCategories::getInstance('Content');
         $media      = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
         $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
-        $i=0;
     ?>
-    <?php foreach($this -> listsArticle as $row):?>
+    <?php foreach($this -> listsArticle as $i => $row):?>
         <?php
             $category   = $categories->get($row -> catid);
             $params = clone($this -> params);
@@ -211,7 +210,6 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                     <?php
 
                         $extraFields -> setState('article.id',$row -> id);
-
                         $extraFields -> setState('params',$params);
 
                         $this -> item -> params = clone($params);
@@ -237,8 +235,6 @@ JFactory::getLanguage()->load('com_tz_portfolio');
             </div><!--Inner-->
         </div>
 
-
-        <?php $i++;?>
     <?php endforeach;?>
 
 <?php endif;?>

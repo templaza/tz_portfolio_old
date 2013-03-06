@@ -24,6 +24,7 @@ jimport('joomla.application.component.view');
 class TZ_PortfolioViewTags extends JViewLegacy
 {
     function display($tpl = null){
+        $this -> item   = new stdClass();
         $state  = $this -> get('state');
         $params = $state -> params;
         $list   = $this -> get('Tags');
@@ -116,7 +117,7 @@ class TZ_PortfolioViewTags extends JViewLegacy
                 //Get plugin Params for this article
                 $pmodel -> setState('filter.contentid',$row -> id);
                 $pluginItems    = $pmodel -> getItems();
-                $pluginParams   = &$pmodel -> getParams();
+                $pluginParams   = $pmodel -> getParams();
                 $row -> pluginparams    = $pluginParams;
 
                 JPluginHelper::importPlugin('tz_portfolio');

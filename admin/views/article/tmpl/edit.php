@@ -32,6 +32,9 @@ JHtml::_('behavior.keepalive');
 JHtml::_('formbehavior.chosen', 'select');
 $doc    = JFactory::getDocument();
 $doc -> addscript(JUri::base(true).'/components/com_tz_portfolio/js/tz-chosen.js');
+if(!$this -> tagsSuggest){
+    $this -> tagsSuggest    = 'null';
+}
 $doc -> addScriptDeclaration('
     jQuery(document).ready(function(){
         jQuery(".suggest").tzChosen({ source: '.$this -> tagsSuggest.', sourceEdit: '.$this -> listsTags.'});
@@ -1307,7 +1310,7 @@ $pluginsTab = $this -> pluginsTab;
                                         </td>
                                         <td>
                                             <input type="text" name="tz_image_title" id="tz_image_title"
-                                                   value="<?php echo $list -> imagetitle;?>"
+                                                   value="<?php echo stripslashes($list -> imagetitle);?>"
                                                    />
                                             <input type="hidden" name="tz_img_image" value="image" style="margin-bottom: 10px;"/>
                                         </td>

@@ -892,7 +892,7 @@ function deleteAttachment(){
             if($row = $db -> loadObject()){
 
                 $data -> images = $row -> images;
-                $data -> imagetitle = $row -> imagetitle;
+                $data -> imagetitle = addslashes(htmlspecialchars($row -> imagetitle));
                 $data -> images_hover       = $row -> images_hover;
 
                 if(preg_match('/.*\/\/\/.*/i',$row -> gallery,$match)){
@@ -903,12 +903,13 @@ function deleteAttachment(){
                             if(!isset($gallerytitle[$i])){
                                 $gallerytitle[$i]   = '';
                             }
+                            $gallerytitle[$i]    = addslashes($gallerytitle[$i]);
                         }
                     }
                 }
                 else{
                     $gallery        = $row -> gallery;
-                    $gallerytitle   = $row -> gallerytitle;
+                    $gallerytitle   = addslashes($row -> gallerytitle);
                 }
                 $data -> gallery -> images      = $gallery;
                 $data -> gallery -> title  = $gallerytitle;
@@ -923,7 +924,7 @@ function deleteAttachment(){
 
                     $data -> video -> code  = substr($row -> video,$pos + 1,strlen($row -> video));
                     $data -> video -> type  = substr($row -> video,0,$pos);
-                    $data -> video -> title = $row -> videotitle;
+                    $data -> video -> title = addslashes($row -> videotitle);
                     $data -> video -> thumb = $row -> videothumb;
                 }
                 else{
@@ -1049,6 +1050,7 @@ function deleteAttachment(){
                         if(isset($defaultValue) && $defaultValue){
                             if(!isset($fieldEdits) || (isset($fieldEdits) && count($fieldEdits)<=0)){
                                 if(in_array($param[$i] -> value,$defaultValue)){
+                                    $_fieldEdits[$j]   = new stdClass();
                                     $_fieldEdits[$j] -> fieldsid     = $row -> id;
                                     $_fieldEdits[$j] -> value        = $param[$i] -> name;
                                     $j++;
@@ -1871,7 +1873,7 @@ function deleteAttachment(){
         $fileServer = $data['tz_img_gallery_server'];
 
         if(!empty($data['tz_image_title']))
-            $imageGallery -> title  = $data['tz_image_title'];
+            $imageGallery -> title  = addslashes($data['tz_image_title']);
 
         if(isset($data['tz_image_current'])){
             $curfile        = $data['tz_image_current'];
@@ -1960,7 +1962,7 @@ function deleteAttachment(){
                 //Upload Image
                 $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                 $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
-
+                
                 $newHeight  = ($height*(int) $newWidth)/$width;
                 $newImage   = $obj -> resize((int) $newWidth,$newHeight,$originalFile);
                 $type       = $this -> _getImageType($str);
@@ -2006,7 +2008,7 @@ function deleteAttachment(){
                         if(JFile::exists($_curFile)){
                             JFile::delete($_curFile);
                         }
-
+                        
                     }
                     $imageGallery -> name   = null;
                     $imageGallery -> title  = '';
@@ -2268,7 +2270,7 @@ function deleteAttachment(){
             $b  = array();
             foreach($galleryTitle as $i => $item){
                 if(!empty($item) && $i<= count($arr2))
-                    $b[] = $item;
+                    $b[] = addslashes($item);
             }
             $imageGallery -> title  = implode('///',$b);
         }
@@ -2330,7 +2332,7 @@ function deleteAttachment(){
                     $data['tz_media_code'] = JRequest::getVar('tz_media_code','','post','string',JREQUEST_ALLOWRAW);
                     if($data['tz_media_code']){
                         $media['code']  = 'default:'.$data['tz_media_code'];
-                        $media['title'] = $data['tz_media_title'];
+                        $media['title'] = addslashes($data['tz_media_title']);
                         $media['thumb'] = '';
                         if(isset($data['tz_thumb_hidden'])){
                             $media['thumb'] = $data['tz_thumb_hidden'];
@@ -2395,7 +2397,7 @@ function deleteAttachment(){
                     }
                     if(!empty($data['tz_media_code_youtube'])){
                         $media['code']  = 'youtube:'.$data['tz_media_code_youtube'];
-                        $media['title'] = $data['tz_media_title_youtube'];
+                        $media['title'] = addslashes($data['tz_media_title_youtube']);
                         $thumbUrl   = 'http://img.youtube.com/vi/'.$data['tz_media_code_youtube'].'/hqdefault.jpg';
                         $file       = new Services_Yadis_PlainHTTPFetcher();
                         $thumb      = $file ->get($thumbUrl);
@@ -2450,7 +2452,7 @@ function deleteAttachment(){
                     }
                     if(!empty($data['tz_media_code_vimeo'])){
                         $media['code']  = 'vimeo:'.$data['tz_media_code_vimeo'];
-                        $media['title'] = $data['tz_media_title_vimeo'];
+                        $media['title'] = addslashes($data['tz_media_title_vimeo']);
 
                         $thumbUrl   = 'http://vimeo.com/api/v2/video/'.$data['tz_media_code_vimeo'].'.php';
                         $file       = new Services_Yadis_PlainHTTPFetcher();
@@ -2587,10 +2589,10 @@ function deleteAttachment(){
 
                         // set value
                         if(!empty($arr[0]))
-                            $post['tzfields'.$item] = array(htmlentities('<a href="'.$arr[1]
+                            $post['tzfields'.$item] = array(htmlspecialchars('<a href="'.$arr[1]
                                 .'" target="'.$arr[2].'">'.$arr[0].'</a>'));
                         else
-                            $post['tzfields'.$item] = array(htmlentities('<a href="'.$arr[1]
+                            $post['tzfields'.$item] = array(htmlspecialchars('<a href="'.$arr[1]
                                 .'" target="'.$arr[2].'">'.$arr[1].'</a>'));
                     }
                 }

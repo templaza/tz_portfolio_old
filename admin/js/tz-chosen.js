@@ -26,9 +26,9 @@
             return null;
         }
 
-        var cursource= $var.source.slice(0),
-                newsource = $var.source.slice(0),
-                medsource   = $var.source.slice(0);
+        var cursource= $var.source?$var.source.slice(0):[],
+                newsource = $var.source?$var.source.slice(0):[],
+                medsource   = $var.source?$var.source.slice(0):[];
 
         $(this).removeAttr('name');
 
