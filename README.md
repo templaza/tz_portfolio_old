@@ -22,6 +22,16 @@ Version for Joomla 2.5.x: https://github.com/templaza/tz_portfolio2
 
 *** Changelog ***
 
+03/06/13 - 3.0.6
+
+	Rename class in plugin Example of group tz_portfolio
+	Layout type doesn't display in the Portfolio and the Timeline page.
+	Parameters in the article don't receive in the Portfolio and Timeline view.
+	The extrafield's image width is resized.
+	Tags can suggest when create or edit the article.
+	The image title, image slider title and the video title not display with character quote.
+	The category can not upload image.
+
 01/26/13 - 3.0.5
 
 	Register and Profile user on front-end can change in template (Change Plugin Tz_portfolio in system).
