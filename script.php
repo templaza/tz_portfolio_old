@@ -186,7 +186,7 @@ class com_tz_portfolioInstallerScript{
             $db -> setQuery($query);
             $db -> query();
 
-            $query  = 'UPDATE #__extensions SET `enabled`=1 WHERE `type`="plugin" AND `element`="example" AND `folder`="tz_portfolio"';
+            $query  = 'UPDATE #__extensions SET `enabled`=0 WHERE `type`="plugin" AND `element`="example" AND `folder`="tz_portfolio"';
             $db -> setQuery($query);
             $db -> query();
         }
