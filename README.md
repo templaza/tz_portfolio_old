@@ -26,7 +26,7 @@ Version for Joomla 2.5.x: https://github.com/templaza/tz_portfolio2
 
 	Rename class in plugin Example of group tz_portfolio
 	Layout type doesn't display in the Portfolio and the Timeline page.
-	Parameters in the article don't receive in the Portfolio and Timeline view.
+	Parameters in the article doesn't receive in the Portfolio and Timeline view.
 	The extrafield's image width is resized.
 	Tags can suggest when create or edit the article.
 	The image title, image slider title and the video title not display with character quote.
