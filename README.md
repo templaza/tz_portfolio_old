@@ -21,6 +21,9 @@ Demo: http://demo.tzportfolio.com/
 Version for Joomla 2.5.x: https://github.com/templaza/tz_portfolio2
 
 *** Changelog ***
+03/18/13 - 3.0.7
+	
+	Fix some warning in plugin TZ Portfolio
 
 03/06/13 - 3.0.6
 
