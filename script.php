@@ -34,7 +34,7 @@ class com_tz_portfolioInstallerScript{
 
         $query  = 'SELECT params FROM #__extensions'
                   .' WHERE `type`="component" AND `name`="'.strtolower($manifest -> name).'"';
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $db -> setQuery($query);
         $db -> query();
 
@@ -120,7 +120,7 @@ class com_tz_portfolioInstallerScript{
         $src = $parent->getParent()->getPath('source');
 
         if(version_compare( JVERSION, '1.6.0', 'ge' )) {
-            $modules = &$parent->getParent()->manifest->xpath('modules/module');
+            $modules = $parent->getParent()->manifest->xpath('modules/module');
 
             foreach($modules as $module){
                 $result = null;
@@ -133,7 +133,7 @@ class com_tz_portfolioInstallerScript{
                 $status->modules[] = array('name'=>$mname,'client'=>$client, 'result'=>$result);
             }
 
-            $plugins = &$parent->getParent()->manifest->xpath('plugins/plugin');
+            $plugins = $parent->getParent()->manifest->xpath('plugins/plugin');
             foreach($plugins as $plugin){
                 $result = null;
                 $folder = null;
@@ -216,7 +216,7 @@ class com_tz_portfolioInstallerScript{
                 $mname = (string)$module->attributes() -> module;
                 $client = (string)$module->attributes() -> client;
 
-                $db = & JFactory::getDBO();
+                $db = JFactory::getDBO();
                 $query = "SELECT `extension_id` FROM #__extensions WHERE `type`='module' AND `element` = ".$db->Quote($mname)."";
                 $db->setQuery($query);
                 $IDs = $db->loadColumn();
@@ -254,7 +254,7 @@ class com_tz_portfolioInstallerScript{
     }
 
     function UpdateSql(){
-        $db     = &JFactory::getDbo();
+        $db     = JFactory::getDbo();
         $arr    = null;
         $fields = $db -> getTableColumns('#__tz_portfolio_xref_content');
         if(!array_key_exists('gallery',$fields)){
@@ -375,7 +375,7 @@ class com_tz_portfolioInstallerScript{
                 <?php endforeach; ?>
                 <?php endif; ?>
 
-                <?php if (count($status->languages)): ?>
+                <?php if (isset($status -> languages) AND count($status->languages)): ?>
                 <tr>
                     <th><?php echo JText::_('COM_TZ_PORTFOLIO_LANGUAGES'); ?></th>
                     <th><?php echo JText::_('COM_TZ_PORTFOLIO_COUNTRY'); ?></th>
