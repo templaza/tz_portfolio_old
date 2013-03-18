@@ -32,13 +32,11 @@ class TZ_PortfolioControllerAction extends JControllerAdmin{
         $params = JComponentHelper::getParams('com_tz_portfolio');
         $return = base64_decode(JRequest::getString('return'));
 
-        if($result = TZLess::compileAll($params)){
-            if(!$result){
-                $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_NOT_ENABLE_DEVELOPMENT'),'warning');
-            }
-            elseif($result == 1){
-                $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_NOT_FOUND_FILES'),'error');
-            }
+        if(!$result = TZLess::compileAll($params)){
+            $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_NOT_ENABLE_DEVELOPMENT'),'warning');
+        }
+        if(isset($result) && $result == 1){
+            $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_NOT_FOUND_FILES'),'error');
         }
         $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_SUCCESSFULL_COMPLIE_LESS_TO_CSS'));
 
@@ -51,15 +49,13 @@ class TZ_PortfolioControllerAction extends JControllerAdmin{
         $params = JComponentHelper::getParams('com_tz_portfolio');
         $return = base64_decode(JRequest::getString('return'));
 
-        if($result = TZJScompress::compressAll($params)){
-            if(!$result){
-                $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_NOT_ENABLE_DEVELOPMENT'),'warning');
-            }
-            elseif($result == 1){
-                $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_NOT_FOUND_FILES'),'error');
-            }
-        }
+        if(!$result = TZJScompress::compressAll($params)){
+            $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_NOT_ENABLE_DEVELOPMENT'),'warning');
 
+        }
+        if(isset($result) && $result == 1){
+            $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_NOT_FOUND_FILES'),'error');
+        }
         $app -> redirect($return,JText::_('COM_TZ_PORTFOLIO_SUCCESSFULL_COMPRESS_JAVASCRIPT'));
     }
 }
