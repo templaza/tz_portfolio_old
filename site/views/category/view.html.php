@@ -43,15 +43,25 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 	{
 
 		$app	= JFactory::getApplication();
-
 		$user	= JFactory::getUser();
-
         $doc    = JFactory::getDocument();
-//        $doc -> addScript(JURI::root()."components/com_tz_portfolio/js/jquery-1.7.2.min.js");
 
 		// Get some data from the models
         $state		= $this->get('State');
         $params		= $state->params;
+
+        $csscompress    = null;
+        if($params -> get('css_compression',0)){
+            $csscompress    = '.min';
+        }
+
+        $jscompress         = new stdClass();
+        $jscompress -> extfile  = null;
+        $jscompress -> folder   = null;
+        if($params -> get('js_compression',1)){
+            $jscompress -> extfile  = '.min';
+            $jscompress -> folder   = '/packed';
+        }
 
 		$items		= $this->get('Items');
 		$category	= $this->get('Category');
@@ -285,8 +295,7 @@ class TZ_PortfolioViewCategory extends JViewLegacy
         $params -> merge($catParams);
 
         $this -> assign('mediaParams',$params);
-        
-        $doc    = JFactory::getDocument();
+
         if($params -> get('tz_use_image_hover',1) == 1):
             $doc -> addStyleDeclaration('
                 .tz_image_hover{
@@ -306,8 +315,9 @@ class TZ_PortfolioViewCategory extends JViewLegacy
         endif;
 
         if($params -> get('tz_use_lightbox',1) == 1){
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.fancybox.pack.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/assets/jquery.fancybox.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.fancybox.pack'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox'.$csscompress.'.css');
 
             $width      = null;
             $height     = null;
@@ -347,6 +357,8 @@ class TZ_PortfolioViewCategory extends JViewLegacy
                 </script>
             ');
         }
+
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
 
 		$this->_prepareDocument();
 

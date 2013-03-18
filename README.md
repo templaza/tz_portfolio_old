@@ -22,6 +22,20 @@ Version for Joomla 2.5.x: https://github.com/templaza/tz_portfolio2
 
 *** Changelog ***
 
+03/19/13 - 3.0.8
+
+    Can compile LESS to CSS
+    Can use compress css.
+    Can use compress js.
+    The front-end have used the css that it compiled from LESS file at this version.
+    Fix error: Tag not suggest in front-end.
+    The Tag suggest end of input when the character is "," or "/" or Enter that it is entered from the keyboard.
+
+
+03/18/13 - 3.0.7
+
+    Fix some warning in plugin TZ Portfolio
+
 03/06/13 - 3.0.6
 
 	Rename class in plugin Example of group tz_portfolio

@@ -45,22 +45,6 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
             JHtml::_('jquery.framework');
         }
 
-        $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.flexslider-min.js"></script>');
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/tz_portfolio.css');
-        $doc -> addStyleSheet("components/com_tz_portfolio/css/flexslider.css");
-
-        $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
-        $listMedia      = $media -> getMedia();
-
-        $attach         = JModelLegacy::getInstance('Attachments','TZ_PortfolioModel');
-        $tzUser         = JModelLegacy::getInstance('User','TZ_PortfolioModel');
-        $tzTags         = JModelLegacy::getInstance('Tag','TZ_PortfolioModel');
-
-        $this -> assign('listMedia',$listMedia);
-        $this -> assign('listAttach',$attach -> getAttachments());
-        $this -> assign('listAuthor',$tzUser -> getUser());
-        $this -> assign('listTags',$tzTags -> getTag());
-
 		$user		= JFactory::getUser();
 		$userId		= $user->get('id');
 		$dispatcher	= JDispatcher::getInstance();
@@ -81,7 +65,6 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 
 		// Create a shortcut for $item.
 		$item = &$this->item;
-//        var_dump($item -> params);
 
 		// Add router helpers.
 		$item->slug			= $item->alias ? ($item->id.':'.$item->alias) : $item->id;
@@ -94,6 +77,32 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 		// Merge article params. If this is single-article view, menu params override article params
 		// Otherwise, article params override menu item params
 		$this->params	= $this->state->get('params');
+
+        $csscompress    = null;
+        if($this -> params -> get('css_compression',0)){
+            $csscompress    = '.min';
+        }
+
+        $jscompress         = new stdClass();
+        $jscompress -> extfile  = null;
+        $jscompress -> folder   = null;
+        if($this -> params -> get('js_compression',1)){
+            $jscompress -> extfile  = '.min';
+            $jscompress -> folder   = '/packed';
+        }
+
+        $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $listMedia      = $media -> getMedia();
+
+        $attach         = JModelLegacy::getInstance('Attachments','TZ_PortfolioModel');
+        $tzUser         = JModelLegacy::getInstance('User','TZ_PortfolioModel');
+        $tzTags         = JModelLegacy::getInstance('Tag','TZ_PortfolioModel');
+
+        $this -> assign('listMedia',$listMedia);
+        $this -> assign('listAttach',$attach -> getAttachments());
+        $this -> assign('listAuthor',$tzUser -> getUser());
+        $this -> assign('listTags',$tzTags -> getTag());
+
 		$active	= $app->getMenu()->getActive();
 		$temp	= clone ($this->params);
 //        var_dump($active -> params);
@@ -306,7 +315,6 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 		$extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
         $extraFields -> setState('article.id',JRequest::getInt('id'));
         $extraFields -> setState('params',$item -> params);
-        $extraFields -> setState('orderby',$item -> params -> get('fields_order'));
         $this -> assign('portfolioFields',$extraFields -> getExtraFields());
 
         $params = $media -> getCatParams($item -> catid);
@@ -317,7 +325,10 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                     $params -> set('article_image_resize',strtolower($params -> get('detail_article_image_size')));
             }
             if($listMedia[0] -> type == 'imagegallery'){
-                $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.flexslider-min.js"></script>');
+                $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                    $jscompress -> folder.'/jquery.flexslider-min'.$jscompress -> extfile.'.js"></script>');
+                $doc -> addStyleSheet('components/com_tz_portfolio/css/flexslider'.$csscompress.'.css');
+
                 if($params -> get('detail_article_image_gallery_size'))
                     $params -> set('article_image_gallery_resize',strtolower($params -> get('detail_article_image_gallery_size')));
                 if($item -> params -> get('tz_image_gallery_crop'))
@@ -326,13 +337,15 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         }
 
         if($item -> params -> get('useCloudZoom',1) == 1){
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/cloud-zoom.css');
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/cloud-zoom.1.0.3.min.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/cloud-zoom'.$csscompress.'.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/cloud-zoom.1.0.3.min'.$jscompress -> extfile.'.js"></script>');
         }
 
         if($item -> params -> get('tz_use_lightbox',1) == 1 AND !$tmpl){
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.fancybox.pack.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/assets/jquery.fancybox.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.fancybox.pack'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox'.$csscompress.'.css');
 
             $width      = null;
             $height     = null;
@@ -384,6 +397,8 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         $extraFields -> setState('params',$params);
 //        $extraFields -> setState('fieldsId',$params -> get('tz_fieldsid'));
         $this -> assign('listFields',$extraFields -> getExtraFields());
+
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
 
 		//Escape strings for HTML output
 		$this->pageclass_sfx = htmlspecialchars($this->item->params->get('pageclass_sfx'));

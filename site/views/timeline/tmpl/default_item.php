@@ -28,13 +28,13 @@ $categories = $this -> listsCatDate;
 ?>
 <?php
     if($list):
-        $categories = JCategories::getInstance('Content');
+        $_categories = JCategories::getInstance('Content');
         $media      = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
         $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
 ?>
     <?php foreach($list as $i => $row):?>
         <?php
-            $category   = $categories->get($row -> catid);
+            $category   = $_categories->get($row -> catid);
             $params = clone($this -> params);
 
             $catParams  = new JRegistry($category -> params);
@@ -43,7 +43,11 @@ $categories = $this -> listsCatDate;
 
             $itemParams = new JRegistry($row -> attribs); //Get Article's Params
             $params -> merge($itemParams);
-    
+
+            $tmpl   = null;
+            if($params -> get('tz_use_lightbox',1) == 1){
+                $tmpl   = '&tmpl=component';
+            }
             //Check redirect to view article
             if($params -> get('tz_portfolio_redirect') == 'article'){
                 $row ->link     = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);

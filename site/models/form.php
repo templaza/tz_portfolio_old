@@ -200,12 +200,13 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
                             if(!isset($gallerytitle[$i])){
                                 $gallerytitle[$i]   = '';
                             }
+                            $gallerytitle[$i]    = addslashes($gallerytitle[$i]);
                         }
                     }
                 }
                 else{
                     $gallery        = $row -> gallery;
-                    $gallerytitle   = $row -> gallerytitle;
+                    $gallerytitle   = addslashes($row -> gallerytitle);
                 }
                 $data -> gallery -> images      = $gallery;
                 $data -> gallery -> title  = $gallerytitle;
@@ -220,7 +221,7 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
 
                     $data -> video -> code  = substr($row -> video,$pos + 1,strlen($row -> video));
                     $data -> video -> type  = substr($row -> video,0,$pos);
-                    $data -> video -> title = $row -> videotitle;
+                    $data -> video -> title = addslashes($row -> videotitle);
                     $data -> video -> thumb = $row -> videothumb;
                 }
                 else{
@@ -284,7 +285,7 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
         $tags   = null;
 
         if($artid){
-            $query  = 'SELECT t.* FROM #__tz_portfolio_tags AS t'
+            $query  = 'SELECT t.name FROM #__tz_portfolio_tags AS t'
                       .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON x.tagsid=t.id'
                       .' WHERE x.contentid='.$artid;
 
@@ -293,15 +294,12 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
                 var_dump($db -> getErrorMsg());
                 return false;
             }
-            $rows   = $db -> loadObjectList();
+            $rows   = $db -> loadColumn();
 
             if(count($rows)>0){
-                foreach($rows as $row){
-                    $tags[]    = $row -> name;
-                }
+                return array_unique($rows);
             }
-            if(!empty($tags) && count($tags)>0)
-                $tags  = implode(',',$tags);
+
         }
 
         return $tags;

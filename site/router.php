@@ -345,7 +345,7 @@ function TZ_PortfolioParseRoute($segments)
             $vars['char'] = $segments[0];
             $vars['view'] = $item->query["view"];
             $vars['id'] = $item->query["id"];
-            if($item -> query['created_by']){
+            if(isset($item -> query['created_by'])){
                 $vars['created_by'] = $item->query["created_by"];
             }
             return $vars;

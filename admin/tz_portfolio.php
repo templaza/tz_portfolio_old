@@ -25,6 +25,8 @@ $view           = JRequest::getCmd('view','articles');
 $task           = JRequest::getCmd('task',null);
 
 JLoader::register('TZ_PortfolioHelper', __DIR__ . '/helpers/tz_portfolio.php');
+include_once dirname(__FILE__) . '/libraries/core/defines.php';
+include_once dirname(__FILE__) . '/libraries/core/tzportfolio.php';
 
 if($view != 'categories' && $view != 'category' && $view != 'articles' && $view != 'article' && $view != 'featured'
    && $view != 'users'){

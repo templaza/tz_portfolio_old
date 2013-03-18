@@ -1,0 +1,93 @@
+.TzLessSize(@tzwidth: auto,@tzheight: auto){
+    width: @tzwidth;
+    height: @tzheight;
+}
+.TzLessBackground(@tzcolor: transparent,@tzurl: none,@tzrepeat: no-repeat){
+    background: @tzurl @tzrepeat @tzcolor;
+}
+.TzLessLocation(@tztop: auto,@tzright: auto,@tzbottom: auto,@tzleft: auto){
+    top: @tztop;
+    right: @tzright;
+    bottom: @tzbottom;
+    left: @tzleft;
+}
+
+.TzLessBorderRadius(@tzradiusTop: 0,@tzradiusRight: 0,
+                                    @tzradiusBottom: 0,@tzradiusLeft: 0){
+    border-radius: @tzradiusTop @tzradiusRight @tzradiusBottom @tzradiusLeft;
+}
+.TzLessBorder(@tzborder: 1px solid #e4e4ec){
+    border: @tzborder;
+}
+.TzLessAllBorderWidth(@tzwidth: auto,@tzstyle: solid,@tzcolor: #e4e4ec){
+    border: @tzwidth @tzstyle @tzcolor;
+}
+.TzLessAllBorder(@tzstyle: solid,@tzcolor: #e4e4ec,@tzwidthTop: auto,@tzwidthRight: auto,
+                @tzwidthBottom: auto,@tzwidthLeft: auto,@tzradiusTop: 0,@tzradiusRight: 0,
+                @tzradiusBottom: 0,@tzradiusLeft: 0){
+    border-color: @tzcolor;
+    border-style: @tzstyle;
+    border-width: @tzwidthTop @tzwidthRight @tzwidthBottom @tzwidthLeft;
+    .TzLessBorderRadius(@tzradiusTop,@tzradiusRight,@tzradiusBottom,@tzradiusLeft);
+}
+
+.TzLessPadding(@tzpadding: 15px){
+    padding: @tzpadding;
+}
+.TzLessHalfPadding(@tzpaddingTopBottom: auto,@tzpaddingRightLeft: auto){
+    padding: @tzpaddingTopBottom @tzpaddingRightLeft;
+}
+.TzLessAllPadding(@tzpaddingTop: auto,@tzpaddingRight: auto,@tzpaddingBottom: auto,@tzpaddingLeft: auto){
+    padding: @tzpaddingTop @tzpaddingRight @tzpaddingBottom @tzpaddingLeft;
+}
+
+.TzLessMargin(@tzmargin: 10px){
+    margin: @tzmargin;
+}
+.TzLessHalfMargin(@tzmarginTopBottom: auto,@tzmarginRightLeft: auto){
+    margin: @tzmarginTopBottom @tzmarginRightLeft;
+}
+.TzLessAllMargin(@tzmarginTop: auto,@tzmarginRight: auto,@tzmarginBottom: auto,
+                @tzmarginLeft: auto){
+    margin: @tzmarginTop @tzmarginRight @tzmarginBottom @tzmarginLeft;
+}
+.TzLessFont(@tzfont: normal 12px){
+    font: @tzfont;
+}
+.TzLessLineheight(@tzlineheight: normal,@tzweight: normal,@tzwidth: 12px){
+    font-weight: @tzweight;
+    font-size: @tzwidth;
+    line-height: @tzlineheight;
+}
+.TzLessFontColor(@tzcolor: #000,@tzweight: normal,@tzwidth: 12px){
+    font-weight: @tzweight;
+    font-size: @tzwidth;
+    color: @tzcolor;
+}
+.TzLessAllFont(@tzweight: normal,@tzwidth: 12px,@tzcolor: #000,@tzlineheight: normal){
+    font-weight: @tzweight;
+    font-size: @tzwidth;
+    color: @tzcolor;
+    line-height: @tzlineheight;
+}
+
+.TzLessBtn(@tzpadding: 14px,@tzcolor: #fff,@tzfloat: inherit,@tzposition: static,@tztop: auto,@tzright: auto,@tzbottom: auto,@tzleft: auto){
+    .TzLessBackground(@tzcolor);
+    .TzLessPadding(@tzpadding);
+    float: @tzfloat;
+    position: @tzposition;
+    .TzLessLocation(@tztop,@tzright,@tzbottom,@tzleft);
+}
+
+.TzLessBoxShadow (@tzboxshadow: 5px 5px 5px rgba(50, 50, 50, 0.75)){
+    -webkit-box-shadow: @tzboxshadow;
+    -moz-box-shadow:    @tzboxshadow;
+    box-shadow:         @tzboxshadow;
+}
+.TzLessTransition (@tztransition: all 0.5ms linear){
+    -webkit-transition: @tztransition;
+    -moz-transition: @tztransition;
+    -ms-transition: @tztransition;
+    -o-transition: @tztransition;
+    transition: @tztransition;
+}

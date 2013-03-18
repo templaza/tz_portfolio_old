@@ -38,8 +38,6 @@ class TZ_PortfolioViewCategories extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
-        $doc    = JFactory::getDocument();
-        $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery-1.7.2.min.js"></script>');
 		// Initialise variables
 		$state		= $this->get('State');
 		$items		= $this->get('Items');
@@ -65,6 +63,21 @@ class TZ_PortfolioViewCategories extends JViewLegacy
 
 		$params = &$state->params;
 
+        $csscompress    = null;
+        if($params -> get('css_compression',0)){
+            $csscompress    = '.min';
+        }
+
+        $jscompress         = new stdClass();
+        $jscompress -> extfile  = null;
+        $jscompress -> folder   = null;
+        if($params -> get('js_compression',1)){
+            $jscompress -> extfile  = '.min';
+            $jscompress -> folder   = '/packed';
+        }
+
+        $doc    = JFactory::getDocument();
+
 		$items = array($parent->id => $items);
 
 		//Escape strings for HTML output
@@ -74,6 +87,8 @@ class TZ_PortfolioViewCategories extends JViewLegacy
 		$this->assignRef('params',		$params);
 		$this->assignRef('parent',		$parent);
 		$this->assignRef('items',		$items);
+
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
 
 		$this->_prepareDocument();
 

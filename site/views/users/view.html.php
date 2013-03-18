@@ -30,10 +30,23 @@ class TZ_PortfolioViewUsers extends JViewLegacy
     }
     function display($tpl = null){
         $doc    = JFactory::getDocument();
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/tz_portfolio.css');
+
         $state  = $this -> get('State');
         $params = $state -> params;
         $list   = $this -> get('Users');
+
+        $csscompress    = null;
+        if($params -> get('css_compression',0)){
+            $csscompress    = '.min';
+        }
+
+        $jscompress         = new stdClass();
+        $jscompress -> extfile  = null;
+        $jscompress -> folder   = null;
+        if($params -> get('js_compression',1)){
+            $jscompress -> extfile  = '.min';
+            $jscompress -> folder   = '/packed';
+        }
 
         if($list){
             if($params -> get('tz_show_count_comment',1) == 1){
@@ -179,8 +192,9 @@ class TZ_PortfolioViewUsers extends JViewLegacy
         endif;
 
         if($params -> get('tz_use_lightbox',1) == 1){
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.fancybox.pack.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/assets/jquery.fancybox.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.fancybox.pack'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox'.$csscompress.'.css');
 
             $width      = null;
             $height     = null;
@@ -220,6 +234,8 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                 </script>
             ');
         }
+
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
 
         // Add feed links
 		if ($params->get('show_feed_link', 1)) {

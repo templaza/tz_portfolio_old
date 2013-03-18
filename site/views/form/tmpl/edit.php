@@ -29,9 +29,9 @@ JHtml::_('behavior.keepalive');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.calendar');
 JHtml::_('behavior.formvalidation');
+JHtml::_('stylesheet', 'jui/chosen.css', false, true);
 
 $doc    = JFactory::getDocument();
-$doc -> addStyleSheet(JURI::base().'components/com_tz_portfolio/css/tz_edit.css');
 $lang   = JFactory::getLanguage();
 $lang -> load('com_tz_portfolio',JPATH_ADMINISTRATOR);
 // Create shortcut to parameters.
@@ -47,9 +47,20 @@ $type   = null;
 if($list){
     $type   = $list -> type;
 }
+
+$doc -> addCustomTag('<script src="'.JUri::base(true).'/administrator/components/com_tz_portfolio/js/tz-chosen.js"'.
+'type="text/javascript"></script>');
+
+if(!$this -> tagsSuggest){
+    $this -> tagsSuggest    = 'null';
+}
+$doc -> addScriptDeclaration('
+    jQuery(document).ready(function(){
+        jQuery(".suggest").tzChosen({ source: '.$this -> tagsSuggest.', sourceEdit: '.$this -> listsTags.',keys: ["\,","/"]});
+    })
+');
 ?>
-<link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">
-<script src="components/com_tz_portfolio/js/less-1.3.3.min.js" type="text/javascript"></script>
+
 <script type="text/javascript">
 	Joomla.submitbutton = function(task) {
 		if (task == 'article.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
@@ -1357,9 +1368,11 @@ if($list){
                         <label><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_TAGS');?></label>
                     </div>
                     <div class="controls">
-                        <input type="text" name="tz_tags" value="<?php echo $this -> listsTags;?>"
-                               size="50"
-                                placeholder="<?php echo JText::_('COM_TZ_PORTFOLIO_FORM_TAGS_DESC');?>"/>
+<!--                        <input type="text" name="tz_tags" value="--><?php //echo $this -> listsTags;?><!--"-->
+<!--                               size="50"-->
+<!--                                placeholder="--><?php //echo JText::_('COM_TZ_PORTFOLIO_FORM_TAGS_DESC');?><!--"/>-->
+                        <input type="text" name="tz_tags[]" class="suggest"
+                               data-provide="typeahead"/>
                     </div>
                 </div>
                 <div class="control-group">
