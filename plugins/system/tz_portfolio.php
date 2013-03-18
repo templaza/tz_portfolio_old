@@ -25,7 +25,7 @@ jimport('joomla.plugin.plugin');
 class plgSystemTZ_Portfolio extends JPlugin {
 
     function onAfterInitialise(){
-        $app		= &JFactory::getApplication();
+        $app		= JFactory::getApplication();
         
         if($app -> isAdmin()){
             $option     = 'com_tz_portfolio';
@@ -60,7 +60,7 @@ class plgSystemTZ_Portfolio extends JPlugin {
     // Extend user forms with TZ Portfolio fields
 	function onAfterDispatch() {
         JFactory::getLanguage() -> load('com_tz_portfolio');
-        $mainframe = &JFactory::getApplication();
+        $mainframe = JFactory::getApplication();
         
 		if($mainframe->isAdmin())return;
 
@@ -68,7 +68,7 @@ class plgSystemTZ_Portfolio extends JPlugin {
 		$view = JRequest::getCmd('view');
 		$task = JRequest::getCmd('task');
 		$layout = JRequest::getCmd('layout');
-		$user = &JFactory::getUser();
+		$user = JFactory::getUser();
 
         if($option == 'com_users' && $view == 'registration' && !$layout){
                 require_once (JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_users'.DIRECTORY_SEPARATOR.'controller.php');
@@ -90,7 +90,7 @@ class plgSystemTZ_Portfolio extends JPlugin {
                 ob_start();
                 $views->display();
                 $contents = ob_get_clean();
-                $document = &JFactory::getDocument();
+                $document = JFactory::getDocument();
                 $document->setBuffer($contents, 'component');
         }
         if($user -> username && $option == 'com_users'
@@ -134,7 +134,7 @@ class plgSystemTZ_Portfolio extends JPlugin {
             $views -> assign('user',$user);
             $views->display();
             $contents = ob_get_clean();
-            $document = &JFactory::getDocument();
+            $document = JFactory::getDocument();
             $document->setBuffer($contents, 'component');
         }
 
