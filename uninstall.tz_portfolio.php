@@ -21,7 +21,7 @@
 defined('_JEXEC') or die;
 jimport('joomla.installer.installer');
 
-$lang           = &JFactory::getLanguage();
+$lang           = JFactory::getLanguage();
 $lang -> load('com_tz_portfolio');
 $mediaFolder    = 'tz_portfolio';
 $mediaFolderPath    = JPATH_SITE.DIRECTORY_SEPARATOR.'media'.DIRECTORY_SEPARATOR.$mediaFolder;

@@ -43,7 +43,7 @@ class plgUserTZ_Portfolio extends JPlugin
 
     function onAfterSaveUser($user, $isnew, $success, $msg){
 
-        $mainframe = &JFactory::getApplication();
+        $mainframe = JFactory::getApplication();
         $task = JRequest::getCmd('task');
 
         if($mainframe->isSite() && $task != 'activate'){

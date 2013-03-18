@@ -63,8 +63,8 @@ if(!JFile::exists($mediaFolderPath.DIRECTORY_SEPARATOR.$article.DIRECTORY_SEPARA
 //    JFile::write($imageFolderPath.'/index.html',htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
 //}
 
-$db     = &JFactory::getDbo();
-$lang   = &JFactory::getLanguage();
+$db     = JFactory::getDbo();
+$lang   = JFactory::getLanguage();
 $lang ->load('com_tz_portfolio');
 $status = new JObject();
 $status->modules = array();
