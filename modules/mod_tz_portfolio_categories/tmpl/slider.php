@@ -17,7 +17,7 @@
 
 -------------------------------------------------------------------------*/
 
-$document   =   &JFactory::getDocument();
+$document   =   JFactory::getDocument();
 if($library ==1){
     $document->addScript('modules/mod_tz_portfolio_categories/js/jquery-1.7.2.min.js');
 }

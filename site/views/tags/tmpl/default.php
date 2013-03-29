@@ -26,11 +26,7 @@ $canEdit    = $params -> get('access-edit');
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
-
 ?>
-
-<link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">
-<script src="components/com_tz_portfolio/js/less-1.3.3.min.js" type="text/javascript"></script>
 
 <?php if($lists):?>
     <div class="TzTag">

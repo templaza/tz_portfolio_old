@@ -189,7 +189,7 @@ class TZ_PortfolioControllerArticle extends JControllerForm
 	}
 
     function tags(){
-        $model      = &JModelLegacy::getInstance('Tags','TZ_PortfolioModel',array('ignore_request' => true));
+        $model      = JModelLegacy::getInstance('Tags','TZ_PortfolioModel',array('ignore_request' => true));
         $model -> setState('term',JRequest::getString('term',null));
         echo json_encode($model -> getTags());
         die();

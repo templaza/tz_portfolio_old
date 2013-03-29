@@ -136,10 +136,26 @@ class TZ_PortfolioViewArticles extends JViewLegacy
 			JToolBarHelper::divider();
 		}
 
-		JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
-
         $doc    = JFactory::getDocument();
         $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/assets/style.css');
+        // Complie button
+        $compileButton   = '<button class="btn btn-small" ';
+        $compileButton  .= 'onclick=Joomla.submitbutton(\'action.lesscall\')';
+        $compileButton  .= '><i class="icon-check"></i>&nbsp;'.JText::_('COM_TZ_PORTFOLIO_COMPLIE_LESS_TO_CSS');
+        $compileButton  .= '</button> ';
+
+        //  JS Compress button
+        $compressButton   = '<button class="btn btn-small" ';
+        $compressButton  .= 'onclick=Joomla.submitbutton(\'action.jscompress\')';
+        $compressButton  .= '><i class="icon-check"></i>&nbsp;'.JText::_('COM_TZ_PORTFOLIO_COMPRESSION_JS');
+        $compressButton  .= '</button> ';
+
+        $bar -> appendButton('Custom',$compileButton,'compile');
+        $bar -> appendButton('Custom',$compressButton,'compress');
+        JToolBarHelper::divider();
+
+		JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
+
         // Special HTML workaround to get send popup working
         $videoTutorial    ='<a class="btn btn-small" onclick="Joomla.popupWindow(\'http://www.youtube.com/channel/UCykS6SX6L2GOI-n3IOPfTVQ/videos\', \''
             .JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS').'\', 800, 500, 1)"'.' href="#">'
@@ -151,7 +167,7 @@ class TZ_PortfolioViewArticles extends JViewLegacy
             .JText::_('COM_TZ_PORTFOLIO_WIKIPEDIA_TUTORIALS').'</a>';
 
 
-        $bar    = JToolBar::getInstance( 'toolbar' );
+
         $bar->appendButton('Custom',$videoTutorial);
         $bar->appendButton('Custom',$wikiTutorial);
 

@@ -22,7 +22,7 @@ defined('_JEXEC') or die;
 
 // Include the syndicate functions only once
 require_once dirname(__FILE__).'/helper.php';
-$document = &JFactory::getDocument();
+$document = JFactory::getDocument();
 $document->addStyleSheet('modules/mod_tz_portfolio_categories/css/mod_tz_portfolio_categories.css');
 $list = modTZ_PortfolioCategoriesHelper::getList($params);
 $view = $params->get('views');

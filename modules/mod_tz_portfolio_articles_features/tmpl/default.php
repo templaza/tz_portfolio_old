@@ -21,7 +21,7 @@
 defined('_JEXEC') or die;
 $showread = $params->get('readmore');
 $readtext = $params->get('readmoretext');
-$document = &JFactory::getDocument();
+$document = JFactory::getDocument();
 $document->addStyleSheet('modules/mod_tz_portfolio_articles_features/css/mod_tz_portfolio_articles_features.css')
 ?>
 <ul class="TzModFeature TzModFeature<?php echo $moduleclass_sfx; ?>">

@@ -46,6 +46,7 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
         $this -> assign('pagination',$this -> get('Pagination'));
         $this -> assign('Itemid',$active -> id);
         $this -> assign('limitstart',$state -> get('offset'));
+
         $model  = JModelLegacy::getInstance('Portfolio','TZ_PortfolioModel',array('ignore_request' => true));
         $model -> setState('params',$params);
         $this -> assign('char',$state -> get('char'));
@@ -53,17 +54,35 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
 
         $params = $this -> get('Params');
 
-        $doc    = JFactory::getDocument();
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/timeline/blog.css');
-        if($params -> get('tz_timeline_layout',null) == 'classic'):
+        $csscompress    = null;
+        if($params -> get('css_compression',0)){
+            $csscompress    = '.min';
+        }
 
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.easing.1.3.js"></script>');
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/blog.js"></script>');
+        $jscompress         = new stdClass();
+        $jscompress -> extfile  = null;
+        $jscompress -> folder   = null;
+        if($params -> get('js_compression',1)){
+            $jscompress -> extfile  = '.min';
+            $jscompress -> folder   = '/packed';
+        }
+
+        $doc    = JFactory::getDocument();
+
+        if($params -> get('tz_timeline_layout',null) == 'classic'):
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/timeline_classic'.$csscompress.'.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.easing.1.3'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/blog'.$jscompress -> extfile.'.js"></script>');
         else:
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.infinitescroll.min.js"></script>');
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.isotope.js"></script>');
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/html5.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/style.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.infinitescroll.min'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.isotope'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/html5'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/isotope'.$csscompress.'.css');
         endif;
 
         if($params -> get('tz_use_image_hover',1) == 1):
@@ -124,8 +143,9 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
         }
         
         if($params -> get('tz_use_lightbox',1) == 1){
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.fancybox.pack.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/assets/jquery.fancybox.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.fancybox.pack'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox'.$csscompress.'.css');
 
             $width      = null;
             $height     = null;
@@ -167,6 +187,12 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
         }
 
         if ($layout = $params -> get('tz_timeline_layout','default')) {
+            if($layout == 'default'){
+                $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
+                $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.$jscompress -> folder.
+                    '/tz_portfolio'.$jscompress -> extfile.'.js" type="text/javascript"></script>');
+            }
+
             $this->setLayout($layout);
         }
 

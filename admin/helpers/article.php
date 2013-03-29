@@ -73,7 +73,7 @@ class ArticleHTML
 //        if(!empty($_editor)){
 //            $id = ($id)?' id = '.$id:$name;
 //            //var_dump($id);
-//            $editor = &JFactory::getEditor();
+//            $editor = JFactory::getEditor();
 //            $html   = $editor -> display($name,$value,$width,$height,$col,$rows,$button,$id,$asset,$author,$params);
 //        }
 //        else{

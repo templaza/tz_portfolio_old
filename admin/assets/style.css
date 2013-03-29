@@ -1,3 +1,8 @@
+@import "../fonts/font-awesome-v3.0.2/css/font-awesome.css";
+.icon-check:before{
+    font-family: inherit !important;
+    font-size: 13px;
+}
 .icon-32-youtube{
     background: url('youtube.png') no-repeat;
 }

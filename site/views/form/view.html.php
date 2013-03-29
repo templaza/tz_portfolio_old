@@ -36,6 +36,7 @@ class TZ_PortfolioViewForm extends JViewLegacy
 	{
 		// Initialise variables.
 		$app		= JFactory::getApplication();
+        $doc        = JFactory::getDocument();
 		$user		= JFactory::getUser();
 
 		// Get model data.
@@ -94,9 +95,27 @@ class TZ_PortfolioViewForm extends JViewLegacy
 //        $this -> assign('listsGroup',$groupFields);
 
         $this -> assign('listsGroup',$this -> get('FieldsGroup'));
-        $this -> assign('listsTags',$this -> get('Tags'));
+        $this -> assign('listsTags',json_encode($this -> get('Tags')));
         $this -> assign('listAttach',$this -> get('Attachment'));
         $this -> assign('listEdit',$this -> get('FieldsContent'));
+        JModelLegacy::addIncludePath('administrator/components/com_tz_portfolio/models','TZ_PortfolioModel');
+        $modelTag   = JModelLegacy::getInstance('Tags','TZ_PortfolioModel');
+        $this -> assign('tagsSuggest',$modelTag -> getTagsName());
+
+        $csscompress    = null;
+        if($params -> get('css_compression',0)){
+            $csscompress    = '.min';
+        }
+
+        $jscompress         = new stdClass();
+        $jscompress -> extfile  = null;
+        $jscompress -> folder   = null;
+        if($params -> get('js_compression',1)){
+            $jscompress -> extfile  = '.min';
+            $jscompress -> folder   = '/packed';
+        }
+
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
         
 		parent::display($tpl);
 	}
