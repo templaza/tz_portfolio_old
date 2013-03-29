@@ -74,7 +74,7 @@ abstract class modTZ_PortfolioCategoriesHelper
                     .' GROUP BY a.id'
                     .' ORDER BY a.lft asc';
 
-      $db     = &JFactory::getDbo();
+      $db     = JFactory::getDbo();
       $db -> setQuery($query);
       if($items   = $db -> loadObjectList()){
           $i=0;
@@ -102,7 +102,7 @@ abstract class modTZ_PortfolioCategoriesHelper
       if($catIds && count($catIds) == 1){
           $query  = 'SELECT title FROM #__categories'
                     .' WHERE extension="com_content" AND id='.(int)$catIds[0];
-          $db     = &JFactory::getDbo();
+          $db     = JFactory::getDbo();
           $db -> setQuery($query);
           if($db -> query()){
               $rows   = $db -> loadObject();

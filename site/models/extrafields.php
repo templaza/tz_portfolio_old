@@ -171,7 +171,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
 
     function getParams(){
         $catId          = $this -> getState('category.id');
-//        $category       = &JModel::getInstance('Category','TZ_PortfolioModel',array('ignore_request' => true));
+//        $category       = JModel::getInstance('Category','TZ_PortfolioModel',array('ignore_request' => true));
 //        $category -> setState('category.id',$catId);
 //        $catParams      = new JRegistry($category -> getCategory() -> params);
 

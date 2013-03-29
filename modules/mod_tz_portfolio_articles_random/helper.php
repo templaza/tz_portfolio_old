@@ -49,7 +49,7 @@ class modTZ_PortfolioRandomHelper{
                           .' ORDER BY c.id ASC';
             }
 
-            $db     = &JFactory::getDbo();
+            $db     = JFactory::getDbo();
             $db -> setQuery($query);
 
             if(!$db -> query()){

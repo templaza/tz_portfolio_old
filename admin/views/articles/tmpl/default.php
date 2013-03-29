@@ -54,6 +54,7 @@ $sortFields = $this->getSortFields();
 		}
 		Joomla.tableOrdering(order, dirn, '');
 	}
+//    alert(document.getElementsByName('filter_order').value);
 </script>
     
 <form action="<?php echo JRoute::_('index.php?option=com_tz_portfolio&view=articles');?>" method="post" name="adminForm" id="adminForm">
@@ -268,6 +269,7 @@ $sortFields = $this->getSortFields();
             <input type="hidden" name="boxchecked" value="0" />
             <input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
             <input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
+            <input type="hidden" name="return" value="<?php echo base64_encode(JUri::getInstance() -> toString())?>">
             <?php echo JHtml::_('form.token'); ?>
         </div>
 </form>

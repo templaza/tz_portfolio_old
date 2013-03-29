@@ -37,7 +37,7 @@ if(!$this -> tagsSuggest){
 }
 $doc -> addScriptDeclaration('
     jQuery(document).ready(function(){
-        jQuery(".suggest").tzChosen({ source: '.$this -> tagsSuggest.', sourceEdit: '.$this -> listsTags.'});
+        jQuery(".suggest").tzChosen({ source: '.$this -> tagsSuggest.', sourceEdit: '.$this -> listsTags.',keys: ["\,","/"]});
     })
 ');
 

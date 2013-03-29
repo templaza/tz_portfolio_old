@@ -30,19 +30,17 @@ class plgContentTZ_Portfolio_Comment extends JPlugin
      *
      */
     function onTZPortfolioCommentDisplay($context, &$article, &$params, $page = 0){
-        if($context == 'com_tz_portfolio.comment'){
-            if($params -> get('show_comment') == 1){
-                if($params -> get('tz_comment_type') == 'jcomment'){
-                    return $this -> TZPortfolioJComment($context,$article,$params,$page);
-                }
-                elseif($params -> get('tz_comment_type') == 'facebook'){
-                    return $this -> TZPortfolioFacebookComment($context,$article,$params,$page);
-                }
-                elseif($params -> get('tz_comment_type') == 'disqus'){
-                    return $this -> TZPortfolioDisQusComment($context,$article,$params,$page);
-                }
-            }
-        }
+		if($params -> get('show_comment') == 1){
+			if($params -> get('tz_comment_type') == 'jcomment'){
+				return $this -> TZPortfolioJComment($context,$article,$params,$page);
+			}
+			elseif($params -> get('tz_comment_type') == 'facebook'){
+				return $this -> TZPortfolioFacebookComment($context,$article,$params,$page);
+			}
+			elseif($params -> get('tz_comment_type') == 'disqus'){
+				return $this -> TZPortfolioDisQusComment($context,$article,$params,$page);
+			}
+		}
     }
 
     /*JComment*/

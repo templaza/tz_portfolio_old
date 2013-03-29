@@ -19,7 +19,7 @@
 
 // no direct access
 defined('_JEXEC') or die;
-$document = &JFactory::getDocument();
+$document = JFactory::getDocument();
 $document->addStyleSheet('modules/mod_tz_portfolio_articles_popular/css/mod_tz_portfolio_articles_popular.css')
 ?>
 <ul class="TzModPopular TzModPopular<?php echo $moduleclass_sfx; ?>">

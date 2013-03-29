@@ -27,11 +27,7 @@ $doc    = JFactory::getDocument();
 
 <?php
 $params = &$this -> params;
-    $doc -> addCustomTag('<script src="components/com_tz_portfolio/js/tz_portfolio.js"></script>');
 ?>
-
-<link rel="stylesheet/less" type="text/css" href="components/com_tz_portfolio/css/tz_lib_style.less">
-<script src="components/com_tz_portfolio/js/less-1.3.3.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         function tz_init(defaultwidth){
@@ -186,7 +182,9 @@ $params = &$this -> params;
             });
 
             var $container = jQuery('#timeline');
+            $container.find('.element').css({opacity: 0});
             $container.imagesLoaded( function(){
+                $container.find('.element').css({opacity: 1});
                 $container.isotope({
                     itemSelector    : '.element',
                     layoutMode      : '<?php echo $layout[0];?>',

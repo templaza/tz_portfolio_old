@@ -259,7 +259,7 @@ class TZ_PortfolioModelUser extends JModelAdmin
                 $desPath        = $tzUserFolderPath.DIRECTORY_SEPARATOR.$desFileName;
 
                 if(JFile::exists($file['tmp_name'])){
-                    if(!JFile::upload($file['tmp_name'],$desPath)){
+                    if(!JFile::copy($file['tmp_name'],$desPath)){
                         $this -> setError(JText::_('Can not upload file'));
                         return false;
                     }
