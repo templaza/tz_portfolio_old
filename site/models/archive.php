@@ -60,7 +60,6 @@ class TZ_PortfolioModelArchive extends TZ_PortfolioModelArticles
 
 		// Get list limit
 		$app = JFactory::getApplication();
-        $params -> merge($app -> getParams());
 
 		$itemid = JRequest::getInt('Itemid', 0);
 		$limit = $app->getUserStateFromRequest('com_tz_portfolio.archive.list' . $itemid . '.limit', 'limit', $params->get('display_num'));

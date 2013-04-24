@@ -31,6 +31,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
         $this -> setState('article.id',$pk);
         $this -> setState('category.id',null);
         $this -> setState('params',null);
+        $this -> setState('orderby',null);
     }
 
     public function getExtraFields($articleId=null){
@@ -63,7 +64,14 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
             }
         }
         $orderBy    = null;
-        switch($params -> get('fields_order')){
+        $order      = null;
+        if($this -> getState('orderby')){
+            $order  = $this -> getState('orderby');
+        }
+        else{
+            $order  = $params -> get('fields_order');
+        }
+        switch($order){
             default:
                 $orderBy    = 'f.id DESC';
                 break;

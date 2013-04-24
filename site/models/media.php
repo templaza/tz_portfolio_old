@@ -72,7 +72,7 @@ class TZ_PortfolioModelMedia extends JModelLegacy
             $params = new JRegistry();
             $params -> loadString($rows -> param);
 
-            $params -> merge($this -> getCatParams($rows -> catid));
+//            $params -> merge($this -> getCatParams($rows -> catid));
 
             if($this -> _params)
                 $params -> merge($this -> _params);

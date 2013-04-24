@@ -79,7 +79,7 @@ if($this -> params -> get('tz_use_lightbox',1) == 1){
 				<?php if (in_array($article->access, $this->user->getAuthorisedViewLevels())) : ?>
 					<?php if ($this->params->get('list_show_hits', 1)) : ?>
 					<span class="list-hits badge badge-info pull-right">
-						<?php echo JText::sprintf('JGLOBAL_HITS_COUNT', $article->hits); ?>
+						<?php echo JText::sprintf('COM_CONTENT_ARTICLE_HITS', $article->hits); ?>
 					</span>
 					<?php endif; ?>
 					<?php if ($article->params->get('access-edit')) : ?>

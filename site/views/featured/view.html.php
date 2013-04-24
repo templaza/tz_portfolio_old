@@ -161,6 +161,8 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
                 $catParams -> loadString($category -> params);
             $catParams  = $catParams -> toArray();
 
+            $this -> category   = $category;
+
             if(count($catParams)>0){
                 foreach($catParams as $key => $val){
                     if(preg_match('/.*?article.*?/',$key)){
@@ -185,7 +187,7 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
             $pmodel -> setState('filter.contentid',$item -> id);
             $pluginItems    = $pmodel -> getItems();
             $pluginParams   = $pmodel -> getParams();
-            $item -> pluginparams   = $pluginParams;
+            $item -> pluginparams   = clone($pluginParams);
             
 			// Ignore content plugins on links.
 			if ($i < $numLeading + $numIntro)

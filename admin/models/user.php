@@ -209,7 +209,7 @@ class TZ_PortfolioModelUser extends JModelAdmin
         return false;
     }
 
-    function uploadImages($file){
+    function uploadImages($file,$currentImage=null){
         if($file){
             $maxSize    = 2*1024*1024;
             $arr        = array('image/jpeg','image/jpg','image/bmp','image/gif','image/png','image/ico');
@@ -245,37 +245,40 @@ class TZ_PortfolioModelUser extends JModelAdmin
                 }
 
                 //Upload image
-                if(!in_array($file['type'],$arr)){
-                    $this -> setError(JText::_('Invalid file type'));
-                    return false;
-                }
+                if(in_array($file['type'],$arr)){
 
-                if($file['size'] > $maxSize){
-                    $this -> setError(JText::_('This file size too large'));
-                    return false;
-                }
+                    if($file['size'] <= $maxSize){
 
-                $desFileName    = 'user_'.time().uniqid().'.'.JFile::getExt($file['name']);
-                $desPath        = $tzUserFolderPath.DIRECTORY_SEPARATOR.$desFileName;
+                        $desFileName    = 'user_'.time().uniqid().'.'.JFile::getExt($file['name']);
+                        $desPath        = $tzUserFolderPath.DIRECTORY_SEPARATOR.$desFileName;
 
-                if(JFile::exists($file['tmp_name'])){
-                    if(!JFile::copy($file['tmp_name'],$desPath)){
-                        $this -> setError(JText::_('Can not upload file'));
-                        return false;
+                        if(JFile::exists($file['tmp_name'])){
+                            if(!JFile::copy($file['tmp_name'],$desPath)){
+                                JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_CAN_NOT_UPLOAD_FILE'));
+                            }
+                            $image      = new JImage();
+                            $image -> loadFile($desPath);
+                            $params     = JComponentHelper::getParams('com_tz_portfolio');
+
+                            if($params -> get('tz_user_image_width',100))
+                                $width  = $params -> get('tz_user_image_width',100);
+
+                            $height     = ceil( ( ($image -> getHeight()) * $width ) / ($image -> getWidth()) );
+                            $image      = $image -> resize($width,$height);
+                            $type       = $this -> _getImageType($file['name']);
+                            $image -> toFile($desPath,$type);
+
+                            $this -> deleteImages($currentImage);
+
+                            return 'media/'.$tzFolder.'/'.$tzUserFolder.'/'.$desFileName;
+                        }
                     }
-                    $image      = new JImage();
-                    $image -> loadFile($desPath);
-                    $params     = JComponentHelper::getParams('com_tz_portfolio');
-
-                    if($params -> get('tz_user_image_width',100))
-                        $width  = $params -> get('tz_user_image_width',100);
-
-                    $height     = ceil( ( ($image -> getHeight()) * $width ) / ($image -> getWidth()) );
-                    $image      = $image -> resize($width,$height);
-                    $type       = $this -> _getImageType($file['name']);
-                    $image -> toFile($desPath,$type);
-
-                    return 'media/'.$tzFolder.'/'.$tzUserFolder.'/'.$desFileName;
+                    else{
+                        JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_TOO_LARGE'));
+                    }
+                }
+                else{
+                    JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_IMAGE_FILE_NOT_SUPPORTED'));
                 }
 
             }
@@ -286,36 +289,44 @@ class TZ_PortfolioModelUser extends JModelAdmin
                 $image  = new Services_Yadis_PlainHTTPFetcher();
                 $image  = $image -> get($file);
 
-                if(!in_array($image -> headers['Content-Type'],$arr)){
-                    $this -> setError(JText::_('Invalid file'));
-                    return false;
-                }
+                if(in_array($image -> headers['Content-Type'],$arr)){
 
-                if($image -> headers['Content-Length'] > $maxSize){
-                    $this -> setError(JText::_('This file size too large'));
-                    return false;
-                }
 
-                $desFileName    = 'user_'.time().uniqid().'.'
-                                  .str_replace('image/','',$image -> headers['Content-Type'] );
-                $desPath        = $tzUserFolderPath.DIRECTORY_SEPARATOR.$desFileName;
+                    if($image -> headers['Content-Length'] > $maxSize){
 
-                if(JFolder::exists($tzFolderPath)){
-                    if(!JFile::write($desPath,$image -> body)){
-                        $this -> setError(JText::_('Can not upload file'));
-                        return false;
+
+                        $this -> deleteImages($currentImage);
+
+                        $desFileName    = 'user_'.time().uniqid().'.'
+                                          .str_replace('image/','',$image -> headers['Content-Type'] );
+                        $desPath        = $tzUserFolderPath.DIRECTORY_SEPARATOR.$desFileName;
+
+                        if(JFolder::exists($tzFolderPath)){
+                            if(!JFile::write($desPath,$image -> body)){
+                                $this -> setError(JText::_('COM_TZ_PORTFOLIO_CAN_NOT_UPLOAD_FILE'));
+                                return false;
+                            }
+                            return 'media/'.$tzFolder.'/'.$tzUserFolder.'/'.$desFileName;
+                        }
+                    }else{
+                        JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_TOO_LARGE'));
                     }
-                    return 'media/'.$tzFolder.'/'.$tzUserFolder.'/'.$desFileName;
+                }
+                else{
+                    JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_IMAGE_FILE_NOT_SUPPORTED'));
                 }
             }
         }
-        return true;
+        if($currentImage){
+            return $currentImage;
+        }
+        return '';
     }
 
     function saveUser($data){
 
         if(count($data)<=0){
-            $this -> setError(JText::_('Can not find data'));
+            $this -> setError(JText::_('COM_TZ_PORTFOLIO_DATA_EMPTY'));
             return false;
         }
 
@@ -433,12 +444,7 @@ class TZ_PortfolioModelUser extends JModelAdmin
         }
 
         if($image){
-            $this -> deleteImages($currentImage);
-
-            if(!$userData['images'] = $this -> uploadImages($image)){
-                $this -> setError($this -> getError());
-                return false;
-            }
+            $userData['images'] = $this -> uploadImages($image,$currentImage);
         }
         else
             $userData['images'] = $currentImage;

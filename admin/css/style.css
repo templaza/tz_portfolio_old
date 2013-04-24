@@ -1,0 +1,30 @@
+/*@import "../fonts/font-awesome-v3.0.2/css/font-awesome.css";*/
+.icon-check:before{
+    font-family: inherit !important;
+    font-size: 13px;
+}
+.tz-icon-youtube{
+    background: url('../assets/youtube.png') no-repeat;
+    display: inline-block;
+}
+.tz-icon-wikipedia{
+    background: url('../assets/wikipedia.png') no-repeat;
+    display: inline-block;
+}
+.tz-icon-batch{
+    background: url('../assets/icon-32-batch.png') no-repeat;
+    display: inline-block;
+}
+.tz-icon-compile{
+    background: url('../assets/icon-32-compile.png') no-repeat;
+    display: inline-block;
+}
+.tz-icon-compress{
+    background: url('../assets/icon-32-compress.png') no-repeat;
+    display: inline-block;
+}
+.tz-icon-14{
+    background-size: 14px;
+    width: 14px;
+    height: 14px;
+}

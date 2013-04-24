@@ -26,7 +26,10 @@ jimport('joomla.application.component.controlleradmin');
  */
 class TZ_PortfolioControllerCategories extends JControllerAdmin
 {
-    function __construct($config = array()){
+    protected $input    = null;
+
+    public function __construct($config = array()){
+        $this -> input  = JFactory::getApplication() -> input;
         JFactory::getLanguage() -> load('com_categories');
         parent::__construct($config);
     }

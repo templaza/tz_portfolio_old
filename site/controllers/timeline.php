@@ -23,7 +23,7 @@ jimport('joomla.application.component.controller');
 
 class TZ_PortfolioControllerTimeLine extends JControllerLegacy
 {
-    function display(){
+    function display($cachable = false, $urlparams = array()){
         switch ($this -> getTask()){
             case 'timeline.ajax':
             case 'ajax':

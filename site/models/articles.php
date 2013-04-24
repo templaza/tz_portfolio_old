@@ -96,7 +96,6 @@ class TZ_PortfolioModelArticles extends JModelList
 		}
 		$this->setState('list.direction', $listOrder);
 
-//		$params = JComponentHelper::getParams('com_content');
         $params = $app -> getParams();
 
 		$this->setState('params', $params);

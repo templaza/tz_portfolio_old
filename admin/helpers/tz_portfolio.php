@@ -34,34 +34,39 @@ class TZ_PortfolioHelper
 	 */
 	public static function addSubmenu($vName)
 	{
-        JHtmlSidebar::addEntry(
+        $class  = 'JHtmlSidebar';
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $class  = 'JSubMenuHelper';
+        }
+
+        $class::addEntry(
             JText::_('COM_TZ_PORTFOLIO_SUBMENU_GROUP_FIELDS'),
             'index.php?option=com_tz_portfolio&view=fieldsgroup',
             $vName == 'fieldsgroup');
-        JHtmlSidebar::addEntry(
+        $class::addEntry(
 			JText::_('COM_TZ_PORTFOLIO_SUBMENU_FIELDS'),
 			'index.php?option=com_tz_portfolio&view=fields',
 			$vName == 'fields'
 		);
-        JHtmlSidebar::addEntry(
+        $class::addEntry(
 			JText::_('COM_TZ_PORTFOLIO_SUBMENU_CATEGORIES'),
 			'index.php?option=com_tz_portfolio&view=categories',
 			$vName == 'categories');
-		JHtmlSidebar::addEntry(
+        $class::addEntry(
 			JText::_('COM_TZ_PORTFOLIO_SUBMENU_ARTICLES'),
 			'index.php?option=com_tz_portfolio&view=articles',
 			$vName == 'articles'
 		);
-		JHtmlSidebar::addEntry(
+        $class::addEntry(
 			JText::_('COM_TZ_PORTFOLIO_SUBMENU_FEATURED_ARTICLES'),
 			'index.php?option=com_tz_portfolio&view=featured',
 			$vName == 'featured'
 		);
-        JHtmlSidebar::addEntry(
+        $class::addEntry(
             JText::_('COM_TZ_PORTFOLIO_SUBMENU_TAGS'),
             'index.php?option=com_tz_portfolio&view=tags',
             $vName == 'tags');
-        JHtmlSidebar::addEntry(
+        $class::addEntry(
             JText::_('COM_TZ_PORTFOLIO_SUBMENU_USERS'),
             'index.php?option=com_tz_portfolio&view=users',
             $vName == 'users');
@@ -82,13 +87,13 @@ class TZ_PortfolioHelper
 		$result	= new JObject;
 
 		if (empty($articleId) && empty($categoryId)) {
-			$assetName = 'com_content';
+			$assetName = 'com_tz_portfolio';
 		}
 		elseif (empty($articleId)) {
-			$assetName = 'com_content.category.'.(int) $categoryId;
+			$assetName = 'com_tz_portfolio.category.'.(int) $categoryId;
 		}
 		else {
-			$assetName = 'com_content.article.'.(int) $articleId;
+			$assetName = 'com_tz_portfolio.article.'.(int) $articleId;
 		}
 
 		$actions = array(

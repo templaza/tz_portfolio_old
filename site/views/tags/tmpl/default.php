@@ -60,38 +60,43 @@ JHtml::_('behavior.tooltip');
                     </div>
             <?php endif;?>
 
-                <?php $i=0;?>
+                <?php
+                    $i=0;
+                    $categories = JCategories::getInstance('Content');
+                    $media      = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+                    $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+                ?>
                 <?php foreach($lists as $row):?>
                     <?php
+
+                        $this -> get('state') -> set('tags.catid',$row -> catid);
+                        $itemType   = $this -> get('FindType');
+                        $itemId     = $this -> get('FindItemId');
+            
+                        $itemParams = new JRegistry($row -> attribs); //Get Article's Params
+
+                        $category   = $categories->get($row -> catid);
+                        $params = clone($this -> tagsParams);
+
+                        $catParams  = new JRegistry($category -> params);
+
+                        $params -> merge($catParams);
+
+                        $itemParams = new JRegistry($row -> attribs); //Get Article's Params
+                        $params -> merge($itemParams);
+
                         $tmpl   = null;
                         if($params -> get('tz_use_lightbox',1) == 1){
                             $tmpl   = '&tmpl=component';
                         }
-                        $this -> get('state') -> set('tags.catid',$row -> catid);
-                        $itemType   = $this -> get('FindType');
-                        $itemId     = $this -> get('FindItemId');
-
-                        $itemParams = new JRegistry($row -> attribs); //Get Article's Params
-
-                        $itemId     = $this -> get('FindItemId');
-
-                        $tzRedirect = null;
-                        if($itemParams -> get('tz_portfolio_redirect')){
-                            $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-                        }
-                        if($tzRedirect == 'p_article'){
-                            $itemType = 1;
-                        }
-                        elseif($tzRedirect == 'article'){
-                            $itemType = 0;
-                        }
-                
                         //Check redirect to view article
-                        if($itemType){
-                            $commentLink    = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid),true,-1);
+                        if($params -> get('tz_portfolio_redirect','p_article') == 'article'){
+                            $row ->link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);
+                            $commentLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
                         }
                         else{
-                            $commentLink    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
+                            $row ->link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid).$tmpl);
+                            $commentLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid),true,-1);
                         }
                     ?>
                     <div class="clr"></div>
@@ -104,23 +109,12 @@ JHtml::_('behavior.tooltip');
                             ?>
 
                                 <?php
-                                   $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
-                                    $mediaParams    = $this -> mediaParams;
-                                    $mediaParams -> merge($media -> getCatParams($row -> catid));
 
-                                    $media -> setParams($mediaParams);
-                                    $listMedia      = $media -> getMedia($row -> id);
+                                     $listMedia      = $media -> getMedia($row -> id);
 
-                                    $this -> assign('mediaParams',$mediaParams);
+                                    $this -> assign('mediaParams',$params);
                                     $this -> assign('listMedia',$listMedia);
-
-                                    //Check redirect to view article
-                                    if($itemType){
-                                        $this -> assign('itemLink',JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid).$tmpl));
-                                    }
-                                    else{
-                                        $this -> assign('itemLink',JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl));
-                                    }
+                                    $this -> assign('itemLink',$row ->link);
 
                                     echo $this -> loadTemplate('media');
                                 ?>
@@ -277,25 +271,15 @@ JHtml::_('behavior.tooltip');
                             <?php endif; ?>
 
                             <?php
-                            $app    = JFactory::getApplication();
-                            $menus  = $app -> getMenu('site');
-                            $_menu  = $menus ->getItem($itemId);
                             $exParams   = clone($params);
-                            $exParams -> merge($_menu -> params);
+                            $exParams -> merge($catParams);
+                            $exParams -> merge($itemParams);
 
-                            $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
                             $extraFields -> setState('article.id',$row -> id);
-                            $extraFields -> setState('category.id',$row -> catid);
 
-                            $extraParams    = $extraFields -> getParams();
-                            $itemParams     = new JRegistry($row -> attribs);
-
-                            if($itemParams -> get('tz_fieldsid'))
-                                $extraParams -> set('tz_fieldsid',$itemParams -> get('tz_fieldsid'));
-
-                            $extraFields -> setState('params',$extraParams);
-                            $extraFields -> setState('orderby',$exParams -> get('fields_order',null));
-                            $this -> item -> params = $extraParams;
+                            $extraFields -> setState('params',$exParams);
+                            
+                            $this -> item -> params = clone($exParams);
                             $this -> assign('tagFields',$extraFields -> getExtraFields());
                             ?>
                             <?php echo $this -> loadTemplate('extrafields');?>

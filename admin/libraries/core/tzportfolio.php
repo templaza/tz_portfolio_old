@@ -16,15 +16,14 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
-
 function tzimport($package)
 {
     $path = COM_TZ_PORTFOLIO_ADMIN_PATH . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR
         . strtolower($package) . '.php';
     if (file_exists($path)) {
-        //var_dump($path); die();
         include_once $path;
     } else {
         trigger_error('tzimport not found object: ' . $package, E_USER_ERROR);
     }
 }
+

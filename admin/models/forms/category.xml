@@ -192,7 +192,7 @@
 		filter="rules"
 		validate="rules"
 		class="inputbox"
-		component="com_content"
+		component="com_tz_portfolio"
 		section="category"/>
 
 	<fields name="params">

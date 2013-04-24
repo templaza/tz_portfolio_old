@@ -70,6 +70,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
             $this -> assign('listEdit',$this -> get('FieldsContent'));
             $modelTag   = JModelLegacy::getInstance('Tags','TZ_PortfolioModel');
             $this -> assign('tagsSuggest',$modelTag -> getTagsName());
+//            $this -> assign('tagsSuggest',$modelTag -> getItems());
 
             if($model  = JModelLegacy::getInstance('Plugin','TZ_PortfolioModel',array('ignore_request' => true))){
                 $model -> setState('com_tz_portfolio.plugin.articleId',JRequest::getInt('id',null));
@@ -131,7 +132,5 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER_EDIT');
 
-//        JToolBarHelper::customX('youtubeHelper','youtube','','COM_TZ_PORTFOLIO_VIDEO_TUTORIALS');
-//        JToolBarHelper::customX('wikipediaHelper','wikipedia','','COM_TZ_PORTFOLIO_WIKIPEDIA_TUTORIALS');
 	}
 }

@@ -438,6 +438,23 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
         $this -> pagNav = new JPagination($total,$limitstart,$limit);
 
+        switch ($params -> get('orderby_pri')){
+            default:
+                $cateOrder  = null;
+                break;
+            case 'alpha' :
+				$cateOrder = 'cc.path, ';
+				break;
+
+			case 'ralpha' :
+				$cateOrder = 'cc.path DESC, ';
+				break;
+
+			case 'order' :
+				$cateOrder = 'cc.lft, ';
+				break;
+        }
+        
         switch ($params -> get('orderby_sec')){
             default:
                 $orderby    = 'id DESC';
@@ -485,7 +502,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                   .' WHERE c.state = 1'
                   .$where
                   .' GROUP BY c.id'
-                  .' ORDER BY c.created DESC,'.$orderby;
+                  .' ORDER BY '.$cateOrder.'c.created DESC,'.$orderby;
 
         if($params -> get('tz_portfolio_layout') == 'default')
             $db -> setQuery($query,$this -> pagNav -> limitstart,$this -> pagNav -> limit);
@@ -578,7 +595,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 $pmodel -> setState('filter.contentid',$item -> id);
                 $pluginItems    = $pmodel -> getItems();
                 $pluginParams   = $pmodel -> getParams();
-                $item -> pluginparams   = $pluginParams;
+                $item -> pluginparams   = clone($pluginParams);
                 
                 // Add feed links
                 if (!JRequest::getCmd('format',null) AND !JRequest::getCmd('type',null)) {

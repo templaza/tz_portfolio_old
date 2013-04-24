@@ -18,6 +18,7 @@
 -------------------------------------------------------------------------*/
 
 defined('JPATH_BASE') or die;
+include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/defines.php';
 
 /**
  * Supports a modal article picker.
@@ -76,15 +77,37 @@ class JFormFieldModal_Tags extends JFormField
 		}
 		$title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
 
-		// The current user display field.
-		$html[] = '<div class="input-append">';
+		// The current tag display field.
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){ // If the joomla's version is more than or equal to 3.0
+            $html[] = '<div class="fltlft">';
+        }
+        else{
+		    $html[] = '<div class="input-append">';
+        }
+
 		$html[] = '  <input type="text" id="'.$this->id.'_name" value="'.$title.'" disabled="disabled" size="35" />';
 
+        // If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $html[] = '</div>';
+        }
+
+        $title      = JText::_('COM_TZ_PORTFOLIO_SELECT_TAGS_BUTTON_DESC');
+        $textLink   = '<i class="icon-file"></i>&nbsp;'.JText::_('COM_TZ_PORTFOLIO_SELECT_TAGS_BUTTON');
+        $class      = 'modal btn';
+
+        // The user select button.
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){ // If the joomla's version is more than or equal to 3.0
+            $html[]     = '<div class="button2-left">';
+            $html[]     = ' <div class="blank">';
+            $textLink   = JText::_('COM_TZ_PORTFOLIO_SELECT_TAGS_BUTTON');
+            $class      = 'modal modal_jform_tags';
+        }
+        
 		// The user select button.
-		$html[] = '	<a class="modal btn" title="'.JText::_('COM_TZ_PORTFOLIO_SELECT_TAGS_BUTTON_DESC').'"'
+		$html[] = '	<a class="'.$class.'" title="'.$title.'"'
             .' href="'.$link.'&amp;'.JSession::getFormToken().'=1" rel="{handler: \'iframe\', size: {x: 800, y: 450}}">'
-            .'<i class="icon-file"></i>&nbsp;'
-            .JText::_('COM_TZ_PORTFOLIO_SELECT_TAGS_BUTTON').'</a>';
+            .$textLink.'</a>';
 		$html[] = '</div>';
 
 		// The active article id field.
