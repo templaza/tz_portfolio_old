@@ -1,4 +1,4 @@
-# TZ Portfolio v3 - Joomla 3.0
+# TZ Portfolio v3 - Joomla 2.5 and 3.0
 
 If you are a Joomla lover, you must see that is the best Content management system in the world (com_content). But the reality is that this system has not satisfied all of our needs. That why we build TZ Portfolio, which is an ideal content management system to fulfill all weaknesses of com_content.
 
@@ -14,11 +14,9 @@ With TZ Portfolio you can own a smart blog, a flexible portfolio, and more than 
 
 Try it now to feel the perfection! 
 
-Documentation can be found on the wiki project page: http://wiki.templaza.com/TZ_Portfolio:Overview
+Documentation can be found on the wiki project page: http://wiki.templaza.com/TZ_Portfolio_v3:Overview
 
 Demo: http://demo.tzportfolio.com/
-
-Version for Joomla 2.5.x: https://github.com/templaza/tz_portfolio2
 
 *** Changelog ***
 
