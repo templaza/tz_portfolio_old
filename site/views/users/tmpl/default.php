@@ -59,39 +59,46 @@ JHtml::_('behavior.framework');
                     </div>
             <?php endif;?>
 
-                <?php $i=0;?>
+                <?php
+                 $i=0;
+                    $categories = JCategories::getInstance('Content');
+                    $media      = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+                    $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+                ?>
                 <?php foreach($lists as $row):?>
                     <?php
+                        $this -> get('state') -> set('users.catid',$row -> catid);
+                        $itemType   = $this -> get('FindType');
+                        $itemId     = $this -> get('FindItemId');
+
+                        $app    = JFactory::getApplication();
+                        $menus  = $app -> getMenu('site');
+                        $_menu  = $menus ->getItem($itemId);
+
+                        $itemParams = new JRegistry($row -> attribs); //Get Article's Params
+
+                        $category   = $categories->get($row -> catid);
+                        $params = clone($this -> params);
+
+                        $catParams  = new JRegistry($category -> params);
+
+                        $params -> merge($catParams);
+
+                        $itemParams = new JRegistry($row -> attribs); //Get Article's Params
+                        $params -> merge($itemParams);
+
                         $tmpl   = null;
                         if($params -> get('tz_use_lightbox',1) == 1){
                             $tmpl   = '&tmpl=component';
                         }
-                        $this -> get('state') -> set('users.catid',$row -> catid);
-                        $itemType   = $this -> get('FindType');
-
-                        $itemParams = new JRegistry($row -> attribs); //Get Article's Params
-                
-                        $_itemId     = $this -> get('FindItemId');
-
-                        $tzRedirect = null;
-                        if($itemParams -> get('tz_portfolio_redirect')){
-                            $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-                        }
-
-                        if($tzRedirect == 'p_article'){
-                            $itemType = 1;
-                        }
-                        elseif($tzRedirect == 'article'){
-                            $itemType = 0;
-                        }
-                
-                        if($itemType){
-                            $itemLink       = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid).$tmpl);
-                            $commentLink    = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid),true,-1);
+                        //Check redirect to view article
+                        if($params -> get('tz_portfolio_redirect','p_article') == 'article'){
+                            $row ->link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);
+                            $commentLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
                         }
                         else{
-                            $itemLink       = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);
-                            $commentLink    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
+                            $row ->link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid).$tmpl);
+                            $commentLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid),true,-1);
                         }
                     ?>
                     <div class="<?php if($i == 0): echo 'TzItemsLeading'; else: echo 'TzItemsRow row-0'; endif;?>">
@@ -102,19 +109,13 @@ JHtml::_('behavior.framework');
                                          OR $params -> get('show_video',1) == 1):
                             ?>
                                 <?php
-                                $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
-                                $mediaParams    = $this -> mediaParams;
-                                $mediaParams -> merge($media -> getCatParams($row -> catid));
+                                    $listMedia      = $media -> getMedia($row -> id);
 
-                                $media -> setParams($mediaParams);
-                                $listMedia      = $media -> getMedia($row -> id);
+                                    $this -> assign('mediaParams',$params);
+                                    $this -> assign('listMedia',$listMedia);
+                                    $this -> assign('itemLink',$row ->link);
 
-                                $this -> assign('mediaParams',$mediaParams);
-                                $this -> assign('listMedia',$listMedia);
-
-                                $this -> assign('itemLink',$itemLink);
-
-                                echo $this -> loadTemplate('media');
+                                    echo $this -> loadTemplate('media');
                                 ?>
                             <?php endif;?>
 
@@ -251,25 +252,15 @@ JHtml::_('behavior.framework');
                             <?php endif; ?>
 
                             <?php
-                                $app    = JFactory::getApplication();
-                                $menus  = $app -> getMenu('site');
-                                $_menu  = $menus ->getItem($_itemId);
-                                $exParams   = $params;
-                                $exParams -> merge($_menu -> params);
+                                $exParams   = clone($params);
+                                $exParams -> merge($catParams);
+                                $exParams -> merge($itemParams);
 
-                                $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
                                 $extraFields -> setState('article.id',$row -> id);
-                                $extraFields -> setState('category.id',$row -> catid);
 
-                                $extraParams    = $extraFields -> getParams();
-                                $itemParams     = new JRegistry($row -> attribs);
+                                $extraFields -> setState('params',$exParams);
 
-                                if($itemParams -> get('tz_fieldsid'))
-                                    $extraParams -> set('tz_fieldsid',$itemParams -> get('tz_fieldsid'));
-
-                                $extraFields -> setState('params',$extraParams);
-                                $this -> item -> params = $extraParams;
-                                $extraFields -> setState('orderby',$exParams -> get('fields_order'));
+                                $this -> item -> params = clone($exParams);
                                 $this -> assign('userFields',$extraFields -> getExtraFields());
                             ?>
                             <?php echo $this -> loadTemplate('extrafields');?>
@@ -287,13 +278,13 @@ JHtml::_('behavior.framework');
 
                             <?php if ($params->get('show_readmore',1) && $row->readmore) :
                                 if ($params->get('access-view')) :
-                                    $link   = $itemLink;
+                                    $link   = $row ->link;
                                 else :
                                     $menu = JFactory::getApplication()->getMenu();
                                     $active = $menu->getActive();
                                     $itemId = $active->id;
                                     $link1 = JRoute::_('index.php?option=com_users&amp;view=login&amp;Itemid=' . $itemId);
-                                    $returnURL   = $itemLink;
+                                    $returnURL   = $row ->link;
                                     $link = new JURI($link1);
                                     $link->setVar('return', base64_encode($returnURL));
                                 endif;

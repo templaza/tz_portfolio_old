@@ -33,7 +33,7 @@ $loggeduser = JFactory::getUser();
 ?>
 
 <form action="<?php echo JRoute::_('index.php?option=com_tz_portfolio&view=users');?>" method="post" name="adminForm" id="adminForm">
-	<?php if(!empty( $this->sidebar)): ?>
+	<?php if(!empty( $this->sidebar) AND COM_TZ_PORTFOLIO_JVERSION_COMPARE): ?>
 		<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
 		</div>
@@ -46,14 +46,22 @@ $loggeduser = JFactory::getUser();
 			<input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('COM_USERS_SEARCH_USERS'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('COM_USERS_SEARCH_USERS'); ?>" />
 		</div>
 		<div class="btn-group pull-left">
-			<button type="submit" class="btn tip hasTooltip"
+			<button type="submit" class="btn hasTooltip"
                     data-original-title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i>
             </button>
-			<button type="button" class="btn tip hasTooltip"
+			<button type="button" class="btn hasTooltip"
                     onclick="document.id('filter_search').value='';this.form.submit();"
                     data-original-title="<?php echo JText::_('JSEARCH_RESET'); ?>"><i class="icon-remove"></i></button>
 		</div>
 	</div>
+
+    <?php // If the joomla's version is more than or equal to 3.0 ?>
+    <?php if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
+    <div class="filter-select">
+        <?php echo $this->sidebar; ?>
+    </div>
+    <?php endif;?>
+
 	<div class="clearfix"> </div>
 	<table class="table table-striped">
 		<thead>
@@ -183,6 +191,7 @@ $loggeduser = JFactory::getUser();
 	<input type="hidden" name="boxchecked" value="0" />
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
+    <input type="hidden" name="return" value="<?php echo base64_encode(JUri::getInstance() -> toString())?>">
 	<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>

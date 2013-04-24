@@ -147,27 +147,14 @@ class TZ_PortfolioModelCategories extends JModelList
             return false;
         }
 
-
-
-//        if($default==null)
-//            $fieldsgroup  = '<option value="">'.JText::_('COM_TZ_PORTFOLIO_OPTION_SELECT_FIELDS_GROUP').'</option>';
-//        else
-//            $fieldsgroup  = '<option value="">'.JText::_('COM_TZ_PORTFOLIO_OPTION_INHERIT_CATEGORY').'</option>';
-
-
         if($rows2 = $dbo -> loadObjectList()){
 
             $fieldsgroup[]  = JText::_('COM_TZ_PORTFOLIO_OPTION_INHERIT_CATEGORY');
             foreach($rows2 as $row){
                 $fieldsgroup[$row -> id]    = $row -> name;
-    //            $fieldsgroup  = $fieldsgroup.'<option value="'.$row -> id.'"'
-    //                              .(($catid == $row -> id)?' selected="selected"':'').'>&nbsp;&nbsp;'.$row -> name.'</option>';
             }
         }
 
-//        $fieldsgroup  = '<select name="filter_group" class="inputbox" onchange="this.form.submit();">'
-//                        .$fieldsgroup
-//                        .'</select>';
 
         return $fieldsgroup;
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
     <layout title="com_tz_portfolio_article_tags_view_default_title" option="com_tz_portfolio_article_tags_view_default_option">
-        <!--<help-->
-            <!--key = "JHELP_MENUS_MENU_ITEM_ARTICLE_SINGLE_ARTICLE"-->
-        <!--/>-->
+        <help
+            url="http://wiki.templaza.com/TZ_Portfolio_v3:How_to_use#How_to_create_a_Tag_Page"
+        />
         <message>
             <![CDATA[com_tz_portfolio_article_tags_view_default_desc]]>
         </message>
@@ -361,6 +361,16 @@
             </field>
             <field type="spacer" name="spacer2" hr="true"/>
 
+            <field name="orderby_pri"
+                   type="list"
+                   label="JGLOBAL_CATEGORY_ORDER_LABEL"
+                   description="JGLOBAL_CATEGORY_ORDER_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">JGLOBAL_NO_ORDER</option>
+                <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+                <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+                <option value="order">JGLOBAL_CATEGORY_MANAGER_ORDER</option>
+            </field>
             <field name="orderby_sec"
                    type="list"
                    label="JGLOBAL_Article_Order_Label"

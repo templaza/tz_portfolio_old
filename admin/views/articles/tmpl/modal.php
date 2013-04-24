@@ -27,6 +27,7 @@ if (JFactory::getApplication()->isSite()) {
 require_once JPATH_ROOT . '/components/com_tz_portfolio/helpers/route.php';
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+JHtml::_('behavior.framework');
 JHtml::_('bootstrap.tooltip');
 JHtml::_('formbehavior.chosen', 'select');
 

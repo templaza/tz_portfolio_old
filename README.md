@@ -22,6 +22,10 @@ Version for Joomla 2.5.x: https://github.com/templaza/tz_portfolio2
 
 *** Changelog ***
 
+04/24/2013 - 3.0.9
+
+	Synchronize Joomla 3.0 and Joomla 2.5
+
 03/19/13 - 3.0.8
 
     Can compile LESS to CSS

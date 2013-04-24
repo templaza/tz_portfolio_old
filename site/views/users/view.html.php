@@ -100,12 +100,14 @@ class TZ_PortfolioViewUsers extends JViewLegacy
 
                         if($content)
                             $content    = json_decode($content -> body);
-                        $content    = $content -> response;
-                        if(is_array($content)){
-                            $row -> commentCount	= count($content);
-                        }
-                        else{
-                            $row -> commentCount   = 0;
+                        if($content){
+                            $content    = $content -> response;
+                            if(is_array($content)){
+                                $row -> commentCount	= count($content);
+                            }
+                            else{
+                                $row -> commentCount   = 0;
+                            }
                         }
                     }
                 }
@@ -139,9 +141,9 @@ class TZ_PortfolioViewUsers extends JViewLegacy
 
                 //Get plugin Params for this article
                 $pmodel -> setState('filter.contentid',$row -> id);
-                $pluginItems    = $pmodel -> getItems();
-                $pluginParams   = $pmodel -> getParams();
-                $row -> pluginparams    = $pluginParams;
+                $pluginItems            = $pmodel -> getItems();
+                $pluginParams           = $pmodel -> getParams();
+                $row -> pluginparams    = clone($pluginParams);
 
                 JPluginHelper::importPlugin('tz_portfolio');
                 $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.users', &$row, &$params,&$pluginParams, $state -> get('offset')));

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
+    <!-- START PARAMETERS FOR ALL PAGE -->
     <fieldset name="tz_fieldset_general" label="COM_TZ_PORTFOLIO_FIELDSET_GENERAL"
             description="COM_TZ_PORTFOLIO_CONFIG_SETTINGS_DESC">
         <field name="tz_portfolio_redirect" type="list" label="COM_TZ_PORTFOLIO_REDIRECT"
@@ -100,9 +101,10 @@
 			<option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
 			<option value="order">JGLOBAL_ARTICLE_MANAGER_ORDER</option>
         </field>
-        <field type="spacer" name="spacer5" hr="true"/>
     </fieldset>
+    <!-- END PARAMETERS FOR ALL PAGE -->
 
+    <!-- START PARAMETERS FOR THE PORTFOLIO AND THE TIMELINE PAGE -->
     <fieldset name="tz_fieldset_portfolio_timeline"
               label="COM_TZ_PORTFOLIO_FIELDSET_PORTFOLIO_TIMELINE"
               description="COM_TZ_PORTFOLIO_FIELDSET_PORTFOLIO_TIMELINE_DESC">
@@ -188,9 +190,10 @@
             <option value="year">COM_TZ_PORTFOLIO_YEAR</option>
             <option value="month-year">COM_TZ_PORTFOLIO_MONTH_YEAR</option>
         </field>
-        <field name="spacer12" type="spacer" hr="true"/>
     </fieldset>
+    <!-- END PARAMETERS FOR THE PORTFOLIO AND THE TIMELINE PAGE -->
 
+    <!-- START PARAMETERS FOR THE GALLERY PAGE -->
     <fieldset name="tz_fieldset_gallery" label="COM_TZ_PORTFOLIO_FIELDSET_GALLERY"
               description="COM_TZ_PORTFOLIO_FIELDSET_GALLERY_DESC">
         <field name="show_article_not_image" type="radio"
@@ -228,9 +231,10 @@
         <field name="row_count" type="text" default="7"
                label="COM_TZ_PORTFOLIO_TZ_GALLERY_ROW_COUNT"
                description="COM_TZ_PORTFOLIO_TZ_GALLERY_ROW_COUNT_DESC"/>
-        <field name="spacer13" type="spacer" hr="true"/>
     </fieldset>
+    <!-- END PARAMETERS FOR THE GALLERY PAGE -->
 
+    <!-- START PARAMETERS FOR THE TAG AND THE USER PAGE -->
     <fieldset name="tz_fieldset_tag_user" label="COM_TZ_PORTFOLIO_FIELDSET_TAG_USER"
               description="COM_TZ_PORTFOLIO_FIELDSET_TAG_USER_DESC">
         <field name="tz_portfolio_spacer_tag" type="spacer"
@@ -296,7 +300,9 @@
             <option value="1">JSHOW</option>
         </field>
     </fieldset>
+    <!-- END PARAMETERS FOR THE GALLERY PAGE -->
 
+    <!-- START THE IMAGE'S PARAMETERS FOR ALL PAGE -->
     <fieldset name="tz_fieldset_image"
               label="COM_TZ_PORTFOLIO_FIELDSET_IMAGE"
               description="COM_TZ_PORTFOLIO_CONFIG_SETTINGS_DESC">
@@ -388,9 +394,10 @@
             <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
             <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
         </field>
-        <field name="spacer1" type="spacer" hr="true"/>
     </fieldset>
+    <!-- END THE IMAGE'S PARAMETERS FOR ALL PAGE -->
 
+    <!-- START THE IMAGE SLIDER'S PARAMETERS FOR ALL PAGE -->
     <fieldset name="tz_fieldset_image_slider" label="COM_TZ_PORTFOLIO_FIELDSET_IMAGE_SLIDER"
               description="COM_TZ_PORTFOLIO_CONFIG_SETTINGS_DESC">
         <field name="show_image_gallery" type="radio"
@@ -534,9 +541,10 @@
         <field name="image_gallery_animation_duration" type="text"
                default="600"
                label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_DURATION"/>
-        <field name="spacer7" type="spacer" hr="true"/>
     </fieldset>
+    <!-- END THE IMAGE SLIDER'S PARAMETERS FOR ALL PAGE -->
 
+    <!-- START PARAMETERS FOR THE VIDEO -->
     <fieldset name="tz_fieldset_video" label="COM_TZ_PORTFOLIO_FIELDSET_VIDEO">
         <field name="show_video"
                type="radio" class="btn-group"
@@ -549,7 +557,9 @@
         <field name="video_width" type="text" label="COM_TZ_PORTFOLIO_VIDEO_WIDTH"/>
         <field name="video_height" type="text" label="COM_TZ_PORTFOLIO_VIDEO_HEIGHT"/>
     </fieldset>
+    <!-- END PARAMETERS FOR THE VIDEO -->
 
+    <!-- START PARAMETERS FOR THE GOOGLE MAP -->
     <fieldset name="tz_fieldset_google_map" label="COM_TZ_PORTFOLIO_FIELDSET_GOOGLE_MAP"
               description="COM_TZ_PORTFOLIO_FIELDSET_GOOGLE_MAP_DESC">
         <field name="tz_show_gmap" type="radio"
@@ -619,7 +629,10 @@
                filter="raw"
                label="COM_TZ_PORTFOLIO_GMAP_CUSTOM_TOOLTIP"/>
     </fieldset>
+    <!-- END PARAMETERS FOR THE GOOGLE MAP -->
 
+
+    <!-- START THE LIGHTBOX'S PARAMETERS FOR ALL PAGE -->
     <fieldset name="tz_fieldset_lightbox" label="COM_TZ_PORTFOLIO_FIELDSET_LIGHTBOX"
               description="COM_TZ_PORTFOLIO_CONFIG_SETTINGS_DESC">
         <field type="radio" name="tz_use_lightbox"
@@ -653,7 +666,9 @@
                label="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT"
                description="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT_DESC"/>
     </fieldset>
+    <!-- END THE LIGHTBOX'S PARAMETERS FOR ALL PAGE -->
 
+    <!-- START THE CLOUD ZOOM IMAGE'S PARAMETERS FOR THE DETAIL PAGE -->
     <fieldset name="tz_fieldset_cloud_zoom" label="COM_TZ_PORTFOLIO_FIELDSET_CLOUD_ZOOM"
               description="COM_TZ_PORTFOLIO_CONFIG_SETTINGS_DESC">
         <field name="useCloudZoom"
@@ -733,7 +748,9 @@
                label="COM_TZ_PORTFOLIO_TITLE_OPACITY"
                description="COM_TZ_PORTFOLIO_TITLE_OPACITY_DESC"/>
     </fieldset>
+    <!-- END THE CLOUD ZOOM IMAGE'S PARAMETERS FOR THE DETAIL PAGE -->
 
+    <!-- START THE SOCIAL'S AND THE COMMENT'S PARAMETERS FOR THE DETAIL PAGE -->
     <fieldset name="tz_fieldset_social_comment"
               label="COM_TZ_PORTFOLIO_SOCIAL_NETWORK_COMMENTS_FIELDSET_LABEL"
               description="COM_TZ_PORTFOLIO_CONFIG_SETTINGS_DESC">
@@ -765,7 +782,7 @@
                label="COM_TZ_PORTFOLIO_DISQUS_SUBDOMAIN"
                description="COM_TZ_PORTFOLIO_DISQUS_SUBDOMAIN_DESC"/>
         <field name="disqusApiSecretKey" type="text"
-               size="10"
+               size="50"
                default="DGBlgtq5QMvrAKQaiLh0yqC9GE82jYIHrF3W43go0rks9UBeiho4sLAYadcMks4x"
                label="COM_TZ_PORTFOLIO_DISQUS_API_SECRET_KEY"
                description="COM_TZ_PORTFOLIO_DISQUS_API_SECRET_KEY_DESC"/>
@@ -807,7 +824,9 @@
             <option value="1">JSHOW</option>
         </field>
     </fieldset>
+    <!-- START THE SOCIAL'S AND THE COMMENT'S PARAMETERS FOR THE DETAIL PAGE -->
 
+    <!-- START PARAMETERS FOR THE ARTICLE -->
     <fieldset name="articles"
               label="JGLOBAL_ARTICLES"
               description="COM_CONTENT_CONFIG_ARTICLE_SETTINGS_DESC">
@@ -1050,7 +1069,9 @@
             <option value="rhits">JGLOBAL_LEAST_HITS</option>
         </field>
 	</fieldset>
+    <!-- END PARAMETERS FOR THE ARTICLE -->
 
+    <!-- START PARAMETERS FOR THE EDITING LAYOUT -->
 	<fieldset name="editinglayout"
               label="COM_CONTENT_EDITING_LAYOUT"
               description="COM_CONTENT_CONFIG_EDITOR_LAYOUT">
@@ -1138,7 +1159,9 @@
             <option value="none">COM_CONTENT_NONE</option>
 		</field>
     </fieldset>
+    <!-- END PARAMETERS FOR THE EDITING LAYOUT -->
 
+    <!-- START PARAMTERS FOR THE CATEGORY -->
     <fieldset name="category"
               label="JCATEGORY"
               description="COM_CONTENT_CONFIG_CATEGORY_SETTINGS_DESC">
@@ -1218,7 +1241,9 @@
             <option value="1">JSHOW</option>
 		</field>
 	</fieldset>
+    <!-- END PARAMETERS FOR THE CATEGORY -->
 
+    <!-- START PARAMTERS FOR CATEGORIES -->
 	<fieldset name="categories"
               label="JCATEGORIES"
               description="COM_CONTENT_CONFIG_CATEGORIES_SETTINGS_DESC">
@@ -1266,7 +1291,9 @@
             <option value="1">JSHOW</option>
         </field>
 	</fieldset>
+    <!-- END PARAMETERS FOR CATEGORIES -->
 
+    <!-- START PARAMTERS FOR THE BLOG PAGE -->
 	<fieldset name="blog_default_parameters"
               label="COM_CONTENT_CONFIG_BLOG_SETTINGS_LABEL"
               description="COM_CONTENT_CONFIG_BLOG_SETTINGS_DESC">
@@ -1314,7 +1341,9 @@
             <option value="5">J5</option>
         </field>
     </fieldset>
+    <!-- END PARAMETERS FOR THE BLOG PAGE -->
 
+    <!-- START PARAMETERS FOR THE LIST -->
     <fieldset name="list_default_parameters"
               label="JGLOBAL_LIST_LAYOUT_OPTIONS"
               description="COM_CONTENT_CONFIG_LIST_SETTINGS_DESC">
@@ -1378,7 +1407,9 @@
             <option value="1">JSHOW</option>
 		</field>
 	</fieldset>
+    <!-- END PARAMETERS FOR THE LIST -->
 
+    <!-- START SHARED'S PARAMETERS  -->
 	<fieldset name="shared"
               label="COM_CONTENT_SHARED_LABEL"
               description="COM_CONTENT_SHARED_DESC">
@@ -1433,7 +1464,9 @@
             <option value="1">JSHOW</option>
 		</field>
 	</fieldset>
+    <!-- END SHARED'S PARAMETERS -->
 
+    <!-- START INTEGRATION'S PARAMETERS -->
 	<fieldset name="integration"
               label="JGLOBAL_INTEGRATION_LABEL"
               description="COM_CONTENT_CONFIG_INTEGRATION_SETTINGS_DESC">
@@ -1470,7 +1503,9 @@
             <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
         </field>
     </fieldset>
-    
+    <!-- END INTEGRATION'S PARAMETERS -->
+
+    <!-- START ADVANCED'S PARAMTERS -->
     <fieldset name="advanced" label="COM_TZ_PORTFOLIO_FIELDSET_ADVANCED">
         <field name="devmode" type="radio" class="btn-group"
                default="0"
@@ -1494,7 +1529,9 @@
             <option value="1">JYES</option>
         </field>
     </fieldset>
+    <!-- END ADVANCED'S PARAMETERS -->
 
+    <!-- START PERMISSIONS'S PARAMTERS -->
 	<fieldset name="permissions"
               label="JCONFIG_PERMISSIONS_LABEL"
               description="JCONFIG_PERMISSIONS_DESC">
@@ -1504,7 +1541,8 @@
                class="inputbox"
                validate="rules"
                filter="rules"
-               component="com_content"
+               component="com_tz_portfolio"
                section="component" />
 	</fieldset>
+    <!-- END PERMISSIONS'S PARAMTERS -->
 </config>

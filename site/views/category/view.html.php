@@ -69,6 +69,11 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 		$parent		= $this->get('Parent');
 		$pagination = $this->get('Pagination');
 
+
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $pagination -> pagesTotal   = $pagination -> getPagesCounter();
+        }
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
@@ -183,7 +188,7 @@ class TZ_PortfolioViewCategory extends JViewLegacy
             $pmodel -> setState('filter.contentid',$item -> id);
             $pluginItems    = $pmodel -> getItems();
             $pluginParams   = $pmodel -> getParams();
-            $item -> pluginparams   = $pluginParams;
+            $item -> pluginparams   = clone($pluginParams);
 
 			// Ignore content plugins on links.
 			if ($i < $numLeading + $numIntro) {
@@ -202,9 +207,9 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 				$item->event->TZPortfolioVote = trim(implode("\n", $results));
 
 
-
                 //Call trigger in group tz_portfolio
                 JPluginHelper::importPlugin('tz_portfolio');
+
                 $item->introtext = JHtml::_('article.tzprepare', $item->introtext, '',$pluginParams, 'com_tz_portfolio.category');
                 
                 $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.article', &$item, &$params,&$pluginParams, 0));

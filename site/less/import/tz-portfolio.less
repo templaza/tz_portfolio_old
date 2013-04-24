@@ -1,0 +1,45 @@
+[class^="icon-"]:before, [class*=" icon-"]:before{
+    font-family: 'IcoMoon';
+    font-style: normal;
+}
+
+.icon-new:before, .icon-plus:before{
+     display: inline-block;
+    height: 14px;
+    line-height: 14px;
+    width: 14px;
+}
+
+.icon-new:before, .icon-plus:before{
+    content: "*";
+}
+
+#TzContent .pagination{
+    width:100%;
+    text-align:center;
+    a{
+        .TzLessBackground(#e5e5e5);
+        .TzLessAllMargin(0,1px,0,0);
+        .TzLessHalfPadding(6px,10px);
+        .TzLessFontColor(#505050,normal,10px);
+        text-decoration: none;
+        &:hover{
+           .TzLessBackground(#a0afe8);
+        }
+
+    }
+    .active,.disabled{
+        a{
+            .TzLessBackground(#a0afe8);
+        }
+    }
+    .TzCounter{
+        text-align:center;
+    }
+    ul li{
+        background: none;
+        display:inline-block;
+        margin: 0;
+        padding: 0;
+    }
+}

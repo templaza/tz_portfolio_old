@@ -258,7 +258,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
         $pmodel -> setState('filter.contentid',$item -> id);
         $pluginItems    = $pmodel -> getItems();
         $pluginParams   = $pmodel -> getParams();
-        $item -> pluginparams    = $pluginParams;
+        $item -> pluginparams    = clone($pluginParams);
 
         JPluginHelper::importPlugin('tz_portfolio');
         $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams,$offset));

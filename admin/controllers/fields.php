@@ -16,153 +16,102 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
-//no direct access
-defined('_JEXEC') or die('Restricted access');
 
-class TZ_PortfolioControllerFields extends JControllerLegacy
+// No direct access.
+defined('_JEXEC') or die;
+
+jimport('joomla.application.component.controlleradmin');
+
+    /**
+     * Users list controller class.
+     */
+class TZ_PortfolioControllerFields extends JControllerAdmin
 {
-    protected $_option      = null;
-    protected $_task        = null;
-    protected $_link        = null;
-    public $model           = null;
-    protected $cids         = null;
+    protected $input    = null;
 
-    public function __construct($config=array()){
+    public function __construct($config = array())
+    {
+        $this -> input  = JFactory::getApplication()->input;
         parent::__construct($config);
-        $this -> _task      = JRequest::getCmd('task',null);
-        $this -> _option    = JRequest::getCmd('option', null);
-        $this -> cids       = JRequest::getVar('cid',array(),'','array');
+    }
+    public function getModel($name = 'Field', $prefix = 'TZ_PortfolioModel', $config = array('ignore_request' => true))
+    {
+        return parent::getModel($name, $prefix, $config);
     }
 
-    public function display($cachable = false, $urlparams = array()){
-        $this -> _link      = 'index.php?option='.$this -> _option.'&view='.$this -> getTask();
+    public function publish(){
+        JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
-        $doc        = JFactory::getDocument();
-        $type       = $doc -> getType();
-        
-        if(!$view       = $this -> getView($this -> getTask(),$type)){
-            $this -> setRedirect($this -> _link,$this -> getError(),'error');
-            $this -> redirect();
+        $cid    = JRequest::getVar('cid',array(),'','array');
+        $data   = array('unpublish' => 0  ,'publish' => 1  );
+        $task = $this->getTask();
+
+        $value  = JArrayHelper::getValue($data,$task,0, 'int');
+
+        $model  = $this -> getModel();
+
+        if(!$model -> publish($cid,$value)){
+            $this -> setMessage($model -> getError());
         }
-        if(!$this -> model   = $this -> getModel(ucfirst($this -> getTask()))){
-            $this -> setRedirect($this -> _link,$this->getError(),'error');
-            $this -> redirect();
-        }
+        $this -> setRedirect('index.php?option='.$this -> option .'&view='.$this -> view_list);
+    }
 
-        $this -> model -> _link     = $this -> _link;
-        $this -> model -> _task     = $this -> _task;
-        $view -> _task              = $this -> _task;
-        $view -> _option            = $this -> _option;
-        $view -> _view              = $this -> getTask();
-        $view -> _link              = $this -> _link;
+    public function saveOrderAjax()
+    {
+        $pks = $this->input->post->get('cid', array(), 'array');
+        $order = $this->input->post->get('order', array(), 'array');
 
-        $view -> setModel($this -> model,true);
+        // Sanitize the input
+        JArrayHelper::toInteger($pks);
+        JArrayHelper::toInteger($order);
 
-        switch ($this -> _task){
-            case 'add':
-            case 'new':
-               $view -> setLayout('add');
-               break;
-            case 'edit':
-               $view -> setLayout('edit');
-               break;
-            case 'save':
-            case 'apply':
-            case 'save2new':
-               $this->saveFields();
-               break;
-            case 'remove':
-               $this -> removeFields();
-               break;
-            case 'publish':
-               $this -> publishFields(1);
-               break;
-            case 'unpublish':
-               $this -> publishFields(0);
-               break;
-            case 'saveorder':
-                $this -> saveOrderFields();
-                break;
-            case 'orderup':
-                $this -> moveOrderFields(-1);
-                break;
-            case 'orderdown':
-                $this -> moveOrderFields(1);
-                break;
-            case 'cancel':
-                $this -> cancel();
-                break;
-            default:
-               $view -> setLayout('default');
-               break;
+        // Get the model
+        $model = $this->getModel();
+
+        // Save the ordering
+        $return = $model->saveorder($pks, $order);
+
+        if ($return)
+        {
+            echo "1";
         }
 
-        $view -> display();
+        // Close the application
+        JFactory::getApplication()->close();
     }
 
-    function cancel(){
-        $this -> setRedirect('index.php?option=com_tz_portfolio&view=fields');
-        $this -> redirect();
-        return true;
-    }
-    protected function saveFields(){
-        
-       // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
-
-        if($this -> model -> saveFields($this -> _task))
-            $this -> setRedirect($this -> model -> _link,$this -> model -> msg);
-        else
-            $this -> setRedirect($this -> _link, $this -> model -> getError(),'error');
-        $this -> redirect();
-
-    }
-
-    protected function publishFields($state = null){
+    public function delete()
+    {
         // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
+        JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
-        if($this -> model -> publishFields($this -> cids,$state))
-            $this -> setRedirect($this -> _link,$this -> model -> msg);
-        else
-            $this -> setRedirect($this -> _link,$this -> model -> getError(),'error');
+        // Get items to remove from the request.
+        $cid = JRequest::getVar('cid', array(), '', 'array');
 
-        $this -> redirect();
-    }
-
-    protected function removeFields(){
-        // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
-
-        if($this -> model -> removeFields($this -> cids))
-            $this -> setRedirect($this -> model -> _link,$this -> model -> msg);
-        else{
-            $this -> setRedirect($this -> model -> _link,$this -> model -> getError(),'error');
-            return false;
+        if (!is_array($cid) || count($cid) < 1)
+        {
+            JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
         }
-        $this -> redirect();
-    }
-
-    protected function saveOrderFields(){
-        // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
-
-        if($this -> model -> saveOrderFields($this -> cids,JRequest::getVar('order',array(),'','array')))
-            $this -> setRedirect($this -> _link,$this -> model -> msg);
         else
-            $this ->setRedirect($this -> _link, $this -> model -> getError(),'error');
-        $this -> redirect();
-    }
+        {
+            // Get the model.
+            $model = $this->getModel();
 
-    protected function moveOrderFields($des=null){
-        // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
+            // Make sure the item ids are integers
+            jimport('joomla.utilities.arrayhelper');
+            JArrayHelper::toInteger($cid);
 
-        if($this -> model -> moveOrderFields($this -> cids,$des))
-            $this -> setRedirect($this -> _link,$this -> model -> msg);
-        else
-            $this ->setRedirect($this -> _link, $this -> model -> getError(),'error');
-        $this -> redirect();
+            // Remove the items.
+            if ($model->delete($cid))
+            {
+                $this->setMessage(JText::plural('COM_TZ_PORTFOLIO_FIELDS_COUNT_DELETED', count($cid)));
+            }
+            else
+            {
+                $this->setMessage($model->getError());
+            }
+        }
+
+        $this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
     }
 }

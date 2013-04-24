@@ -7,11 +7,9 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.0.8</version>
-	<description>TZ Portfolio native for Joomla! 3.0.x</description>
+	<version>3.0.9</version>
+	<description>TZ Portfolio native for Joomla! 2.5.x and 3.0.x</description>
     
-    <installfile>install.tz_portfolio.php</installfile>
-    <uninstallfile>uninstall.tz_portfolio.php</uninstallfile>
     <scriptfile>script.php</scriptfile>
 
     <install>
@@ -27,6 +25,7 @@
 
     <files folder="site">
         <folder>assets</folder>
+        <folder>bootstrap</folder>
         <folder>controllers</folder>
         <folder>css</folder>
         <folder>helpers</folder>
@@ -49,10 +48,12 @@
 	    <files folder="admin">
             <folder>assets</folder>
 	    	<folder>controllers</folder>
+	    	<folder>css</folder>
             <folder>fonts</folder>
 	    	<folder>helpers</folder>
-            <folder>js</folder>
             <folder>install</folder>
+            <folder>js</folder>
+            <folder>jui</folder>
 	    	<folder>libraries</folder>
 	    	<folder>models</folder>
 	    	<folder>tables</folder>

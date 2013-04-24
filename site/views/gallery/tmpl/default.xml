@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
     <layout title="com_tz_portfolio_gallery_view_default_title" option="com_tz_portfolio_gallery_view_default_option">
+        <help url="http://wiki.templaza.com/TZ_Portfolio_v3:How_to_use#How_to_create_a_Gallery_page"/>
         <message>
             <![CDATA[com_tz_portfolio_gallery_view_default_desc]]>
         </message>
@@ -260,6 +261,33 @@
             <field name="row_count" type="text"
                    label="COM_TZ_PORTFOLIO_TZ_GALLERY_ROW_COUNT"
                    description="COM_TZ_PORTFOLIO_TZ_GALLERY_ROW_COUNT_DESC"/>
+            <field type="spacer" name="spacer2" hr="true"/>
+
+            <field name="orderby_pri"
+                   type="list"
+                   label="JGLOBAL_CATEGORY_ORDER_LABEL"
+                   description="JGLOBAL_CATEGORY_ORDER_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">JGLOBAL_NO_ORDER</option>
+                <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+                <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+                <option value="order">JGLOBAL_CATEGORY_MANAGER_ORDER</option>
+            </field>
+            <field name="orderby_sec"
+                   type="list"
+                   label="JGLOBAL_Article_Order_Label"
+                   description="JGLOBAL_Article_Order_Desc">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="rdate">JGLOBAL_MOST_RECENT_FIRST</option>
+                <option value="date">JGLOBAL_OLDEST_FIRST</option>
+                <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+                <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+                <option value="author">JGLOBAL_AUTHOR_ALPHABETICAL</option>
+                <option value="rauthor">JGLOBAL_AUTHOR_REVERSE_ALPHABETICAL</option>
+                <option value="hits">JGLOBAL_MOST_HITS</option>
+                <option value="rhits">JGLOBAL_LEAST_HITS</option>
+                <option value="order">JGLOBAL_ARTICLE_MANAGER_ORDER</option>
+            </field>
         </fieldset>
 
         <fieldset name="tz_fieldset_image" label="COM_TZ_PORTFOLIO_FIELDSET_IMAGE_OPTIONS_LABEL">

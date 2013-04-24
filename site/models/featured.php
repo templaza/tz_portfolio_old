@@ -50,8 +50,6 @@ class TZ_PortfolioModelFeatured extends TZ_PortfolioModelArticles
 		$this->setState('list.start', $limitstart);
 
 		$params = $this->state->params;
-        $app    = JFactory::getApplication();
-        $params -> merge($app -> getParams());
 
 		$limit = $params->get('num_leading_articles') + $params->get('num_intro_articles') + $params->get('num_links');
 		$this->setState('list.limit', $limit);

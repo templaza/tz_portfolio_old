@@ -109,6 +109,7 @@ class TZ_PortfolioControllerArticle extends JControllerForm
 		}
 		else
 		{
+
 			return $allow;
 		}
 	}

@@ -69,6 +69,23 @@ class TZ_PortfolioModelUsers extends JModelLegacy
 
         $this -> pagNav = new JPagination($total,$this -> getState('offset'),$limit);
 
+        switch ($params -> get('orderby_pri')){
+            default:
+                $cateOrder  = null;
+                break;
+            case 'alpha' :
+				$cateOrder = 'cc.path, ';
+				break;
+
+			case 'ralpha' :
+				$cateOrder = 'cc.path DESC, ';
+				break;
+
+			case 'order' :
+				$cateOrder = 'cc.lft, ';
+				break;
+        }
+
         switch ($params -> get('orderby_sec')){
             default:
                 $orderby    = 'id DESC';
@@ -110,7 +127,7 @@ class TZ_PortfolioModelUsers extends JModelLegacy
             .' LEFT JOIN #__categories AS cc ON cc.id = c.catid'
             .' WHERE c.state=1 AND c.created_by='.$this -> getState('users.id')
             .$where
-            .' ORDER BY '.$orderby;
+            .' ORDER BY '.$cateOrder.$orderby;
 
 
         $db -> setQuery($query,$this -> pagNav -> limitstart,$this -> pagNav -> limit);

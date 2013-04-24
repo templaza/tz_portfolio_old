@@ -34,6 +34,11 @@ class TZ_PortfolioControllerArticle extends JControllerForm
 	 */
 	protected $view_list = 'categories';
 
+    public function __construct($config = array()){
+        JFactory::getLanguage() -> load('com_tz_portfolio',JPATH_ADMINISTRATOR);
+        parent::__construct($config);
+    }
+
     public function download(){
 
         require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'connectionTools.class.php');
@@ -257,7 +262,7 @@ class TZ_PortfolioControllerArticle extends JControllerForm
 	 * @return	object	The model.
 	 * @since	1.5
 	 */
-	public function &getModel($name = 'form', $prefix = '', $config = array('ignore_request' => true))
+	public function getModel($name = 'form', $prefix = '', $config = array('ignore_request' => true))
 	{
 		$model = parent::getModel($name, $prefix, $config);
 
@@ -343,7 +348,16 @@ class TZ_PortfolioControllerArticle extends JControllerForm
 	 * @return	void
 	 * @since	1.6
 	 */
-	protected function postSaveHook(JModelLegacy &$model, $validData)
+	protected function _postSaveHook(JModelLegacy $model, $validData = array())
+	{
+		$task = $this->getTask();
+
+		if ($task == 'save') {
+			$this->setRedirect(JRoute::_('index.php?option=com_tz_portfolio&view=category&id='.$validData['catid'], false));
+		}
+	}
+
+    protected function __postSaveHook(JModel $model, $validData = array())
 	{
 		$task = $this->getTask();
 
@@ -363,17 +377,251 @@ class TZ_PortfolioControllerArticle extends JControllerForm
 	 */
 	public function save($key = null, $urlVar = 'a_id')
 	{
-		// Load the backend helper for filtering.
-		require_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/helpers/content.php';
+        // Check for request forgeries.
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$result = parent::save($key, $urlVar);
+        // Load the backend helper for filtering.
+		require_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/helpers/tz_portfolio.php';
 
-		// If ok, redirect to the return page.
-		if ($result) {
-			$this->setRedirect($this->getReturnPage());
+		// Initialise variables.
+		$app   = JFactory::getApplication();
+		$lang  = JFactory::getLanguage();
+		$model = $this->getModel();
+		$table = $model->getTable();
+		$data  = JRequest::getVar('jform', array(), 'post', 'array');
+		$checkin = property_exists($table, 'checked_out');
+		$context = "$this->option.edit.$this->context";
+		$task = $this->getTask();
+
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
 		}
 
-		return $result;
+		// To avoid data collisions the urlVar may be different from the primary key.
+		if (empty($urlVar))
+		{
+			$urlVar = $key;
+		}
+
+		$recordId = JRequest::getInt($urlVar);
+
+		if (!$this->checkEditId($context, $recordId))
+		{
+			// Somehow the person just went to the form and tried to save it. We don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
+			$this->setMessage($this->getError(), 'error');
+
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_list
+					. $this->getRedirectToListAppend(), false
+				)
+			);
+
+			return false;
+		}
+
+		// Populate the row id from the session.
+		$data[$key] = $recordId;
+
+		// The save2copy task needs to be handled slightly differently.
+		if ($task == 'save2copy')
+		{
+			// Check-in the original row.
+			if ($checkin && $model->checkin($data[$key]) === false)
+			{
+				// Check-in failed. Go back to the item and display a notice.
+				$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
+				$this->setMessage($this->getError(), 'error');
+
+				$this->setRedirect(
+					JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_item
+						. $this->getRedirectToItemAppend($recordId, $urlVar), false
+					)
+				);
+
+				return false;
+			}
+
+			// Reset the ID and then treat the request as for Apply.
+			$data[$key] = 0;
+			$task = 'apply';
+		}
+
+		// Access check.
+		if (!$this->allowSave($data, $key))
+		{
+			$this->setError(JText::_('JLIB_APPLICATION_ERROR_SAVE_NOT_PERMITTED'));
+			$this->setMessage($this->getError(), 'error');
+
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_list
+					. $this->getRedirectToListAppend(), false
+				)
+			);
+
+			return false;
+		}
+
+		// Validate the posted data.
+		// Sometimes the form needs some posted data, such as for plugins and modules.
+		$form = $model->getForm($data, false);
+
+		if (!$form)
+		{
+			$app->enqueueMessage($model->getError(), 'error');
+
+			return false;
+		}
+
+		// Test whether the data is valid.
+		$validData = $model->validate($form, $data);
+
+		// Check for validation errors.
+		if ($validData === false)
+		{
+			// Get the validation messages.
+			$errors = $model->getErrors();
+
+			// Push up to three validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
+			{
+				if ($errors[$i] instanceof Exception)
+				{
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				}
+				else
+				{
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+			}
+
+			// Save the data in the session.
+			$app->setUserState($context . '.data', $data);
+
+			// Redirect back to the edit screen.
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_item
+					. $this->getRedirectToItemAppend($recordId, $urlVar), false
+				)
+			);
+
+			return false;
+		}
+
+		// Attempt to save the data.
+		if (!$model->save($validData))
+		{
+			// Save the data in the session.
+			$app->setUserState($context . '.data', $validData);
+
+			// Redirect back to the edit screen.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_SAVE_FAILED', $model->getError()));
+			$this->setMessage($this->getError(), 'error');
+
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_item
+					. $this->getRedirectToItemAppend($recordId, $urlVar), false
+				)
+			);
+
+			return false;
+		}
+
+		// Save succeeded, so check-in the record.
+		if ($checkin && $model->checkin($validData[$key]) === false)
+		{
+			// Save the data in the session.
+			$app->setUserState($context . '.data', $validData);
+
+			// Check-in failed, so go back to the record and display a notice.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError()));
+			$this->setMessage($this->getError(), 'error');
+
+			$this->setRedirect(
+				JRoute::_(
+					'index.php?option=' . $this->option . '&view=' . $this->view_item
+					. $this->getRedirectToItemAppend($recordId, $urlVar), false
+				)
+			);
+
+			return false;
+		}
+
+		$this->setMessage(
+			JText::_(
+				($lang->hasKey($this->text_prefix . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS')
+					? $this->text_prefix
+					: 'JLIB_APPLICATION') . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
+			)
+		);
+
+		// Redirect the user and adjust session state based on the chosen task.
+		switch ($task)
+		{
+			case 'apply':
+				// Set the record data in the session.
+				$recordId = $model->getState($this->context . '.id');
+				$this->holdEditId($context, $recordId);
+				$app->setUserState($context . '.data', null);
+				$model->checkout($recordId);
+
+				// Redirect back to the edit screen.
+				$this->setRedirect(
+					JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_item
+						. $this->getRedirectToItemAppend($recordId, $urlVar), false
+					)
+				);
+				break;
+
+			case 'save2new':
+				// Clear the record id and data from the session.
+				$this->releaseEditId($context, $recordId);
+				$app->setUserState($context . '.data', null);
+
+				// Redirect back to the edit screen.
+				$this->setRedirect(
+					JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_item
+						. $this->getRedirectToItemAppend(null, $urlVar), false
+					)
+				);
+				break;
+
+			default:
+				// Clear the record id and data from the session.
+				$this->releaseEditId($context, $recordId);
+				$app->setUserState($context . '.data', null);
+
+				// Redirect to the list screen.
+				$this->setRedirect(
+					JRoute::_(
+						'index.php?option=' . $this->option . '&view=' . $this->view_list
+						. $this->getRedirectToListAppend(), false
+					)
+				);
+				break;
+		}
+
+		// Invoke the postSave method to allow for the child class to access the model.
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+		    $this->__postSaveHook($model, $validData);
+        }
+        else{
+            $this->_postSaveHook($model, $validData);
+        }
+
+		// If ok, redirect to the return page.
+        $this->setRedirect($this->getReturnPage());
+
+		return true;
 	}
 
 	/**

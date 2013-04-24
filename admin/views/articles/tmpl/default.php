@@ -24,6 +24,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.multiselect');
 JHtml::_('dropdown.init');
+
 JHtml::_('formbehavior.chosen', 'select');
 
 $user		= JFactory::getUser();
@@ -54,11 +55,10 @@ $sortFields = $this->getSortFields();
 		}
 		Joomla.tableOrdering(order, dirn, '');
 	}
-//    alert(document.getElementsByName('filter_order').value);
 </script>
-    
+
 <form action="<?php echo JRoute::_('index.php?option=com_tz_portfolio&view=articles');?>" method="post" name="adminForm" id="adminForm">
-    <?php if(!empty( $this->sidebar)): ?>
+    <?php if(!empty( $this->sidebar) AND COM_TZ_PORTFOLIO_JVERSION_COMPARE): ?>
         <div id="j-sidebar-container" class="span2">
             <?php echo $this->sidebar; ?>
         </div>
@@ -72,13 +72,15 @@ $sortFields = $this->getSortFields();
                     <input type="text" name="filter_search" placeholder="<?php echo JText::_('COM_CONTENT_FILTER_SEARCH_DESC'); ?>" id="filter_search" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('COM_CONTENT_FILTER_SEARCH_DESC'); ?>" />
                 </div>
                 <div class="btn-group pull-left hidden-phone">
-                    <button class="btn tip hasTooltip" type="submit" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>
-                    <button class="btn tip hasTooltip" type="button" onclick="document.id('filter_search').value='';this.form.submit();" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>"><i class="icon-remove"></i></button>
+                    <button class="btn hasTooltip" type="submit" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>
+                    <button class="btn hasTooltip" type="button" onclick="document.id('filter_search').value='';this.form.submit();" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>"><i class="icon-remove"></i></button>
                 </div>
+                <?php if(COM_TZ_PORTFOLIO_JVERSION_COMPARE): //If the joomla's version is 3.0 ?>
                 <div class="btn-group pull-right hidden-phone">
                     <label for="limit" class="element-invisible"><?php echo JText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC');?></label>
                     <?php echo $this->pagination->getLimitBox(); ?>
                 </div>
+
                 <div class="btn-group pull-right hidden-phone">
                     <label for="directionTable" class="element-invisible"><?php echo JText::_('JFIELD_ORDERING_DESC');?></label>
                     <select name="directionTable" id="directionTable" class="input-medium" onchange="Joomla.orderTable()">
@@ -94,7 +96,16 @@ $sortFields = $this->getSortFields();
                         <?php echo JHtml::_('select.options', $sortFields, 'value', 'text', $listOrder);?>
                     </select>
                 </div>
+                <?php endif;?>
             </div>
+
+            <?php // If the joomla's version is more than or equal to 3.0 ?>
+            <?php if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
+            <div class="filter-select">
+                <?php echo $this->sidebar; ?>
+            </div>
+            <?php endif;?>
+
             <div class="clearfix"> </div>
             <table class="table table-striped" id="articleList">
                 <thead>
@@ -230,7 +241,7 @@ $sortFields = $this->getSortFields();
                                 </div>
                             </td>
                             <td class="small hidden-phone">
-                                    <a href="index.php?option=com_tz_portfolio&view=fieldsgroup&task=edit&id=<?php echo $item -> groupid?>">
+                                    <a href="index.php?option=com_tz_portfolio&task=fieldgroup.edit&id=<?php echo $item -> groupid?>">
                                         <?php echo $item -> groupname;?>
                                     </a>
                             </td>
