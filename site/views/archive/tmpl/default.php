@@ -47,7 +47,7 @@ JHtml::_('behavior.caption');
 	</div>
 	<button type="submit" class="btn btn-primary"><?php echo JText::_('JGLOBAL_FILTER_BUTTON'); ?></button>
 	<input type="hidden" name="view" value="archive" />
-	<input type="hidden" name="option" value="com_content" />
+	<input type="hidden" name="option" value="com_tz_portfolio" />
 	<input type="hidden" name="limitstart" value="0" />
 	</fieldset>
 

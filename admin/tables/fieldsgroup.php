@@ -23,7 +23,7 @@ defined('_JEXEC') or die('Restricted access');
 class TableFieldsGroup extends JTable
 {
      /** @var int Primary key */
-    var $id 				= null;
+    var $id 				= 0;
     /** @var string */
     var $name 				= null;
     /** @var string*/

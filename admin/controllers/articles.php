@@ -27,6 +27,7 @@ jimport('joomla.application.component.controlleradmin');
  */
 class TZ_PortfolioControllerArticles extends JControllerAdmin
 {
+    protected $input    = null;
 	/**
 	 * Constructor.
 	 *
@@ -39,6 +40,7 @@ class TZ_PortfolioControllerArticles extends JControllerAdmin
 	public function __construct($config = array())
 	{
         JFactory::getLanguage() -> load('com_content');
+        $this -> input  = JFactory::getApplication()->input;
 		// Articles default form can come from the articles or featured view.
 		// Adjust the redirect view on the value of 'view' in the request.
 		if (JRequest::getCmd('view') == 'featured') {
@@ -131,7 +133,7 @@ class TZ_PortfolioControllerArticles extends JControllerAdmin
 		// Access checks.
 		foreach ($ids as $i => $id)
 		{
-			if (!$user->authorise('core.edit.state', 'com_content.article.'.(int) $id)) {
+			if (!$user->authorise('core.edit.state', 'com_tz_portfolio.article.'.(int) $id)) {
 				// Prune items that you can't change.
 				unset($ids[$i]);
 				JError::raiseNotice(403, JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
@@ -169,4 +171,28 @@ class TZ_PortfolioControllerArticles extends JControllerAdmin
 
 		return $model;
 	}
+
+    public function saveOrderAjax()
+    {
+        $pks = $this->input->post->get('cid', array(), 'array');
+        $order = $this->input->post->get('order', array(), 'array');
+
+        // Sanitize the input
+        JArrayHelper::toInteger($pks);
+        JArrayHelper::toInteger($order);
+
+        // Get the model
+        $model = $this->getModel();
+
+        // Save the ordering
+        $return = $model->saveorder($pks, $order);
+
+        if ($return)
+        {
+            echo "1";
+        }
+
+        // Close the application
+        JFactory::getApplication()->close();
+    }
 }

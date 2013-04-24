@@ -25,6 +25,9 @@ jimport('joomla.application.component.controller');
 require_once JPATH_COMPONENT.'/helpers/route.php';
 require_once JPATH_COMPONENT.'/helpers/query.php';
 
+include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/defines.php';
+include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/tzportfolio.php';
+
 $controller = JControllerLegacy::getInstance('TZ_Portfolio');
 $controller->execute(JRequest::getCmd('task'));
 $controller->redirect();

@@ -75,7 +75,7 @@ class TZ_PortfolioModelArticles extends JModelList
 		$app = JFactory::getApplication();
 		$session = JFactory::getSession();
 
-        $this-> context = 'com_tz_portfolio.articles';
+//        $this-> context = 'com_tz_portfolio.articles';
 		// Adjust the context to support modal layouts.
 		if ($layout = JRequest::getVar('layout')) {
 			$this->context .= '.'.$layout;

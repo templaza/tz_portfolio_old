@@ -24,48 +24,20 @@ $option         = JRequest::getCmd('option','com_tz_portfolio');
 $view           = JRequest::getCmd('view','articles');
 $task           = JRequest::getCmd('task',null);
 
-JLoader::register('TZ_PortfolioHelper', __DIR__ . '/helpers/tz_portfolio.php');
 include_once dirname(__FILE__) . '/libraries/core/defines.php';
 include_once dirname(__FILE__) . '/libraries/core/tzportfolio.php';
 
-if($view != 'categories' && $view != 'category' && $view != 'articles' && $view != 'article' && $view != 'featured'
-   && $view != 'users'){
-    $controllerName     = $view;
+// Register helper class
+JLoader::register('TZ_PortfolioHelper', dirname(__FILE__) . '/helpers/tz_portfolio.php');
 
-    $path   = JPATH_COMPONENT_ADMINISTRATOR.'/controllers'.'/'.$controllerName.'.php';
-
-    if(file_exists($path))
-        require_once($path);
-    else
-        JError::raiseError(500,'Invalid controller');
-
-    $controllerClass    = 'TZ_PortfolioController'.ucfirst($controllerName);
-
-    if(class_exists($controllerClass)){
-        $controller = new $controllerClass;
-    }
-    else
-        JError::raiseError(500,'Invalid class controller');
-        $controller->execute($view);
-
+// Access check.
+if (!JFactory::getUser()->authorise('core.manage', 'com_tz_portfolio')) {
+    return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 }
-else{
 
-    // Register helper class
-    JLoader::register('TZ_PortfolioHelper', dirname(__FILE__) . '/helpers/tz_portfolio.php');
+// Execute the task.
+$controller	= JControllerLegacy::getInstance('TZ_Portfolio');
 
-    // Access check.
-    if (!JFactory::getUser()->authorise('core.manage', JRequest::getCmd('extension'))) {
-        return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
-    }
-
-    // Execute the task.
-    $controller	= JControllerLegacy::getInstance('TZ_Portfolio');
-
-//    if($task=='lists')
-//        $controller -> execute('article.edit');
-//    else
-        $controller->execute(JRequest::getVar('task'));
-}
+    $controller->execute(JRequest::getVar('task'));
 
 $controller->redirect();

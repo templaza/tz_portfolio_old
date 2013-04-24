@@ -42,6 +42,7 @@ if($lists):
         <h3 class="TzRelatedTitle"><?php echo $title;?></h3>
     <?php endif;?>
     <ul>
+    <?php $media      = JModelLegacy::getInstance('Media','TZ_PortfolioModel');?>
     <?php foreach($lists as $i => $item):?>
         <?php
 
@@ -58,11 +59,6 @@ if($lists):
                 $item -> _link = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid).$tmpl);
             }
 
-            $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
-            $mediaParams    = $this -> mediaParams;
-            $mediaParams -> merge($media -> getCatParams($item -> catid));
-
-            $media -> setParams($mediaParams);
             $listMedia      = $media -> getMedia($item -> id);
             $src    = null;
             if($listMedia){

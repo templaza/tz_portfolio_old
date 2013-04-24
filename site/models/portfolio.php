@@ -33,7 +33,6 @@ class TZ_PortfolioModelPortfolio extends JModelList
 
     function populateState($ordering = 'ordering', $direction = 'ASC'){
         $app    = JFactory::getApplication();
-//        $params = JComponentHelper::getParams('com_tz_portfolio');
         $params = $app -> getParams();
 
         $offset = JRequest::getUInt('limitstart',0);
@@ -55,6 +54,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $this -> setState('filter.tagId',null);
         $this -> setState('filter.userId',null);
         $this -> setState('filter.featured',null);
+        parent::populateState($ordering,$direction);
     }
 
     function ajaxtags($limitstart=null) {
@@ -372,6 +372,23 @@ class TZ_PortfolioModelPortfolio extends JModelList
             $total  = 0;
 
         $this -> pagNav = new JPagination($total,$limitstart,$limit);
+        
+        switch ($params -> get('orderby_pri')){
+            default:
+                $cateOrder  = null;
+                break;
+            case 'alpha' :
+				$cateOrder = 'cc.path, ';
+				break;
+
+			case 'ralpha' :
+				$cateOrder = 'cc.path DESC, ';
+				break;
+
+			case 'order' :
+				$cateOrder = 'cc.lft, ';
+				break;
+        }
 
         switch ($params -> get('orderby_sec')){
             default:
@@ -418,7 +435,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
                   .' WHERE c.state=1'
                   .$where
                   .' GROUP BY c.id'
-                  .' ORDER BY '.$orderby;
+                  .' ORDER BY '.$cateOrder.$orderby;
 
         if($params -> get('tz_portfolio_layout') == 'default')
             $db -> setQuery($query,$this -> pagNav -> limitstart,$this -> pagNav -> limit);
@@ -492,7 +509,9 @@ class TZ_PortfolioModelPortfolio extends JModelList
                         if($content)
                             $content    = json_decode($content -> body);
 
-                        $content    = $content -> response;
+                        if(isset($content -> respone)){
+                            $content    = $content -> response;
+                        }
 
                         if(is_array($content)){
                             $item -> commentCount	= count($content);
@@ -507,7 +526,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 $pmodel -> setState('filter.contentid',$item -> id);
                 $pluginItems    = $pmodel -> getItems();
                 $pluginParams   = $pmodel -> getParams();
-                $item -> pluginparams   = $pluginParams;
+                $item -> pluginparams   = clone($pluginParams);
 
                 // Add feed links
                 if (!JRequest::getCmd('format',null) AND !JRequest::getCmd('type',null)) {

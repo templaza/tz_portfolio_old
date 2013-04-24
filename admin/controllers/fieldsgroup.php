@@ -16,106 +16,74 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
-//no direct access
-defined('_JEXEC') or die('Restricted access');
 
-class TZ_PortfolioControllerFieldsGroup extends JControllerLegacy
+// No direct access.
+defined('_JEXEC') or die;
+
+jimport('joomla.application.component.controlleradmin');
+
+/**
+ * Users list controller class.
+ */
+class TZ_PortfolioControllerFieldsGroup extends JControllerAdmin
 {
-    var $_option     = null;
-    var $_task;
-    var $_view      = null;
-    var $_link      = null;
-    var $model      = null;
-    public function __construct($config=array()){
-        $this -> _option   = JRequest::getCmd('option',null);
-        $this -> _view      = JRequest::getCmd('view',null);
-        $this -> _task     = JRequest::getCmd('task',null);
-        //$this-> ('task',JRequest::getCmd('task',null));
-
-         parent::__construct($config);
-    }
-    function display($cachable = false, $urlparams = array()){
-
-        $this->_link     = 'index.php?option='.$this -> _option.'&view='.($this->getTask());
-
-        $doc    = JFactory::getDocument();
-        $type   = $doc->getType();
-
-        if(!$view   = $this -> getView($this -> getTask(),$type)){
-            $this -> setRedirect($this -> link,$this -> getError(),'error');
-            $this -> redirect();
-        }
-
-        if($this -> model   = $this -> getModel($this -> getTask()))
-            $view   -> setModel($this -> model,true);
-        
-        $this -> model -> _link     = $this -> _link;
-        $view -> _option            = $this -> _option;
-        $view -> _view              = $this -> getTask();
-        $view -> _task              = $this -> _task;
-        $view -> _link              = $this -> _link;
-
-        switch ($this -> _task){
-            case 'add':
-            case 'new':
-                $view -> setLayout('add');
-                break;
-            case 'edit':
-                $view -> setLayout('edit');
-                break;
-            case 'save':
-            case 'apply':
-            case 'save2new':
-                $this->saveFieldsGroup();
-                break;
-            case 'remove':
-                $this -> removeFieldsGroup();
-                break;
-            default:
-                $view -> setLayout('default');
-                break;
-        }
-
-        $view -> display();
-    }
-
-    function removeFieldsGroup(){
-        if($this -> model -> removeFieldsGroup(JRequest::getVar('cid',array(),'','array')))
-            $this -> setRedirect($this -> _link,$this -> model -> msg);
-        else
-            $this -> setRedirect($this -> _link, $this -> model -> getError(),'error');
-        $this -> redirect();
-    }
-
-    function saveFieldsGroup(){
-        
-        // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
-
-        if($this -> model -> saveFieldsGroup($this -> _task))
-            $this -> setRedirect($this -> model -> _link,$this -> model -> msg);
-        else
-            $this -> setRedirect($this -> _link, $this -> model -> getError(),'error');
-        $this -> redirect();
-        
-    }
+    protected $view_list = 'fieldsgroup';
     
-    function cancel(){
-        global $mainframe;
-
-        // Check for request forgeries
-        JRequest::checkToken() or jexit( 'Invalid Token' );
-
-        // Initialize variables
-//        $db =& JFactory::getDBO();
-//
-//        $redirect = JRequest::getCmd( 'redirect', '', 'post' );
-//
-//        $row =& JTable::getInstance('category');
-//        $row->bind( JRequest::get( 'post' ));
-//        $row->checkin();
-
-        $mainframe -> redirect( $this->_link);
+    public function getModel($name = 'FieldGroup', $prefix = 'TZ_PortfolioModel', $config = array('ignore_request' => true))
+    {
+        return parent::getModel($name, $prefix, $config);
     }
+
+    function publish(){
+        JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
+
+        $cid    = JRequest::getVar('cid',array(),'','array');
+        $data   = array('unpublish' => 0  ,'publish' => 1  );
+        $task = $this->getTask();
+
+        $value  = JArrayHelper::getValue($data,$task,0, 'int');
+
+        $model  = $this -> getModel();
+
+        if(!$model -> publish($cid,$value)){
+            $this -> setMessage($model -> getError());
+        }
+        $this -> setRedirect('index.php?option='.$this -> option .'&view='.$this -> view_list);
+    }
+
+    public function delete()
+    {
+        // Check for request forgeries
+        JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+
+        // Get items to remove from the request.
+        $cid = JRequest::getVar('cid', array(), '', 'array');
+
+        if (!is_array($cid) || count($cid) < 1)
+        {
+            JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
+        }
+        else
+        {
+            // Get the model.
+            $model = $this->getModel();
+
+            // Make sure the item ids are integers
+            jimport('joomla.utilities.arrayhelper');
+            JArrayHelper::toInteger($cid);
+
+            // Remove the items.
+            if ($model->delete($cid))
+            {
+                $this->setMessage(JText::plural('COM_TZ_PORTFOLIO_FIELDS_GROUP_COUNT_DELETED', count($cid)));
+            }
+            else
+            {
+                $this->setMessage($model->getError());
+            }
+        }
+
+        $this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
+    }
+
 }

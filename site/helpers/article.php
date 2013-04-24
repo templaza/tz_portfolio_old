@@ -27,7 +27,7 @@ class JHtmlArticle
 		$article = new stdClass;
 		$article->text = $text;
 		JPluginHelper::importPlugin('tz_portfolio');
-		$dispatcher = JEventDispatcher::getInstance();
+		$dispatcher = JDispatcher::getInstance();
 		$dispatcher->trigger('onTZPluginPrepare', array($context, &$article, &$params,&$pluginParams, 0));
 
 		return $article->text;

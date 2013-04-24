@@ -68,6 +68,23 @@ class TZ_PortfolioModelTags extends JModelLegacy
 
         $this -> pagNav = new JPagination($total,$this -> getState('offset'),$limit);
 
+        switch ($params -> get('orderby_pri')){
+            default:
+                $cateOrder  = null;
+                break;
+            case 'alpha' :
+				$cateOrder = 'cc.path, ';
+				break;
+
+			case 'ralpha' :
+				$cateOrder = 'cc.path DESC, ';
+				break;
+
+			case 'order' :
+				$cateOrder = 'cc.lft, ';
+				break;
+        }
+        
         switch ($params -> get('orderby_sec')){
             default:
                 $orderby    = 'id DESC';
@@ -111,7 +128,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
             .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid'
             .' WHERE c.state=1 AND t.published=1 AND x.tagsid='.$this -> getState('tags.id')
             .$where
-            .' ORDER BY '.$orderby;
+            .' ORDER BY '.$cateOrder.$orderby;
 
         $db     = JFactory::getDbo();
         $db -> setQuery($query,$this -> pagNav -> limitstart,$this -> pagNav -> limit);

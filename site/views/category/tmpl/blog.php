@@ -25,6 +25,9 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
 <div class="TzBlog blog<?php echo $this->pageclass_sfx;?>">
     <div class="TzBlogInner">
+<!--        --><?php //if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
+            <div class="row-fluid">
+<!--        --><?php //endif;?>
         <?php if ($this->params->get('show_page_heading', 1)) : ?>
         <h1>
             <?php echo $this->escape($this->params->get('page_heading')); ?>
@@ -168,5 +171,9 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
             </div>
         <?php  endif; ?>
         <div class="clearfix"></div>
+        
+<!--        --><?php //if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
+        </div>
+<!--    --><?php //endif;?>
     </div>
 </div>

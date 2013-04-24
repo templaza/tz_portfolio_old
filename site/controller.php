@@ -39,6 +39,30 @@ class TZ_PortfolioController extends JControllerLegacy
 			$config['base_path'] = JPATH_COMPONENT_ADMINISTRATOR;
 		}
 
+         // If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            JHtml::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/cms/html');
+            tzimport('cms/html/sidebar');
+
+            $doc    = JFactory::getDocument();
+            //Add Script to the header
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/jquery-1.8.3.min.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/jquery-noconflict.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/js/bootstrap.min.js');
+            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap.css');
+            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap-responsive.css');
+            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/css/tz-portfolio.css');
+//            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/chosen.jquery.min.js');
+//            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery.ui.core.min.js');
+//            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery.ui.sortable.min.js');
+//            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/sortablelist.js');
+//            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/template.js');
+
+//            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/css/chosen.css');
+//            $doc -> addCustomTag('<link href="'.COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/css/template.css'.
+//                '" rel="stylesheet" type="text/css"/>');
+        }
+
 		parent::__construct($config);
 	}
 

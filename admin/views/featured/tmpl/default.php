@@ -56,7 +56,7 @@ $sortFields = $this->getSortFields();
 	}
 </script>
 <form action="<?php echo JRoute::_('index.php?option=com_tz_portfolio&view=featured');?>" method="post" name="adminForm" id="adminForm">
-    <?php if(!empty( $this->sidebar)): ?>
+    <?php if(!empty( $this->sidebar) AND COM_TZ_PORTFOLIO_JVERSION_COMPARE): ?>
         <div id="j-sidebar-container" class="span2">
             <?php echo $this->sidebar; ?>
         </div>
@@ -70,12 +70,13 @@ $sortFields = $this->getSortFields();
                 <input type="text" name="filter_search" placeholder="<?php echo JText::_('COM_CONTENT_FILTER_SEARCH_DESC'); ?>" id="filter_search" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('COM_CONTENT_FILTER_SEARCH_DESC'); ?>" />
             </div>
             <div class="btn-group pull-left hidden-phone">
-                <button class="btn tip hasTooltip" type="submit"
+                <button class="btn hasTooltip" type="submit"
                         data-original-title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>
-                <button class="btn tip hasTooltip" type="button"
+                <button class="btn hasTooltip" type="button"
                         onclick="document.id('filter_search').value='';this.form.submit();"
                         data-original-title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>"><i class="icon-remove"></i></button>
             </div>
+            <?php if(COM_TZ_PORTFOLIO_JVERSION_COMPARE): //If the joomla's version is 3.0 ?>
             <div class="btn-group pull-right hidden-phone">
                 <label for="limit" class="element-invisible"><?php echo JText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC');?></label>
                 <?php echo $this->pagination->getLimitBox(); ?>
@@ -95,7 +96,16 @@ $sortFields = $this->getSortFields();
                     <?php echo JHtml::_('select.options', $sortFields, 'value', 'text', $listOrder);?>
                 </select>
             </div>
+            <?php endif;?>
         </div>
+
+        <?php // If the joomla's version is more than or equal to 3.0 ?>
+        <?php if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
+        <div class="filter-select">
+            <?php echo $this->sidebar; ?>
+        </div>
+        <?php endif;?>
+
         <div class="clearfix"> </div>
         <table class="table table-striped" id="articleList">
             <thead>
@@ -268,6 +278,7 @@ $sortFields = $this->getSortFields();
 		<input type="hidden" name="boxchecked" value="0" />
 		<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 		<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
+        <input type="hidden" name="return" value="<?php echo base64_encode(JUri::getInstance() -> toString())?>">
 		<?php echo JHtml::_('form.token'); ?>
     </div>
 </form>

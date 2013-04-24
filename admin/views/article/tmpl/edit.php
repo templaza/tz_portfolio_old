@@ -19,8 +19,6 @@
 
 // No direct access.
 defined('_JEXEC') or die;
-jimport( 'joomla.html.toolbar.button');
-jimport( 'joomla.html.toolbar.button.popup');
 
 // Include the component HTML helpers.
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
@@ -1050,6 +1048,7 @@ $pluginsTab = $this -> pluginsTab;
         var myTr0 = new Element('tr',{
         }).inject($('tz_attachments_table'));
         var myTd = new Element('td',{
+            'colspan': 2
         }).inject(myTr0);
 
         var myButton = new Element('button',{
@@ -1138,6 +1137,11 @@ $pluginsTab = $this -> pluginsTab;
 });
 </script>
 
+<?php // If the joomla's version is more than or equal to 3.0?>
+<?php if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
+<div class="row-fluid">
+<?php endif;?>
+
 <form action="<?php echo JRoute::_('index.php?option=com_tz_portfolio&layout=edit&id='.(int) $this->item->id); ?>"
       method="post"
       name="adminForm"
@@ -1176,14 +1180,7 @@ $pluginsTab = $this -> pluginsTab;
                                     <label><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_TAGS');?></label>
                                 </div>
                                 <div class="controls">
-<!--                                    <div id="tz_tags" class="chzn-container chzn-container-multi">-->
-<!--                                        <ul class="chzn-choices">-->
-<!--                                            <li class="search-field">-->
-                                                <input type="text" name="tz_tags[]" class="suggest"
-                                                       data-provide="typeahead"/>
-<!--                                            </li>-->
-<!--                                        </ul>-->
-<!--                                    </div>-->
+                                    <input type="text" name="tz_tags[]" class="suggest" data-provide="typeahead"/>
                                 </div>
                             </div>
                             <div class="control-group">
@@ -1242,7 +1239,7 @@ $pluginsTab = $this -> pluginsTab;
                                 <div class="controls">
                                     <select id="jform_type_of_media" name="type_of_media" required="required" class="required">
                                         <option value=""><?php echo JText::_('COM_TZ_PORTFOLIO_OPTION_SELECT_MEDIA_TYPE');?></option>
-                                        <option value="none"<?php if($type == 'none') echo ' selected="selected"';?>><?php echo JText::_('COM_TZ_PORTFOLIO_OPTION_NONE_MEDIA');?></option>
+                                        <option value="none" <?php if($type == 'none') echo ' selected="selected"';?>><?php echo JText::_('COM_TZ_PORTFOLIO_OPTION_NONE_MEDIA');?></option>
                                         <option value="image"<?php if($type == 'image') echo ' selected="selected"';?>><?php echo JText::_('COM_TZ_PORTFOLIO_OPTION_IMAGE');?></option>
                                         <option value="imageGallery"<?php if($type == 'imagegallery') echo ' selected="selected"';?>>
                                             <?php echo JText::_('COM_TZ_PORTFOLIO_OPTION_IMAGE_GALLERY');?>
@@ -1334,7 +1331,7 @@ $pluginsTab = $this -> pluginsTab;
                         <div class="tab-pane" id="tztabsGallery">
                             <table  id="tz_image_gallery">
                                 <tr>
-                                    <td id="tz_img_gallery"><!--<input type="text" class="inputbox image-select" name="img_old[]" id="image-select-1" value="" style="width:283px;" />--></td>
+                                    <td id="tz_img_gallery"></td>
                                 </tr>
                             </table>
                         </div>
@@ -1592,3 +1589,6 @@ $pluginsTab = $this -> pluginsTab;
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>
+<?php if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
+</div>
+<?php endif;?>

@@ -26,13 +26,11 @@ class TZ_PortfolioModelGallery extends JModelLegacy
 {
     function populateState(){
         $app    = JFactory::getApplication();
-        $params = JComponentHelper::getParams('com_tz_portfolio');
-        $params -> merge($app -> getParams());
+        $params = $app -> getParams();
+//        $params -> merge($app -> getParams());
         $this -> setState('params',$params);
     }
     function getArticle(){
-//        require_once(JPATH_COMPONENT_ADMINISTRATOR.'/'.'libraries'.'/'.'HTTPFetcher.php');
-//        require_once(JPATH_COMPONENT_ADMINISTRATOR.'/'.'libraries'.'/'.'readfile.php');
 
         $params = $this -> getState('params');
 
@@ -99,6 +97,23 @@ class TZ_PortfolioModelGallery extends JModelLegacy
 
         $this -> pagNav = new JPagination($total,$limitstart,$limit);
 
+        switch ($params -> get('orderby_pri')){
+            default:
+                $cateOrder  = null;
+                break;
+            case 'alpha' :
+				$cateOrder = 'cc.path, ';
+				break;
+
+			case 'ralpha' :
+				$cateOrder = 'cc.path DESC, ';
+				break;
+
+			case 'order' :
+				$cateOrder = 'cc.lft, ';
+				break;
+        }
+        
         switch ($params -> get('orderby_sec')){
             default:
                 $orderby    = 'id DESC';
@@ -142,7 +157,7 @@ class TZ_PortfolioModelGallery extends JModelLegacy
                   .' WHERE c.state=1'
                   .$where
                   .' GROUP BY c.id'
-                  .' ORDER BY '.$orderby;
+                  .' ORDER BY '.$cateOrder.$orderby;
 
         if($params -> get('tz_portfolio_layout') == 'default')
             $db -> setQuery($query);

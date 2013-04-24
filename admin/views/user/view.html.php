@@ -20,7 +20,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
-require_once(JPATH_COMPONENT_ADMINISTRATOR.'/'.'helpers'.'/'.'users.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/users.php');
 
 /**
  * @package		Joomla.Administrator

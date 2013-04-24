@@ -27,13 +27,14 @@ if (JFactory::getApplication()->isSite()) {
 require_once JPATH_ROOT . '/components/com_tz_portfolio/helpers/route.php';
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+JHtml::_('behavior.framework');
 JHtml::_('bootstrap.tooltip');
 JHtml::_('formbehavior.chosen', 'select');
 
 $function	= JRequest::getCmd('function', 'jSelectTag');
 //var_dump($function); die();
-$listOrder	= $this->order;
-$listDirn	= $this->order_Dir;
+$listOrder	= $this-> state -> filter_order;
+$listDirn	= $this-> state -> filter_order_Dir;
 ?>
 
 <form action="<?php echo JRoute::_('index.php?option=com_tz_portfolio&view=tags&layout=modal&tmpl=component&function='.$function.'&'.JSession::getFormToken().'=1');?>"
@@ -58,9 +59,10 @@ $listDirn	= $this->order_Dir;
 					<i class="icon-remove"></i></button>
 			</div>
             <div class="btn-group pull-right">
-                <select name="filter_published" class="inputbox" onchange="this.form.submit()">
+                <select name="filter_state" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), 'value', 'text', $this->filter_state, true);?>
+                <?php $state = array( 'P' => JText::_('JPUBLISHED'), 'U' => JText::_('JUNPUBLISHED'));?>
+				<?php echo JHtml::_('select.options',$state,'value','text',$this -> state -> filter_state);?>
 			</select>
             </div>
 			<div class="clearfix"></div>
@@ -78,10 +80,10 @@ $listDirn	= $this->order_Dir;
                            onclick="checkAll(<?php echo count($this -> lists);?>);">
                 </th>
                 <th class="title">
-                    <?php echo JHtml::_('grid.sort','Name','name',$this -> order_Dir,$this -> order);?>
+                    <?php echo JHtml::_('grid.sort','COM_TZ_PORTFOLIO_HEADING_NAME','name',$this -> state -> filter_order_Dir,$this -> state -> filter_order);?>
                 </th>
                 <th nowrap="nowrap" width="1%">
-                    <?php echo JHtml::_('grid.sort','ID','id',$this -> order_Dir,$this -> order);?>
+                    <?php echo JHtml::_('grid.sort','JGRID_HEADING_ID','id',$this -> state -> filter_order_Dir,$this -> state -> filter_order);?>
                 </th>
             </tr>
 		</thead>
@@ -92,10 +94,10 @@ $listDirn	= $this->order_Dir;
 				</td>
 			</tr>
 		</tfoot>
-		<?php if($this -> lists):?>
+		<?php if($this -> items):?>
         <tbody>
             <?php $i=0;?>
-            <?php foreach($this -> lists as $row):?>
+            <?php foreach($this -> items as $row):?>
                 <tr class="row<?php echo $i%2;?>">
                     <td><?php echo $i+1;?></td>
                     <td>

@@ -42,7 +42,7 @@ if ($saveOrder)
 $sortFields = $this->getSortFields();
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_tz_portfolio&view=categories');?>" method="post" name="adminForm" id="adminForm">
-    <?php if(!empty($this -> sidebar)):?>
+    <?php if(!empty($this -> sidebar) AND COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
     <div id="j-sidebar-container" class="span2">
 		<?php echo $this -> sidebar; ?>
 	</div>
@@ -56,12 +56,13 @@ $sortFields = $this->getSortFields();
 				<input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('COM_CATEGORIES_ITEMS_SEARCH_FILTER'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('COM_CATEGORIES_ITEMS_SEARCH_FILTER'); ?>" />
 			</div>
 			<div class="btn-group hidden-phone">
-				<button class="btn tip hasTooltip" type="submit"
+				<button class="btn hasTooltip" type="submit"
                         data-original-title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>
-				<button class="btn tip hasTooltip" type="button"
+				<button class="btn hasTooltip" type="button"
                         onclick="document.id('filter_search').value='';this.form.submit();"
                         data-original-title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>"><i class="icon-remove"></i></button>
 			</div>
+            <?php if(COM_TZ_PORTFOLIO_JVERSION_COMPARE): //If the joomla's version is 3.0 ?>
 			<div class="btn-group pull-right hidden-phone">
 				<label for="limit" class="element-invisible"><?php echo JText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC');?></label>
 				<?php echo $this->pagination->getLimitBox(); ?>
@@ -82,8 +83,17 @@ $sortFields = $this->getSortFields();
 				</select>
 			</div>
 			<div class="clearfix"></div>
+            <?php endif;?>
 
         </div>
+
+        <?php // If the joomla's version is more than or equal to 3.0 ?>
+        <?php if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
+        <div class="filter-select">
+            <?php echo $this->sidebar; ?>
+        </div>
+        <?php endif;?>
+
         <table class="table table-striped" id="categoryList">
             <thead>
                 <tr>

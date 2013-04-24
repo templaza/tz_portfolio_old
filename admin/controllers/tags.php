@@ -16,110 +16,72 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
-//no direct access
-defined('_JEXEC') or die('Restricted access');
 
-class TZ_PortfolioControllerTags extends JControllerLegacy
+// No direct access.
+defined('_JEXEC') or die;
+
+jimport('joomla.application.component.controlleradmin');
+
+    /**
+     * Users list controller class.
+     */
+class TZ_PortfolioControllerTags extends JControllerAdmin
 {
-    var $_link  = null;
-    var $model  = null;
-    var $cids   = null;
-
-    function __construct(){
-        parent::__construct();
-        $this -> cids   = JRequest::getVar('cid',array(),'','array');
-    }
-    function display($cachable = false, $urlparams = array()){
-        $this->_link     = 'index.php?option=com_tz_portfolio&view=tags';
-
-        $doc    = JFactory::getDocument();
-        $type   = $doc -> getType();
-        $view   = $this -> getView('Tags',$type);
-        if($this -> model = $this -> getModel('Tags')){
-            $view -> setModel($this -> model,true);
-        }
-
-        $this -> model -> _link     = $this -> _link;
-
-        switch(JRequest::getCmd('task')){
-            default:
-                $view -> setLayout('default');
-                break;
-            case 'add':
-            case 'new':
-                $view -> setLayout('add');
-                break;
-            case 'edit':
-                $view -> setLayout('edit');
-                break;
-            case 'cancel':
-                $this -> cancel();
-                break;
-            case 'save':
-            case 'apply':
-            case 'save2new':
-                $this->saveTags();
-                break;
-            case 'publish':
-                $this -> publishTags(1);
-                break;
-            case 'unpublish':
-                $this -> publishTags(0);
-                break;
-            case 'remove':
-                $this -> removeTags();
-                break;
-        }
-        if(JRequest::getCmd('layout') == 'modal'){
-            $view -> setLayout('modal');
-        }
-        $view -> display();
+    public function getModel($name = 'Tag', $prefix = 'TZ_PortfolioModel', $config = array('ignore_request' => true))
+    {
+        return parent::getModel($name, $prefix, $config);
     }
 
-    function publishTags($state){
+    function publish(){
+        JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
+
+        $cid    = JRequest::getVar('cid',array(),'','array');
+        $data   = array('unpublish' => 0  ,'publish' => 1  );
+        $task = $this->getTask();
+
+        $value  = JArrayHelper::getValue($data,$task,0, 'int');
+
+        $model  = $this -> getModel();
+
+        if(!$model -> publish($cid,$value)){
+            $this -> setMessage($model -> getError());
+        }
+        $this -> setRedirect('index.php?option='.$this -> option .'&view='.$this -> view_list);
+    }
+
+    public function delete()
+    {
         // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
+        JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
-        if($this -> model -> publishTags($this -> cids,$state))
-            $this -> setRedirect($this -> _link,$this -> model -> msg);
+        // Get items to remove from the request.
+        $cid = JRequest::getVar('cid', array(), '', 'array');
+
+        if (!is_array($cid) || count($cid) < 1)
+        {
+            JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
+        }
         else
-            $this -> setRedirect($this -> _link,$this -> model -> getError(),'error');
-        $this -> redirect();
-    }
+        {
+            // Get the model.
+            $model = $this->getModel();
 
-    protected function removeTags(){
-        // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
+            // Make sure the item ids are integers
+            jimport('joomla.utilities.arrayhelper');
+            JArrayHelper::toInteger($cid);
 
-        if($this -> model -> removeTags($this -> cids))
-            $this -> setRedirect($this -> model -> _link,$this -> model -> msg);
-        else{
-            $this -> setRedirect($this -> model -> _link,$this -> model -> getError(),'error');
-            return false;
+            // Remove the items.
+            if ($model->delete($cid))
+            {
+                $this->setMessage(JText::plural('COM_TZ_PORTFOLIO_TAGS_COUNT_DELETED', count($cid)));
+            }
+            else
+            {
+                $this->setMessage($model->getError());
+            }
         }
-        $this -> redirect();
-    }
 
-    function saveTags(){
-        // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
-
-        if($this -> model -> saveTags(JRequest::getCmd('task'))){
-            $this -> setRedirect($this -> model -> _link,$this -> model -> msg);
-        }
-        else{
-            $this -> setRedirect($this -> model -> _link,$this -> model -> getError(),'error');
-        }
-        $this -> redirect();
-    }
-
-    function cancel(){
-        // Check for request forgeries
-        JRequest::checkToken() or jexit( 'Invalid Token' );
-
-        $this -> setRedirect($this->_link);
-        $this -> redirect();
+        $this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
     }
 
 }

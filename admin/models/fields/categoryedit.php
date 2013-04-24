@@ -76,7 +76,7 @@ class JFormFieldCategoryEdit extends JFormFieldList
 		$query->join('LEFT', $db->quoteName('#__categories').' AS b ON a.lft > b.lft AND a.rgt < b.rgt');
 
 		// Filter by the extension type
-		if ($this->element['parent'] == true || $jinput->get('option') == 'com_tz_portfolio')
+		if ($this->element['parent'] == true || $jinput->get('option') == 'com_content')
 		{
 			$query->where('(a.extension = '.$db->quote($extension).' OR a.parent_id = 0)');
 		}
@@ -84,6 +84,7 @@ class JFormFieldCategoryEdit extends JFormFieldList
 		{
 			$query->where('(a.extension = '.$db->quote($extension).')');
 		}
+
 		// If parent isn't explicitly stated but we are in com_tz_portfolio assume we want parents
 		if ($oldCat != 0 && ($this->element['parent'] == true || ($jinput->get('option') == 'com_tz_portfolio'
                                                                   AND $jinput -> get('view') == 'categories')))
@@ -205,9 +206,11 @@ class JFormFieldCategoryEdit extends JFormFieldList
 				}
 			}
 		}
+
 		if (($this->element['parent'] == true || $jinput->get('option') == 'com_tz_portfolio')
 			&& (isset($row) && !isset($options[0])) && isset($this->element['show_root']))
 			{
+
 				if ($row->parent_id == '1') {
 					$parent = new stdClass();
 					$parent->text = JText::_('JGLOBAL_ROOT_PARENT');

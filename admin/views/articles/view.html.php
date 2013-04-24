@@ -21,7 +21,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
-require_once(JPATH_COMPONENT_ADMINISTRATOR.'/helpers/tz_portfolio.php');
+JHtml::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/helpers');
 
 /**
  * View class for a list of articles.
@@ -67,11 +67,13 @@ class TZ_PortfolioViewArticles extends JViewLegacy
 
 		$this->assign('f_levels', $options);
 
+
+
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal') {
 			$this->addToolbar();
 		}
-        
+
         TZ_PortfolioHelper::addSubmenu('articles');
         $this->sidebar = JHtmlSidebar::render();
 
@@ -120,35 +122,69 @@ class TZ_PortfolioViewArticles extends JViewLegacy
 			JToolBarHelper::divider();
 		}
         
-        // Add a batch button
+         //Add a batch button
 		if ($user->authorise('core.edit'))
 		{
 			JHtml::_('bootstrap.modal', 'collapseModal');
-			$title = JText::_('JTOOLBAR_BATCH');
-			$dhtml = "<button data-toggle=\"modal\" data-target=\"#collapseModal\" class=\"btn btn-small\">
-						<i class=\"icon-checkbox-partial\" title=\"$title\"></i>
-						$title</button>";
+
+            $title      = JText::_('JTOOLBAR_BATCH');
+            $batchIcon  = '<i class="icon-checkbox-partial" title="'.$title.'"></i>';
+            $batchClass = ' class="btn btn-small"';
+
+            //// If the joomla's version is more than or equal to 3.0
+            if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+                $title      = JText::_('COM_TZ_PORTFOLIO_BATCH');
+                $batchIcon  = '<span class="tz-icon-batch" title="'.$title.'"></span>';
+                $batchClass = '';
+            }
+
+			$dhtml = '<a'.$batchClass.' href="#" data-toggle="modal" data-target="#collapseModal">';
+            $dhtml .= $batchIcon.$title.'</a>';
+
 			$bar->appendButton('Custom', $dhtml, 'batch');
 		}
-        
+
 		if ($canDo->get('core.admin')) {
 			JToolBarHelper::preferences('com_tz_portfolio');
 			JToolBarHelper::divider();
 		}
 
         $doc    = JFactory::getDocument();
-        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/assets/style.css');
+        // If the joomla is version 3.0
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-v3.0.2/css/font-awesome.css');
+        }
+
+        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.css');
+
+
         // Complie button
-        $compileButton   = '<button class="btn btn-small" ';
-        $compileButton  .= 'onclick=Joomla.submitbutton(\'action.lesscall\')';
-        $compileButton  .= '><i class="icon-check"></i>&nbsp;'.JText::_('COM_TZ_PORTFOLIO_COMPLIE_LESS_TO_CSS');
-        $compileButton  .= '</button> ';
+        $compileTitle   = JText::_('COM_TZ_PORTFOLIO_COMPLIE_LESS_TO_CSS');
+        $compileIcon    = '<i class="icon-check"></i>&nbsp;';
+        $compileClass   = ' class="btn btn-small"';
+
+        //// If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $compileIcon    = '<span class="tz-icon-compile"></span>';
+            $compileClass   = null;
+        }
+
+        $compileButton   = '<a'.$compileClass.' onclick="Joomla.submitbutton(\'action.lesscall\')" href="#">'
+                           .$compileIcon.$compileTitle.'</a> ';
 
         //  JS Compress button
-        $compressButton   = '<button class="btn btn-small" ';
-        $compressButton  .= 'onclick=Joomla.submitbutton(\'action.jscompress\')';
-        $compressButton  .= '><i class="icon-check"></i>&nbsp;'.JText::_('COM_TZ_PORTFOLIO_COMPRESSION_JS');
-        $compressButton  .= '</button> ';
+        $compressTitle  = JText::_('COM_TZ_PORTFOLIO_COMPRESSION_JS');
+        $compressIcon   = '<i class="icon-check"></i>&nbsp;';
+        $compressClass  = ' class="btn btn-small"';
+
+        //// If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $compressIcon    = '<span class="tz-icon-compress"></span>';
+            $compressClass   = null;
+        }
+
+        $compressButton   = '<a'.$compressClass.' onclick="Joomla.submitbutton(\'action.jscompress\')" href="#">'
+                            .$compressIcon.$compressTitle.'</a> ';
 
         $bar -> appendButton('Custom',$compileButton,'compile');
         $bar -> appendButton('Custom',$compressButton,'compress');
@@ -157,19 +193,31 @@ class TZ_PortfolioViewArticles extends JViewLegacy
 		JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
 
         // Special HTML workaround to get send popup working
-        $videoTutorial    ='<a class="btn btn-small" onclick="Joomla.popupWindow(\'http://www.youtube.com/channel/UCykS6SX6L2GOI-n3IOPfTVQ/videos\', \''
-            .JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS').'\', 800, 500, 1)"'.' href="#">'
-            .'<i class="icon-14-youtube"></i>&nbsp;'
-            .JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS').'</a>';
-        $wikiTutorial    ='<a class="btn btn-small" onclick="Joomla.popupWindow(\'http://wiki.templaza.com/Main_Page\', \''
-            .JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS').'\', 800, 500, 1)"'.' href="#">'
-            .'<i class="icon-14-wikipedia"></i>&nbsp;'
-            .JText::_('COM_TZ_PORTFOLIO_WIKIPEDIA_TUTORIALS').'</a>';
+        $docClass       = ' class="btn btn-small"';
+        $youtubeIcon    = '<i class="tz-icon-youtube tz-icon-14"></i>&nbsp;';
+        $wikiIcon       = '<i class="tz-icon-wikipedia tz-icon-14"></i>&nbsp;';
 
+        $youtubeTitle   = JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS');
+        $wikiTitle      = JText::_('COM_TZ_PORTFOLIO_WIKIPEDIA_TUTORIALS');
 
+        //// If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $youtubeIcon  = '<span class="tz-icon-youtube" title="'.$youtubeTitle.'"></span>';
+            $wikiIcon  = '<span class="tz-icon-wikipedia" title="'.$wikiTitle.'"></span>';
+            $docClass   = null;
+        }
 
-        $bar->appendButton('Custom',$videoTutorial);
-        $bar->appendButton('Custom',$wikiTutorial);
+        $videoTutorial    ='<a'.$docClass.' onclick="Joomla.popupWindow(\'http://www.youtube.com/channel/UCykS6SX6L2GOI-n3IOPfTVQ/videos\', \''
+            .$youtubeTitle.'\', 800, 500, 1)"'.' href="#">'
+            .$youtubeIcon.$youtubeTitle.'</a>';
+
+        $wikiTutorial    ='<a'.$docClass.' onclick="Joomla.popupWindow(\'http://wiki.templaza.com/Main_Page\', \''
+            .$wikiTitle.'\', 800, 500, 1)"'.' href="#">'
+            .$wikiIcon
+            .$wikiTitle.'</a>';
+
+        $bar->appendButton('Custom',$videoTutorial,'youtube');
+        $bar->appendButton('Custom',$wikiTutorial,'wikipedia');
 
         JHtmlSidebar::setAction('index.php?option=com_tz_portfolio&view=articles');
 
@@ -185,7 +233,8 @@ class TZ_PortfolioViewArticles extends JViewLegacy
 			JHtml::_('select.options', JHtml::_('category.options', 'com_content'), 'value', 'text', $this->state->get('filter.category_id'))
 		);
 
-        require_once(JPATH_COMPONENT_ADMINISTRATOR.'/models/categories.php');
+//        require_once(JPATH_COMPONENT_ADMINISTRATOR.'/models/categories.php');
+        JHtml::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.'/models');
         $model      = JModelLegacy::getInstance('Categories','TZ_PortfolioModel',array('ignore_request' => true));
         $model -> setState('filter.group',$this -> state -> get('filter.group'));
         $listGroup  = $model -> getFieldsGroup();

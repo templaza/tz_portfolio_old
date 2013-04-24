@@ -26,12 +26,14 @@
   float: left;
 }
 #TzContent .tz_item {
+  background: none;
   font-weight: normal;
   font-size: 12px;
   color: #595959;
   line-height: 20px;
 }
 #TzContent .tz_item .TzInner {
+  background: #fff;
   padding: 15px 15px 40px 15px;
   border: 1px solid #e4e4ec;
   margin: 10px;
@@ -1316,13 +1318,6 @@ ul.TzVote-stars-small li a:hover {
 .edit form fieldset dt {
   clear: none;
   width: auto;
-}
-.current {
-  float: left;
-  width: 98%;
-}
-.current dd {
-  width: 100%;
 }
 .clr {
   clear: both;

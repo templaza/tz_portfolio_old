@@ -16,87 +16,113 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
-//no direct access
+
+// No direct access
 defined('_JEXEC') or die('Restricted access');
-jimport('joomla.application.component.view');
+
+jimport('joomla.application.components.view');
 
 class TZ_PortfolioViewFieldsGroup extends JViewLegacy
 {
-    public $_option     = null;
-    public $_view       = null;
-    public $_task       = null;
-    public $_link      = null;
+    protected $items        = null;
+    protected $pagination   = null;
+    protected $state        = null;
 
-    function display($tpl=null){
+    function display($tpl = null){
+        $this -> items      = $this -> get('Items');
+        $this -> pagination = $this -> get('Pagination');
+        $this -> state      = $this -> get('State');
 
-        if ($this->getLayout() !== 'modal')
-		{
-			TZ_PortfolioHelper::addSubmenu('fieldsgroup');
-		}
-        //Get editor
-        $editor = JFactory::getEditor();
-        $this -> state  = $this -> get('State');
+        TZ_PortfolioHelper::addSubmenu('fieldsgroup');
 
-        $this -> assign('editor',$editor);
-        $this -> assign('option',$this -> _option);
-        $this -> assign('view',$this -> _view);
-        $this -> assign('filter_state',$this -> state -> filter_state);
-        $this -> assign('order',$this -> state -> filter_order);
-        $this -> assign('order_Dir',$this -> state -> filter_order_Dir);
-        $this -> assign('lists',$this -> get($this -> _view));
-        $this -> assign('pagination',$this -> get('Pagination'));
-        ($this -> _task =='edit')?$this -> assign('listsEdit',$this -> get($this -> _view.'edit')):'';
-        $this -> setToolbar();
+        $this -> addToolbar();
+
         $this -> sidebar    = JHtmlSidebar::render();
-        
+
         parent::display($tpl);
     }
-    function setToolbar(){
-        switch ($this -> _task){
-            default:
-                JToolBarHelper::title(JText::_('COM_TZ_PORTFOLIO_GROUP_FIELDS_MANAGER'));
-                //JSubmenuHelper::addEntry(JText::_('Group fields'),$this -> _link,true);
-                JToolBarHelper::addNew();
-                JToolBarHelper::editList();
-                JToolBarHelper::deleteList(JText::_('COM_TZ_PORTFOLIO_QUESTION_DELETE'));
-                JToolBarHelper::preferences('com_tz_portfolio');
-                    
-                $doc    = JFactory::getDocument();
-                $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/assets/style.css');
-                // Special HTML workaround to get send popup working
-                $videoTutorial    ='<a class="btn btn-small" onclick="Joomla.popupWindow(\'http://www.youtube.com/channel/UCykS6SX6L2GOI-n3IOPfTVQ/videos\', \''
-                    .JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS').'\', 800, 500, 1)"'.' href="#">'
-                    .'<i class="icon-14-youtube"></i>&nbsp;'
-                    .JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS').'</a>';
-                $wikiTutorial    ='<a class="btn btn-small" onclick="Joomla.popupWindow(\'http://wiki.templaza.com/Main_Page\', \''
-                    .JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS').'\', 800, 500, 1)"'.' href="#">'
-                    .'<i class="icon-14-wikipedia"></i>&nbsp;'
-                    .JText::_('COM_TZ_PORTFOLIO_WIKIPEDIA_TUTORIALS').'</a>';
-                $bar= JToolBar::getInstance( 'toolbar' );
-                $bar->appendButton('Custom',$videoTutorial);
-                $bar->appendButton('Custom',$wikiTutorial);
-                break;
-            case 'add':
-            case 'new':
-                JRequest::setVar('hidemainmenu',true);
-                JToolBarHelper::title(JText::sprintf('COM_TZ_PORTFOLIO_GROUP_FIELDS_MANAGER_TASK','<small><small>'
-                                               .JText::_(ucfirst($this-> _task)).'</small></small>'));
-                JToolBarHelper::save2new();
-                JToolBarHelper::save();
-                JToolBarHelper::apply();
-                JToolBarHelper::cancel();
-                break;
-            case 'edit':
-                JRequest::setVar('hidemainmenu',true);
-                JToolBarHelper::title(JText::sprintf('COM_TZ_PORTFOLIO_GROUP_FIELDS_MANAGER_TASK','<small><small>'
-                                               .JText::_(ucfirst($this -> _task)).'</small></small>'));
-                JToolBarHelper::save();
-                JToolBarHelper::save2new();
-                JToolBarHelper::apply();
-                JToolBarHelper::cancel('cancel',JText::_('JTOOLBAR_CLOSE'));
-                break;
 
+    protected function addToolbar(){
+        $doc    = JFactory::getDocument();
+        $bar    = JToolBar::getInstance();
+
+        JToolBarHelper::title(JText::_('COM_TZ_PORTFOLIO_GROUP_FIELDS_MANAGER'));
+        JToolBarHelper::addNew('fieldgroup.add');
+        JToolBarHelper::editList('fieldgroup.edit');
+        JToolBarHelper::deleteList(JText::_('COM_TZ_PORTFOLIO_QUESTION_DELETE'),'fieldsgroup.delete');
+        JToolBarHelper::divider();
+        JToolBarHelper::preferences('com_tz_portfolio');
+        JToolBarHelper::divider();
+
+
+        // If the joomla is version 3.0
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-v3.0.2/css/font-awesome.css');
         }
+
+        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.css');
+
+
+        // Complie button
+        $compileTitle   = JText::_('COM_TZ_PORTFOLIO_COMPLIE_LESS_TO_CSS');
+        $compileIcon    = '<i class="icon-check"></i>&nbsp;';
+        $compileClass   = ' class="btn btn-small"';
+
+        //// If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $compileIcon    = '<span class="tz-icon-compile"></span>';
+            $compileClass   = null;
+        }
+
+        $compileButton   = '<a'.$compileClass.' onclick="Joomla.submitbutton(\'action.lesscall\')" href="#">'
+            .$compileIcon.$compileTitle.'</a> ';
+
+        //  JS Compress button
+        $compressTitle  = JText::_('COM_TZ_PORTFOLIO_COMPRESSION_JS');
+        $compressIcon   = '<i class="icon-check"></i>&nbsp;';
+        $compressClass  = ' class="btn btn-small"';
+
+        //// If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $compressIcon    = '<span class="tz-icon-compress"></span>';
+            $compressClass   = null;
+        }
+
+        $compressButton   = '<a'.$compressClass.' onclick="Joomla.submitbutton(\'action.jscompress\')" href="#">'
+            .$compressIcon.$compressTitle.'</a> ';
+
+        $bar -> appendButton('Custom',$compileButton,'compile');
+        $bar -> appendButton('Custom',$compressButton,'compress');
+
+        JToolBarHelper::divider();
+
+        JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER',false,'http://wiki.templaza.com/TZ_Portfolio_v3:Administration#Group_Fields');
+
+        // Special HTML workaround to get send popup working
+        $docClass       = ' class="btn btn-small"';
+        $youtubeIcon    = '<i class="tz-icon-youtube tz-icon-14"></i>&nbsp;';
+        $wikiIcon       = '<i class="tz-icon-wikipedia tz-icon-14"></i>&nbsp;';
+
+        $youtubeTitle   = JText::_('COM_TZ_PORTFOLIO_VIDEO_TUTORIALS');
+        $wikiTitle      = JText::_('COM_TZ_PORTFOLIO_WIKIPEDIA_TUTORIALS');
+
+        //// If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $youtubeIcon  = '<span class="tz-icon-youtube" title="'.$youtubeTitle.'"></span>';
+            $wikiIcon  = '<span class="tz-icon-wikipedia" title="'.$wikiTitle.'"></span>';
+            $docClass   = null;
+        }
+
+        $videoTutorial    ='<a'.$docClass.' onclick="Joomla.popupWindow(\'http://www.youtube.com/channel/UCykS6SX6L2GOI-n3IOPfTVQ/videos\', \''
+            .$youtubeTitle.'\', 800, 500, 1)"'.' href="#">'
+            .$youtubeIcon.$youtubeTitle.'</a>';
+
+        $wikiTutorial    ='<a'.$docClass.' onclick="Joomla.popupWindow(\'http://wiki.templaza.com/Main_Page\', \''
+            .$wikiTitle.'\', 800, 500, 1)"'.' href="#">'
+            .$wikiIcon
+            .$wikiTitle.'</a>';
+
+        $bar->appendButton('Custom',$videoTutorial,'youtube');
+        $bar->appendButton('Custom',$wikiTutorial,'wikipedia');
     }
 }
