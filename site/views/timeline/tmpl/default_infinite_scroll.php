@@ -124,39 +124,41 @@ $params = $this -> params;
                     });
 
                     tzpage++;
-                    <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
-                        jQuery.ajax({
-                            url:'index.php?option=com_tz_portfolio&amp;task=timeline.ajaxtags',
-                            data:{
-                                'tags':getTags(),
-                                'Itemid':'<?php echo $this -> Itemid;?>',
-                                'page': tzpage
-                            }
-                        }).success(function(data){
-                            if (data.length) {
-                                tztag   = jQuery(data);
-                                jQuery('#filter').append(tztag);
-                                loadTimeline();
+                    <?php if($params -> get('show_all_filter',0)):?>
+                        <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
+                            jQuery.ajax({
+                                url:'index.php?option=com_tz_portfolio&amp;task=timeline.ajaxtags',
+                                data:{
+                                    'tags':getTags(),
+                                    'Itemid':'<?php echo $this -> Itemid;?>',
+                                    'page': tzpage
+                                }
+                            }).success(function(data){
+                                if (data.length) {
+                                    tztag   = jQuery(data);
+                                    jQuery('#filter').append(tztag);
+                                    loadTimeline();
 
-                            }
-                        });
-                    <?php endif;?>
+                                }
+                            });
+                        <?php endif;?>
 
-                    <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
-                        jQuery.ajax({
-                            url:'index.php?option=com_tz_portfolio&amp;task=timeline.ajaxcategories',
-                            data:{
-                                'catIds':getCategories(),
-                                'Itemid':'<?php echo $this -> Itemid;?>',
-                                'page': tzpage
-                            }
-                        }).success(function(data){
-                            if (data.length) {
-                                tzCategories   = jQuery(data);
-                                jQuery('#filter').append(tzCategories);
-                                loadTimeline();
-                            }
-                        });
+                        <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
+                            jQuery.ajax({
+                                url:'index.php?option=com_tz_portfolio&amp;task=timeline.ajaxcategories',
+                                data:{
+                                    'catIds':getCategories(),
+                                    'Itemid':'<?php echo $this -> Itemid;?>',
+                                    'page': tzpage
+                                }
+                            }).success(function(data){
+                                if (data.length) {
+                                    tzCategories   = jQuery(data);
+                                    jQuery('#filter').append(tzCategories);
+                                    loadTimeline();
+                                }
+                            });
+                        <?php endif;?>
                     <?php endif;?>
 
                     <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>

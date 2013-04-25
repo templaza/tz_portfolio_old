@@ -20,7 +20,8 @@ a{font-weight:bold;font-size:14px;color:#595959;line-height:normal}#TzContent .t
 #TzContent .tz_item
 .tz_portfolio_video{border:0;margin:0
 0 18px 0;position:relative}#TzContent .tz_item span.TzArticleImage
-img{padding:0}#TzContent .pagination
+img{padding:0}#TzContent .tz_item .TzIcon
+a{z-index:1}#TzContent .pagination
 ul{display:block}.TzFirst
 .TzInner{margin-left:0}.TzSeparator{border-color:solid;border-style:rgba(0,0,0,0.1);border-width:1px 1px 1px auto;border-radius:0 0 0 0;border-width:1px 0 0 0;margin:11px
 0}#timeline

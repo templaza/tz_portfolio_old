@@ -34,14 +34,13 @@ $params = $this -> params;
 </div>
 
   <script type="text/javascript">
-        var tz=jQuery.noConflict();
-        tz(function(){
+        jQuery(function(){
             var tzpage    =   1;
             <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
                 function getTags() {
                     var tags    =   [];
-                    tz('#filter a').each(function (index) {
-                       tags.push(tz(this).attr('data-option-value').replace(".",""));
+                    jQuery('#filter a').each(function (index) {
+                       tags.push(jQuery(this).attr('data-option-value').replace(".",""));
                     });
                     return JSON.encode(tags);
                 }
@@ -50,18 +49,18 @@ $params = $this -> params;
             <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
                 function getCategories() {
                     var tags    =   [];
-                    tz('#filter a').each(function (index) {
-                       tags.push(tz(this).attr('data-option-value').replace(".category",""));
+                    jQuery('#filter a').each(function (index) {
+                       tags.push(jQuery(this).attr('data-option-value').replace(".category",""));
                     });
                     return JSON.encode(tags);
                 }
             <?php endif;?>
 
 
-            var $container = tz('#portfolio');
+            var $container = jQuery('#portfolio');
             
             <?php if($this -> params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'):?>
-                tz('#tz_append').css({'border':0,'background':'none'});
+                jQuery('#tz_append').css({'border':0,'background':'none'});
             <?php endif;?>
 
             $container.infinitescroll({
@@ -70,12 +69,12 @@ $params = $this -> params;
                 itemSelector : '.element',     // selector for all items you'll retrieve
                 errorCallback: function(){
                     <?php if($this -> params -> get('tz_portfolio_layout') == 'ajaxButton'):?>
-                        tz('#tz_append a').unbind('click').html('<?php echo JText::_('COM_TZ_PORTFOLIO_NO_MORE_PAGES');?>').show();
+                        jQuery('#tz_append a').unbind('click').html('<?php echo JText::_('COM_TZ_PORTFOLIO_NO_MORE_PAGES');?>').show();
                     <?php endif;?>
                     <?php if($this -> params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'):?>
-                        tz('#tz_append').removeAttr('style').html('<a class="tzNomore"><?php echo JText::_('COM_TZ_PORTFOLIO_NO_MORE_PAGES');?></a>');
+                        jQuery('#tz_append').removeAttr('style').html('<a class="tzNomore"><?php echo JText::_('COM_TZ_PORTFOLIO_NO_MORE_PAGES');?></a>');
                     <?php endif;?>
-                    tz('#tz_append a').addClass('tzNomore');
+                    jQuery('#tz_append a').addClass('tzNomore');
                 },
                 loading: {
                     msgText:'<?php echo JText::_('COM_TZ_PORTFOLIO_LOADING_TEXT');?>',
@@ -87,7 +86,7 @@ $params = $this -> params;
                 // call Isotope as a callback
                 function( newElements ) {
 
-                    var $newElems =   tz( newElements ).css({ opacity: 0 });
+                    var $newElems =   jQuery( newElements ).css({ opacity: 0 });
 
                     // ensure that images load before adding to masonry layout
                     $newElems.imagesLoaded(function(){
@@ -100,39 +99,42 @@ $params = $this -> params;
                         $container.isotope( 'appended', $newElems);
 
                         tzpage++;
-                        <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
-                            tz.ajax({
-                                url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxtags',
-                                data:{
-                                    'tags':getTags(),
-                                    'Itemid':'<?php echo $this -> Itemid;?>',
-                                    'page': tzpage
-                                }
-                            }).success(function(data){
-                                if (data.length) {
-                                    tztag   = tz(data);
-                                    tz('#filter').append(tztag);
-                                    loadPortfolio();
 
-                                }
-                            });
-                        <?php endif;?>
+                        <?php if($params -> get('show_all_filter',0)):?>
+                            <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
+                                tz.ajax({
+                                    url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxtags',
+                                    data:{
+                                        'tags':getTags(),
+                                        'Itemid':'<?php echo $this -> Itemid;?>',
+                                        'page': tzpage
+                                    }
+                                }).success(function(data){
+                                    if (data.length) {
+                                        tztag   = jQuery(data);
+                                        jQuery('#filter').append(tztag);
+                                        loadPortfolio();
 
-                        <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
-                            tz.ajax({
-                                url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxcategories',
-                                data:{
-                                    'catIds':getCategories(),
-                                    'Itemid':'<?php echo $this -> Itemid;?>',
-                                    'page': tzpage
-                                }
-                            }).success(function(data){
-                                if (data.length) {
-                                    tzCategories   = tz(data);
-                                    tz('#filter').append(tzCategories);
-                                    loadPortfolio();
-                                }
-                            });
+                                    }
+                                });
+                            <?php endif;?>
+
+                            <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
+                                jQuery.ajax({
+                                    url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxcategories',
+                                    data:{
+                                        'catIds':getCategories(),
+                                        'Itemid':'<?php echo $this -> Itemid;?>',
+                                        'page': tzpage
+                                    }
+                                }).success(function(data){
+                                    if (data.length) {
+                                        tzCategories   = jQuery(data);
+                                        jQuery('#filter').append(tzCategories);
+                                        loadPortfolio();
+                                    }
+                                });
+                            <?php endif;?>
                         <?php endif;?>
 
                         <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>
@@ -144,7 +146,7 @@ $params = $this -> params;
                         if($newElems.length){
 
                             //move item-more to the end
-                            tz('div#tz_append').find('a:first').show();
+                            jQuery('div#tz_append').find('a:first').show();
                         }
                     });
 
@@ -152,11 +154,11 @@ $params = $this -> params;
             );
 
             <?php if($this -> params -> get('tz_portfolio_layout') == 'ajaxButton'):?>
-                tz(window).unbind('.infscr');
+                jQuery(window).unbind('.infscr');
 
-                tz('div#tz_append a').click(function(){
-                    tz(this).stop();
-                    tz('div#tz_append').find('a:first').hide();
+                jQuery('div#tz_append a').click(function(){
+                    jQuery(this).stop();
+                    jQuery('div#tz_append').find('a:first').hide();
                     $container.infinitescroll('retrieve');
                 });
 

@@ -21,6 +21,8 @@
 defined('_JEXEC') or die();
 
 $doc    = JFactory::getDocument();
+
+JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 ?>
 
 <?php if($this -> listsArticle):?>

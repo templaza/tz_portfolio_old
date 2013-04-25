@@ -1181,6 +1181,7 @@ $pluginsTab = $this -> pluginsTab;
                                 </div>
                                 <div class="controls">
                                     <input type="text" name="tz_tags[]" class="suggest" data-provide="typeahead"/>
+                                    <span><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_TAGS_DESC');?></span>
                                 </div>
                             </div>
                             <div class="control-group">

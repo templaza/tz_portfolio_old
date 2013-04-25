@@ -160,9 +160,16 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         }
 
         $list   = $this -> get('Article');
+        
+        if($params -> get('show_all_filter',0)){
+            $this -> assign('listsTags',$this -> get('AllTags'));
+            $this -> assign('listsCategories',$this -> get('AllCategories'));
+        }
+        else{
+            $this -> assign('listsTags',$this -> get('Tags'));
+            $this -> assign('listsCategories',$this -> get('Categories'));
+        }
 
-        $this -> assign('listsTags',$this -> get('Tags'));
-        $this -> assign('listsCategories',$this -> get('Categories'));
         $this -> assign('listsArticle',$list);
         $this -> assignRef('params',$state -> params);
         $this -> assignRef('mediaParams',$state -> params);
