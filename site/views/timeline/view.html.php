@@ -39,8 +39,16 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
         $list       = $this -> get('Article');
         
         $this -> assign('listsArticle',$list);
-        $this -> assign('listsTags',$this -> get('Tags'));
-        $this -> assign('listsCategories',$this -> get('Categories'));
+
+        if($params -> get('show_all_filter',0)){
+            $this -> assign('listsTags',$this -> get('AllTags'));
+            $this -> assign('listsCategories',$this -> get('AllCategories'));
+        }
+        else{
+            $this -> assign('listsTags',$this -> get('Tags'));
+            $this -> assign('listsCategories',$this -> get('Categories'));
+        }
+        
         $this -> assign('listsCatDate',$this -> get('DateCategories'));
         $this -> assign('params',$this -> get('Params'));
         $this -> assign('pagination',$this -> get('Pagination'));

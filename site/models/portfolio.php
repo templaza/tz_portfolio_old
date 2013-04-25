@@ -147,6 +147,8 @@ class TZ_PortfolioModelPortfolio extends JModelList
         require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'portfolio'.DIRECTORY_SEPARATOR.'view.html.php';
         $view   = new TZ_PortfolioViewPortfolio();
 
+        JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
+
         $list   = $this -> getArticle();
 
         $view -> assign('listsArticle',$list);
@@ -260,12 +262,50 @@ class TZ_PortfolioModelPortfolio extends JModelList
         return false;
     }
 
+    public function getAllCategories(){
+        $params = $this -> getState('params');
+        $db     = $this -> getDbo();
+        $query  = $db -> getQuery(true);
+        $query -> select('*');
+        $query -> from('#__categories');
+        $query -> where($db -> quoteName('extension').'='.$db -> quote('com_content'));
+
+        if($catid = $params -> get('tz_catid')){
+            if(empty($catid[0])){
+                array_shift($catid);
+            }
+            $catid  = implode(',',$catid);
+            if(!empty($catid)){
+                $query -> where('id IN('.$catid.')');
+            }
+        }
+        $db -> setQuery($query);
+        if($rows = $db -> loadObjectList()){
+            return $rows;
+        }
+        return null;
+    }
+
     function getTags(){
         if($this -> rowsTag) {
             return $this-> rowsTag;
         }
 
         return false;
+    }
+
+    public function getAllTags(){
+        $db     = $this -> getDbo();
+        $query  = $db -> getQuery(true);
+        $query -> select('t.*');
+        $query -> from('#__tz_portfolio_tags AS t');
+        $query -> join('INNER','#__tz_portfolio_tags_xref AS x ON t.id = x.tagsid');
+        $query -> group('t.id');
+        $db -> setQuery($query);
+        if($rows = $db -> loadObjectList()){
+            return $rows;
+        }
+        return null;
     }
 
     function getTagName($contentId = null){
@@ -317,6 +357,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
     }
 
     function getArticle(){
+
+        $user	= JFactory::getUser();
+		$userId	= $user->get('id');
+		$guest	= $user->get('guest');
 
         $params = $this -> getState('params');
 //        $params = $state -> get('parameters.menu');
@@ -462,10 +506,30 @@ class TZ_PortfolioModelPortfolio extends JModelList
             $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
 
             foreach($rows as $key => $item){
+
                 $item->text = $item->introtext;
 
                 $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
                 $itemParams = new JRegistry($item -> attribs); //Get Article's Params
+
+                // Compute the asset access permissions.
+                // Technically guest could edit an article, but lets not check that to improve performance a little.
+                if (!$guest) {
+                    $asset	= 'com_tz_portfolio.portfolio.'.$item->id;
+
+                    // Check general edit permission first.
+                    if ($user->authorise('core.edit', $asset)) {
+                        $itemParams->set('access-edit', true);
+                    }
+                    // Now check if edit.own is available.
+                    elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
+                        // Check for a valid user and that they are the owner.
+                        if ($userId == $item->created_by) {
+                            $itemParams->set('access-edit', true);
+                        }
+                    }
+                }
+                
                 //Check redirect to view article
                 if($itemParams -> get('tz_portfolio_redirect')){
                     $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
@@ -594,11 +658,14 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 if(!isset($rows[$key] -> tz_image))
                     $rows[$key] -> tz_image = '';
 
+                $item -> attribs    = $itemParams -> toString();
+
                 //Get Catid
                 $this -> categories[]   = $item -> catid;
 
             }
             $this -> _Tags($contentId);
+
 
             return $rows;
         }

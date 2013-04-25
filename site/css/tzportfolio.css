@@ -84,6 +84,9 @@
 #TzContent .tz_item span.TzArticleImage img {
   padding: 0;
 }
+#TzContent .tz_item .TzIcon a {
+  z-index: 1;
+}
 #TzContent .pagination ul {
   display: block;
 }

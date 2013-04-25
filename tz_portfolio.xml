@@ -280,6 +280,9 @@
             <field name="css_compression" default="0"/>
             <field name="js_compression" default="1"/>
 
+            <field name="menu_active" default="auto"/>
+            <field name="show_all_filter" default="0"/>
+
         </fields>
     </config>
     
