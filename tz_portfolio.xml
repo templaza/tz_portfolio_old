@@ -40,8 +40,10 @@
         <filename>metadata.xml</filename>
         <filename>index.html</filename>
     </files>
-    <languages folder="site/language/en-GB">
-        <language tag="en-GB">en-GB.com_tz_portfolio.ini</language>
+    <languages folder="site/languages">
+        <language tag="en-GB">en-GB/en-GB.com_tz_portfolio.ini</language>
+        <language tag="ja-JP">ja-JP/ja-JP.com_tz_portfolio.ini</language>
+		<language tag="pt-BR">pt-BR/pt-BR.com_tz_portfolio.ini</language>
     </languages>
 
 	<administration>
@@ -76,9 +78,13 @@
             <menu link="option=com_tz_portfolio&amp;view=tags">Tags</menu>
             <menu link="option=com_tz_portfolio&amp;view=users">Users</menu>
         </submenu>
-        <languages folder="admin/language/en-GB">
-            <language tag="en-GB">en-GB.com_tz_portfolio.ini</language>
-            <language tag="en-GB">en-GB.com_tz_portfolio.sys.ini</language>
+        <languages folder="admin/languages">
+            <language tag="en-GB">en-GB/en-GB.com_tz_portfolio.ini</language>
+            <language tag="en-GB">en-GB/en-GB.com_tz_portfolio.sys.ini</language>
+			<language tag="ja-JP">ja-JP/ja-JP.com_tz_portfolio.ini</language>
+            <language tag="ja-JP">ja-JP/ja-JP.com_tz_portfolio.sys.ini</language>
+			<language tag="pt-BR">pt-BR/pt-BR.com_tz_portfolio.ini</language>
+            <language tag="pt-BR">pt-BR/pt-BR.com_tz_portfolio.sys.ini</language>
         </languages>
  	</administration>
     <config>

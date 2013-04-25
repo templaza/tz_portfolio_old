@@ -20,9 +20,13 @@
 		<filename>index.html</filename>
 		<filename>mod_tz_portfolio_articles_news.xml</filename>
 	</files>
-	<languages>
-		<language tag="en-GB">en-GB.mod_tz_portfolio_articles_news.ini</language>
-		<language tag="en-GB">en-GB.mod_tz_portfolio_articles_news.sys.ini</language>
+	<languages folder="languages">
+		<language tag="en-GB">en-GB/en-GB.mod_tz_portfolio_articles_news.ini</language>
+		<language tag="en-GB">en-GB/en-GB.mod_tz_portfolio_articles_news.sys.ini</language>
+		<language tag="ja-JP">ja-JP/ja-JP.mod_tz_portfolio_articles_news.ini</language>
+		<language tag="ja-JP">ja-JP/ja-JP.mod_tz_portfolio_articles_news.sys.ini</language>
+		<language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_articles_news.ini</language>
+		<language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_articles_news.sys.ini</language>
 	</languages>
 	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_ARTICLES_NEWSFLASH" />
 	<config>

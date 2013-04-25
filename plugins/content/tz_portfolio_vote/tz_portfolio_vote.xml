@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com</authorUrl>
-	<version>2.5.0</version>
+	<version>3.1.0</version>
 	<description>PLG_TZ_PORTFOLIO_VOTE_XML_DESCRIPTION</description>
 	<install>
 		<sql>
@@ -28,6 +28,10 @@
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.plg_content_tz_portfolio_vote.ini</language>
 		<language tag="en-GB">en-GB/en-GB.plg_content_tz_portfolio_vote.sys.ini</language>
+		<language tag="ja-JP">ja-JP/ja-JP.plg_content_tz_portfolio_vote.ini</language>
+		<language tag="ja-JP">ja-JP/ja-JP.plg_content_tz_portfolio_vote.sys.ini</language>
+		<language tag="pt-BR">pt-BR/pt-BR.plg_content_tz_portfolio_vote.ini</language>
+		<language tag="pt-BR">pt-BR/pt-BR.plg_content_tz_portfolio_vote.sys.ini</language>
 	</languages>
 	<config>
 		<fields name="params">
