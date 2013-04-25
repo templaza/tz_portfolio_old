@@ -18,9 +18,13 @@
 		<filename>index.html</filename>
 		<filename>mod_tz_portfolio_articles_archive.xml</filename>
 	</files>
-	<languages>
-		<language tag="en-GB">en-GB.mod_tz_portfolio_articles_archive.ini</language>
-		<language tag="en-GB">en-GB.mod_tz_portfolio_articles_archive.sys.ini</language>
+	<languages folder="languages">
+		<language tag="en-GB">en-GB/en-GB.mod_tz_portfolio_articles_archive.ini</language>
+		<language tag="en-GB">en-GB/en-GB.mod_tz_portfolio_articles_archive.sys.ini</language>
+		<language tag="ja-JP">ja-JP/ja-JP.mod_tz_portfolio_articles_archive.ini</language>
+		<language tag="ja-JP">ja-JP/ja-JP.mod_tz_portfolio_articles_archive.sys.ini</language>
+		<language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_articles_archive.ini</language>
+		<language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_articles_archive.sys.ini</language>
 	</languages>
 	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_ARTICLES_ARCHIVE" />
 	<config>
