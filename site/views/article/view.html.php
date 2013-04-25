@@ -406,6 +406,58 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 		parent::display($tpl);
 	}
 
+    protected function FindItemId($_tagid=null)
+	{
+        $tagid    = $this -> state -> get('tags.catid');
+		$app		= JFactory::getApplication();
+		$menus		= $app->getMenu('site');
+        $active     = $menus->getActive();
+        $tagid        =   intval($tagid);
+        if($_tagid){
+            $tagid    = intval($_tagid);
+        }
+
+        $component	= JComponentHelper::getComponent('com_tz_portfolio');
+		$items		= $menus->getItems('component_id', $component->id);
+
+
+        foreach ($items as $item)
+        {
+
+            if (isset($item->query) && isset($item->query['view'])) {
+                $view = $item->query['view'];
+
+
+                if (isset($item->query['id'])) {
+                    if ($item->query['id'] == $tagid) {
+                        return $item -> id;
+                    }
+                } else {
+                    $catids = $item->params->get('tz_catid');
+                    if ($view == 'tags' && $catids) {
+                        if (is_array($catids)) {
+                            for ($i = 0; $i < count($catids); $i++) {
+                                if ($catids[$i] == 0 || $catids[$i] == $tagid) {
+                                    return $item -> id;
+                                }
+                            }
+                        } else {
+                            if ($catids == $tagid) {
+                                return $item -> id;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if($this -> params -> get('menu_active') && $this -> params -> get('menu_active') != 'auto'){
+            return $this -> params -> get('menu_active');
+        }
+
+		return $active -> id;
+	}
+
 	/**
 	 * Prepares the document
 	 */

@@ -332,6 +332,13 @@
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
+            <field type="list" name="show_all_filter"
+                   label="COM_TZ_PORTFOLIO_SHOW_ALL_FILTER"
+                   description="COM_TZ_PORTFOLIO_SHOW_ALL_FILTER_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
             <field name="tz_filter_type" type="list"
                    label="COM_TZ_PORTFOLIO_FILTER_TYPE">
                 <option value="">JGLOBAL_USE_GLOBAL</option>

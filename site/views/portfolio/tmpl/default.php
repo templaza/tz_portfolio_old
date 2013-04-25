@@ -19,6 +19,8 @@
 
 //no direct access
 defined('_JEXEC') or die();
+
+JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 ?>
 
 <?php if($this -> listsArticle):?>
@@ -201,14 +203,14 @@ defined('_JEXEC') or die();
     });
 
     function loadPortfolio(){
-          var $optionSets = jQuery('#tz_options .option-set'),
-             $optionLinks = $optionSets.find('a');
-          $optionLinks.click(function(event){
-              event.preventDefault();
+        var $optionSets = jQuery('#tz_options .option-set'),
+         $optionLinks = $optionSets.find('a');
+        $optionLinks.click(function(event){
+            event.preventDefault();
             var $this = jQuery(this);
             // don't proceed if already selected
             if ( $this.hasClass('selected') ) {
-              return false;
+                return false;
             }
             var $optionSet = $this.parents('.option-set');
             $optionSet.find('.selected').removeClass('selected');
@@ -218,22 +220,20 @@ defined('_JEXEC') or die();
             var options = {},
                 key = $optionSet.attr('data-option-key'),
                 value = $this.attr('data-option-value');
-            // parse 'false' as false boolean
 
+            // parse 'false' as false boolean
             value = value === 'false' ? false : value;
             options[ key ] = value;
 
             if ( key === 'layoutMode' && typeof changeLayoutMode === 'function' ) {
-
-              // changes in layout modes need extra logic
-              changeLayoutMode( $this, options )
+                // changes in layout modes need extra logic
+                changeLayoutMode( $this, options );
             } else {
-              // otherwise, apply new options
-              $container.isotope( options );
+                // otherwise, apply new options
+                $container.isotope( options );
             }
             return false;
-          });
-
+        });
     }
 //    isotopeinit();
     loadPortfolio();

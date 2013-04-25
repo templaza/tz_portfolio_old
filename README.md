@@ -20,6 +20,12 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+04/25/2013 - 3.1.0
+
+	Can show all tags or categories filter for the portfolio and the timeline view.
+	Show icon print, email or edit for the portfolio and the timeline view.
+	The tag can assign to the menu. If the menu is not chosen, the tag will be assigned by active menu
+
 04/24/2013 - 3.0.9
 
 	Synchronize Joomla 3.0 and Joomla 2.5

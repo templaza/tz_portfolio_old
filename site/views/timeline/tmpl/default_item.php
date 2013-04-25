@@ -153,6 +153,28 @@ $categories = $this -> listsCatDate;
         <div class="element <?php echo $class.$tzItemClass.$tzItemFeatureClass;?>"
              data-category="<?php echo $dataCategory;?>">
             <div class="TzInner">
+                <!-- Begin Icon print, Email or Edit -->
+                <?php if($params -> get('show_icons',0)):?>
+                    <?php if ($params->get('show_print_icon') || $params->get('show_email_icon') || $params -> get('access-edit')) : ?>
+                        <div class="TzIcon">
+                            <div class="btn-group pull-right"> <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> <i class="icon-cog"></i> <span class="caret"></span> </a>
+                                <ul class="dropdown-menu">
+                                    <?php if ($params->get('show_print_icon')) : ?>
+                                    <li class="print-icon"> <?php echo JHtml::_('icon.print_popup', $row, $params); ?> </li>
+                                    <?php endif; ?>
+                                    <?php if ($params->get('show_email_icon')) : ?>
+                                    <li class="email-icon"> <?php echo JHtml::_('icon.email', $row, $params); ?> </li>
+                                    <?php endif; ?>
+                                    <?php if ($params -> get('access-edit')) : ?>
+                                    <li class="edit-icon"> <?php echo JHtml::_('icon.edit', $row, $params); ?> </li>
+                                    <?php endif; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
+                <!-- End Icon print, Email or Edit -->
+                
                 <?php
                  if($params -> get('show_image',1) == 1 OR $params -> get('show_image_gallery',1) == 1
                          OR $params -> get('show_video',1) == 1):
