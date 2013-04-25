@@ -21,9 +21,13 @@
             <filename>index.html</filename>
             <filename>mod_tz_portfolio_articles_random.xml</filename>
         </files>
-        <languages>
-            <language tag="en-GB">en-GB.mod_tz_portfolio_articles_random.ini</language>
-            <language tag="en-GB">en-GB.mod_tz_portfolio_articles_random.sys.ini</language>
+        <languages folder="languages">
+            <language tag="en-GB">en-GB/en-GB.mod_tz_portfolio_articles_random.ini</language>
+            <language tag="en-GB">en-GB/en-GB.mod_tz_portfolio_articles_random.sys.ini</language>
+			<language tag="ja-JP">ja-JP/ja-JP.mod_tz_portfolio_articles_random.ini</language>
+            <language tag="ja-JP">ja-JP/ja-JP.mod_tz_portfolio_articles_random.sys.ini</language>
+			<language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_articles_random.ini</language>
+            <language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_articles_random.sys.ini</language>
         </languages>
         <config>
             <fields name="params">
