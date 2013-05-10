@@ -20,6 +20,10 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+05/10/2013 - 3.1.1
+
+    Fix bug the save as copy.
+
 04/25/2013 - 3.1.0
 
 	Can show all tags or categories filter for the portfolio and the timeline view.

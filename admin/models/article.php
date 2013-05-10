@@ -44,6 +44,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     private $attachUrl      = 'attachments';
     private $contentid      = null;
     private $catParams      = null;
+    protected $task         = null;
 
     function __construct(){
         $this -> contentid  = JRequest::getCmd('id');
@@ -1731,7 +1732,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 // Start check file type
                 if(in_array($fileClient['type'],$arr)){
                     // Start check file size
-                    if($fileClient['size'] > TZ_IMAGE_SIZE ){
+                    if($fileClient['size'] <= TZ_IMAGE_SIZE ){
 
                         $obj    = new JImage($fileClient['tmp_name']);
                         $width  = $obj -> getWidth();
@@ -1740,16 +1741,18 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                   .JFile::getExt($fileClient['name']);
                         foreach($sizes as $key => $newWidth){
                             // Delete current Image file
-                            if(isset($curfile) && !empty($curfile)){
-                                $curName    = null;
-                                $curName    = str_replace('.'.JFile::getExt($curfile)
-                                    ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
-                                $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+                            if(!$this -> task){
+                                if(isset($curfile) && !empty($curfile)){
+                                    $curName    = null;
+                                    $curName    = str_replace('.'.JFile::getExt($curfile)
+                                        ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
+                                    $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
 
-                                if(JFile::exists($_curFile)){
-                                    JFile::delete($_curFile);
+                                    if(JFile::exists($_curFile)){
+                                        JFile::delete($_curFile);
+                                    }
+
                                 }
-
                             }
 
                             //Upload Image
@@ -1787,14 +1790,16 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                               .JFile::getExt($fileServer);
                     foreach($sizes as $key => $newWidth){
                         // Delete current Image file
-                        if(isset($curfile) && !empty($curfile)){
-                            $curName    = null;
-                            $curName    = str_replace('.'.JFile::getExt($curfile)
-                                ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
-                            $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+                        if(!$this -> task){
+                            if(isset($curfile) && !empty($curfile)){
+                                $curName    = null;
+                                $curName    = str_replace('.'.JFile::getExt($curfile)
+                                    ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
+                                $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
 
-                            if(JFile::exists($_curFile)){
-                                JFile::delete($_curFile);
+                                if(JFile::exists($_curFile)){
+                                    JFile::delete($_curFile);
+                                }
                             }
                         }
 
@@ -1817,11 +1822,31 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 // End Check File choose from server
             }
             else{
-                $fileName   = null;
+                $fileName   = '';
                 if(isset($curfile) && !empty($curfile)){
+                    // Delete current Image file
+                    if(isset($imageDelete)){
+                        if($this -> task){
+                            return '';
+                        }
+
+                        $curName    = null;
+                        foreach($sizes as $key => $val){
+                            $curName    = str_replace('.'.JFile::getExt($curfile)
+                                ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
+                            $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+
+                            if(JFile::exists($_curFile)){
+                                JFile::delete($_curFile);
+                            }
+
+                        }
+                        $fileName   = null;
+                    }
+                    
                     $curPath    = null;
                     $str2       = null;
-                    if($task == 'save2copy'){
+                    if($this -> task){
                         $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
                           .JFile::getExt($curfile);
                         foreach($sizes as $key => $val){
@@ -1840,28 +1865,12 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     else{
                         $fileName   = $curfile;
                     }
-
-                    // Delete current Image file
-                    if(isset($imageDelete)){
-                        $curName    = null;
-                        foreach($sizes as $key => $val){
-                            $curName    = str_replace('.'.JFile::getExt($curfile)
-                                ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
-                            $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
-
-                            if(JFile::exists($_curFile)){
-                                JFile::delete($_curFile);
-                            }
-
-                        }
-                        $fileName   = null;
-                    }
                 }
 
-                return '"'.$fileName.'"';
+                return $fileName;
             }
         }
-        return '""';
+        return '';
     }
 
     function getImage($file = null,$data = null,$task=null){
@@ -1925,16 +1934,18 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                     foreach($sizes as $key => $newWidth){
                         // Delete current Image file
-                        if(isset($curfile) && !empty($curfile)){
-                            $curName    = null;
-                            $curName    = str_replace('.'.JFile::getExt($curfile)
-                                ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
-                            $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+                        if(!$this -> task){
+                            if(isset($curfile) && !empty($curfile)){
+                                $curName    = null;
+                                $curName    = str_replace('.'.JFile::getExt($curfile)
+                                    ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
+                                $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
 
-                            if(JFile::exists($_curFile)){
-                                JFile::delete($_curFile);
+                                if(JFile::exists($_curFile)){
+                                    JFile::delete($_curFile);
+                                }
+
                             }
-
                         }
 
                         //Upload Image
@@ -1974,14 +1985,16 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                 foreach($sizes as $key => $newWidth){
                     // Delete current Image file
-                    if(isset($curfile) && !empty($curfile)){
-                        $curName    = null;
-                        $curName    = str_replace('.'.JFile::getExt($curfile)
-                            ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
-                        $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+                    if(!$this -> task){
+                        if(isset($curfile) && !empty($curfile)){
+                            $curName    = null;
+                            $curName    = str_replace('.'.JFile::getExt($curfile)
+                                ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
+                            $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
 
-                        if(JFile::exists($_curFile)){
-                            JFile::delete($_curFile);
+                            if(JFile::exists($_curFile)){
+                                JFile::delete($_curFile);
+                            }
                         }
                     }
 
@@ -2004,10 +2017,36 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         }
         else{
 
+            // Delete current Image file
+            if(isset($imageDelete)){
+                if($this -> task){
+                    $imageGallery -> name   = null;
+                    $imageGallery -> title  = '';
+                    return $imageGallery;
+                }
+
+                if(isset($curfile) && !empty($curfile)){
+                    $curName    = null;
+                    foreach($sizes as $key => $val){
+                        $curName    = str_replace('.'.JFile::getExt($curfile)
+                            ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
+                        $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+
+                        if(JFile::exists($_curFile)){
+                            JFile::delete($_curFile);
+                        }
+
+                    }
+                    $imageGallery -> name   = null;
+                    $imageGallery -> title  = '';
+                }
+            }
+            
             if(isset($curfile)){
                 $curPath    = null;
                 $str2       = null;
-                if($task == 'save2copy'){
+//                if($task == 'save2copy'){
+                if($this -> task){
                     $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
                       .JFile::getExt($curfile);
                     foreach($sizes as $key => $val){
@@ -2021,30 +2060,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         }
                     }
                     $imageGallery -> name   = $str2;
-
                 }
+
+//                }
                 else{
                     $imageGallery -> name   = $curfile;
                 }
             }
-            // Delete current Image file
-            if(isset($imageDelete)){
-                if(isset($curfile) && !empty($curfile)){
-                    $curName    = null;
-                    foreach($sizes as $key => $val){
-                        $curName    = str_replace('.'.JFile::getExt($curfile)
-                            ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
-                        $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
 
-                        if(JFile::exists($_curFile)){
-                            JFile::delete($_curFile);
-                        }
-                        
-                    }
-                    $imageGallery -> name   = null;
-                    $imageGallery -> title  = '';
-                }
-            }
         }
 
         return $imageGallery;
@@ -2139,12 +2162,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                 foreach($size as $key => $newWidth){
 
                                     //Delete current file if have it
-                                    if(isset($curfile) && isset($curfile[$i]) && !empty($curfile[$i])){
-                                        $curName    = str_replace('.'.JFile::getExt($curfile[$i])
-                                            ,'_'.$key.'.'.JFile::getExt($curfile[$i]),$curfile[$i]);
-                                        $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
-                                        if(JFile::exists($_curFile)){
-                                            JFile::delete($_curFile);
+                                    if(!$this -> task){
+                                        if(isset($curfile) && isset($curfile[$i]) && !empty($curfile[$i])){
+                                            $curName    = str_replace('.'.JFile::getExt($curfile[$i])
+                                                ,'_'.$key.'.'.JFile::getExt($curfile[$i]),$curfile[$i]);
+                                            $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+                                            if(JFile::exists($_curFile)){
+                                                JFile::delete($_curFile);
+                                            }
                                         }
                                     }
 
@@ -2196,13 +2221,15 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $obj        = new JImage($original);
                     foreach($size as $key => $newWidth){
                         //Delete current file if have it
-                        if(isset($curfile) && isset($curfile[$i]) && !empty($curfile[$i])){
-                            $curName    = str_replace('.'.JFile::getExt($curfile[$i])
-                                ,'_'.$key.'.'.JFile::getExt($curfile[$i]),$curfile[$i]);
-                            $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+                        if(!$this -> task){
+                            if(isset($curfile) && isset($curfile[$i]) && !empty($curfile[$i])){
+                                $curName    = str_replace('.'.JFile::getExt($curfile[$i])
+                                    ,'_'.$key.'.'.JFile::getExt($curfile[$i]),$curfile[$i]);
+                                $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
 
-                            if(JFile::exists($_curFile)){
-                                JFile::delete($_curFile);
+                                if(JFile::exists($_curFile)){
+                                    JFile::delete($_curFile);
+                                }
                             }
                         }
 
@@ -2226,7 +2253,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $pattern    = JURI::root();
                     $curName   = preg_replace('/'.addcslashes($pattern,'/:').'/','',$curfile[$i]);
                     $curName   = str_replace('_S.'.JFile::getExt($curName),'.'.JFile::getExt($curName),$curName);
-                    if($task == 'save2copy'){
+                    if($this -> task){
                         $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
                                         .JFile::getExt($curName);
                         foreach($size as $key => $val){
@@ -2251,15 +2278,17 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     if(in_array($i,$imageDelete)){
                         if(isset($curfile) && isset($curfile[$i]) && !empty($curfile[$i])){
                             $curName    = null;
-                            foreach($size as $key => $val){
-                                $curName    = str_replace('.'.JFile::getExt($curfile[$i])
-                                    ,'_'.$key.'.'.JFile::getExt($curfile[$i]),$curfile[$i]);
-                                $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+                            if(!$this -> task){
+                                foreach($size as $key => $val){
+                                    $curName    = str_replace('.'.JFile::getExt($curfile[$i])
+                                        ,'_'.$key.'.'.JFile::getExt($curfile[$i]),$curfile[$i]);
+                                    $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
 
-                                if(JFile::exists($_curFile)){
-                                    JFile::delete($_curFile);
+                                    if(JFile::exists($_curFile)){
+                                        JFile::delete($_curFile);
+                                    }
+
                                 }
-
                             }
                             $arr2[$i]   = null;
                             $galleryTitle[$i] = null;
@@ -2599,7 +2628,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     }
 
     function _save($contentid = null,$task=null){
-        
+
+        if($task != 'save2copy'){
 			// Clean the cache.
 			$this->cleanCache();
             $params     = $this -> getState('params');
@@ -2893,7 +2923,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $value['images']        = $db -> quote($images -> name);
                 $value['imagetitle']    = $db -> quote($images -> title);
 
-                $value['images_hover'] = $this -> getImageHover($fileHover,$post['tz_img_hover_server'],$post,$task);
+                $value['images_hover'] = $db -> quote($this -> getImageHover($fileHover,$post['tz_img_hover_server'],$post,$task));
 
                 $gallery = $this -> getGallery($file2,$post,$params,$task);
 
@@ -2959,13 +2989,15 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
             //////////////////
 
-        // Tags
-        $tags   = JRequest::getVar('tz_tags',null);
-        $tags   = array_unique($tags);
-        if($tags){
-            $tags   = implode(',',$tags);
+            // Tags
+            $tags   = JRequest::getVar('tz_tags',null);
+            $tags   = array_unique($tags);
+            if($tags){
+                $tags   = implode(',',$tags);
+            }
+            $this -> _saveTags($contentid,$tags);
+
         }
-        $this -> _saveTags($contentid,$tags);
 
         return true;
 
@@ -2986,7 +3018,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 		if (JRequest::getVar('task') == 'save2copy') {
 			list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
 
-            $this -> _save($this -> getState($this -> getName().'.id'),JRequest::getVar('task'));
+//            $this -> _save($this -> getState($this -> getName().'.id'),JRequest::getVar('task'));
+            $this -> task   = true;
 
             $data['id'] = 0;
 
@@ -3018,7 +3051,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $model -> save($plgData);
             }
 
-            $this -> _save($this -> getState($this -> getName().'.id'));
+            $this -> _save($this -> getState($this -> getName().'.id'),JRequest::getCmd('task'));
             
             if (isset($data['featured'])) {
                 $this->featured($this->getState($this->getName().'.id'), $data['featured']);
