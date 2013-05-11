@@ -423,7 +423,10 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 
         $component	= JComponentHelper::getComponent('com_tz_portfolio');
 		$items		= $menus->getItems('component_id', $component->id);
-
+		
+        if($this -> params -> get('menu_active') && $this -> params -> get('menu_active') != 'auto'){
+            return $this -> params -> get('menu_active');
+        }
 
         foreach ($items as $item)
         {
@@ -453,10 +456,6 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                     }
                 }
             }
-        }
-
-        if($this -> params -> get('menu_active') && $this -> params -> get('menu_active') != 'auto'){
-            return $this -> params -> get('menu_active');
         }
 
 		return $active -> id;
