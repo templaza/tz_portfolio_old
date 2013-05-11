@@ -111,7 +111,7 @@ $tmpl           = JRequest::getString('tmpl');
                             </a>
                         <?php endif;?>
                         <?php if(!empty($this -> listAuthor -> google_one)):?>
-                            <a class="TzSocialLink" href="<?php echo $this -> listAuthor -> google_one?>"<?php echo $target?>>
+                            <a class="TzSocialLink" rel="author" href="<?php echo $this -> listAuthor -> google_one?>"<?php echo $target?>>
                                 <img src="components/com_tz_portfolio/assets/google_one.png"/>
                             </a>
                         <?php endif;?>
