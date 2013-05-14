@@ -100,7 +100,7 @@ ob_start();
                 <span class="TzVote">
                     <span class="TzLine">|</span>
                     <span><?php echo JText::_('COM_TZ_PORTFOLIO_RATING');?></span>
-                    <?php echo $this->item->event->beforeDisplayContent; ?>
+                    <?php echo $this->item->event->TZPortfolioVote; ?>
                 </span>
             <?php endif;?>
 
