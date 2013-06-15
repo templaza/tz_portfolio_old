@@ -492,6 +492,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 		{
 			// If this is not a single article menu item, set the page title to the article title
 			if ($this->item->title) {
+                $this->item->title  = $this->item->title;
 				$title = $this->item->title;
 			}
 			$path = array(array('title' => $this->item->title, 'link' => ''));

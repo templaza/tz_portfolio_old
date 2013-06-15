@@ -7,7 +7,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.1.1</version>
+	<version>3.1.2</version>
 	<description>TZ Portfolio native for Joomla! 2.5.x and 3.0.x</description>
     
     <scriptfile>script.php</scriptfile>
@@ -288,6 +288,16 @@
 
             <field name="menu_active" default="auto"/>
             <field name="show_all_filter" default="0"/>
+
+            <field name="related_limit" default="5"/>
+            <field name="image_gallery_animationLoop" default="1"/>
+            <field name="image_gallery_smoothHeight" default="1"/>
+            <field name="image_gallery_randomize" default="0"/>
+            <field name="image_gallery_startAt" default="0"/>
+            <field name="image_gallery_itemWidth" default="0"/>
+            <field name="image_gallery_itemMargin" default="0"/>
+            <field name="image_gallery_minItems" default="0"/>
+            <field name="image_gallery_maxItems" default="0"/>
 
         </fields>
     </config>

@@ -35,38 +35,6 @@ Joomla.submitbutton = function(task) {
         alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
     }
 }
-<!--Joomla.submitbutton = function(pressbutton) {-->
-<!--    var form = document.adminForm;-->
-<!---->
-<!--    if (pressbutton == 'cancel') {-->
-<!--        document.location='index.php?option=com_tz_portfolio&view=fields';-->
-<!--        return true;-->
-<!--    }-->
-<!---->
-<!--    var total = 0;-->
-<!--    for(i=0;i<form.fieldsgroup.length;i++){-->
-<!--        if(form.fieldsgroup[i].selected){-->
-<!--            total++;-->
-<!--        }-->
-<!---->
-<!--    }-->
-<!--    // do field validation-->
-<!--    if(form.title.value==""){-->
-<!--        alert( "--><?php //echo JText::_( 'COM_TZ_PORTFOLIO_INPUT_FIELD_TITLE', true ); ?><!--" );-->
-<!--        form.title.focus();-->
-<!--    }-->
-<!--    else if(form.fieldsgroup.value==-1 && total==1){-->
-<!--        alert( "--><?php //echo JText::_( 'COM_TZ_PORTFOLIO_INPUT_FIELD_SELECT_GROUP', true ); ?><!--" );-->
-<!--        form.fieldsgroup.focus();-->
-<!--    }-->
-<!--    else if(form.type.value==0){-->
-<!--        alert( "--><?php //echo JText::_( 'COM_TZ_PORTFOLIO_FIELD_SELECT_TYPE', true ); ?><!--" );-->
-<!--        form.type.focus();-->
-<!--    }-->
-<!--    else {-->
-<!--        submitform( pressbutton);-->
-<!--    }-->
-<!--}-->
 
 window.addEvent('load', function() {
     var createBox = function(object,name,tz_count,imageurl){

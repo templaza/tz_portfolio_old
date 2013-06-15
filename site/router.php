@@ -220,26 +220,30 @@ function TZ_PortfolioBuildRoute(&$query)
 
 
     if($view == 'users'){
-            $item       = $menu -> getActive();
+        $item       = $menu -> getActive();
+
+        if(isset($query['created_by'])){
             $currentId  = $query['created_by'];
+        }
+
+        // Make sure we have the id and the name
+        if (strpos($query['created_by'], ':') == false) {
+            $db = JFactory::getDbo();
+            $aquery = $db->setQuery($db->getQuery(true)
+                ->select('name')
+                ->from('#__users')
+                ->where('id='.(int)$query['created_by'])
+
+            );
+            $alias  = $db->loadResult();
+            $alias  = strtolower($alias);
+            $alias  = trim($alias);
+            $alias  = str_replace(' ','-',$alias);
+            $query['created_by'] = $query['created_by'].':'.$alias;
+        }
 
         if(isset($item -> query)){
             $query2     = $item -> query;
-            // Make sure we have the id and the name
-            if (strpos($query['created_by'], ':') == false) {
-                $db = JFactory::getDbo();
-                $aquery = $db->setQuery($db->getQuery(true)
-                    ->select('name')
-                    ->from('#__users')
-                    ->where('id='.(int)$query['created_by'])
-
-                );
-                $alias  = $db->loadResult();
-                $alias  = strtolower($alias);
-                $alias  = trim($alias);
-                $alias  = str_replace(' ','-',$alias);
-                $query['created_by'] = $query['created_by'].':'.$alias;
-            }
 
             if(isset($query2['created_by']) && $query2['created_by'] != $currentId){
                 $segments[] = $view;
@@ -257,7 +261,26 @@ function TZ_PortfolioBuildRoute(&$query)
             }
             unset($query['view']);
             unset($query['created_by']);
+
+            return $segments;
         }
+
+        if(isset($query['view'])){
+            $segments[] = $view;
+            unset($query['view']);
+        }
+
+        if(isset($query['created_by'])){
+            $segments[]  = $query['created_by'];
+            unset($query['created_by']);
+        }
+
+        if(isset($query['char'])){
+            $segments[] = $query['char'];
+            unset($query['char']);
+        }
+
+        return $segments;
     }
 
 	if ($view == 'archive') {
@@ -324,18 +347,28 @@ function TZ_PortfolioParseRoute($segments)
 
 	// Count route segments
 	$count = count($segments);
-
 	// Standard routing for articles.  If we don't pick up an Itemid then we get the view from the segments
 	// the first segment is the view and the last segment is the id of the article or category.
 	if (!isset($item)) {
 		$vars['view']	= $segments[0];
-        if (isset($segments[1]) && strlen($segments[1]) == 1){
-            $vars['char'] = $segments[1];
+
+        if($vars['view'] == 'users'){
+            $vars['created_by'] = (int) $segments[1];
+            if($count > 2){
+                $vars['char'] = $segments[$count - 1];
+            }
         }
-		$vars['id']		= $segments[$count - 1];
+        else{
+            if (isset($segments[1]) && strlen($segments[1]) == 1){
+                $vars['char'] = $segments[1];
+            }
+            $vars['id']		= $segments[$count - 1];
+        }
 
 		return $vars;
 	}
+
+
 
 	// if there is only one segment, then it points to either an article or a category
 	// we test it first to see if it is a category.  If the id and alias match a category
@@ -405,8 +438,12 @@ function TZ_PortfolioParseRoute($segments)
         }
         if($segments[0] == 'users'){
                 $vars['view'] = $segments[0];
-                $vars['created_by'] = (int) $segments[count($segments)-1];
-//            }
+                if(count($segments) > 2){
+                    $vars['created_by'] = (int) $segments[1];
+                    $vars['char'] = (int) $segments[count($segments)-1];
+                }else{
+                    $vars['created_by'] = (int) $segments[count($segments)-1];
+                }
             return $vars;
         }
 

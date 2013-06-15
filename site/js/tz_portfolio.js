@@ -14,4 +14,4 @@ function tzSortFilter(srcObj,desObj,order){
         }
     });
     srcObj.each(function(idx, itm) { desObj.append(itm).append('\n');});
-}
+};

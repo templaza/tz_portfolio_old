@@ -20,6 +20,24 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+06/15/2013 - 3.1.2
+
+    Fix bug for the user's description.
+	Fix author's link for some views: portfolio, timeline,....
+	Update flexslider library version 2.1 with flexslider.js and flexslider.css files.
+	Add some parameters in global config: 
+		- Limit Related (In Articles Options)
+		- In Image Slider Options:
+			+ Animation Loop
+			+ Smooth Height
+			+ Randomize
+			+ Start At
+			+ Item Width
+			+ Item Margin
+			+ Items Min
+			+ Items Max
+		
+	
 05/10/2013 - 3.1.1
 
     Fix bug the save as copy.

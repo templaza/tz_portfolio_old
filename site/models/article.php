@@ -104,7 +104,7 @@ class TZ_PortfolioModelArticle extends JModelItem
             $params     = $this -> getState('params');
             $article    = $this -> getItem($pk);
             $params -> merge($article -> params);
-            $limit      = $params->get('num_leading_articles') + $params->get('num_intro_articles') + $params->get('num_links');
+            $limit      = $params -> get('related_limit',5);
 
             switch($params -> get('related_orderby','rdate')){
                 default:
@@ -126,7 +126,7 @@ class TZ_PortfolioModelArticle extends JModelItem
                       .' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'
                       .' FROM #__content AS c'
                       .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
-                      .' WHERE NOT c.id='.$pk
+                      .' WHERE c.state = 1 AND NOT c.id='.$pk
                       .' AND c.catid='.$article -> catid
                       .$orderBy;
             $db     = JFactory::getDbo();
