@@ -67,6 +67,8 @@ class TZ_PortfolioModelField extends JModelAdmin
         $properties = $table->getProperties(1);
         $item = JArrayHelper::toObject($properties, 'JObject');
 
+        $item -> title  = htmlspecialchars(strip_tags($item -> title));
+
         if (property_exists($item, 'params'))
         {
             $registry = new JRegistry;
@@ -143,7 +145,7 @@ class TZ_PortfolioModelField extends JModelAdmin
         $data                   = array();
         $data['default_value']  = array();
         $data['id']             = $_data['id'];
-        $data['title']          = $_data['title'];
+        $data['title']          = strip_tags($_data['title']);
         $data['type']           = $_data['type'];
         $data['published']      = ($_data['published'] == 'U')?0:1;
         $data['description']    = $_data['description'];
@@ -163,16 +165,16 @@ class TZ_PortfolioModelField extends JModelAdmin
 
         switch ($_data['type']){
             case 'textfield':
-                $data['value']  = '[{"name":"'.$_data['option_value'][0].'","value":"0"'
+                $data['value']  = '[{"name":"'.addslashes(strip_tags($_data['option_value'][0])).'","value":"0"'
                                   .',"target":"null","editor":"null","image":"'
                                   .$_data['option_icon'][0].'"}]';
-                $defautValue[]  = $_data['option_value'][0];
+                $defautValue[]  = strip_tags($_data['option_value'][0]);
                 break;
             case 'textarea':
-                $data['value']  = '[{"name":"'.$_data['option_value'][0]
+                $data['value']  = '[{"name":"'.strip_tags($_data['option_value'][0])
                                   .'","value":"0","target":"null","editor":"'
-                                  .$_data['option_editor'].'","image":"'
-                                  .$_data['option_icon'][0].'"}]';
+                                  .strip_tags($_data['option_editor']).'","image":"'
+                                  .strip_tags($_data['option_icon'][0]).'"}]';
                 $defautValue[]  = $_data['option_value'][0];
                 break;
             case 'select':
@@ -184,11 +186,11 @@ class TZ_PortfolioModelField extends JModelAdmin
                         $count  = 0;
                         for($i=0;$i<count($_data['option_name']);$i++){
                             if(isset($_data['option_name'][$i]) && !empty($_data['option_name'][$i])){
-                                $values[]   = '{"name":"'.$_data['option_name'][$i]
+                                $values[]   = '{"name":"'.strip_tags($_data['option_name'][$i])
                                     .'","value":"'.$count.'","target":"null","editor":"null","image":"'
                                               .$_data['option_icon'][$i].'"}';
                                 if(in_array($i,$data['default_value'])){
-                                    $defautValue[$i]   =  $_data['option_name'][$i];
+                                    $defautValue[$i]   = strip_tags($_data['option_name'][$i]);
                                 }
 
                                 $count++;
@@ -200,15 +202,15 @@ class TZ_PortfolioModelField extends JModelAdmin
             break;
             case 'link':
 
-                $data['value']  = '[{"name":"'.$_data['option_name'][0]
-                                  .'","value":"'.$_data['option_value'][0]
-                                  .'","target":"'.$_data['option_target'][0].'","editor":"null","image":"'
+                $data['value']  = '[{"name":"'.strip_tags($_data['option_name'][0])
+                                  .'","value":"'.strip_tags($_data['option_value'][0])
+                                  .'","target":"'.strip_tags($_data['option_target'][0]).'","editor":"null","image":"'
                                   .$_data['option_icon'][0].'"}]';
 
                     if(empty($_data['option_name'][0]))
-                        $title  = $_data['option_value'][0];
+                        $title  = strip_tags($_data['option_value'][0]);
                     else
-                         $title  = $_data['option_name'][0];
+                         $title  = strip_tags($_data['option_name'][0]);
                 $defautValue[]  = htmlspecialchars('<a href="'.$_data['option_value'][0].'" target="'.$_data['option_target'][0].'">'.$title.'</a> ');
                 break;
             case 'file':
@@ -355,8 +357,8 @@ class TZ_PortfolioModelField extends JModelAdmin
 
                         if($_value -> name == $item -> value){
                             $query  = 'UPDATE #__tz_portfolio SET images="'.$_value -> image
-                                  .'" WHERE fieldsid='.$fieldsId.' AND contentid='.$item -> contentid.' AND value="'.
-                                      $_value->name.'"';
+                                  .'" WHERE fieldsid='.$fieldsId.' AND contentid='.$item -> contentid.' AND value='.
+                                      $db -> quote(strip_tags($_value->name));
                             $db -> setQuery($query);
                             if(!$db -> query()){
                                 JError::raiseError(500,$db -> getErrorMsg());

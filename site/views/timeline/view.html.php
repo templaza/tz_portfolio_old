@@ -214,4 +214,44 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
 		}
         parent::display($tpl);
     }
+
+    protected function FindUserItemId($_userid=null){
+        $app		= JFactory::getApplication();
+        $menus		= $app->getMenu('site');
+        $active     = $menus->getActive();
+        if($_userid){
+            $userid    = intval($_userid);
+        }
+
+        $component	= JComponentHelper::getComponent('com_tz_portfolio');
+        $items		= $menus->getItems('component_id', $component->id);
+
+        if($this -> params -> get('menu_active') && $this -> params -> get('menu_active') != 'auto'){
+            return $this -> params -> get('menu_active');
+        }
+
+        foreach ($items as $item)
+        {
+            if (isset($item->query) && isset($item->query['view'])) {
+                $view = $item->query['view'];
+
+                if (isset($item -> query['created_by'])) {
+                    if ($item->query['created_by'] == $userid) {
+                        return $item -> id;
+                    }
+                }
+                else{
+                    if($item -> home == 1){
+                        $homeId = $item -> id;
+                    }
+                }
+            }
+        }
+
+        if(!isset($active -> id)){
+            return $homeId;
+        }
+
+        return $active -> id;
+    }
 }

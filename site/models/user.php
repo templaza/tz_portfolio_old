@@ -44,6 +44,15 @@ class TZ_PortfolioModelUser extends JModelLegacy
 
         $rows   = $db -> loadObject();
         if(count($rows)>0){
+            $rows -> description    = htmlspecialchars($rows -> description);
+            if($rows -> google_one AND !empty($rows -> google_one)){
+                if(preg_match('/.*?(\?|\&).*?/',$rows -> google_one)){
+                    $rows -> google_one .= '&rel=author';
+                }
+                else{
+                    $rows -> google_one .= '?rel=author';
+                }
+            }
             return $rows;
         }
         return false;
@@ -65,6 +74,16 @@ class TZ_PortfolioModelUser extends JModelLegacy
 
             $rows   = $db -> loadObject();
             if(count($rows)>0){
+                $rows -> description    = htmlspecialchars($rows -> description);
+                if($rows -> google_one AND !empty($rows -> google_one)){
+                    if(preg_match('/.*?(\?|\&).*?/',$rows -> google_one)){
+                        $rows -> google_one .= '&rel=author';
+                    }
+                    else{
+                        $rows -> google_one .= '?rel=author';
+                    }
+                }
+
                 return $rows;
             }
         }

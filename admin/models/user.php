@@ -340,14 +340,14 @@ class TZ_PortfolioModelUser extends JModelAdmin
             return false;
         }
 
-        $value  = '('.$data['usersid'].',"'
-                  .$data['images'].'","'
-                  .$data['url'].'","'
-                  .$data['gender'].'","'
-                  .$data['description'].'","'
-                  .$data['twitter'].'","'
-                  .$data['facebook'].'","'
-                  .$data['google_one'].'")';
+        $value  = '('.$data['usersid'].','
+                  .$db -> quote($data['images']).','
+                  .$db -> quote($data['url']).','
+                  .$db -> quote($data['gender']).','
+                  .$db -> quote($data['description']).','
+                  .$db -> quote($data['twitter']).','
+                  .$db -> quote($data['facebook']).','
+                  .$db -> quote($data['google_one']).')';
         $query  = 'INSERT INTO #__tz_portfolio_users(`usersid`,`images`,`url`,`gender`,`description`,`twitter`,`facebook`,`google_one`)'
             .' VALUES '.$value;
 

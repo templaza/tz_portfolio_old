@@ -236,6 +236,7 @@
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
+            <field name="related_limit" type="text" label="COM_TZ_PORTFOLIO_LIMIT_RELATED"/>
             <field name="show_related_heading" type="list"
                    label="COM_TZ_PORTFOLIO_SHOW_RELATED_HEADING">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
@@ -496,6 +497,46 @@
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMSPEED"/>
             <field name="image_gallery_animation_duration" type="text"
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_DURATION"/>
+
+            <field name="image_gallery_animationLoop" type="list"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_LOOP"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_LOOP_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="image_gallery_smoothHeight" type="list"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SMOOTH_HEIGHT"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SMOOTH_HEIGHT_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="image_gallery_randomize" type="list"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_RANDOMIZE"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_RANDOMIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="image_gallery_startAt" type="text"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_START_AT"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_START_AT_DESC"/>
+
+            <!-- Carousel -->
+            <field name="image_gallery_itemWidth" type="text"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ITEM_WIDTH"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ITEM_WIDTH_DESC"/>
+            <field name="image_gallery_itemMargin" type="text"
+                   label="COM_TZ_PORTFOLIO_ITEM_MARGIN"
+                   description="COM_TZ_PORTFOLIO_ITEM_MARGIN_DESC"/>
+            <field name="image_gallery_minItems" type="text"
+                   label="COM_TZ_PORTFOLIO_ITEMS_MIN"
+                   description="COM_TZ_PORTFOLIO_ITEMS_MIN_DESC"/>
+            <field name="image_gallery_maxItems" type="text"
+                   label="COM_TZ_PORTFOLIO_ITEMS_MAX"
+                   description="COM_TZ_PORTFOLIO_ITEMS_MAX_DESC"/>
+            <!-- End carousel -->
         </fieldset>
 
         <fieldset name="tz_fieldset_video" label="COM_TZ_PORTFOLIO_FIELDSET_VIDEO_OPTIONS_LABEL">

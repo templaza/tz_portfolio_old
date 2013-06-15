@@ -151,6 +151,23 @@ endif;
                     $slideshow  = 'false';
                 endif;
 
+                if($params -> get('image_gallery_animationLoop',1)):
+                    $animationLoop  = 'true';
+                else:
+                    $animationLoop  = 'false';
+                endif;
+                if($params -> get('image_gallery_smoothHeight',1)):
+                    $smoothHeight   = 'true';
+                else:
+                    $smoothHeight   = 'false';
+                endif;
+
+                if($params -> get('image_gallery_randomize',0)):
+                    $randomize  = 'true';
+                else:
+                    $randomize  = 'false';
+                endif;
+
                 switch ($params -> get('detail_article_image_gallery_size')):
                     case 'XS':
                         $name   = 'xsmall';
@@ -196,12 +213,16 @@ endif;
                             pauseOnAction: '.$pauseOnAction.',
                             pauseOnHover: '.$pauseOnHover.',
                             useCSS: '.$useCSS.',
+                            startAt: '.$params -> get('image_gallery_startAt',0).',
+                            animationLoop: '.$animationLoop.',
+                            smoothHeight: '.$smoothHeight.',
+                            randomize: '.$randomize.',
+                            itemWidth:'.$params -> get('image_gallery_itemWidth',0).',
+                            itemMargin:'.$params -> get('image_gallery_itemMargin',0).',
+                            minItems:'.$params -> get('image_gallery_minItems',0).',
+                            maxItems:'.$params -> get('image_gallery_maxItems',0).',
                             start: function(){
                                 jQuery(".flexslider").css("width","'.$params -> get('tz_image_gallery_'.$name).'px")
-                                jQuery(".flexslider .slides").css("position","relative");
-                            },
-                            before: function(slider){
-                                '.$before.'
                             }
                         });
                     });

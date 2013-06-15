@@ -132,7 +132,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
                 $data[$k] -> id             = $rows[$i] -> id;
                 $data[$k] -> contentid      = $rows[$i] -> contentid;
                 $data[$k] -> fieldsid       = $rows[$i] -> fieldsid;
-                $data[$k] -> title          = $rows[$i] -> title;
+                $data[$k] -> title          = strip_tags($rows[$i] -> title);
                 $data[$k] -> value          = $tg;
                 $data[$k] -> images         = $images;
 
