@@ -107,11 +107,11 @@ html[xmlns] .slides {
   cursor: pointer;
   text-indent: -999em;
 }
-.flex-direction-nav li .next {
+.flex-direction-nav li .flex-next {
   background-position: -42px 0;
   right: 0px;
 }
-.flex-direction-nav li .prev {
+.flex-direction-nav li .flex-prev {
   left: -1px;
 }
 .flex-direction-nav li .disabled {
@@ -148,4 +148,17 @@ div.flexslider .flex-control-nav li a:hover {
 div.flexslider .flex-control-nav li a.active {
   background-position: 0 -26px;
   cursor: default;
+}
+.flexslider {
+  margin: auto;
+}
+@media screen and (max-width: 860px) {
+  .flex-direction-nav .flex-prev {
+    opacity: 1;
+    left: 0;
+  }
+  .flex-direction-nav .flex-next {
+    opacity: 1;
+    right: 0;
+  }
 }

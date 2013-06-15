@@ -21,8 +21,6 @@
 defined('_JEXEC') or die();
 
 $params = &$this -> params;
-$menus		= JMenu::getInstance('site');
-$active     = $menus->getActive();
 ?>
 <ul class="nav">
 <?php if($letters = $params -> get('tz_letters')):
@@ -39,11 +37,13 @@ $active     = $menus->getActive();
         if($this -> char == $letter):
             $activeClass    = ' active';
         endif;
+
+        $itemId = '&Itemid='.$this -> FindItemId(JRequest::getInt('created_by'));
     ?>
         <li>
         <a<?php if($availLetter[$i] != false) echo ' href="'.JRoute::_('index.php?option=com_tz_portfolio&view=users&created_by='.
                                                                        JRequest::getInt('created_by').'&char='
-                                      .mb_strtolower(trim($letter)).'&Itemid='.$active -> id).'"';?>
+                                      .mb_strtolower(trim($letter)).$itemId).'"';?>
            class="btn-small<?php echo $disabledClass.$activeClass;?>"><?php echo mb_strtoupper(trim($letter));?></a>
         </li>
   <?php endforeach;?>

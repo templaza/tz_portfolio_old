@@ -553,6 +553,46 @@
         <field name="image_gallery_animation_duration" type="text"
                default="600"
                label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_DURATION"/>
+
+        <field name="image_gallery_animationLoop" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_LOOP"
+                description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_LOOP_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="image_gallery_smoothHeight" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SMOOTH_HEIGHT"
+               description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SMOOTH_HEIGHT_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="image_gallery_randomize" type="radio"
+               class="btn-group" default="0"
+               label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_RANDOMIZE"
+                description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_RANDOMIZE_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="image_gallery_startAt" type="text" default="0"
+               label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_START_AT"
+               description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_START_AT_DESC"/>
+
+        <!-- Carousel -->
+        <field name="image_gallery_itemWidth" type="text" default="0"
+               label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ITEM_WIDTH"
+                description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ITEM_WIDTH_DESC"/>
+        <field name="image_gallery_itemMargin" type="text" default="0"
+                label="COM_TZ_PORTFOLIO_ITEM_MARGIN"
+                description="COM_TZ_PORTFOLIO_ITEM_MARGIN_DESC"/>
+        <field name="image_gallery_minItems" type="text" default="0"
+                label="COM_TZ_PORTFOLIO_ITEMS_MIN"
+                description="COM_TZ_PORTFOLIO_ITEMS_MIN_DESC"/>
+        <field name="image_gallery_maxItems" type="text" default="0"
+                label="COM_TZ_PORTFOLIO_ITEMS_MAX"
+                description="COM_TZ_PORTFOLIO_ITEMS_MAX_DESC"/>
+        <!-- End carousel -->
     </fieldset>
     <!-- END THE IMAGE SLIDER'S PARAMETERS FOR ALL PAGE -->
 
@@ -1042,6 +1082,8 @@
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
         </field>
+        <field name="related_limit" type="text" default="5"
+               label="COM_TZ_PORTFOLIO_LIMIT_RELATED"/>
         <field name="show_related_heading" type="radio"
                class="btn-group"
                default="1"

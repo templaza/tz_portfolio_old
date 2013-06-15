@@ -62,8 +62,8 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endCol
 /* Direction Nav */
 .flex-direction-nav { height: 0; }
 .flex-direction-nav li a {width: 35px; height: 35px; margin: -13px 0 0; display: block; background: url(../assets/bg_direction_nav.png) no-repeat; position: absolute; top: 50%; cursor: pointer; text-indent: -999em;}
-.flex-direction-nav li .next {background-position: -42px 0; right: 0px;}
-.flex-direction-nav li .prev {left: -1px;}
+.flex-direction-nav li .flex-next {background-position: -42px 0; right: 0px;}
+.flex-direction-nav li .flex-prev {left: -1px;}
 .flex-direction-nav li .disabled {opacity: .3; filter:alpha(opacity=30); cursor: default;}
 
 /* Control Nav */
@@ -73,3 +73,9 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endCol
 div.flexslider .flex-control-nav li a {width: 13px; height: 13px; display: block; background: url(../assets/bg_control_nav.png) no-repeat; cursor: pointer; text-indent: -999em;}
 div.flexslider .flex-control-nav li a:hover {background-position: 0 -13px;}
 div.flexslider .flex-control-nav li a.active {background-position: 0 -26px; cursor: default;}
+.flexslider{margin: auto;}
+
+@media screen and (max-width: 860px) {
+  .flex-direction-nav .flex-prev {opacity: 1; left: 0;}
+  .flex-direction-nav .flex-next {opacity: 1; right: 0;}
+}

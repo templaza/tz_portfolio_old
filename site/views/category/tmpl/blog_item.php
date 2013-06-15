@@ -89,10 +89,11 @@ else{
         <span class="TzLine">|</span>
 		<?php $author =  $this->item->author; ?>
 		<?php $author = ($this->item->created_by_alias ? $this->item->created_by_alias : $author);?>
+        <?php $userItemid   = '&Itemid='.$this -> FindUserItemId($this->item->created_by);?>
 
 			<?php if ($params->get('link_author') == true):?>
 				<?php 	echo JText::sprintf('COM_CONTENT_WRITTEN_BY' ,
-				 JHtml::_('link', JRoute::_('index.php?option=com_tz_portfolio&amp;view=users&amp;created_by='.$this -> item -> created_by), $author)); ?>
+				 JHtml::_('link', JRoute::_('index.php?option=com_tz_portfolio&amp;view=users&amp;created_by='.$this -> item -> created_by.$userItemid), $author)); ?>
 
 			<?php else :?>
 				<?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', $author); ?>
