@@ -20,6 +20,10 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+06/17/2013 - 3.1.2
+
+	Fix tags alias in router file.
+
 06/15/2013 - 3.1.2
 
     Fix bug for the user's description.
