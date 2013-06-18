@@ -201,7 +201,7 @@ function TZ_PortfolioBuildRoute(&$query)
                 ->from('#__tz_portfolio_tags')
                 ->where('id='.(int)$query['id'])
             );
-            $alias = $db->loadResult();
+            $alias = JApplication::stringURLSafe($db->loadResult());
             $query['id'] = $query['id'].':'.$alias;
         }
 
