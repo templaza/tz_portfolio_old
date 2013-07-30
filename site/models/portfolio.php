@@ -515,7 +515,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 // Compute the asset access permissions.
                 // Technically guest could edit an article, but lets not check that to improve performance a little.
                 if (!$guest) {
-                    $asset	= 'com_tz_portfolio.portfolio.'.$item->id;
+                    $asset	= 'com_tz_portfolio.article.'.$item->id;
 
                     // Check general edit permission first.
                     if ($user->authorise('core.edit', $asset)) {
@@ -641,19 +641,19 @@ class TZ_PortfolioModelPortfolio extends JModelList
                     $data[$key] = $item;
                 }
                 
-                if($model){
-                    if($image  = $model -> getMedia($rows[$key] -> id)){
-                        if($image[0] -> type == 'video')
-                            $rows[$key] -> tz_image_type = $image[0] -> type;
-                        else
-                            $rows[$key] -> tz_image_type = null;
-
-                        if(JFile::exists(JURI::base(JPATH_SITE).DIRECTORY_SEPARATOR.$image[0] -> images))
-                            $rows[$key] -> tz_image = JURI::base(JPATH_SITE).DIRECTORY_SEPARATOR.$image[0] -> images;
-                        else
-                            $rows[$key] -> tz_image = null;
-                    }
-                }
+//                if($model){
+//                    if($image  = $model -> getMedia($rows[$key] -> id)){
+//                        if($image[0] -> type == 'video')
+//                            $rows[$key] -> tz_image_type = $image[0] -> type;
+//                        else
+//                            $rows[$key] -> tz_image_type = null;
+//
+//                        if(JFile::exists(JURI::base(JPATH_SITE).DIRECTORY_SEPARATOR.$image[0] -> images))
+//                            $rows[$key] -> tz_image = JURI::base(JPATH_SITE).DIRECTORY_SEPARATOR.$image[0] -> images;
+//                        else
+//                            $rows[$key] -> tz_image = null;
+//                    }
+//                }
 
                 if(!isset($rows[$key] -> tz_image))
                     $rows[$key] -> tz_image = '';

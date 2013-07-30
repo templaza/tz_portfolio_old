@@ -118,7 +118,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
                 break;
         }
 
-        $query  = 'SELECT c.*,cc.title AS category_title,cc.parent_id,'
+        $query  = 'SELECT c.*,cc.title AS category_title,cc.parent_id,u.name AS author,'
             .' CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug,'
             .' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug,'
             .' CASE WHEN CHAR_LENGTH(c.fulltext) THEN c.fulltext ELSE null END as readmore'
@@ -126,6 +126,7 @@ class TZ_PortfolioModelTags extends JModelLegacy
             .' LEFT JOIN #__categories AS cc ON cc.id = c.catid'
             .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON c.id=x.contentid'
             .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid'
+            .' LEFT JOIN #__users AS u ON u.id=c.created_by'
             .' WHERE c.state=1 AND t.published=1 AND x.tagsid='.$this -> getState('tags.id')
             .$where
             .' ORDER BY '.$cateOrder.$orderby;

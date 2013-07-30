@@ -23,10 +23,12 @@ jimport('joomla.application.component.view');
 
 class TZ_PortfolioViewTags extends JViewLegacy
 {
+    protected $params   = null;
     function display($tpl = null){
         $this -> item   = new stdClass();
-        $state  = $this -> get('state');
-        $params = $state -> params;
+        $state          = $this -> get('state');
+        $params         = $state -> params;
+        $this -> params = $params;
         $list   = $this -> get('Tags');
 
         $csscompress    = null;
@@ -52,6 +54,10 @@ class TZ_PortfolioViewTags extends JViewLegacy
         $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
 
         if($list){
+            $user	= JFactory::getUser();
+            $userId	= $user->get('id');
+            $guest	= $user->get('guest');
+
             foreach($list as $row){
                 $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
                 $itemParams = new JRegistry($row -> attribs); //Get Article's Params
@@ -103,6 +109,28 @@ class TZ_PortfolioViewTags extends JViewLegacy
                         }
                     }
                 }
+
+                // Compute the asset access permissions.
+                // Technically guest could edit an article, but lets not check that to improve performance a little.
+                if (!$guest) {
+                    $asset	= 'com_tz_portfolio.article.'.$row->id;
+
+                    // Check general edit permission first.
+                    if ($user->authorise('core.edit', $asset)) {
+                        $itemParams->set('access-edit', true);
+                    }
+                    // Now check if edit.own is available.
+                    elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
+                        // Check for a valid user and that they are the owner.
+                        if ($userId == $row->created_by) {
+                            $itemParams->set('access-edit', true);
+                        }
+                    }
+                }
+
+                $row -> attribs = $itemParams -> toString();
+
+                $row -> text    = null;
                 if ($params->get('show_intro', '1')=='1') {
                     $row -> text = $row -> introtext;
                 }
@@ -150,8 +178,8 @@ class TZ_PortfolioViewTags extends JViewLegacy
         $this -> assign('tag',$this -> get('Tag'));
         $this -> assign('listsTags',$list);
         $this -> assign('pagination',$this -> get('Pagination'));
-        $this -> assignRef('tagsParams',$params);
-        $this -> assignRef('mediaParams',$params);
+        $this -> assign('tagsParams',$params);
+        $this -> assign('mediaParams',$params);
         $model  = JModelLegacy::getInstance('Portfolio','TZ_PortfolioModel',array('ignore_request' => true));
         $model -> setState('params',$params);
         $model -> setState('filter.tagId',JRequest::getInt('id'));
@@ -234,5 +262,45 @@ class TZ_PortfolioViewTags extends JViewLegacy
 		}
 
         parent::display($tpl);
+    }
+
+    protected function FindUserItemId($_userid=null){
+        $app		= JFactory::getApplication();
+        $menus		= $app->getMenu('site');
+        $active     = $menus->getActive();
+        if($_userid){
+            $userid    = intval($_userid);
+        }
+
+        $component	= JComponentHelper::getComponent('com_tz_portfolio');
+        $items		= $menus->getItems('component_id', $component->id);
+
+        if($this -> params -> get('user_menu_active') && $this -> params -> get('user_menu_active') != 'auto'){
+            return $this -> params -> get('user_menu_active');
+        }
+
+        foreach ($items as $item)
+        {
+            if (isset($item->query) && isset($item->query['view'])) {
+                $view = $item->query['view'];
+
+                if (isset($item -> query['created_by'])) {
+                    if ($item->query['created_by'] == $userid) {
+                        return $item -> id;
+                    }
+                }
+                else{
+                    if($item -> home == 1){
+                        $homeId = $item -> id;
+                    }
+                }
+            }
+        }
+
+        if(!isset($active -> id)){
+            return $homeId;
+        }
+
+        return $active -> id;
     }
 }

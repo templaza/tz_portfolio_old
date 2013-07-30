@@ -149,11 +149,11 @@ $sortFields = $this->getSortFields();
                 <?php foreach ($this->items as $i => $item) :
                     $item->max_ordering = 0; //??
                     $ordering	= ($listOrder == 'a.ordering');
-                    $canCreate	= $user->authorise('core.create',		'com_content.category.'.$item->catid);
-                    $canEdit	= $user->authorise('core.edit',			'com_content.article.'.$item->id);
+                    $canCreate	= $user->authorise('core.create',		'com_tz_portfolio.category.'.$item->catid);
+                    $canEdit	= $user->authorise('core.edit',			'com_tz_portfolio.article.'.$item->id);
                     $canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
-                    $canEditOwn	= $user->authorise('core.edit.own',		'com_content.article.'.$item->id) && $item->created_by == $userId;
-                    $canChange	= $user->authorise('core.edit.state',	'com_content.article.'.$item->id) && $canCheckin;
+                    $canEditOwn	= $user->authorise('core.edit.own',		'com_tz_portfolio.article.'.$item->id) && $item->created_by == $userId;
+                    $canChange	= $user->authorise('core.edit.state',	'com_tz_portfolio.article.'.$item->id) && $canCheckin;
                     ?>
                     <tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid?>">
                         <td class="order nowrap center hidden-phone">
@@ -240,7 +240,7 @@ $sortFields = $this->getSortFields();
                             </div>
                         </td>
                         <td class="small hidden-phone">
-                                <a href="index.php?option=com_tz_portfolio&view=fieldsgroup&task=edit&id=<?php echo $item -> groupid?>">
+                                <a href="index.php?option=com_tz_portfolio&view=groups&task=edit&id=<?php echo $item -> groupid?>">
                                     <?php echo $item -> groupname;?>
                                 </a>
                         </td>

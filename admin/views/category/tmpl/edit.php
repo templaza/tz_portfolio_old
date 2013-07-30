@@ -230,7 +230,7 @@ $listImage  = $this -> listImage;
                         <label><?php echo JText::_('COM_TZ_PORTFOLIO_FIELDS_GROUP');?></label>
                     </div>
                     <div class="controls">
-                        <?php echo $this -> fieldsgroup;?>
+                        <?php echo $this -> groups;?>
                     </div>
                 </div>
                 <div class="control-group">

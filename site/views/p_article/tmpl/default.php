@@ -34,6 +34,9 @@ $user		= JFactory::getUser();
 $doc        = JFactory::getDocument();
 
 $tmpl   = JRequest::getString('tmpl');
+if($tmpl){
+    $tmpl   = '&tmpl=component';
+}
 
 if($this -> listTags):
     foreach($this -> listTags as $tag){
@@ -76,8 +79,8 @@ ob_start();
          ?>
 
         <?php
-            if($params -> get('show_image',1) == 1 OR $params -> get('show_image_gallery',1) == 1
-                 OR $params -> get('show_video',1) == 1):
+            if($params -> get('show_image',1) OR $params -> get('show_image_gallery',1)
+                 OR $params -> get('show_video',1) OR $params -> get('show_audio',1)):
         ?>
             <?php echo $this -> loadTemplate('media');?>
         <?php endif;?>
@@ -100,7 +103,7 @@ ob_start();
                 <span class="TzVote">
                     <span class="TzLine">|</span>
                     <span><?php echo JText::_('COM_TZ_PORTFOLIO_RATING');?></span>
-                    <?php echo $this->item->event->beforeDisplayContent; ?>
+                    <?php echo $this->item->event->TZPortfolioVote; ?>
                 </span>
             <?php endif;?>
 
@@ -117,7 +120,10 @@ ob_start();
                     $needle = 'index.php?option=com_tz_portfolio&view=users&created_by=' . $this->item->created_by;
                     $menu   = JMenu::getInstance('site');
                     $item = $menu->getItems('link', $needle, true);
-                    $cntlink = !empty($item) ? $needle . '&Itemid=' . $item->id : $needle;
+                    if(!$userItemid = '&Itemid='.$this -> FindUserItemId($this->item->created_by)){
+                        $userItemid = null;
+                    }
+                    $cntlink = $needle.$userItemid;
                 ?>
                 <?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', JHtml::_('link', JRoute::_($cntlink), $author,$target)); ?>
                 <?php else: ?>

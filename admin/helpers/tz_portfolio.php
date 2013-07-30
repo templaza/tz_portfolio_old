@@ -39,37 +39,28 @@ class TZ_PortfolioHelper
             $class  = 'JSubMenuHelper';
         }
 
-        $class::addEntry(
-            JText::_('COM_TZ_PORTFOLIO_SUBMENU_GROUP_FIELDS'),
-            'index.php?option=com_tz_portfolio&view=fieldsgroup',
-            $vName == 'fieldsgroup');
-        $class::addEntry(
-			JText::_('COM_TZ_PORTFOLIO_SUBMENU_FIELDS'),
-			'index.php?option=com_tz_portfolio&view=fields',
-			$vName == 'fields'
-		);
-        $class::addEntry(
-			JText::_('COM_TZ_PORTFOLIO_SUBMENU_CATEGORIES'),
-			'index.php?option=com_tz_portfolio&view=categories',
-			$vName == 'categories');
-        $class::addEntry(
-			JText::_('COM_TZ_PORTFOLIO_SUBMENU_ARTICLES'),
-			'index.php?option=com_tz_portfolio&view=articles',
-			$vName == 'articles'
-		);
-        $class::addEntry(
-			JText::_('COM_TZ_PORTFOLIO_SUBMENU_FEATURED_ARTICLES'),
-			'index.php?option=com_tz_portfolio&view=featured',
-			$vName == 'featured'
-		);
-        $class::addEntry(
-            JText::_('COM_TZ_PORTFOLIO_SUBMENU_TAGS'),
-            'index.php?option=com_tz_portfolio&view=tags',
-            $vName == 'tags');
-        $class::addEntry(
-            JText::_('COM_TZ_PORTFOLIO_SUBMENU_USERS'),
-            'index.php?option=com_tz_portfolio&view=users',
-            $vName == 'users');
+        call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_GROUP_FIELDS'),
+                            'index.php?option=com_tz_portfolio&view=groups',
+                            $vName == 'groups'));
+        call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_FIELDS'),
+                    'index.php?option=com_tz_portfolio&view=fields',
+                    $vName == 'fields'));
+
+        call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_CATEGORIES'),
+                    'index.php?option=com_tz_portfolio&view=categories',
+                    $vName == 'categories'));
+        call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_ARTICLES'),
+                    'index.php?option=com_tz_portfolio&view=articles',
+                    $vName == 'articles'));
+        call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_FEATURED_ARTICLES'),
+                    'index.php?option=com_tz_portfolio&view=featured',
+                    $vName == 'featured'));
+        call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_TAGS'),
+                    'index.php?option=com_tz_portfolio&view=tags',
+                    $vName == 'tags'));
+        call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_USERS'),
+                    'index.php?option=com_tz_portfolio&view=users',
+                    $vName == 'users'));
 	}
 
 	/**

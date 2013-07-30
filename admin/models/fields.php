@@ -91,7 +91,7 @@ class TZ_PortfolioModelFields extends JModelList{
 
     public function getItems(){
         if($items = parent::getItems()){
-            $groupModel = JModelLegacy::getInstance('FieldsGroup','TZ_PortfolioModel');
+            $groupModel = JModelLegacy::getInstance('Groups','TZ_PortfolioModel');
             if($groups = $groupModel -> getItemsContainFields()){
                 foreach($items as $item){
                     if(isset($groups[$item -> id])){

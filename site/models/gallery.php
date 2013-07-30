@@ -193,15 +193,17 @@ class TZ_PortfolioModelGallery extends JModelLegacy
 
                 if($model){
                     if($image  = $model -> getMedia($rows[$key] -> id)){
-                        if($image[0] -> type == 'video')
-                            $rows[$key] -> tz_image_type = $image[0] -> type;
-                        else
-                            $rows[$key] -> tz_image_type = null;
+                        if($image[0] -> type != 'quote' && $image[0] -> type != 'link'){
+                            if($image[0] -> type == 'video')
+                                $rows[$key] -> tz_image_type = $image[0] -> type;
+                            else
+                                $rows[$key] -> tz_image_type = null;
 
-                        if(JFile::exists(JURI::base(JPATH_SITE).'/'.$image[0] -> images))
-                            $rows[$key] -> tz_image = JURI::base(JPATH_SITE).'/'.$image[0] -> images;
-                        else
-                            $rows[$key] -> tz_image = null;
+                            if(isset($image[0] -> images) && JFile::exists(JURI::base(JPATH_SITE).'/'.$image[0] -> images))
+                                $rows[$key] -> tz_image = JURI::base(JPATH_SITE).'/'.$image[0] -> images;
+                            else
+                                $rows[$key] -> tz_image = null;
+                        }
                     }
                 }
 

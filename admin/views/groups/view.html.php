@@ -22,38 +22,39 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.components.view');
 
-class TZ_PortfolioViewFieldGroup extends JViewLegacy
+class TZ_PortfolioViewGroups extends JViewLegacy
 {
-    protected $item = null;
+    protected $items        = null;
+    protected $pagination   = null;
+    protected $state        = null;
 
     function display($tpl = null){
-        $this -> item   = $this -> get('Item');
 
-        $editor = JFactory::getEditor();
-        $this -> assign('editor',$editor);
+        $this -> items      = $this -> get('Items');
+        $this -> pagination = $this -> get('Pagination');
+        $this -> state      = $this -> get('State');
+
+        TZ_PortfolioHelper::addSubmenu('groups');
+
         $this -> addToolbar();
+
+        $this -> sidebar    = JHtmlSidebar::render();
+
         parent::display($tpl);
     }
 
     protected function addToolbar(){
-        JRequest::setVar('hidemainmenu',true);
-
-        $bar    = JToolBar::getInstance();
         $doc    = JFactory::getDocument();
+        $bar    = JToolBar::getInstance();
 
-        $isNew  = ($this -> item -> id == 0);
-
-        JToolBarHelper::title(JText::sprintf('COM_TZ_PORTFOLIO_GROUP_FIELDS_MANAGER_TASK','<small><small>'
-            .JText::_(($isNew)?'COM_TZ_PORTFOLIO_PAGE_ADD_GROUP_FIELD':'COM_TZ_PORTFOLIO_PAGE_EDIT_GROUP_FIELD')
-            .'</small></small>'));
-        JToolBarHelper::apply('fieldgroup.apply');
-        JToolBarHelper::save('fieldgroup.save');
-        JToolBarHelper::save2new('fieldgroup.save2new');
-        JToolBarHelper::cancel('fieldgroup.cancel',JText::_('JTOOLBAR_CLOSE'));
-
+        JToolBarHelper::title(JText::_('COM_TZ_PORTFOLIO_GROUP_FIELDS_MANAGER'));
+        JToolBarHelper::addNew('group.add');
+        JToolBarHelper::editList('group.edit');
+        JToolBarHelper::deleteList(JText::_('COM_TZ_PORTFOLIO_QUESTION_DELETE'),'groups.delete');
+        JToolBarHelper::divider();
+        JToolBarHelper::preferences('com_tz_portfolio');
         JToolBarHelper::divider();
 
-        JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER',false,'http://wiki.templaza.com/TZ_Portfolio_v3:Administration#How_to_Add_or_Edit');
 
         // If the joomla is version 3.0
         if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
@@ -61,6 +62,42 @@ class TZ_PortfolioViewFieldGroup extends JViewLegacy
         }
 
         $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.css');
+
+
+        // Complie button
+        $compileTitle   = JText::_('COM_TZ_PORTFOLIO_COMPLIE_LESS_TO_CSS');
+        $compileIcon    = '<i class="icon-check"></i>&nbsp;';
+        $compileClass   = ' class="btn btn-small"';
+
+        //// If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $compileIcon    = '<span class="tz-icon-compile"></span>';
+            $compileClass   = null;
+        }
+
+        $compileButton   = '<a'.$compileClass.' onclick="Joomla.submitbutton(\'action.lesscall\')" href="#">'
+            .$compileIcon.$compileTitle.'</a> ';
+
+        //  JS Compress button
+        $compressTitle  = JText::_('COM_TZ_PORTFOLIO_COMPRESSION_JS');
+        $compressIcon   = '<i class="icon-check"></i>&nbsp;';
+        $compressClass  = ' class="btn btn-small"';
+
+        //// If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $compressIcon    = '<span class="tz-icon-compress"></span>';
+            $compressClass   = null;
+        }
+
+        $compressButton   = '<a'.$compressClass.' onclick="Joomla.submitbutton(\'action.jscompress\')" href="#">'
+            .$compressIcon.$compressTitle.'</a> ';
+
+        $bar -> appendButton('Custom',$compileButton,'compile');
+        $bar -> appendButton('Custom',$compressButton,'compress');
+
+        JToolBarHelper::divider();
+
+        JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER',false,'http://wiki.templaza.com/TZ_Portfolio_v3:Administration#Group_Fields');
 
         // Special HTML workaround to get send popup working
         $docClass       = ' class="btn btn-small"';

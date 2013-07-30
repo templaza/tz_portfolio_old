@@ -90,28 +90,50 @@ abstract class modTZ_PortfolioArticlesPopularHelper
 
             if($model2 && $params -> get('show_tz_image') == '1'){
                 if($image  = $model2 -> getMedia($item -> id)){
-                    if($image[0] -> type != 'video'){
-                        if(!empty($image[0] -> images)){
-                            if($params -> get('tz_image_size','S')){
-                                $imageName  = $image[0] -> images;
-                                $item -> tz_image   = str_replace('.'.JFile::getExt($imageName)
-                                    ,'_'.$params -> get('tz_image_size').'.'.JFile::getExt($imageName)
-                                    ,$imageName);
-                            }
+                    if($image[0] -> type != 'quote' && $image[0] -> type != 'link'){
+                        if($image[0] -> type != 'video'){
+                            if(!empty($image[0] -> images)){
+                                if($params -> get('tz_image_size','S')){
+                                    $imageName  = $image[0] -> images;
+                                    $item -> tz_image   = str_replace('.'.JFile::getExt($imageName)
+                                        ,'_'.$params -> get('tz_image_size').'.'.JFile::getExt($imageName)
+                                        ,$imageName);
+                                }
 
-                        }
-                    }
-                    else{
-                        if(!empty($image[0] -> thumb)){
-                            if($params -> get('tz_image_size','S')){
-                                $imageName  = $image[0] -> thumb;
-                                $item -> tz_image   = str_replace('.'.JFile::getExt($imageName)
-                                    ,'_'.$params -> get('tz_image_size').'.'.JFile::getExt($imageName)
-                                    ,$imageName);
                             }
                         }
+                        else{
+                            if(!empty($image[0] -> thumb)){
+                                if($params -> get('tz_image_size','S')){
+                                    $imageName  = $image[0] -> thumb;
+                                    $item -> tz_image   = str_replace('.'.JFile::getExt($imageName)
+                                        ,'_'.$params -> get('tz_image_size').'.'.JFile::getExt($imageName)
+                                        ,$imageName);
+                                }
+                            }
+                        }
+                        $item -> tz_image_title = $image[0] -> imagetitle;
+                    }else{
+                        $item -> quote_author   = null;
+                        if(isset($image[0] -> quote_author)){
+                            $item -> quote_author   = $image[0] -> quote_author;
+                        }
+                        if(isset($image[0] -> quote_text)){
+                            $item -> quote_text = $image[0] -> quote_text;
+                        }
+                        if(isset($image[0] -> link_title)){
+                            $item -> link_title = $image[0] -> link_title;
+                        }
+                        if(isset($image[0] -> link_url)){
+                            $item -> link_url   = $image[0] -> link_url;
+                        }
+                        if(isset($image[0] -> link_target)){
+                            $item -> link_target    = $image[0] -> link_target;
+                        }
+                        if(isset($image[0] -> link_follow)){
+                            $item -> link_follow    = $image[0] -> link_follow;
+                        }
                     }
-                    $item -> tz_image_title = $image[0] -> imagetitle;
                 }
             }
 		}

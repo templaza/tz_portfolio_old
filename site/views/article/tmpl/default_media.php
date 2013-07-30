@@ -289,6 +289,8 @@ endif;
                 </div>
             <?php endif;?>
         <?php endif;?>
+
+        <?php echo $this -> loadTemplate('audio');?>
     </div>
     <?php endif;?>
 <?php endif;?>

@@ -49,6 +49,10 @@ class TZ_PortfolioViewUsers extends JViewLegacy
         }
 
         if($list){
+            $user	= JFactory::getUser();
+            $userId	= $user->get('id');
+            $guest	= $user->get('guest');
+
             if($params -> get('tz_show_count_comment',1) == 1){
                 require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
                 require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
@@ -112,6 +116,27 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                     }
                 }
 
+                // Compute the asset access permissions.
+                // Technically guest could edit an article, but lets not check that to improve performance a little.
+                if (!$guest) {
+                    $asset	= 'com_tz_portfolio.article.'.$row->id;
+
+                    // Check general edit permission first.
+                    if ($user->authorise('core.edit', $asset)) {
+                        $itemParams->set('access-edit', true);
+                    }
+                    // Now check if edit.own is available.
+                    elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
+                        // Check for a valid user and that they are the owner.
+                        if ($userId == $row->created_by) {
+                            $itemParams->set('access-edit', true);
+                        }
+                    }
+                }
+
+                $row -> attribs = $itemParams -> toString();
+
+                $row -> text    = null;
                 if ($params->get('show_intro', 1)==1) {
                     $row -> text = $row -> introtext;
                 }

@@ -45,7 +45,7 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 
 		$this->state	= $this->get('State');
 
-        $this -> assign('fieldsgroup',$this -> get('FieldsGroup'));
+        $this -> assign('groups',$this -> get('Groups'));
         $this -> assign('listFields',$this -> get('ExtraField'));
         $this -> assign('listImage',$this -> get('CatImage'));
 

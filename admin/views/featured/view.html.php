@@ -44,7 +44,7 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
 
         $model  = JModelLegacy::getInstance('Categories','TZ_PortfolioModel');
         $model -> setState('filter.group',$this -> state -> get('filter.group'));
-        $this -> assign('listGroup',$model -> getFieldsGroup());
+        $this -> assign('listGroup',$model -> getGroups());
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {

@@ -236,7 +236,7 @@ $pluginsTab = $this -> pluginsTab;
                 class: 'input-prepend input-append'
             }).inject(myThumbInner,'after');
 
-            var tz_e = location.href.match(/^(.+)\/index\.php.*/i)[1];
+//            var tz_e = location.href.match(/^(.+)\/index\.php.*/i)[1];
 
             var icon = new Element('div',{
                 class: 'add-on',
@@ -644,7 +644,7 @@ $pluginsTab = $this -> pluginsTab;
         var tz_count=0;
         var tz_portfolio_image = function(id,name,value,title,i){
 
-            var tz_e = location.href.match(/^(.+)administrator\/index\.php.*/i)[1];
+//            var tz_e = location.href.match(/^(.+)administrator\/index\.php.*/i)[1];
 
             var icon = new Element('div',{
                 class: 'add-on',
@@ -1248,6 +1248,15 @@ $pluginsTab = $this -> pluginsTab;
                                         <option value="video"<?php if($type == 'video') echo ' selected="selected"';?>>
                                             <?php echo JText::_('COM_TZ_PORTFOLIO_OPTION_VIDEO');?>
                                         </option>
+                                        <option value="audio"<?php if($type == 'audio') echo ' selected="selected"';?>>
+                                            <?php echo JText::_('COM_TZ_PORTFOLIO_AUDIO');?>
+                                        </option>
+                                        <option value="quote"<?php if($type == 'quote') echo ' selected="selected"';?>>
+                                            <?php echo JText::_('COM_TZ_PORTFOLIO_QUOTE');?>
+                                        </option>
+                                        <option value="link"<?php if($type == 'link') echo ' selected="selected"';?>>
+                                            <?php echo JText::_('COM_TZ_PORTFOLIO_LINK');?>
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -1278,6 +1287,10 @@ $pluginsTab = $this -> pluginsTab;
                     <li><a href="#tztabsMedia" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_MEDIA');?></a></li>
                     <li><a href="#tztabsFields" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_FIELDS');?></a></li>
                     <li><a href="#tztabsAttachment" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_ATTACHMENTS');?></a></li>
+                    <li><a href="#tztabsQuote" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_QUOTE');?></a></li>
+                    <li><a href="#tztabsLink" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_LINK');?></a></li>
+                    <li><a href="#tztabsAudio" data-toggle="tab" class="hasTip"
+                           title="<?php echo JText::_('COM_TZ_PORTFOLIO_AUDIO')?>::<?php echo JText::_('COM_TZ_PORTFOLIO_TAB_AUDIO_DESC')?>"><?php echo JText::_('COM_TZ_PORTFOLIO_AUDIO');?></a></li>
                     <?php echo $this -> loadTemplate('plugin_title_tab');?>
                 </ul>
                 <div class="span11">
@@ -1408,6 +1421,12 @@ $pluginsTab = $this -> pluginsTab;
                                 <table id="tz_attachments_table"></table>
                             </div>
                         </div>
+
+                         <?php echo $this -> loadTemplate('quote');?>
+
+                         <?php echo $this -> loadTemplate('link');?>
+
+                         <?php echo $this -> loadTemplate('audio');?>
 
                          <?php echo $this -> loadTemplate('plugin_content_tab');?>
                          <!-- End Tabs -->

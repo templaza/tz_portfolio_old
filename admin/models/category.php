@@ -115,7 +115,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
         $json       = JRequest::getString('json', null, null, 2);
         $ob_json    = json_decode($json);
 
-        $fieldsGroup    = $this -> getFieldGroupId($ob_json -> id);
+        $fieldsGroup    = $this -> getGroupId($ob_json -> id);
         $listcat   = $this -> getItem($ob_json -> id);
 
         $fieldsId   = array(-1);
@@ -154,7 +154,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
         return json_encode($data);
     }
 
-    function getFieldGroupId($catid=null){
+    function getGroupId($catid=null){
         $where  = null;
         if($catid)
             $where  = ' WHERE catid='.$catid;
@@ -172,11 +172,11 @@ class TZ_PortfolioModelCategory extends JModelAdmin
         return false;
     }
 
-    public function getFieldsGroup(){
+    public function getGroups(){
 
         $catid          = JRequest::getInt('id',null);
 
-        $fieldsgroup    = '';
+        $groups    = '';
         
         $dbo            = JFactory::getDbo();
         $rows           = array();
@@ -201,24 +201,24 @@ class TZ_PortfolioModelCategory extends JModelAdmin
         $dbo -> setQuery($query);
 
         if(!$rows2 = $dbo -> loadObjectList()){
-            $fieldsgroup  = '<select name="groupid[]" size="1" style="min-width: 130px;" id="groupid">';
-            $fieldsgroup  .= '<option value="">'.JText::_('COM_TZ_PORTFOLIO_OPTION_SELECT_FIELDS_GROUP').'</option>';
-            $fieldsgroup  .= '</select>';
-            return $fieldsgroup;
+            $groups  = '<select name="groupid[]" size="1" style="min-width: 130px;" id="groupid">';
+            $groups  .= '<option value="">'.JText::_('COM_TZ_PORTFOLIO_OPTION_SELECT_FIELDS_GROUP').'</option>';
+            $groups  .= '</select>';
+            return $groups;
         }
 
-        $fieldsgroup  = '<option value="">'.JText::_('COM_TZ_PORTFOLIO_OPTION_SELECT_FIELDS_GROUP').'</option>';
+        $groups  = '<option value="">'.JText::_('COM_TZ_PORTFOLIO_OPTION_SELECT_FIELDS_GROUP').'</option>';
 
         foreach($rows2 as $row){
-            $fieldsgroup  = $fieldsgroup.'<option value="'.$row -> id.'"'
+            $groups  = $groups.'<option value="'.$row -> id.'"'
                               .((in_array($row -> id,$arr))?' selected="selected"':'').'>&nbsp;&nbsp;'.$row -> name.'</option>';
         }
 
-        $fieldsgroup  = '<select name="groupid[]" size="1" style="min-width: 130px;" id="groupid">'
-                        .$fieldsgroup
+        $groups  = '<select name="groupid[]" size="1" style="min-width: 130px;" id="groupid">'
+                        .$groups
                         .'</select>';
 
-        return $fieldsgroup;
+        return $groups;
     }
 
 	/**

@@ -119,12 +119,13 @@ class TZ_PortfolioModelUsers extends JModelLegacy
                 break;
         }
 
-        $query  = 'SELECT c.*,cc.title AS category_title,cc.parent_id,'
+        $query  = 'SELECT c.*,cc.title AS category_title,cc.parent_id,u.name AS author,'
             .' CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug,'
             .' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug,'
             .' CASE WHEN CHAR_LENGTH(c.fulltext) THEN c.fulltext ELSE null END as readmore'
             .' FROM #__content AS c'
             .' LEFT JOIN #__categories AS cc ON cc.id = c.catid'
+            .' LEFT JOIN #__users AS u ON u.id=c.created_by'
             .' WHERE c.state=1 AND c.created_by='.$this -> getState('users.id')
             .$where
             .' ORDER BY '.$cateOrder.$orderby;

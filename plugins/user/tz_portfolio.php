@@ -52,18 +52,18 @@ class plgUserTZ_Portfolio extends JPlugin
             $model              = new TZ_PortfolioModelUser();
 
             $avatar             = JRequest::getVar('jform','','files','array');
-            $description        = JRequest::getVar( 'description', '', 'post', 'string', JREQUEST_ALLOWRAW );
+            $description        = JRequest::getVar( 'description', '', 'post', 'string', JREQUEST_ALLOWHTML );
             $deleteImage        = JRequest::getCmd('delete_images');
             $currentImage       = JRequest::getString('current_images');
-            $userData['url']    = JRequest::getVar( 'url', '', 'post', 'string', JREQUEST_ALLOWRAW );
+            $userData['url']    = JRequest::getVar( 'url', '', 'post', 'string' );
 
             $description        = trim($description);
             $userData['usersid']        = $user ['id'];
             $userData['gender']         = JRequest::getCmd('gender');
             $userData['description']    = $description;
-            $userData['twitter']        = JRequest::getVar( 'url_twitter', '', 'post', 'string', JREQUEST_ALLOWRAW );
-            $userData['facebook']       = JRequest::getVar( 'url_facebook', '', 'post', 'string', JREQUEST_ALLOWRAW );
-            $userData['google_one']     = JRequest::getVar( 'url_google_one_plus', '', 'post', 'string', JREQUEST_ALLOWRAW );
+            $userData['twitter']        = JRequest::getVar( 'url_twitter', '', 'post', 'string' );
+            $userData['facebook']       = JRequest::getVar( 'url_facebook', '', 'post', 'string' );
+            $userData['google_one']     = JRequest::getVar( 'url_google_one_plus', '', 'post', 'string' );
 
 
             if(!$userData['gender'])

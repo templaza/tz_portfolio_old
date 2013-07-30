@@ -22,15 +22,15 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
 
-class TZ_PortfolioModelFieldGroup extends JModelAdmin
+class TZ_PortfolioModelGroup extends JModelAdmin
 {
-    public function getTable($type = 'fieldsgroup', $prefix = 'Table', $config = array())
+    public function getTable($type = 'groups', $prefix = 'Table', $config = array())
     {
         return JTable::getInstance($type, $prefix, $config);
     }
 
     function getForm($data = array(), $loadData = true){
-        $form = $this->loadForm('com_tz_portfolio.fieldgroup', 'fieldgroup', array('control' => 'jform', 'load_data' => $loadData));
+        $form = $this->loadForm('com_tz_portfolio.group', 'group', array('control' => 'jform', 'load_data' => $loadData));
         if (empty($form)) {
             return false;
         }

@@ -20,6 +20,24 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+07/30/2013 - 3.1.3
+
+	Insert Menu active for user.
+    Warning in tags and users.
+    Error filter (Categories and Tags) in the portfolio and timeline page.
+    Error in the module “mod_tz_portfolio_articles_random” and add option redirect to for this module.
+    Add Option: Override User Forms(Use or not use User forms of TZ Portfolio component)  in plugin System – TZ Portfolio.
+    Add Option: Use Short Code in plugin Content – TZ Portfolio.
+    Vote not display in the Single Portfolio Article view.
+    Fix title link in detail page when use lightbox.
+    Add SoundCloud music.
+    Fix scroll for Layout Paging in Portfolio and Timeline view.
+    Fix article’s description when create or edit in front-end.
+    Fix display tag html of user’s description in all page.
+    Fix Filter letter in the category blog page.
+    Fix fields group in back-end for joomla 3.1.4.
+
+
 06/17/2013 - 3.1.2
 
 	Fix tags alias in router file.

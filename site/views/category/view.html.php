@@ -482,8 +482,8 @@ class TZ_PortfolioViewCategory extends JViewLegacy
         $component	= JComponentHelper::getComponent('com_tz_portfolio');
         $items		= $menus->getItems('component_id', $component->id);
 
-        if($this -> params -> get('menu_active') && $this -> params -> get('menu_active') != 'auto'){
-            return $this -> params -> get('menu_active');
+        if($this -> params -> get('user_menu_active') && $this -> params -> get('user_menu_active') != 'auto'){
+            return $this -> params -> get('user_menu_active');
         }
 
         foreach ($items as $item)

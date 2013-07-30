@@ -91,10 +91,10 @@ class TZ_PortfolioViewForm extends JViewLegacy
 		$this->_prepareDocument();
 
 //        $model  = Jmodel::getInstance('Article','TZ_PortfolioModel');
-//        $groupFields    = $model -> getFieldsGroup();
+//        $groupFields    = $model -> getGroups();
 //        $this -> assign('listsGroup',$groupFields);
 
-        $this -> assign('listsGroup',$this -> get('FieldsGroup'));
+        $this -> assign('listsGroup',$this -> get('Groups'));
         $this -> assign('listsTags',json_encode($this -> get('Tags')));
         $this -> assign('listAttach',$this -> get('Attachment'));
         $this -> assign('listEdit',$this -> get('FieldsContent'));

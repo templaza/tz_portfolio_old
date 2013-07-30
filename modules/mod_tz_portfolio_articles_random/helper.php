@@ -25,104 +25,97 @@ require_once('components'.DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPAR
 
 class modTZ_PortfolioRandomHelper{
 
-    function getList(&$params){
+    static function getList(&$params){
         if($params){
-            $catId  = $params -> get('catid');
-            if(count($catId) == 1 && empty($catId[0] -> catid))
-                $query  = 'SELECT c.*,'
-                          .' CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug,'
-                          .' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'
-                          .' FROM #__content AS c'
-                          .' LEFT JOIN #__categories AS cc ON cc.id = c.catid'
-                          .' WHERE c.state=1'
-                          .' AND NOT c.title="Uncategorised"'
-                          .' ORDER BY c.id ASC';
-            else{
-                $catIds = implode(',',$catId);
-                $query  = 'SELECT c.*,'
-                          .' CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug,'
-                          .' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'
-                          .' FROM #__content AS c'
-                          .' WHERE c.state=1'
-                          .' AND NOT c.title="Uncategorised"'
-                          .' AND c.catid IN('.$catIds.')'
-                          .' ORDER BY c.id ASC';
+            $catId  = $params -> get('catid',array());
+            if(empty($catId[0])){
+                array_shift($catId);
             }
-
+            $catId  = implode(',',$catId);
             $db     = JFactory::getDbo();
-            $db -> setQuery($query);
+            $query  = $db -> getQuery(true);
+            $query -> select('c.*');
+            $query -> select('CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug');
+            $query -> select('CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug');
+            $query -> from('#__content AS c');
+            $query -> join('LEFT','#__categories AS cc ON cc.id=c.catid');
+            $query -> where('c.state=1');
+            if($catId){
+                $query -> where('c.catid IN('.$catId.')');
+            }
+            $query -> order('RAND()');
+            $query -> order('c.id ASC');
+            $db -> setQuery($query,0,$params -> get('count',5));
 
             if(!$db -> query()){
                 var_dump($db -> getErrorMsg());
                 die();
             }
 
-            $randomId   = null;
-//            $data       = array();
-//            $width  = null;
-//            $height = null;
-//            $crop   = null;
-//            if($params -> get('tz_image_width'))
-//                $width = '?width='.$params -> get('tz_image_width');
-//            if($params -> get('tz_image_height'))
-//                if($width)
-//                    $height = '&height='.$params -> get('tz_image_height');
-//                else
-//                    $height = '?height='.$params -> get('tz_image_height');
-//            if($params -> get('tz_image_crop'))
-//                if($width || $height)
-//                    $crop = '&cropratio='.$params -> get('tz_image_crop');
-//                else
-//                    $crop = '?cropratio='.$params -> get('tz_image_crop');
-//
-//
-//
-//            if($width || $height || $crop)
-//                $_src   = '&image='.JURI::base(JPATH_SITE).'/';
-//            else
-//                $_src   = '?image='.JURI::base(JPATH_SITE).'/';
 
             if($rows = $db -> loadObjectList()){
-                $max    = count($rows) - 1;
-                for($i=0;$i<$params -> get('count');$i++){
-                    $randomId   = (int) mt_rand(0,$max);
-                    $data[$i]   = $rows[$randomId];
-
-                    $data[$i] ->link    = JRoute::_('index.php?option=com_tz_portfolio&view=article&id='
-                                                    .$rows[$randomId] -> slug.'&catid='.$rows[$randomId] -> catid);
-
-                    $model  = new TZ_PortfolioModelMedia();
+                $model  = new TZ_PortfolioModelMedia();
+                foreach($rows as $item){
+                    if($params -> get('redirect','article') == 'p_article'){
+                        $item ->link    = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catslug));
+                    }
+                    else{
+                        $item ->link    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catslug));
+                    }
 
                     if($model && $params -> get('show_tz_image',1)){
-                        if($image  = $model -> getMedia($rows[$randomId] -> id)){
-                            if($image[0] -> type != 'video'){
-                                if(!empty($image[0] -> images)){
-                                    if($params -> get('tz_image_size','S')){
-                                        $imageName  = $image[0] -> images;
-                                        $data[$i] -> tz_image   = str_replace('.'.JFile::getExt($imageName)
-                                            ,'_'.$params -> get('tz_image_size').'.'.JFile::getExt($imageName)
-                                            ,$imageName);
-                                    }
+                        if($image  = $model -> getMedia($item -> id)){
+                            if($image[0] -> type != 'quote' && $image[0] -> type != 'link'){
+                                if($image[0] -> type != 'video'){
+                                    if(!empty($image[0] -> images)){
+                                        if($params -> get('tz_image_size','S')){
+                                            $imageName  = $image[0] -> images;
+                                            $item -> tz_image   = str_replace('.'.JFile::getExt($imageName)
+                                                ,'_'.$params -> get('tz_image_size').'.'.JFile::getExt($imageName)
+                                                ,$imageName);
+                                        }
 
-                                }
-                            }
-                            else{
-                                if(!empty($image[0] -> thumb)){
-                                    if($params -> get('tz_image_size','S')){
-                                        $imageName  = $image[0] -> thumb;
-                                        $data[$i] -> tz_image   = str_replace('.'.JFile::getExt($imageName)
-                                            ,'_'.$params -> get('tz_image_size').'.'.JFile::getExt($imageName)
-                                            ,$imageName);
                                     }
                                 }
+                                else{
+                                    if(!empty($image[0] -> thumb)){
+                                        if($params -> get('tz_image_size','S')){
+                                            $imageName  = $image[0] -> thumb;
+                                            $item -> tz_image   = str_replace('.'.JFile::getExt($imageName)
+                                                ,'_'.$params -> get('tz_image_size').'.'.JFile::getExt($imageName)
+                                                ,$imageName);
+                                        }
+                                    }
+                                }
+                                $item -> tz_imagetitle = $image[0] -> imagetitle;
+                            }else{
+                                $item -> quote_author   = null;
+                                if(isset($image[0] -> quote_author)){
+                                    $item -> quote_author   = $image[0] -> quote_author;
+                                }
+                                if(isset($image[0] -> quote_text)){
+                                    $item -> quote_text = $image[0] -> quote_text;
+                                }
+                                if(isset($image[0] -> link_title)){
+                                    $item -> link_title = $image[0] -> link_title;
+                                }
+                                if(isset($image[0] -> link_url)){
+                                    $item -> link_url   = $image[0] -> link_url;
+                                }
+                                if(isset($image[0] -> link_target)){
+                                    $item -> link_target    = $image[0] -> link_target;
+                                }
+                                if(isset($image[0] -> link_follow)){
+                                    $item -> link_follow    = $image[0] -> link_follow;
+                                }
                             }
-                            $data[$i] -> tz_imagetitle = $image[0] -> imagetitle;
                         }
                     }
                 }
-            }
 
-            return $data;
+                return $rows;
+            }
+            return false;
         }
         return false;
 

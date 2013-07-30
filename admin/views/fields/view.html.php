@@ -144,7 +144,7 @@ class TZ_PortfolioViewFields extends JViewLegacy
             JHtml::_('select.options',$fieldsType,'value','text',$this -> state -> filter_type)
         );
 
-        $groupModel = JModelLegacy::getInstance('FieldsGroup','TZ_PortfolioModel');
+        $groupModel = JModelLegacy::getInstance('Groups','TZ_PortfolioModel');
         $groups     = $groupModel -> getItemsArray();
 
         JHtmlSidebar::addFilter(

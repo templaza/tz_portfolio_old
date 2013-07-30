@@ -25,11 +25,11 @@ jimport('joomla.application.component.controlleradmin');
 /**
  * Users list controller class.
  */
-class TZ_PortfolioControllerFieldsGroup extends JControllerAdmin
+class TZ_PortfolioControllerGroups extends JControllerAdmin
 {
-    protected $view_list = 'fieldsgroup';
+    protected $view_list = 'groups';
     
-    public function getModel($name = 'FieldGroup', $prefix = 'TZ_PortfolioModel', $config = array('ignore_request' => true))
+    public function getModel($name = 'Group', $prefix = 'TZ_PortfolioModel', $config = array('ignore_request' => true))
     {
         return parent::getModel($name, $prefix, $config);
     }

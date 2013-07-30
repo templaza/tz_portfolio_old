@@ -82,4 +82,12 @@ if($params -> get('portfolio_image_size','S')){
         </a>
         <?php  endif;?>
     <?php endif;?>
+
+    <?php if($media[0] -> type == 'audio'):?>
+        <?php echo $this -> loadTemplate('audio_thumb');?>
+    <?php endif;?>
+
+    <?php if($media[0] -> type == 'quote'):?>
+        <?php echo $this -> loadTemplate('quote');?>
+    <?php endif;?>
 <?php endif;?>

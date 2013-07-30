@@ -26,8 +26,8 @@ JHtml::_('behavior.tooltip');
 ?>
 <script type="text/javascript">
     Joomla.submitbutton = function(task) {
-        if (task == 'fieldgroup.cancel' || document.formvalidator.isValid(document.id('fieldgroup-form'))){
-            Joomla.submitform(task, document.getElementById('fieldgroup-form'));
+        if (task == 'group.cancel' || document.formvalidator.isValid(document.id('group-form'))){
+            Joomla.submitform(task, document.getElementById('group-form'));
         }
         else {
             alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
@@ -35,8 +35,8 @@ JHtml::_('behavior.tooltip');
     }
 </script>
 
-<form name="adminForm" method="post" class="form-validate row-fluid" id="fieldgroup-form"
-      action="index.php?option=com_tz_portfolio&view=fieldgroup&layout=edit&id=<?php echo $this -> item -> id?>">
+<form name="adminForm" method="post" class="form-validate row-fluid" id="group-form"
+      action="index.php?option=com_tz_portfolio&view=group&layout=edit&id=<?php echo $this -> item -> id?>">
 
     <div class="span12 form-horizontal">
         <fieldset class="adminform">

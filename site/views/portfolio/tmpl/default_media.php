@@ -48,7 +48,8 @@ if($params -> get('tz_use_lightbox',1) == 1){
     $class=' class = "fancybox fancybox.iframe"';
 }
 ?>
-<?php if($params -> get('show_image') OR $params -> get('show_image_gallery') OR $params -> get('show_video')):?>
+<?php if($params -> get('show_image',1) OR $params -> get('show_image_gallery',1) OR $params -> get('show_video',1)
+    OR $params -> get('show_audio',1)):?>
     <?php if($media):?>
         <?php if(!empty($media[0] -> images) OR !empty($media[0] -> thumb)):?>
         <div class="TzPortfolioMedia">
@@ -114,6 +115,13 @@ if($params -> get('tz_use_lightbox',1) == 1){
                         </a>
                     </div>
                 <?php endif;?>
+            <?php endif;?>
+
+            <?php // Require audio?>
+            <?php if($params -> get('audio_layout_type','thumbnail') == 'thumbnail'):?>
+                <?php echo $this -> loadTemplate('audio_thumb');?>
+            <?php else: ?>
+                <?php echo $this -> loadTemplate('audio');?>
             <?php endif;?>
         </div>
         <?php endif;?>
