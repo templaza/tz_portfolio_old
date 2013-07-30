@@ -29,7 +29,7 @@ if($params -> get('tz_use_lightbox',1) == 1){
 }
 ?>
 <?php if($media):?>
-    <?php if(!empty($media[0] -> images)):?>
+    <?php if(!empty($media[0] -> images) OR !empty($media[0] -> thumb)):?>
         <div class="TzTagMedia">
         <?php if($params -> get('show_image') == 1):?>
             <?php
@@ -104,6 +104,14 @@ if($params -> get('tz_use_lightbox',1) == 1){
                 </div>
             <?php endif;?>
         <?php endif;?>
+
+        <?php // Require audio?>
+        <?php if($params -> get('audio_layout_type','thumbnail') == 'thumbnail'):?>
+            <?php echo $this -> loadTemplate('audio_thumb');?>
+        <?php else: ?>
+            <?php echo $this -> loadTemplate('audio');?>
+        <?php endif;?>
+
         </div>
     <?php endif;?>
 <?php endif;?>

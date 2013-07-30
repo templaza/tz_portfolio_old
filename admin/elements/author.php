@@ -36,7 +36,7 @@ class JElementAuthor extends JElement
 		$access	= JFactory::getACL();
 
 		// Include user in groups that have access to edit their articles, other articles, or manage content.
-		$action = array('com_content.article.edit_own', 'com_content.article.edit_article', 'com_content.manage');
+		$action = array('com_tz_portfolio.article.edit_own', 'com_tz_portfolio.article.edit_article', 'com_tz_portfolio.manage');
 		$groups	= $access->getAuthorisedUsergroups($action, true);
 
 		// Check the results of the access check.

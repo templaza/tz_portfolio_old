@@ -43,7 +43,7 @@ $sortFields = array('name' => JText::_('COM_TZ_PORTFOLIO_HEADING_NAME'),
 </script>
 <?php endif;?>
 
-<form name="adminForm" id="adminForm" method="post" action="index.php?option=com_tz_portfolio&view=fieldsgroup">
+<form name="adminForm" id="adminForm" method="post" action="index.php?option=com_tz_portfolio&view=groups">
     <?php if(!empty($this -> sidebar) AND COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
     <div id="j-sidebar-container" class="span2">
         <?php echo $this -> sidebar; ?>
@@ -102,8 +102,8 @@ $sortFields = array('name' => JText::_('COM_TZ_PORTFOLIO_HEADING_NAME'),
     <table class="table table-striped">
         <thead>
         <tr>
-            <th width="10">#</th>
-            <th width="10"  class="hidden-phone">
+            <th width="1%">#</th>
+            <th width="1%" class="hidden-phone">
                 <input type="checkbox" name="checkall-toggle"
                        title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
             </th>
@@ -139,14 +139,14 @@ $sortFields = array('name' => JText::_('COM_TZ_PORTFOLIO_HEADING_NAME'),
                 </td>
                 <td class="nowrap has-context">
                     <div class="pull-left">
-                        <a href="index.php?option=com_tz_portfolio&task=fieldgroup.edit&id=<?php echo $item -> id;?>">
+                        <a href="index.php?option=com_tz_portfolio&task=group.edit&id=<?php echo $item -> id;?>">
                             <?php echo $item -> name;?>
                         </a>
                     </div>
                     <div class="pull-left">
                         <?php
                         // Create dropdown items
-                        JHtml::_('dropdown.edit', $item->id, 'fieldgroup.');
+                        JHtml::_('dropdown.edit', $item->id, 'group.');
                         // render dropdown list
                         echo JHtml::_('dropdown.render');
                         ?>

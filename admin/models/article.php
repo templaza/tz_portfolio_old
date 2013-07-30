@@ -22,11 +22,14 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
 jimport( 'joomla.filesystem.folder');
+jimport( 'joomla.filesystem.file');
 
 
 //require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/content.php';
 define('TZ_IMAGE_SIZE',10*1024*1024);
 //define('TZ_IMAGE_TYPE',array('image/jpeg','image/jpg','image/bmp','image/gif','image/png','image/ico'));
+tzimport('HTTPFetcher');
+tzimport('readfile');
 
 /**
  * Item Model for an Article.
@@ -42,6 +45,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     private $imageUrl       = 'media/tz_portfolio/article';
     private $tzfolder       = 'tz_portfolio';
     private $attachUrl      = 'attachments';
+    protected  $audioFolder = 'audio';
     private $contentid      = null;
     private $catParams      = null;
     protected $tztask         = null;
@@ -441,6 +445,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             $values         = null;
             $attachFiles    = null;
             $attachTitle    = null;
+            $audioFields    = null;
+            $audioFields    = ','.$this -> _db -> quoteName('audio').','
+                               .$this -> _db -> quoteName('audiothumb').','
+                               .$this -> _db -> quoteName('audiotitle');
 
             $rows           = $db -> loadObjectList();
             foreach($rows as $row){
@@ -581,6 +589,17 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 }
                 //end video thumbnail
 
+                // Copy audio thumnail
+                $audioData      = null;
+
+                $audioData['audio_soundcloud_id']           = $row -> audio;
+                $audioData['audio_soundcloud_title']        = $row -> audiotitle;
+                $audioData['audio_soundcloud_image_server'] = $row -> audiothumb;
+
+                $audioValue = ','.$this -> prepareAudio($audioData,null,true);
+
+                // End copy audio thumbnail
+
                 $values[]  = '('.$newId.','.$row -> groupid.','
                           .$db -> quote($imageName).','
                           .$db -> quote($row -> imagetitle).','.$db -> quote($imageHoverName).','
@@ -588,13 +607,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                           .$db -> quote($attachTitle).','.$db -> quote($attachmentsOld).','
                           .$db -> quote($galleryName).','.$db -> quote($row -> gallerytitle).','
                           .$db -> quote($row -> video).','.$db -> quote($row -> videotitle).','.$db -> quote($videoThumb)
-                             .','.$db -> quote($row -> type).')';
+                             .','.$db -> quote($row -> type).$audioValue.')';
             }
             if(count($values)>0){
                 $values    = implode(',',$values);
                 $query2 = 'INSERT INTO #__tz_portfolio_xref_content(`contentid`,`groupid`,`images`,`imagetitle`,'
                           .'`images_hover`,`attachfiles`,`attachtitle`,`attachold`,`gallery`,`gallerytitle`,`video`,'
-                          .'`videotitle`,`videothumb`,`type`)'
+                          .'`videotitle`,`videothumb`,`type`'.$audioFields.')'
                           .' VALUES '.$values;
                 $db -> setQuery($query2);
                 if(!$db -> query()){
@@ -873,6 +892,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         $data   = new stdClass();
         $data -> gallery    = new stdClass();
         $data -> video    = new stdClass();
+        $data -> audio  = new stdClass();
+
         $data -> images             = '';
         $data -> imagetitle         = '';
         $data -> images_hover       = '';
@@ -882,6 +903,17 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         $data -> video -> type      = '';
         $data -> video -> title     = '';
         $data -> type               = '';
+
+        $data -> audio -> audio_id  = '';
+        $data -> audio -> audiothumb= '';
+        $data -> audio -> audiotitle= '';
+        $data -> quote_author       = '';
+        $data -> quote_text         = '';
+
+        $data -> link_title         = '';
+        $data -> link_url           = '';
+        $data -> link_follow        = '';
+        $data -> link_target        = '';
         if($this -> contentid){
             $query  = 'SELECT * FROM #__tz_portfolio_xref_content'
                 .' WHERE contentid = '.$this -> contentid;
@@ -940,7 +972,20 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $data -> video -> thumb = '';
                 }
 
+                $data -> audio -> audio_id      = $row -> audio;
+                $data -> audio -> audiothumb    = $row -> audiothumb;
+                $data -> audio -> audiotitle    = $row -> audiotitle;
+
                 $data   -> type = strtolower($row -> type);
+
+                $data -> quote_author   = $row -> quote_author;
+                $data -> quote_text     = $row -> quote_text;
+
+                $data -> link_title     = $row -> link_title;
+                $data -> link_url       = $row -> link_url;
+                $linkParams = new JRegistry($row -> link_attribs);
+                $data -> link_follow    = $linkParams -> get('link_follow');
+                $data -> link_target    = $linkParams -> get('link_target');
             }
         }
 
@@ -1211,11 +1256,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     }
 
     // Show fields group
-    public function getFieldsGroup($catid=null){
+    public function getGroups($catid=null){
 
 //        $artid          = JRequest::getInt('id',null);
         $artid          = $this -> getState('article.id');
-        $fieldsgroup    = '';
+        $groups    = '';
 
         $lang           = JFactory::getLanguage();
         $lang -> load('com_tz_portfolio',JPATH_ADMINISTRATOR);
@@ -1257,24 +1302,24 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         $dbo -> setQuery($query);
 
         if(!$rows2 = $dbo -> loadObjectList()){
-            $fieldsgroup  = '<select name="groupid" size="1" id="groupid" style="min-width: 130px;">';
-            $fieldsgroup  .= '<option value="0">'.JText::_('COM_TZ_PORTFOLIO_OPTION_INHERIT_CATEGORY').'</option>';
-            $fieldsgroup  .= '</select>';
-            return $fieldsgroup;
+            $groups  = '<select name="groupid" size="1" id="groupid" style="min-width: 130px;">';
+            $groups  .= '<option value="0">'.JText::_('COM_TZ_PORTFOLIO_OPTION_INHERIT_CATEGORY').'</option>';
+            $groups  .= '</select>';
+            return $groups;
         }
 
-        $fieldsgroup  .= '<option value="0">'.JText::_('COM_TZ_PORTFOLIO_OPTION_INHERIT_CATEGORY').'</option>';
+        $groups  .= '<option value="0">'.JText::_('COM_TZ_PORTFOLIO_OPTION_INHERIT_CATEGORY').'</option>';
 
         foreach($rows2 as $row){
-            $fieldsgroup  = $fieldsgroup.'<option value="'.$row -> id.'"'
+            $groups  = $groups.'<option value="'.$row -> id.'"'
                               .((in_array($row -> id,$arr))?' selected="selected"':'').'>&nbsp;&nbsp;'.$row -> name.'</option>';
         }
 
-        $fieldsgroup  = '<select name="groupid" size="1" id="groupid" style="min-width: 130px;">'
-                        .$fieldsgroup
+        $groups  = '<select name="groupid" size="1" id="groupid" style="min-width: 130px;">'
+                        .$groups
                         .'</select>';
 
-        return $fieldsgroup;
+        return $groups;
     }
 
 	/**
@@ -1323,6 +1368,24 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
 
 			$item->articletext = trim($item->fulltext) != '' ? $item->introtext . "<hr id=\"system-readmore\" />" . $item->fulltext : $item->introtext;
+
+            if($pContent   = $this -> getFieldsContent()){
+                if(isset($pContent -> audio)){
+                    $item -> audio_soundcloud_id            = $pContent -> audio -> audio_id;
+                    $item -> audio_soundcloud_hidden_image  = $pContent -> audio -> audiothumb;
+                    $item -> audio_soundcloud_title         = $pContent -> audio -> audiotitle;
+                }
+
+                $item -> quote_author   = $pContent -> quote_author;
+                $item -> quote_text     = $pContent -> quote_text;
+
+                $item -> link_title     = $pContent -> link_title;
+                $item -> link_url       = $pContent -> link_url;
+                $item -> link_follow    = $pContent -> link_follow;
+                $item -> link_target    = $pContent -> link_target;
+            }
+
+
 		}
 
 		return $item;
@@ -1499,6 +1562,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         if(JFile::exists($path3)){
                             JFile::delete($path3);
                         }
+                    }
+
+                    // Delete audio thumb
+                    if(!empty($item -> audiothumb)){
+                        $this -> deleteThumb(null,$item -> audiothumb);
                     }
                 }
             }
@@ -1693,8 +1761,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         }
     }
 
-    function getImageHover($fileClient,$fileServer = null,$data=null,$task=null){
-        $params = $this -> getState('params');
+    protected function _getImageSizes($params){
         if(!$sizes  = $this -> getState('sizeImage')){
             if($params -> get('tz_image_xsmall',100)){
                 $sizeImage['XS'] = (int) $params -> get('tz_image_xsmall',100);
@@ -1711,8 +1778,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             if($params -> get('tz_image_xsmall',900)){
                 $sizeImage['XL'] = (int) $params -> get('tz_image_xlarge',900);
             }
-            $sizes  = $sizeImage;
+            return $sizeImage;
         }
+        return $this -> getState('sizeImage');
+    }
+
+    function getImageHover($fileClient,$fileServer = null,$data=null,$task=null){
+        $params = $this -> getState('params');
+        $sizes  = $this -> _getImageSizes($params);
 
         if($data){
             if(isset($data['tz_imgHover_current'])){
@@ -2353,24 +2426,25 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$this ->imageUrl).DIRECTORY_SEPARATOR.'cache';
         
         $params = $this -> getState('params');
-        if(!$size    = $this -> getState('size')){
-            if($params -> get('tz_image_gallery_xsmall')){
-                $sizes['XS'] = (int) $params -> get('tz_image_gallery_xsmall');
-            }
-            if($params -> get('tz_image_gallery_small')){
-                $sizes['S'] = (int) $params -> get('tz_image_gallery_small');
-            }
-            if($params -> get('tz_image_gallery_medium')){
-                $sizes['M'] = (int) $params -> get('tz_image_gallery_medium');
-            }
-            if($params -> get('tz_image_gallery_large')){
-                $sizes['L'] = (int) $params -> get('tz_image_gallery_large');
-            }
-            if($params -> get('tz_image_gallery_xsmall')){
-                $sizes['XL'] = (int) $params -> get('tz_image_gallery_xlarge');
-            }
-            $size   = $sizes;
-        }
+        $size   = $this -> _getImageSizes($params);
+//        if(!$size    = $this -> getState('size')){
+//            if($params -> get('tz_image_gallery_xsmall')){
+//                $sizes['XS'] = (int) $params -> get('tz_image_gallery_xsmall');
+//            }
+//            if($params -> get('tz_image_gallery_small')){
+//                $sizes['S'] = (int) $params -> get('tz_image_gallery_small');
+//            }
+//            if($params -> get('tz_image_gallery_medium')){
+//                $sizes['M'] = (int) $params -> get('tz_image_gallery_medium');
+//            }
+//            if($params -> get('tz_image_gallery_large')){
+//                $sizes['L'] = (int) $params -> get('tz_image_gallery_large');
+//            }
+//            if($params -> get('tz_image_gallery_xsmall')){
+//                $sizes['XL'] = (int) $params -> get('tz_image_gallery_xlarge');
+//            }
+//            $size   = $sizes;
+//        }
 
         if(!JFolder::exists($destPath)){
             JFolder::create($destPath);
@@ -2698,6 +2772,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                 $attachFileName     = array();
                 $attachFileTitle    = array();
+                $attachOld          = null;
 
                 if($attachFile){
                     if(count($attachFile)>0){
@@ -2941,16 +3016,51 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                 $value['attachfiles']   = $db -> quote($attachFileName);
                 $value['attachtitle']   = $db -> quote($attachFileTitle);
-                $value['attachold']     = $db -> quote(implode('///',$attachOld));
+
+                if($attachOld && count($attachOld)){
+                    $value['attachold']     = $db -> quote(implode('///',$attachOld));
+                }
+                else{
+                    $value['attachold']     = $db -> quote('');
+                }
 
                 $value['videothumb']    = $db ->quote($video -> thumb);
 
                 $value['type']    = $db -> quote($typeOfMedia);
+
+                // Get and prepare data for audio
+                $audioFields    = null;
+
+                $jinput = JFactory::getApplication()->input;
+                $files  = $jinput->files->get('jform');
+                $audioFile   = $files['audio_soundcloud_image_client'];
+
+                $audioFields    = ','.$this -> _db -> quoteName('audio').','
+                    .$this -> _db -> quoteName('audiothumb').','
+                    .$this -> _db -> quoteName('audiotitle');
+
+                $value['audio'] = $this -> prepareAudio($post,$audioFile);
+                // End get and prepare data for audio
+
+                // Get and prepare data for quote
+                $quoteFields    = '';
+                if($this -> prepareQuote($post)){
+                    $quoteFields    = ','.$this -> _db -> quoteName('quote_author').','.
+                        $this -> _db -> quoteName('quote_text');
+                    $value['quote'] = $this -> prepareQuote($post);
+                }
+                // End get and prepare data for quote
+
+                // Get and prepare data for link
+                $linkFields = ','.$this -> _db -> quoteName('link_title').','.
+                    $this -> _db -> quoteName('link_url').','.$this -> _db -> quoteName('link_attribs');
+                $value['link']  = $this -> prepareLink($post);
+                // End get and prepare data for link
+
                 $value  = '('.implode(',',$value).')';
-        
+
                 $query  = 'DELETE FROM #__tz_portfolio_xref_content WHERE contentid = '.$contentid;
                 $db -> setQuery($query);
-
 
                 if(!$db -> query()){
                     $this -> setError($db -> getErrorMsg());
@@ -2958,9 +3068,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 }
 
                 $query  = 'INSERT INTO `#__tz_portfolio_xref_content`'
-                              .'(`groupid`,`contentid`,`images`,`imagetitle`,`images_hover`,`gallery`,`gallerytitle`,'
-                              .'`video`,`videotitle`,`attachfiles`,`attachtitle`,`attachold`,`videothumb`,`type`)'
-                              .' VALUES '.$value;
+                    .'(`groupid`,`contentid`,`images`,`imagetitle`,`images_hover`,`gallery`,`gallerytitle`,'
+                    .'`video`,`videotitle`,`attachfiles`,`attachtitle`,`attachold`,`videothumb`,`type`'
+                    .$audioFields.$quoteFields.$linkFields.')'
+                    .' VALUES '.$value;
+
                 $db -> setQuery($query);
                 if(!$db -> query()){
                     $this -> setError($db -> getErrorMsg());
@@ -3168,6 +3280,298 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 		$condition[] = 'catid = '.(int) $table->catid;
 		return $condition;
 	}
+
+    public function uploadImageClient($file,$destName,$base,$fileTypes,$size=array(),$oldThumb = null){
+        if($file && $base){
+            if(JFile::exists($file['tmp_name'])){
+                // Check file type
+                if(in_array($file['type'],$fileTypes)){
+                    // Check file size
+                    if($file['size'] <= TZ_IMAGE_SIZE){
+                        // Create file with new name
+                        $dest   = $base.DIRECTORY_SEPARATOR.$destName;
+
+                        $obj    = new JImage($file['tmp_name']);
+
+                        if(count($size)){
+                            foreach($size as $key => $width){
+                                if($width){
+                                    $_dest    = str_replace('.'.JFile::getExt($file['name']),
+                                        '_'.strtoupper($key).'.'.JFile::getExt($file['name']),$dest);
+
+                                    $newHeight  = ($obj -> getHeight()*(int) $width)/$obj -> getWidth();
+                                    $newImage   = $obj -> resize($width,$newHeight);
+                                    $newImage -> toFile(JPATH_SITE.DIRECTORY_SEPARATOR.$_dest,$this -> _getImageType($dest));
+                                }
+                            }
+
+                            // Delete old thumbnail
+                            if($oldThumb){
+                                $this -> deleteThumb(null,$oldThumb);
+                            }
+
+                            return str_replace(DIRECTORY_SEPARATOR,'/',$dest);
+                        }
+                        return null;
+                    }else{
+                        JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_AUDIO_THUMBNAIL_SIZE_TOO_LARGE'));
+                    }
+                }else{
+                    JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_AUDIO_THUMBNAIL_FILE_NOT_SUPPORTED'));
+                }
+            }
+        }
+    }
+
+    public function uploadImageServer($src,$destName,$base,$size=array(),$oldThumb = null,$copy = false){
+        if($src){
+            $dest    = $base.DIRECTORY_SEPARATOR.$destName;
+            if($copy){ // If batch copy
+                foreach($size as $key => $width){
+                    $_dest    = str_replace('.'.JFile::getExt($src),
+                        '_'.strtoupper($key).'.'.JFile::getExt($src),$dest);
+                    $_src    = str_replace('.'.JFile::getExt($src),
+                        '_'.strtoupper($key).'.'.JFile::getExt($src),$src);
+                    if(JPATH_SITE.DIRECTORY_SEPARATOR.$_dest){
+                        JFile::copy(JPATH_SITE.DIRECTORY_SEPARATOR.$_src,JPATH_SITE.DIRECTORY_SEPARATOR.$_dest);
+                    }
+                }
+                return str_replace(DIRECTORY_SEPARATOR,'/',$dest);
+            }else{
+                if(JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.$src)){
+
+                    $obj    = new JImage(JPATH_SITE.DIRECTORY_SEPARATOR.$src);
+
+                    if(filesize(JPATH_SITE.DIRECTORY_SEPARATOR.$src) <= TZ_IMAGE_SIZE){
+                        if(count($size)){
+                            foreach($size as $key => $width){
+                                if($width){
+                                    $_dest    = str_replace('.'.JFile::getExt($src),
+                                        '_'.strtoupper($key).'.'.JFile::getExt($src),$dest);
+
+                                    $newHeight  = ($obj -> getHeight()*(int) $width)/$obj -> getWidth();
+                                    $newImage   = $obj -> resize($width,$newHeight);
+                                    $newImage -> toFile(JPATH_SITE.DIRECTORY_SEPARATOR.$_dest,$this -> _getImageType($dest));
+                                }
+                            }
+                            // Delete old thumbnail
+                            if($oldThumb){
+                                $this -> deleteThumb(null,$oldThumb);
+                            }
+
+                            return str_replace(DIRECTORY_SEPARATOR,'/',$dest);
+                        }
+                        return null;
+                    }
+                }else{
+                    JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_AUDIO_THUMBNAIL_SIZE_TOO_LARGE'));
+                }
+            }
+        }
+    }
+
+
+    public function prepareAudio($data,$file = null,$copy = false){
+        if($data){
+            if(isset($data['jform'])){
+                $data   = $data['jform'];
+            }
+
+            if($data['audio_soundcloud_id']){
+                $fileTypes  = array('image/jpeg','image/jpg','image/bmp','image/gif','image/png','image/ico');
+
+                $params = $this -> getState('params');
+                $_data  = null;
+                $_data  = $this -> _db -> quote($data['audio_soundcloud_id']);
+
+                // Create folder to save thumb if this folder isn't created.
+                $audioPath  = $this -> imageUrl
+                            .DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'thumbnail'
+                    .DIRECTORY_SEPARATOR.$this -> audioFolder;
+                if(!JFolder::exists(JPATH_SITE.DIRECTORY_SEPARATOR.$audioPath)){
+                    JFolder::create(JPATH_SITE.DIRECTORY_SEPARATOR.$audioPath);
+                }
+                if(JFolder::exists(JPATH_SITE.DIRECTORY_SEPARATOR.$audioPath)){
+                    if(!JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.$audioPath.DIRECTORY_SEPARATOR.'index.html')){
+                        JFile::write(JPATH_SITE.DIRECTORY_SEPARATOR.$audioPath.DIRECTORY_SEPARATOR.'index.html',
+                            htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
+                    }
+                }
+
+                // Prepare data (Return string to save the database)
+                //// Delete old thumbnail if delete checkbox input is checked
+                if($data['audio_souncloud_delete_image'] && $hiddenImage = $data['audio_soundcloud_hidden_image']){
+                    $this -> deleteThumb(null,$hiddenImage);
+                }
+
+                if($file && !empty($file['name'])){ // If choose thumbnail from client
+                    $destName   = uniqid().time().'tz_portfolio_soundcloud_'
+                                            .$data['audio_soundcloud_id'].'.'. JFile::getExt($file['name']);
+                    $image = $this -> uploadImageClient($file,$destName,$audioPath,
+                        $fileTypes,$this -> _getImageSizes($params),$data['audio_soundcloud_hidden_image']);
+                }elseif(!empty($data['audio_soundcloud_image_server'])){ // If choose thumbnail from server
+                    $destName   = uniqid().time().'tz_portfolio_soundcloud_'
+                        .$data['audio_soundcloud_id'].'.'
+                        .JFile::getExt($data['audio_soundcloud_image_server']);
+                    $image  = $this -> uploadImageServer($data['audio_soundcloud_image_server'],$destName,
+                        $audioPath,$this -> _getImageSizes($params),$data['audio_soundcloud_hidden_image'],$copy);
+                }else{ // Get thumbnail from soundcloud page
+                    if($client_id = $params -> get('soundcloud_client_id','4a24c193db998e3b88c34cad41154055')){
+                        // Register fetch object
+                        $fetch  = new Services_Yadis_PlainHTTPFetcher();
+                        $url    = 'http://api.soundcloud.com/tracks/'.$data['audio_soundcloud_id']
+                            .'.json?client_id='.$client_id;
+
+                        if($content    = $fetch -> get($url)){
+                            $content    = json_decode($content -> body);
+                            $thumbUrl   = null;
+                            if($content -> artwork_url && !empty($content -> artwork_url)){
+                                $thumbUrl   = $content -> artwork_url;
+                            }
+                            else{
+                                $audioUser   = $content -> user;
+                                if($audioUser -> avatar_url && !empty($audioUser -> avatar_url)){
+                                    $thumbUrl   = $audioUser -> avatar_url;
+                                }
+                            }
+                            if($thumbUrl){
+                                // Create folder tmp if not exists
+                                if(!JFolder::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                        .DIRECTORY_SEPARATOR.$this -> tzfolder)){
+                                    JFolder::create(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                            .DIRECTORY_SEPARATOR.$this -> tzfolder);
+                                }
+                                if(JFolder::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                        .DIRECTORY_SEPARATOR.$this -> tzfolder)){
+                                    if(!JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                            .DIRECTORY_SEPARATOR.$this -> tzfolder.'index.html')){
+                                        JFile::write(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                            .DIRECTORY_SEPARATOR.$this -> tzfolder.'index.html',
+                                            htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
+                                    }
+                                }
+
+                                // Save image from other server to this server (temp file)
+                                $fetch2     = new Services_Yadis_PlainHTTPFetcher();
+                                if($audioTemp  = $fetch2 -> get($thumbUrl)){
+                                    if(in_array($audioTemp -> headers['Content-Type'],$fileTypes)){
+                                        $audioType  = JFile::getExt($thumbUrl);
+                                        if(preg_match('/(.*)(\\|\/|\:|\*|\?|\"|\<|\>|\|.*?)/i',$audioType,$match)){
+                                            $audioType  = $match[1];
+                                        }
+
+                                        $audioTempPath  = 'media'.DIRECTORY_SEPARATOR.$this -> tzfolder
+                                            .DIRECTORY_SEPARATOR.uniqid().time()
+                                            .'.'.$audioType;
+
+                                        JFile::write(JPATH_SITE.DIRECTORY_SEPARATOR.$audioTempPath,$audioTemp -> body);
+                                    }
+                                }
+
+                                if($audioTempPath){
+                                    $destName   = uniqid().time().'tz_portfolio_soundcloud_'
+                                        .$data['audio_soundcloud_id'].'.'
+                                        .JFile::getExt($audioTempPath);
+
+                                    $image  = $this -> uploadImageServer($audioTempPath,$destName,$audioPath,
+                                        $this -> _getImageSizes($params));
+
+                                    if(JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.$audioTempPath)){
+                                        JFile::delete(JPATH_SITE.DIRECTORY_SEPARATOR.$audioTempPath);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                $_data  .= ',';
+                if($image){
+                    $_data  .= $this -> _db -> quote($image);
+                }
+                else{
+                    $_data .= $this -> _db -> quote('');
+                }
+
+                $_data  .= ',';
+                if($data['audio_soundcloud_title']){
+                    $_data  .= $this -> _db -> quote($data['audio_soundcloud_title']);
+                }
+                else{
+                    $_data  .= $this -> _db -> quote('');
+                }
+
+                return $_data;
+            }
+            return $this -> _db -> quote('').','.$this -> _db -> quote('').','.$this -> _db -> quote('');
+        }
+        return $this -> _db -> quote('').','.$this -> _db -> quote('').','.$this -> _db -> quote('');
+    }
+
+    public function prepareQuote($data){
+        if($data){
+            if(isset($data['jform'])){
+                $data   = $data['jform'];
+            }
+            $_data  = null;
+//            $_data  = $this -> _db -> quote('').','.$this -> _db -> quote('');
+            if($data['quote_author']){
+                $_data  = $this -> _db -> quote($data['quote_author']);
+            }
+            if($data['quote_text']){
+                $_data  .= ','.$this -> _db -> quote($data['quote_text']);
+            }
+            if($_data){
+                return $_data;
+            }
+            return null;
+        }
+        return null;
+    }
+
+    public function prepareLink($data){
+        $_data  = $this -> _db -> quote('').','.$this -> _db -> quote('').','.$this -> _db -> quote('');
+        if($data){
+            if(isset($data['jform'])){
+                $data   = $data['jform'];
+            }
+            if($data['link_title']){
+                $_data  = $this -> _db -> quote($data['link_title']);
+            }else{
+                $_data  = $this -> _db -> quote('');
+            }
+            if($url = $data['link_url']){
+                if(!preg_match('/^http\:\/\/.*/i',$url)){
+                    $url    = 'http://'.$url;
+                }
+                $_data  .= ','.$this -> _db -> quote($url);
+            }else{
+                $_data  .= ','.$this -> _db -> quote('');
+            }
+            if($this -> _prepareAttribs($data)){
+                $_data  .= ','.$this -> _db -> quote($this -> _prepareAttribs($data));
+            }else{
+                $_data  .= ','.$this -> _db -> quote('');
+            }
+        }
+        return $_data;
+    }
+
+    protected function _prepareAttribs($data){
+        if($data){
+            $attribs    = new JRegistry();
+            if($data['link_target']){
+                $_data['link_target']    = $data['link_target'];
+            }
+            if($data['link_follow']){
+                $_data['link_follow']   = $data['link_follow'];
+            }
+            $attribs -> loadArray($_data);
+            return $attribs -> toString();
+        }
+        return null;
+    }
 
 	/**
 	 * Custom clean the cache of com_content and content modules

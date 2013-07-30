@@ -142,6 +142,23 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
 		}
 
 		$value->articletext = $value->introtext;
+
+        if($pContent   = $this -> getFieldsContent()){
+            if(isset($pContent -> audio)){
+                $value -> audio_soundcloud_id            = $pContent -> audio -> audio_id;
+                $value -> audio_soundcloud_hidden_image  = $pContent -> audio -> audiothumb;
+                $value -> audio_soundcloud_title         = $pContent -> audio -> audiotitle;
+            }
+
+            $value -> quote_author   = $pContent -> quote_author;
+            $value -> quote_text     = $pContent -> quote_text;
+
+            $value -> link_title     = $pContent -> link_title;
+            $value -> link_url       = $pContent -> link_url;
+            $value -> link_follow    = $pContent -> link_follow;
+            $value -> link_target    = $pContent -> link_target;
+        }
+
 		if (!empty($value->fulltext)) {
 			$value->articletext .= '<hr id="system-readmore" />'.$value->fulltext;
 		}
@@ -165,6 +182,8 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
         $this -> contentid  = $this -> getState('article.id');
         $data   = new stdClass();
         $data -> gallery = $data -> video   = new stdClass();
+        $data -> audio  = new stdClass();
+
         $data -> images             = '';
         $data -> imagetitle         = '';
         $data -> images_hover       = '';
@@ -174,6 +193,17 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
         $data -> video -> type      = '';
         $data -> video -> title     = '';
         $data -> type               = '';
+
+        $data -> audio -> audio_id  = '';
+        $data -> audio -> audiothumb= '';
+        $data -> audio -> audiotitle= '';
+        $data -> quote_author       = '';
+        $data -> quote_text         = '';
+
+        $data -> link_title         = '';
+        $data -> link_url           = '';
+        $data -> link_follow        = '';
+        $data -> link_target        = '';
         if($this -> contentid){
             $query  = 'SELECT * FROM #__tz_portfolio_xref_content'
                 .' WHERE contentid = '.$this -> contentid;
@@ -232,6 +262,21 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
                 }
 
                 $data   -> type = strtolower($row -> type);
+
+                $data -> audio -> audio_id      = $row -> audio;
+                $data -> audio -> audiothumb    = $row -> audiothumb;
+                $data -> audio -> audiotitle    = $row -> audiotitle;
+
+                $data   -> type = strtolower($row -> type);
+
+                $data -> quote_author   = $row -> quote_author;
+                $data -> quote_text     = $row -> quote_text;
+
+                $data -> link_title     = $row -> link_title;
+                $data -> link_url       = $row -> link_url;
+                $linkParams = new JRegistry($row -> link_attribs);
+                $data -> link_follow    = $linkParams -> get('link_follow');
+                $data -> link_target    = $linkParams -> get('link_target');
             }
         }
 

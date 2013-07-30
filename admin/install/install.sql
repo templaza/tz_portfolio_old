@@ -53,7 +53,15 @@ CREATE TABLE IF NOT EXISTS `#__tz_portfolio_xref_content` (
 `videothumb` TEXT NOT NULL,
 `attachfiles` TEXT NOT NULL ,
 `attachtitle` TEXT NOT NULL,
-`attachold` TEXT NOT NULL
+`attachold` TEXT NOT NULL,
+`audio` TEXT NULL,
+`audiothumb` TEXT NULL,
+`audiotitle` VARCHAR(255) NULL,
+`quote_author` VARCHAR(255) NOT NULL,
+`quote_text` TEXT NOT NULL,
+`link_url` VARCHAR( 1000 ) NOT NULL ,
+`link_title` VARCHAR( 1000 ) NOT NULL,
+`link_attribs` VARCHAR(5120) NOT NULL
 ) ENGINE = MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__tz_portfolio_tags` (

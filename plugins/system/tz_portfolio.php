@@ -64,78 +64,80 @@ class plgSystemTZ_Portfolio extends JPlugin {
         
 		if($mainframe->isAdmin())return;
 
-		$option = JRequest::getCmd('option');
-		$view = JRequest::getCmd('view');
-		$task = JRequest::getCmd('task');
-		$layout = JRequest::getCmd('layout');
-		$user = JFactory::getUser();
+        if($this -> params -> get('override_user_form',1)){
+            $option = JRequest::getCmd('option');
+            $view = JRequest::getCmd('view');
+            $task = JRequest::getCmd('task');
+            $layout = JRequest::getCmd('layout');
+            $user = JFactory::getUser();
 
-        if($option == 'com_users' && $view == 'registration' && !$layout){
+            if($option == 'com_users' && $view == 'registration' && !$layout){
+                    require_once (JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_users'.DIRECTORY_SEPARATOR.'controller.php');
+                    $controller = new UsersController;
+                    $views = $controller->getView($view, 'html');
+                    $tplName    = JFactory::getApplication() -> getTemplate();
+                    $tplPath    = JPATH_THEMES.DIRECTORY_SEPARATOR.$tplName.DIRECTORY_SEPARATOR.'html'
+                                  .DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'users';
+                    if(!JFile::exists($tplPath.DIRECTORY_SEPARATOR.'register.php')){
+                        $tplPath    = JPATH_SITE.DIRECTORY_SEPARATOR.'components'
+                                      .DIRECTORY_SEPARATOR.'com_tz_portfolio'
+                                      .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'tmpl';
+                    }
+
+                    $views -> addTemplatePath($tplPath);
+
+                    $views->setLayout('register');
+
+                    ob_start();
+                    $views->display();
+                    $contents = ob_get_clean();
+                    $document = JFactory::getDocument();
+                    $document->setBuffer($contents, 'component');
+            }
+            if($user -> username && $option == 'com_users'
+               && $view == 'profile' && ($layout == 'edit' || $task == 'profile.edit')){
+
+
                 require_once (JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_users'.DIRECTORY_SEPARATOR.'controller.php');
+
                 $controller = new UsersController;
+
                 $views = $controller->getView($view, 'html');
+
                 $tplName    = JFactory::getApplication() -> getTemplate();
                 $tplPath    = JPATH_THEMES.DIRECTORY_SEPARATOR.$tplName.DIRECTORY_SEPARATOR.'html'
                               .DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'users';
-                if(!JFile::exists($tplPath.DIRECTORY_SEPARATOR.'register.php')){
+                if(!JFile::exists($tplPath.DIRECTORY_SEPARATOR.'profile.php')){
                     $tplPath    = JPATH_SITE.DIRECTORY_SEPARATOR.'components'
                                   .DIRECTORY_SEPARATOR.'com_tz_portfolio'
                                   .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'tmpl';
                 }
-            
+
                 $views -> addTemplatePath($tplPath);
-            
-                $views->setLayout('register');
+
+                $views->setLayout('profile');
+
+                require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'
+                             .DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'user.php');
+                $model  = new TZ_PortfolioModelUser;
+
+                $userData   = $model -> getUsers($user -> id);
+
+
+                $views -> assign('TZUser',$userData);
 
                 ob_start();
+                $active = JFactory::getApplication()->getMenu()->getActive();
+                if (isset($active->query['layout']) && $active->query['layout'] != 'profile')
+                {
+                    $active->query['layout'] = 'profile';
+                }
+                $views -> assign('user',$user);
                 $views->display();
                 $contents = ob_get_clean();
                 $document = JFactory::getDocument();
                 $document->setBuffer($contents, 'component');
-        }
-        if($user -> username && $option == 'com_users'
-           && $view == 'profile' && ($layout == 'edit' || $task == 'profile.edit')){
-
-
-            require_once (JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_users'.DIRECTORY_SEPARATOR.'controller.php');
-
-            $controller = new UsersController;
-
-            $views = $controller->getView($view, 'html');
-
-            $tplName    = JFactory::getApplication() -> getTemplate();
-            $tplPath    = JPATH_THEMES.DIRECTORY_SEPARATOR.$tplName.DIRECTORY_SEPARATOR.'html'
-                          .DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'users';
-            if(!JFile::exists($tplPath.DIRECTORY_SEPARATOR.'profile.php')){
-                $tplPath    = JPATH_SITE.DIRECTORY_SEPARATOR.'components'
-                              .DIRECTORY_SEPARATOR.'com_tz_portfolio'
-                              .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'tmpl';
             }
-
-            $views -> addTemplatePath($tplPath);
-            
-            $views->setLayout('profile');
-
-            require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'
-                         .DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'user.php');
-            $model  = new TZ_PortfolioModelUser;
-
-            $userData   = $model -> getUsers($user -> id);
-
-
-            $views -> assign('TZUser',$userData);
-
-            ob_start();
-            $active = JFactory::getApplication()->getMenu()->getActive();
-            if (isset($active->query['layout']) && $active->query['layout'] != 'profile')
-            {
-                $active->query['layout'] = 'profile';
-            }
-            $views -> assign('user',$user);
-            $views->display();
-            $contents = ob_get_clean();
-            $document = JFactory::getDocument();
-            $document->setBuffer($contents, 'component');
         }
 
     }

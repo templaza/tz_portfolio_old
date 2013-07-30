@@ -38,9 +38,7 @@ class plgContentTZ_Portfolio extends JPlugin
 	 */
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
-
-        
-//        if($context=='com_tz_portfolio.article'){
+        if($this -> params -> get('use_short_code',1)){
             // Don't run this plugin when the content is being indexed
             if ($context == 'com_finder.indexer') {
                 return true;
@@ -117,7 +115,7 @@ class plgContentTZ_Portfolio extends JPlugin
                     $article->text = preg_replace("|$matchmod[0]|", addcslashes($output, '\\'), $article->text, 1);
                 }
             }
-//        }
+        }
 
 	}
 

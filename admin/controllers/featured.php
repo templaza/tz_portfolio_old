@@ -41,7 +41,7 @@ class TZ_PortfolioControllerFeatured extends TZ_PortfolioControllerArticles
 		// Access checks.
 		foreach ($ids as $i => $id)
 		{
-			if (!$user->authorise('core.delete', 'com_content.article.'.(int) $id))
+			if (!$user->authorise('core.delete', 'com_tz_portfolio.article.'.(int) $id))
 			{
 				// Prune items that you can't delete.
 				unset($ids[$i]);

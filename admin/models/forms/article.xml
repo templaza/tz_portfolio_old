@@ -121,6 +121,39 @@
 			component="com_content" section="article" validate="rules"
 		/>
 
+        <!--FIELDS FOR QUOTE-->
+        <field name="quote_author" type="text" label="COM_TZ_PORTFOLIO_QUOTE_AUTHOR_LABEL"/>
+        <field name="quote_text" type="editor" filter="JComponentHelper::filterText"
+               buttons="article,image,readmore,pagebreak"
+               label="COM_TZ_PORTFOLIO_QUOTE_TEXT_LABEL"/>
+
+        <!--FIELDS FOR LINKS-->
+        <field name="link_url" type="text" label="COM_TZ_PORTFOLIO_LINK_URL_LABEL"/>
+        <field name="link_title" type="text" label="COM_TZ_PORTFOLIO_LINK_TITLE_LABEL"/>
+        <field name="link_follow" type="list" label="COM_TZ_PORTFOLIO_LINK_FOLLOW_LABEL"
+               default="nofollow"
+                description="COM_TZ_PORTFOLIO_LINK_FOLLOW_DESC">
+            <option value="follow">COM_TZ_PORTFOLIO_VALUE_FOLLOW</option>
+            <option value="nofollow">COM_TZ_PORTFOLIO_VALUE_NOFOLLOW</option>
+        </field>
+        <field name="link_target" type="list" label="COM_TZ_PORTFOLIO_LINK_TARGET_WINDOW_LABEL"
+                description="COM_TZ_PORTFOLIO_LINK_TARGET_WINDOW_DESC">
+            <option value="_blank">JBROWSERTARGET_NEW</option>
+            <option value="_parent">JBROWSERTARGET_PARENT</option>
+        </field>
+
+        <!--FIELDS FOR SOUNDCLOUD-->
+        <field name="audio_soundcloud_id" type="text" label="COM_TZ_PORTFOLIO_AUDIO_SOUND_CLOUD_ID_LABEL"
+                description="COM_TZ_PORTFOLIO_AUDIO_SOUND_CLOUD_ID_DESC"/>
+        <field name="audio_soundcloud_image_client" type="file" accept="image/*"
+               label="COM_TZ_PORTFOLIO_AUDIO_SOUND_CLOUD_THUMB_LABEL"
+                description="COM_TZ_PORTFOLIO_AUDIO_SOUND_CLOUD_THUMB_DESC"/>
+        <field name="audio_souncloud_delete_image" type="checkbox"
+               label="COM_TZ_PORTFOLIO_DELETE_IMAGES"/>
+        <field name="audio_soundcloud_hidden_image" type="hidden"/>
+        <field name="audio_soundcloud_image_server" type="media"
+               label=""/>
+        <field name="audio_soundcloud_title" type="text" label="COM_TZ_PORTFOLIO_AUDIO_SOUND_CLOUD_CAPTION_LABEL"/>
 	</fieldset>
     
 	<fields name="attribs">

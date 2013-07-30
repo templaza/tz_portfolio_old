@@ -67,7 +67,7 @@ class TZ_PortfolioViewCategories extends JViewLegacy
 		$options[]	= JHtml::_('select.option', '10', JText::_('J10'));
 
 		$this->assign('f_levels', $options);
-        $this -> assign('listsGroup',$this -> get('FieldsGroup'));
+        $this -> assign('listsGroup',$this -> get('Groups'));
 
 		$this->addToolbar();
         $this->sidebar = JHtmlSidebar::render();

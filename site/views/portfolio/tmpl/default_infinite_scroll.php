@@ -57,7 +57,8 @@ $params = $this -> params;
             <?php endif;?>
 
 
-            var $container = jQuery('#portfolio');
+            var $container = jQuery('#portfolio'),
+                $scroll = true;
             
             <?php if($this -> params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'):?>
                 jQuery('#tz_append').css({'border':0,'background':'none'});
@@ -100,7 +101,7 @@ $params = $this -> params;
 
                         tzpage++;
 
-                        <?php if($params -> get('show_all_filter',0)):?>
+                        <?php if(!$params -> get('show_all_filter',0)):?>
                             <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
                                 tz.ajax({
                                     url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxtags',
@@ -149,11 +150,23 @@ $params = $this -> params;
                             jQuery('div#tz_append').find('a:first').show();
                         }
                     });
-
+                    $scroll = true;
                 }
             );
 
-            <?php if($this -> params -> get('tz_portfolio_layout') == 'ajaxButton'):?>
+            <?php if($params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'):?>
+            jQuery(window).scroll(function(){
+                jQuery(window).unbind('.infscr');
+                if($scroll){
+                    if((jQuery(window).scrollTop() + jQuery(window).height()) >= (jQuery(document).height() - 50)){
+                        $scroll	= false;
+                       $container.infinitescroll('retrieve');
+                    }
+                }
+            });
+            <?php endif;?>
+
+            <?php if($params -> get('tz_portfolio_layout') == 'ajaxButton'):?>
                 jQuery(window).unbind('.infscr');
 
                 jQuery('div#tz_append a').click(function(){

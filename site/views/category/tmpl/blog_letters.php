@@ -39,7 +39,8 @@ $params = &$this -> params;
         endif;
     ?>
         <li>
-        <a<?php if($availLetter[$i] != false) echo ' href="'.JRoute::_('index.php?option=com_tz_portfolio&view=portfolio&char='
+        <a<?php if($availLetter[$i] != false) echo ' href="'.JRoute::_('index.php?option=com_tz_portfolio&'
+            .'view=category'.'&id='.JRequest::getInt('id').'&char='
                                       .mb_strtolower(trim($letter)).'&Itemid='.JRequest::getInt('Itemid')).'"';?>
            class="btn-small<?php echo $disabledClass.$activeClass;?>"><?php echo mb_strtoupper(trim($letter));?></a>
         </li>

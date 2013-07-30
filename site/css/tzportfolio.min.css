@@ -835,4 +835,12 @@ a{color:#666}.TzEdit .TzEditor
 label{display:inline-block;vertical-align:middle;margin:0}.edit form fieldset
 dt{clear:none;width:auto}.clr{clear:both}#tz_fields
 table{border-collapse:inherit;width:100%}#tz_fields tr
-td{border:0}
+td{border:0}.TzQuote
+.text{font-size:16px}.TzQuote .text .icon-quote{float:left;padding-right:10px}.TzQuote .text>p:first-child{display:inline}.TzQuote
+.author{color:#A4A4A4}.TzQuote
+.TzFeature{background:none no-repeat scroll 0 0 #F16694;border-radius:4px 4px 4px 4px;color:#FEFEFE;font-size:9px;font-weight:normal;padding:6px;text-transform:uppercase}#TzContent .tz_item .TzLink
+a{color:#595959}.TzLink
+.title{margin-top:0}.TzLink .title
+a{font-size:16px}.TzLink .title>p:first-child{display:inline}.TzLink
+.TzFeature{background:none no-repeat scroll 0 0 #F16694;border-radius:4px 4px 4px 4px;color:#FEFEFE;font-size:9px;font-weight:normal;padding:6px;text-transform:uppercase}.TzLetters
+li{display:inline-block}

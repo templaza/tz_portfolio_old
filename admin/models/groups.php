@@ -22,14 +22,14 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.modellist');
 
-class TZ_PortfolioModelFieldsGroup extends JModelList{
+class TZ_PortfolioModelGroups extends JModelList{
     public function __construct($config = array()){
         parent::__construct($config);
     }
 
     public function populateState($ordering = null, $direction = null){
         $app        = JFactory::getApplication();
-        $context    = 'com_tz_portfolio.fieldsgroup';
+        $context    = 'com_tz_portfolio.groups';
 
         $state  = $app -> getUserStateFromRequest($context.'filter_state','filter_state',null,'string');
         $this -> setState('filter_state',$state);

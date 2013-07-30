@@ -44,7 +44,7 @@ class TZ_PortfolioModelUser extends JModelLegacy
 
         $rows   = $db -> loadObject();
         if(count($rows)>0){
-            $rows -> description    = htmlspecialchars($rows -> description);
+            $rows -> description    = $rows -> description;
             if($rows -> google_one AND !empty($rows -> google_one)){
                 if(preg_match('/.*?(\?|\&).*?/',$rows -> google_one)){
                     $rows -> google_one .= '&rel=author';
@@ -74,7 +74,7 @@ class TZ_PortfolioModelUser extends JModelLegacy
 
             $rows   = $db -> loadObject();
             if(count($rows)>0){
-                $rows -> description    = htmlspecialchars($rows -> description);
+                $rows -> description    = $rows -> description;
                 if($rows -> google_one AND !empty($rows -> google_one)){
                     if(preg_match('/.*?(\?|\&).*?/',$rows -> google_one)){
                         $rows -> google_one .= '&rel=author';

@@ -63,7 +63,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                 JError::raiseError(500, implode("\n", $errors));
                 return false;
             }
-            $this -> assign('listsGroup',$this -> get('FieldsGroup'));
+            $this -> assign('listsGroup',$this -> get('Groups'));
             $this -> assign('listsTags',json_encode($this -> get('Tags')));
 //            $this -> assign('listsFields',$this -> get('ListsFields'));
             $this -> assign('listAttach',$this -> get('Attachment'));

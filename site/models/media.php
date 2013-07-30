@@ -79,54 +79,87 @@ class TZ_PortfolioModelMedia extends JModelLegacy
 
             if(!empty($rows -> type)){
 
-                if($rows -> type == 'image'){
-                    $data[0]    = new stdClass();
-                    $data[0] -> type           = strtolower($rows -> type);
-                    $data[0] -> featured       = $rows -> featured;
-                    $data[0] -> images         = $rows -> images;
-                    $data[0] -> imagetitle     = htmlspecialchars($rows -> imagetitle);
-                    $data[0] -> images_hover    = $rows -> images_hover;
-                    $data[0] -> articleId   = $articleId;
-                }
-                if(strtolower($rows -> type) == 'imagegallery'){
-                    if(!empty($rows -> gallery)){
-                        $gallery    = explode('///',$rows -> gallery);
-                        $title      = explode('///',$rows -> gallerytitle);
-                        foreach($gallery as $i => $item){
-                            $data[$i]    = new stdClass();
-                            $data[$i] -> type           = strtolower($rows -> type);
-                            $data[$i] -> featured       = $rows -> featured;
-                            $data[$i] -> images         = $item;
-                            if(isset($title[$i]))
-                                $data[$i] -> imagetitle     = htmlspecialchars(trim($title[$i]));
-                            else
-                                $data[$i] -> imagetitle     = '';
+                switch (trim(strtolower($rows -> type))){
+                    case 'image':
+                        $data[0]    = new stdClass();
+                        $data[0] -> type           = strtolower($rows -> type);
+                        $data[0] -> featured       = $rows -> featured;
+                        $data[0] -> images         = $rows -> images;
+                        $data[0] -> imagetitle     = htmlspecialchars($rows -> imagetitle);
+                        $data[0] -> images_hover    = $rows -> images_hover;
+                        $data[0] -> articleId   = $articleId;
+                        break;
+                    case 'imagegallery':
+                        if(!empty($rows -> gallery)){
+                            $gallery    = explode('///',$rows -> gallery);
+                            $title      = explode('///',$rows -> gallerytitle);
+                            foreach($gallery as $i => $item){
+                                $data[$i]    = new stdClass();
+                                $data[$i] -> type           = strtolower($rows -> type);
+                                $data[$i] -> featured       = $rows -> featured;
+                                $data[$i] -> images         = $item;
+                                if(isset($title[$i]))
+                                    $data[$i] -> imagetitle     = htmlspecialchars(trim($title[$i]));
+                                else
+                                    $data[$i] -> imagetitle     = '';
 
-                            $data[$i] -> articleId   = $articleId;
-                        }
-                    }
-                }
-                if(trim($rows -> type) == 'video'){
-                    if(!empty($rows -> video)){
-                        // Video
-                        if(preg_match('/.*:.*/i',$rows -> video,$match)){
-                            // Embed code
-                            for($i = 0; $i<strlen($rows -> video); $i ++){
-                                if(substr($rows -> video,$i,1) == ':'){
-                                    $pos    = $i;
-                                    break;
-                                }
+                                $data[$i] -> articleId   = $articleId;
                             }
+                        }
+                        break;
+                    case 'video':
+                        if(!empty($rows -> video)){
+                            // Video
+                            if(preg_match('/.*:.*/i',$rows -> video,$match)){
+                                // Embed code
+                                for($i = 0; $i<strlen($rows -> video); $i ++){
+                                    if(substr($rows -> video,$i,1) == ':'){
+                                        $pos    = $i;
+                                        break;
+                                    }
+                                }
 
+                                $data[0]    = new stdClass();
+                                $data[0] -> type        = $rows -> type;
+                                $data[0] -> featured    = $rows -> featured;
+                                $data[0] -> images      = substr($rows -> video,$pos + 1,strlen($rows -> video));
+                                $data[0] -> from        = substr($rows -> video,0,$pos);
+                                $data[0] -> imagetitle  = htmlspecialchars($rows -> videotitle);
+                                $data[0] -> thumb       = $rows -> videothumb;
+                            }
+                        }
+                        break;
+                    case 'audio':
+                        if(!empty($rows -> audio)){
                             $data[0]    = new stdClass();
                             $data[0] -> type        = $rows -> type;
                             $data[0] -> featured    = $rows -> featured;
-                            $data[0] -> images      = substr($rows -> video,$pos + 1,strlen($rows -> video));
-                            $data[0] -> from        = substr($rows -> video,0,$pos);
-                            $data[0] -> imagetitle  = htmlspecialchars($rows -> videotitle);
-                            $data[0] -> thumb       = $rows -> videothumb;
+                            $data[0] -> audio_id    = $rows -> audio;
+                            $data[0] -> imagetitle  = htmlspecialchars($rows -> audiotitle);
+                            $data[0] -> thumb       = $rows -> audiothumb;
                         }
-                    }
+                        break;
+                    case 'quote':
+                        $data[0]    = new stdClass();
+                        $data[0] -> type            = $rows -> type;
+                        $data[0] -> featured        = $rows -> featured;
+                        $data[0] -> quote_author    = $rows -> quote_author;
+                        $data[0] -> quote_text      = $rows -> quote_text;
+                        break;
+                    case 'link':
+                        $data[0]    = new stdClass();
+                        $data[0] -> type            = $rows -> type;
+                        $data[0] -> featured        = $rows -> featured;
+                        $data[0] -> link_title      = $rows -> link_title;
+                        $data[0] -> link_url        = $rows -> link_url;
+                        $data[0] -> link_target     = '';
+                        $data[0] -> link_follow     = '';
+                        if($rows -> link_attribs){
+                            $linkParams  = new JRegistry($rows -> link_attribs);
+                            $data[0] -> link_target     = $linkParams -> get('link_target','');
+                            $data[0] -> link_follow     = $linkParams -> get('link_follow','');
+                        }
+                        break;
                 }
             }
         }

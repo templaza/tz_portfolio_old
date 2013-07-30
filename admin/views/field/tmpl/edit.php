@@ -403,16 +403,16 @@ window.addEvent('load', function() {
                     </div>
                     <div class="control-group">
                         <div class="control-label">
-                            <label width="100" for="fieldsgroup" class="hasTip"
+                            <label width="100" for="groups" class="hasTip"
                                    title="<?php echo JText::_('COM_TZ_PORTFOLIO_FIELDS_GROUP_REQUIRED')?>::<?php echo JText::_('COM_TZ_PORTFOLIO_FIELDS_GROUP_REQUIRED_DESC')?>">
                                 <?php echo JText::_('COM_TZ_PORTFOLIO_FIELDS_GROUP_REQUIRED')?>
                                 <span class="star"> *</span>
                             </label>
                         </div>
                         <div class="controls">
-                            <select multiple="multiple" size="10" id="fieldsgroup"
+                            <select multiple="multiple" size="10" id="groups"
                                      class="required" required="required"
-                                    name="jform[fieldsgroup][]" style="width:150px;">
+                                    name="jform[groups][]" style="width:150px;">
                                 <option value="-1">
                                     <?php echo JText::_('COM_TZ_PORTFOLIO_OPTION_SELECT_GROUP');?>
                                 </option>
@@ -422,7 +422,7 @@ window.addEvent('load', function() {
                                         ?>
                                         <option value="<?php echo $row -> id;?>"
                                             <?php
-                                            if(in_array($row -> id,array_keys($this -> item -> fieldsgroup))):
+                                            if(in_array($row -> id,array_keys($this -> item -> groups))):
                                                 echo ' selected="selected"';
                                             endif;
                                             ?>

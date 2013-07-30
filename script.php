@@ -190,7 +190,53 @@ class com_tz_portfolioInstallerScript{
             $db -> setQuery($query);
             $db -> query();
         }
+
+        // Delete menu fields-group in back-end
+        $query  = $db -> getQuery(true);
+        $query -> select('*');
+        $query -> from($db -> quoteName('#__menu'));
+        $query -> where($db -> quoteName('menutype').'='.$db -> quote('main'));
+        $query -> where($db -> quoteName('link').'='.$db -> quote('index.php?option=com_tz_portfolio&view=fieldsgroup'));
+        $query -> where($db -> quoteName('type').'='.$db -> quote('component'));
+        $db -> setQuery($query);
+        if($db -> loadResult()){
+            $query2  = $db -> getQuery(true);
+            $query2 -> delete($db -> quoteName('#__menu'));
+            $query2 -> where($db -> quoteName('menutype').'='.$db -> quote('main'));
+            $query2 -> where($db -> quoteName('link').'='.$db -> quote('index.php?option=com_tz_portfolio&view=fieldsgroup'));
+            $query2 -> where($db -> quoteName('type').'='.$db -> quote('component'));
+            $db -> setQuery($query2);
+            $db -> execute();
+        }
+        // End Delete menu fields-group in back-end
+
+        // Delete files and folder fields group in back-end
+        $cadPath    = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio';
+        if(JFile::exists($cadPath.'/controllers/fieldgroup.php')){
+            JFile::delete($cadPath.'/controllers/fieldgroup.php');
+        }
+        if(JFile::exists($cadPath.'/controllers/fieldsgroup.php')){
+            JFile::delete($cadPath.'/controllers/fieldsgroup.php');
+        }
+        if(JFile::exists($cadPath.'/models/fieldgroup.php')){
+            JFile::delete($cadPath.'/models/fieldgroup.php');
+        }
+        if(JFile::exists($cadPath.'/models/fieldsgroup.php')){
+            JFile::delete($cadPath.'/models/fieldsgroup.php');
+        }
+        if(JFile::exists($cadPath.'/tables/fieldsgroup.php')){
+            JFile::delete($cadPath.'/tables/fieldsgroup.php');
+        }
+        if(JFolder::exists($cadPath.'/views/fieldgroup')){
+            JFolder::delete($cadPath.'/views/fieldgroup');
+        }
+        if(JFolder::exists($cadPath.'/views/fieldsgroup')){
+            JFolder::delete($cadPath.'/views/fieldsgroup');
+        }
+        // End Delete files and folder fields group in back-end
+
         $this -> installationResult($status);
+
     }
     function uninstall($parent){
         $mediaFolder    = 'tz_portfolio';
@@ -278,6 +324,30 @@ class com_tz_portfolioInstallerScript{
         if(!array_key_exists('images_hover',$fields)){
             $arr[]  = 'ADD `images_hover` TEXT';
         }
+        if(!array_key_exists('audio',$fields)){
+            $arr[]  = 'ADD `audio` TEXT';
+        }
+        if(!array_key_exists('audiothumb',$fields)){
+            $arr[]  = 'ADD `audiothumb` TEXT';
+        }
+        if(!array_key_exists('audiotitle',$fields)){
+            $arr[]  = 'ADD `audiotitle`  VARCHAR(255)';
+        }
+        if(!array_key_exists('quote_author',$fields)){
+            $arr[]  = 'ADD `quote_author`  VARCHAR(255)';
+        }
+        if(!array_key_exists('quote_text',$fields)){
+            $arr[]  = 'ADD `quote_text`  TEXT';
+        }
+        if(!array_key_exists('link_url',$fields)){
+            $arr[]  = 'ADD `link_url`  VARCHAR(1000)';
+        }
+        if(!array_key_exists('link_title',$fields)){
+            $arr[]  = 'ADD `link_title`  VARCHAR(1000)';
+        }
+        if(!array_key_exists('link_attribs',$fields)){
+            $arr[]  = 'ADD `link_attribs`  VARCHAR(5120)';
+        }
         if($arr && count($arr)>0){
             $arr    = implode(',',$arr);
             if($arr){
@@ -321,6 +391,41 @@ class com_tz_portfolioInstallerScript{
             $db -> setQuery($query);
             $db -> query();
         }
+
+        // Insert portfolio's permission
+        $query  = $db -> getQuery(true);
+        $query -> select('*');
+        $query -> from('#__assets');
+        $query -> where('name LIKE "com_tz_portfolio.%"');
+        $db -> setQuery($query);
+
+        if(!$db -> loadResult()){
+            $query  = $db -> getQuery(true);
+            $query -> select('*');
+            $query -> from('#__assets');
+            $query -> where('name LIKE "com_content.%"');
+            $db -> setQuery($query);
+            if($rows   = $db -> loadAssocList()){
+                $query2 = $db -> getQuery(true);
+                $query2 -> insert('#__assets');
+
+                foreach($rows as $i => &$item){
+                    array_shift($item);
+                    if($i == 0){
+                        $keys = array_keys($item);
+                    }
+                    $item['name']   = $db -> quote($item['name']);
+                    $item['title'] = $db -> quote($item['title']);
+                    $item['rules']  = $db -> quote($item['rules']);
+                    $query2 -> values(str_replace('com_content','com_tz_portfolio',implode(',',$item)));
+                }
+                $query2 -> columns(implode(',',$keys));
+
+                $db -> setQuery($query2);
+                $db -> execute();
+            }
+        }
+
     }
 
     public function installationResult($status){
