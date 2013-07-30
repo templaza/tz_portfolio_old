@@ -1285,12 +1285,12 @@ $pluginsTab = $this -> pluginsTab;
                     <li><a href="#tztabsImage" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_IMAGE');?></a></li>
                     <li><a href="#tztabsGallery" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_IMAGE_GALLERY');?></a></li>
                     <li><a href="#tztabsMedia" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_MEDIA');?></a></li>
-                    <li><a href="#tztabsFields" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_FIELDS');?></a></li>
-                    <li><a href="#tztabsAttachment" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_ATTACHMENTS');?></a></li>
+                    <li><a href="#tztabsAudio" data-toggle="tab" class="hasTip"
+                       title="<?php echo JText::_('COM_TZ_PORTFOLIO_AUDIO')?>::<?php echo JText::_('COM_TZ_PORTFOLIO_TAB_AUDIO_DESC')?>"><?php echo JText::_('COM_TZ_PORTFOLIO_AUDIO');?></a></li>
                     <li><a href="#tztabsQuote" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_QUOTE');?></a></li>
                     <li><a href="#tztabsLink" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_LINK');?></a></li>
-                    <li><a href="#tztabsAudio" data-toggle="tab" class="hasTip"
-                           title="<?php echo JText::_('COM_TZ_PORTFOLIO_AUDIO')?>::<?php echo JText::_('COM_TZ_PORTFOLIO_TAB_AUDIO_DESC')?>"><?php echo JText::_('COM_TZ_PORTFOLIO_AUDIO');?></a></li>
+                    <li><a href="#tztabsFields" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_FIELDS');?></a></li>
+                    <li><a href="#tztabsAttachment" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_ATTACHMENTS');?></a></li>
                     <?php echo $this -> loadTemplate('plugin_title_tab');?>
                 </ul>
                 <div class="span11">
