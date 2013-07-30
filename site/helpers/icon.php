@@ -160,7 +160,7 @@ class JHtmlIcon
         if($itemParams -> get('tz_portfolio_redirect')){
             $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
         }
-        if($tzRedirect == 'p_article'){
+        if($tzRedirect == 'article'){
             $url = TZ_PortfolioHelperRoute::getArticleRoute($article -> slug, $article -> catid);
         }
         else{

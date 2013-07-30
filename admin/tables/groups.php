@@ -20,7 +20,7 @@
  //no direct access
 defined('_JEXEC') or die('Restricted access');
 
-class TableFieldsGroup extends JTable
+class TableGroups extends JTable
 {
      /** @var int Primary key */
     var $id 				= 0;

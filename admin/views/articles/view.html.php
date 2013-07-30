@@ -237,7 +237,7 @@ class TZ_PortfolioViewArticles extends JViewLegacy
         JHtml::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.'/models');
         $model      = JModelLegacy::getInstance('Categories','TZ_PortfolioModel',array('ignore_request' => true));
         $model -> setState('filter.group',$this -> state -> get('filter.group'));
-        $listGroup  = $model -> getFieldsGroup();
+        $listGroup  = $model -> getGroups();
 
         JHtmlSidebar::addFilter(
 			JText::_('COM_TZ_PORTFOLIO_OPTION_SELECT_FIELDS_GROUP'),

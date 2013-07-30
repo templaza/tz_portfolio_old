@@ -60,7 +60,8 @@ $params = $this -> params;
 
         var LastDate = jQuery('div.TzDate:last').attr('data-category');
 
-        var $container = jQuery('#timeline');
+        var $container = jQuery('#timeline'),
+            $scroll = true;
 
         <?php if($params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'):?>
             jQuery('#tz_append').css({'border':0,'background':'none'});
@@ -124,7 +125,7 @@ $params = $this -> params;
                     });
 
                     tzpage++;
-                    <?php if($params -> get('show_all_filter',0)):?>
+                    <?php if(!$params -> get('show_all_filter',0)):?>
                         <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
                             jQuery.ajax({
                                 url:'index.php?option=com_tz_portfolio&amp;task=timeline.ajaxtags',
@@ -173,9 +174,21 @@ $params = $this -> params;
                         jQuery('div#tz_append').find('a:first').show();
                     }
                 });
-
+                $scroll = true;
             }
         );
+
+        <?php if($params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'):?>
+        jQuery(window).scroll(function(){
+            jQuery(window).unbind('.infscr');
+            if($scroll){
+                if((jQuery(window).scrollTop() + jQuery(window).height()) >= (jQuery(document).height() - 50)){
+                    $scroll	= false;
+                   $container.infinitescroll('retrieve');
+                }
+            }
+        });
+        <?php endif;?>
 
         <?php if($params -> get('tz_portfolio_layout') == 'ajaxButton'):?>
             jQuery(window).unbind('.infscr');

@@ -335,7 +335,7 @@ class TZ_PortfolioModelArticles extends JModelList
         return $this -> _getList($query);
     }
 
-    function checkFieldsGroup($contentid){
+    function checkGroups($contentid){
         // Create a new query object.
 		$db		= $this->getDbo();
 		$query	= $db->getQuery(true);

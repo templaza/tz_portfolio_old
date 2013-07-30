@@ -116,6 +116,8 @@
 			default="0"
 			readonly="true"
 			/>
+        <!--<field name="description" type="editor" filter="JComponentHelper::filtertext"-->
+               <!--label="COM_TZ_PORTFOLIO_DESCRIPTION"/>-->
 
 	</fieldset>
 	<field name="groups" type="hidden" />

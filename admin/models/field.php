@@ -111,7 +111,7 @@ class TZ_PortfolioModelField extends JModelAdmin
                 }
                 $item -> defvalue       = $list;
             }
-            $item -> fieldsgroup    = $this -> getGroups();
+            $item -> groups    = $this -> getGroups();
         }
         
         return $item;
@@ -240,11 +240,11 @@ class TZ_PortfolioModelField extends JModelAdmin
             $_data   = $this -> _prepareData($data);
 
             $groupid    = array();
-            if(isset($data['fieldsgroup'])){
+            if(isset($data['groups'])){
 
-                for($i=0;$i<count($data['fieldsgroup']);$i++){
-                    if($data['fieldsgroup'][$i]!=-1)
-                        $groupid[]      = (int) $data['fieldsgroup'][$i];
+                for($i=0;$i<count($data['groups']);$i++){
+                    if($data['groups'][$i]!=-1)
+                        $groupid[]      = (int) $data['groups'][$i];
                 }
 
             }
@@ -291,7 +291,7 @@ class TZ_PortfolioModelField extends JModelAdmin
                     $this -> saveArticleFields($groupid,$table -> id,$tzvalues);
                 }
 
-                foreach($data['fieldsgroup'] as $item){
+                foreach($data['groups'] as $item){
                         $value[] = '('.$table -> id.','.$item.')';
                 }
 

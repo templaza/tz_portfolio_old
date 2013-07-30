@@ -311,6 +311,11 @@
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
         </field>
+        <field name="user_menu_active" type="menuitem" label="COM_TZ_PORTFOLIO_CHOOSE_MENU_ACTIVE_USER"
+               default="auto"
+               description="COM_TZ_PORTFOLIO_CHOOSE_MENU_ACTIVE_USER_DESC">
+            <option value="auto">COM_TZ_PORTFOLIO_AUTO</option>
+        </field>
     </fieldset>
     <!-- END PARAMETERS FOR THE GALLERY PAGE -->
 
@@ -877,6 +882,109 @@
         </field>
     </fieldset>
     <!-- START THE SOCIAL'S AND THE COMMENT'S PARAMETERS FOR THE DETAIL PAGE -->
+
+    <!-- START THE QUOTE AND LINK PARAMETES -->
+    <fieldset name="tz_fieldset_quote_link" label="COM_TZ_PORTFOLIO_QUOTE_LINK_FIELDSET_LABEL">
+        <field name="show_quote_text" type="radio"
+               class="btn-group" default="1"
+                label="COM_TZ_PORTFOLIO_SHOW_QUOTE_TEXT_LABEL">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="show_quote_author" type="radio"
+               class="btn-group" default="1"
+                label="COM_TZ_PORTFOLIO_SHOW_QUOTE_AUTHOR_LABEL">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+
+        <!--<field name="tz_portfolio_spacer_link" type="spacer" class="spacer"-->
+                        <!--label="COM_TZ_PORTFOLIO_SPACER_LINK_LABEL"/>-->
+    </fieldset>
+    <!-- END THE QUOTE AND LINK PARAMETES -->
+
+    <!-- START THE AUDIO'S PARAMETERS -->
+    <fieldset name="tz_fieldset_audio" label="COM_TZ_PORTFOLIO_AUDIO_FIELDSET_LABEL"
+                  description="COM_TZ_PORTFOLIO_CONFIG_SETTINGS_DESC">
+        <field name="soundcloud_client_id" type="text"
+               label="COM_TZ_PORTFOLIO_SOUNDCLOUD_CLIENT_ID_LABEL"
+                description="COM_TZ_PORTFOLIO_SOUNDCLOUD_CLIENT_ID_DESC"/>
+        <field name="show_audio" type="radio" class="btn-group"
+               default="1"
+                label="COM_TZ_PORTFOLIO_SHOW_AUDIO_LABEL"
+                description="COM_TZ_PORTFOLIO_SHOW_AUDIO_DESC">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="audio_layout_type" type="list" default="thumbnail"
+                label="COM_TZ_PORTFOLIO_AUDIO_LAYOUT_TYPE_LABEL"
+                description="COM_TZ_PORTFOLIO_AUDIO_LAYOUT_TYPE_DESC">
+            <option value="thumbnail">COM_TZ_PORTFOLIO_THUMBNAIL</option>
+            <option value="audio">COM_TZ_PORTFOLIO_AUDIO</option>
+        </field>
+        <field name="show_soundcloud_artwork" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_ARTWORK_LABEL">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="soundcloud_auto_play" type="radio"
+                class="btn-group" default="0"
+                label="COM_TZ_PORTFOLIO_SOUNDCLOUD_AUTO_PLAY_LABEL"
+                description="COM_TZ_PORTFOLIO_SOUNDCLOUD_AUTO_PLAY_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="show_soundcloud_sharing" type="radio"
+               class="btn-group" default="1"
+                label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_SHARING_LABEL">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="show_soundcloud_buying" type="radio"
+               class="btn-group" default="1"
+                label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_BUYING_BUTTON_LABEL"
+                description="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_BUYING_BUTTON_DESC">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="show_soundcloud_download" type="radio"
+               class="btn-group" default="1"
+                label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_DOWNLOAD_BUTTON_LABEL">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="show_soundcloud_user" type="radio"
+                class="btn-group" default="1"
+                label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_USER_LABEL">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="show_soundcloud_playcount" type="radio"
+                class="btn-group" default="1"
+                label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_PLAYCOUNT_LABEL">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="show_soundcloud_comments" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_COMMENTS_LABEL">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="audio_soundcloud_color" type="color" default="transparent"
+                label="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_COLOR_LABEL"
+                description="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_COLOR_DESC"/>
+        <field name="audio_soundcloud_theme_color" type="color" default="transparent"
+                label="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_THEME_COLOR_LABEL"
+                description="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_THEME_COLOR_DESC"/>
+        <field name="audio_soundcloud_width" type="text" default="100%"
+               label="COM_TZ_PORTFOLIO_AUDIO_WIDTH_LABEL"/>
+        <field name="audio_soundcloud_height" type="text"
+               default="166"
+               label="COM_TZ_PORTFOLIO_AUDIO_HEIGHT_LABEL"/>
+    </fieldset>
+    <!--END THE AUDIO'S PARAMETERS-->
 
     <!-- START PARAMETERS FOR THE ARTICLE -->
     <fieldset name="articles"

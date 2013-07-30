@@ -68,10 +68,13 @@ $fieldsets = $this->form->getFieldsets();
         <div class="tab-content">
             <div class="tab-pane active" id="details">
                 <?php foreach($this->form->getFieldset('user_details') as $field) :?>
+                    <?php if($field -> fieldname != 'description'):?>
                     <div class="control-group">
                         <div class="control-label"><?php echo $field->label; ?></div>
                         <div class="controls"><?php echo $field->input; ?></div>
                     </div>
+                    <?php endif;?>
+
                     <?php if($field -> fieldname == 'name'):?>
                         <div class="control-group">
                             <div class="control-label">
@@ -163,7 +166,7 @@ $fieldsets = $this->form->getFieldsets();
                 </div>
                 <div class="control-group">
                     <div class="clr"></div>
-                    <div class="control-lable"><label><?php echo JText::_('COM_TZ_PORTFOLIO_DESCRIPTION');?></label></div>
+                    <div class="control-label"><label><?php echo JText::_('COM_TZ_PORTFOLIO_DESCRIPTION');?></label></div>
                     <div class="controls">
                         <?php echo $this -> editor -> display('description',($this -> listsUsers)?$this -> listsUsers -> description:'','100%',250,50,60,array('article','image','readmore','pagebreak'));?>
                     </div>

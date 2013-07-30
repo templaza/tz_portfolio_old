@@ -241,7 +241,7 @@ $sortFields = $this->getSortFields();
                                 </div>
                             </td>
                             <td class="small hidden-phone">
-                                    <a href="index.php?option=com_tz_portfolio&task=fieldgroup.edit&id=<?php echo $item -> groupid?>">
+                                    <a href="index.php?option=com_tz_portfolio&task=group.edit&id=<?php echo $item -> groupid?>">
                                         <?php echo $item -> groupname;?>
                                     </a>
                             </td>

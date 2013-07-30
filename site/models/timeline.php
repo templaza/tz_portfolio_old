@@ -399,7 +399,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
         $user	= JFactory::getUser();
 		$userId	= $user->get('id');
-		$guest	= $user->get('guest');
+        $guest	= $user->get('guest');
         
         $params     = $this -> getState('params');
         $total      = 0;
@@ -573,7 +573,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 // Compute the asset access permissions.
                 // Technically guest could edit an article, but lets not check that to improve performance a little.
                 if (!$guest) {
-                    $asset	= 'com_tz_portfolio.portfolio.'.$item->id;
+                    $asset = 'com_content.article.' . $item->id;
 
                     // Check general edit permission first.
                     if ($user->authorise('core.edit', $asset)) {
@@ -736,11 +736,15 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                     }
                 }
                 $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-                $itemParams = new JRegistry($item -> attribs); //Get Article's Params
+
                 //Check redirect to view article
                 if($itemParams -> get('tz_portfolio_redirect')){
                     $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
                 }
+
+                $item -> attribs    = $itemParams -> toString();
+
+
                 if($tzRedirect == 'article'){
                     $item -> _link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid));
                 }

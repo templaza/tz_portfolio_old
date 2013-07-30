@@ -132,10 +132,10 @@ class TZ_PortfolioModelCategories extends JModelList
 		return parent::getStoreId($id);
 	}
 
-    public function getFieldsGroup($default=null){
+    public function getGroups($default=null){
 
         $catid          = $this -> getState('filter.group');
-        $fieldsgroup    = array();
+        $groups    = array();
 
         $dbo            = JFactory::getDbo();
 
@@ -149,14 +149,14 @@ class TZ_PortfolioModelCategories extends JModelList
 
         if($rows2 = $dbo -> loadObjectList()){
 
-            $fieldsgroup[]  = JText::_('COM_TZ_PORTFOLIO_OPTION_INHERIT_CATEGORY');
+            $groups[]  = JText::_('COM_TZ_PORTFOLIO_OPTION_INHERIT_CATEGORY');
             foreach($rows2 as $row){
-                $fieldsgroup[$row -> id]    = $row -> name;
+                $groups[$row -> id]    = $row -> name;
             }
         }
 
 
-        return $fieldsgroup;
+        return $groups;
     }
 
 	/**

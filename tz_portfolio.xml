@@ -7,7 +7,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.1.2</version>
+	<version>3.1.3</version>
 	<description>TZ Portfolio native for Joomla! 2.5.x and 3.0.x</description>
     
     <scriptfile>script.php</scriptfile>
@@ -72,7 +72,7 @@
         <menu>TZ_Portfolio</menu>
         <submenu>
             <menu link="option=com_tz_portfolio&amp;view=fields">Fields</menu>
-            <menu link="option=com_tz_portfolio&amp;view=fieldsgroup">Fields_Group</menu>
+            <menu link="option=com_tz_portfolio&amp;view=groups">Groups</menu>
             <menu link="option=com_tz_portfolio&amp;view=categories">Categories</menu>
             <menu link="option=com_tz_portfolio&amp;view=articles">Articles</menu>
             <menu link="option=com_tz_portfolio&amp;view=tags">Tags</menu>
@@ -299,6 +299,24 @@
             <field name="image_gallery_minItems" default="0"/>
             <field name="image_gallery_maxItems" default="0"/>
 
+            <field name="show_audio" default="1"/>
+            <field name="audio_layout_type" default="thumbnail"/>
+            <field name="show_soundcloud_artwork" default="1"/>
+            <field name="soundcloud_auto_play" default="0"/>
+            <field name="show_soundcloud_sharing" default="1"/>
+            <field name="show_soundcloud_buying" default="1"/>
+            <field name="show_soundcloud_download" default="1"/>
+            <field name="show_soundcloud_user" default="1"/>
+            <field name="show_soundcloud_playcount" default="1"/>
+            <field name="show_soundcloud_comments" default="1"/>
+            <field name="audio_soundcloud_color" default="transparent"/>
+            <field name="audio_soundcloud_theme_color" default="transparent"/>
+            <field name="audio_soundcloud_width" default="100%"/>
+            <field name="audio_soundcloud_height" default="166"/>
+
+            <field name="show_quote_text" default="1"/>
+            <field name="show_quote_author" default="1"/>
+
         </fields>
     </config>
     
@@ -315,7 +333,7 @@
     </modules>
 
     <plugins>
-        <plugin plugin="tz_portfolio" group="content" />
+        <plugin plugin="tz_portfolio" group="content" folder="tz_portfolio"/>
         <plugin plugin="tz_portfolio_comment" group="content"  folder="tz_portfolio_comment"/>
         <plugin plugin="tz_portfolio_vote" group="content" folder="tz_portfolio_vote"/>
 		<plugin plugin="tz_portfolio" group="system" />

@@ -760,5 +760,75 @@
                 <option value="1">JSHOW</option>
             </field>
         </fieldset>
+
+        <fieldset name="tz_fieldset_audio" label="COM_TZ_PORTFOLIO_AUDIO_FIELDSET_OPTION_LABEL">
+            <field name="show_audio" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_AUDIO_LABEL"
+                    description="COM_TZ_PORTFOLIO_SHOW_AUDIO_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_artwork" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_ARTWORK_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="soundcloud_auto_play" type="list"
+                    label="COM_TZ_PORTFOLIO_SOUNDCLOUD_AUTO_PLAY_LABEL"
+                    description="COM_TZ_PORTFOLIO_SOUNDCLOUD_AUTO_PLAY_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="show_soundcloud_sharing" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_SHARING_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_buying" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_BUYING_BUTTON_LABEL"
+                    description="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_BUYING_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_download" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_DOWNLOAD_BUTTON_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_user" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_USER_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_playcount" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_PLAYCOUNT_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_comments" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_COMMENTS_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="audio_soundcloud_color" type="color"
+                    label="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_COLOR_LABEL"
+                    description="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_COLOR_DESC"/>
+            <field name="audio_soundcloud_theme_color" type="color"
+                    label="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_THEME_COLOR_LABEL"
+                    description="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_THEME_COLOR_DESC"/>
+            <field name="audio_soundcloud_width" type="text"
+                   label="COM_TZ_PORTFOLIO_AUDIO_WIDTH_LABEL"/>
+            <field name="audio_soundcloud_height" type="text"
+                   label="COM_TZ_PORTFOLIO_AUDIO_HEIGHT_LABEL"/>
+        </fieldset>
 	</fields>
 </metadata>
