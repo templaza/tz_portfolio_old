@@ -8,7 +8,7 @@
  */
 
 defined('JPATH_BASE') or die;
-tzimport('cms/layout/layout');
+tzportfolioimport('cms/layout/layout');
 
 /**
  * Base class for rendering a display layout
