@@ -42,7 +42,7 @@ class TZ_PortfolioController extends JControllerLegacy
          // If the joomla's version is more than or equal to 3.0
         if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
             JHtml::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/cms/html');
-            tzimport('cms/html/sidebar');
+            tzportfolioimport('cms/html/sidebar');
 
             $doc    = JFactory::getDocument();
             //Add Script to the header

@@ -8,7 +8,7 @@
  */
 
 defined('JPATH_BASE') or die;
-tzimport('/cms/layout/file');
+tzportfolioimport('/cms/layout/file');
 
 /**
  * Utility class to render a list view sidebar

@@ -581,8 +581,8 @@ class TZ_PortfolioModelCategory extends JModelAdmin
                 return 'media/'.$tzFolder.'/'.$tzUserFolder.'/'.$desFileName;
             }
             else{
-                require_once(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
-                require_once(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'readfile.php');
+                tzportfolioimport('HTTPFetcher');
+                tzportfolioimport('readfile');
 
                 $image  = new Services_Yadis_PlainHTTPFetcher();
                 $image  = $image -> get($file);

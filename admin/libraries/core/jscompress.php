@@ -2,7 +2,7 @@
 
 // No direct access
 defined('_JEXEC') or die();
-tzimport ('minify/JavaScriptPacker');
+tzportfolioimport ('minify/JavaScriptPacker');
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
 

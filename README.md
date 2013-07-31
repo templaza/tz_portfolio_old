@@ -20,6 +20,11 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+07/31/2013 - 3.1.4
+	
+	Fix bug with HTTPFetcher file in back-end.
+	Fix conflict function tzimport with old plazart.
+
 07/30/2013 - 3.1.3
 
 	Insert Menu active for user.

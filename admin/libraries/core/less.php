@@ -20,8 +20,8 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-tzimport ('lessphp/lessc.inc') ;
-tzimport ('minify/csscompressor');
+tzportfolioimport ('lessphp/lessc.inc') ;
+tzportfolioimport ('minify/csscompressor');
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
 

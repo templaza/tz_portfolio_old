@@ -28,8 +28,8 @@ jimport( 'joomla.filesystem.file');
 //require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/content.php';
 define('TZ_IMAGE_SIZE',10*1024*1024);
 //define('TZ_IMAGE_TYPE',array('image/jpeg','image/jpg','image/bmp','image/gif','image/png','image/ico'));
-tzimport('HTTPFetcher');
-tzimport('readfile');
+tzportfolioimport('HTTPFetcher');
+tzportfolioimport('readfile');
 
 /**
  * Item Model for an Article.
@@ -245,8 +245,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     }
 
     public function getThumb(){
-        require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
-        require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
 
         $data       = null;
         $json       = JRequest::getString('json', null, null, 2);
@@ -2417,8 +2415,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     }
 
     function getVideo($data = null,$task = null){
-        require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
-        require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
         $imageGallery   = new stdClass();
         $imageGallery -> name   = '';
         $imageGallery -> title  = '';
