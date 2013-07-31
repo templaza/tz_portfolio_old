@@ -8,7 +8,7 @@
  */
 
 defined('JPATH_PLATFORM') or die;
-tzimport('cms/html/html');
+tzportfolioimport('cms/html/html');
 
 /**
  * Utility class for Bootstrap elements.

@@ -20,8 +20,8 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-tzimport('core/less');
-tzimport('core/jscompress');
+tzportfolioimport('core/less');
+tzportfolioimport('core/jscompress');
 jimport('joomla.application.component.controlleradmin');
 
 class TZ_PortfolioControllerAction extends JControllerAdmin{
