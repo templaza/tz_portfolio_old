@@ -170,7 +170,7 @@ function TZ_PortfolioBuildRoute(&$query)
             if($view == 'article'){
                 $segments[] = 'item';
             }
-			$array[0] .= ','.(int)$catid;
+            $array[0] = (int)$catid.':'.$array[0];
 		}
 		$segments = array_merge($segments, $array);
 
@@ -184,9 +184,6 @@ function TZ_PortfolioBuildRoute(&$query)
                 list($id,$alias) = explode(':', $query['id'], 2);
 			}
 
-            if($view == 'article'){
-                $segments[] = 'item';
-            }
 			$segments[] = $alias;
 			$segments[] = $id;
 		}
@@ -381,15 +378,19 @@ function TZ_PortfolioParseRoute($segments)
 	$advanced = $params->get('sef_advanced_link', 0);
 	$db = JFactory::getDBO();
 
-    if(preg_match('/.*?\,([0-9]+)/i',$segments[0],$match)){
-        $segments[0]    = $match[1];
-    }
+//    if(preg_match('/.*?\,([0-9]+)/i',$segments[0],$match)){
+//        $segments[0]    = $match[1];
+//    }
 
-    if(is_numeric($segments[0])){
-        if(isset($segments[count($segments) - 2]) && is_numeric($segments[count($segments) - 2])){
-            unset($segments[count($segments) - 2]);
-        }
-    }
+//    if(count($segments)>2){
+//        if(is_numeric($segments[0])){
+//
+//            if(isset($segments[count($segments) - 2]) && is_numeric($segments[count($segments) - 2])){
+//                unset($segments[count($segments) - 2]);
+//            }
+//        }
+//    }
+
 
 	// Count route segments
 	$count = count($segments);
@@ -526,9 +527,9 @@ function TZ_PortfolioParseRoute($segments)
             return $vars;
         }
 
-        if(preg_match('/.*?\,([0-9]+)/i',$segments[0],$match)){
-            $segments[0]    = $match[1];
-        }
+//        if(preg_match('/.*?\,([0-9]+)/i',$segments[0],$match)){
+//            $segments[0]    = $match[1];
+//        }
 
 		$cat_id = (int)$segments[0];
         if($segments[0] == 'item'){
@@ -549,7 +550,7 @@ function TZ_PortfolioParseRoute($segments)
 			$vars['view'] = 'category';
 			$vars['id'] = $cat_id;
 		}
-        if(isset($segments[$count - 1]) && is_string($segments[$count - 1]) && count($segments[$count - 1]) == 1){
+        if(isset($segments[$count - 1]) && is_string($segments[$count - 1]) && strlen($segments[$count - 1]) == 1){
             $vars['char']   = $segments[$count - 1];
         }
 
