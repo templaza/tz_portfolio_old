@@ -26,6 +26,7 @@ Demo: http://demo.tzportfolio.com/
 	Change image name, image slider name and thumb name of video and audio when save article.
 	Insert date articles view (new view).
 	Change Module Archive (have option redirect to date view).
+	Update ja-JP,pt-BR and ru-RU languages.
 
 07/31/2013 - 3.1.4
 	
