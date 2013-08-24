@@ -29,13 +29,15 @@ $params = $this -> params;
 
 <div id="loadaj" style="display: none;">
     <a href="<?php echo JURI::root().'index.php?option=com_tz_portfolio&view=portfolio&task=portfolio.ajax'
-                        .'&layout=item'.(($this -> char)?'&char='.$this -> char:'').'&Itemid='.$this -> Itemid.'&page=2'; ?>">
+        .'&layout=item'.(($this -> char)?'&char='.$this -> char:'').'&Itemid='
+        .$this -> Itemid.'&page=2'; ?>">
     </a>
 </div>
 
-  <script type="text/javascript">
+    <script type="text/javascript">
+
         jQuery(function(){
-            var tzpage    =   1;
+            var tzpage    = 1;
             <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
                 function getTags() {
                     var tags    =   [];
@@ -87,12 +89,30 @@ $params = $this -> params;
                 // call Isotope as a callback
                 function( newElements ) {
 
-                    var $newElems =   jQuery( newElements ).css({ opacity: 0 });
+                    var $newElems =   jQuery( newElements ).css({ opacity: 0 }),
+                        $bool = true;
+
+                    <?php
+                    if($params -> get('comment_function_type','default') == 'js'):
+                        // Ajax show comment count.
+                        if($params -> get('tz_show_count_comment',1)):
+                            if($params -> get('tz_comment_type') == 'facebook' OR
+                             $params -> get('tz_comment_type') == 'disqus'):
+                    ?>
+                    ajaxComments($newElems,<?php echo $this -> Itemid;?>,'<?php echo $this -> commentText;?>');
+                    <?php
+                            endif;
+                        endif;
+                    endif;
+                    ?>
 
                     // ensure that images load before adding to masonry layout
                     $newElems.imagesLoaded(function(){
+
                         // show elems now they're ready
                         $newElems.animate({ opacity: 1 });
+
+
 
                         tz_init('<?php echo $this -> params -> get('tz_column_width',233);?>');
 
@@ -101,46 +121,48 @@ $params = $this -> params;
 
                         tzpage++;
 
-                        <?php if(!$params -> get('show_all_filter',0)):?>
-                            <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
-                                tz.ajax({
-                                    url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxtags',
-                                    data:{
-                                        'tags':getTags(),
-                                        'Itemid':'<?php echo $this -> Itemid;?>',
-                                        'page': tzpage
-                                    }
-                                }).success(function(data){
-                                    if (data.length) {
-                                        tztag   = jQuery(data);
-                                        jQuery('#filter').append(tztag);
-                                        loadPortfolio();
+                        <?php if($params -> get('tz_show_filter',1)):?>
+                            <?php if(!$params -> get('show_all_filter',0)):?>
+                                <?php if($params -> get('tz_filter_type','tags') == 'tags'):?>
+                                    jQuery.ajax({
+                                        url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxtags',
+                                        data:{
+                                            'tags':getTags(),
+                                            'Itemid':'<?php echo $this -> Itemid;?>',
+                                            'page': tzpage
+                                        }
+                                    }).success(function(data){
+                                        if (data.length) {
+                                            tztag   = jQuery(data);
+                                            jQuery('#filter').append(tztag);
+                                            loadPortfolio();
 
-                                    }
-                                });
+                                        }
+                                    });
+                                <?php endif;?>
+
+                                <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
+                                    jQuery.ajax({
+                                        url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxcategories',
+                                        data:{
+                                            'catIds':getCategories(),
+                                            'Itemid':'<?php echo $this -> Itemid;?>',
+                                            'page': tzpage
+                                        }
+                                    }).success(function(data){
+                                        if (data.length) {
+                                            tzCategories   = jQuery(data);
+                                            jQuery('#filter').append(tzCategories);
+                                            loadPortfolio();
+                                        }
+                                    });
+                                <?php endif;?>
                             <?php endif;?>
 
-                            <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
-                                jQuery.ajax({
-                                    url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxcategories',
-                                    data:{
-                                        'catIds':getCategories(),
-                                        'Itemid':'<?php echo $this -> Itemid;?>',
-                                        'page': tzpage
-                                    }
-                                }).success(function(data){
-                                    if (data.length) {
-                                        tzCategories   = jQuery(data);
-                                        jQuery('#filter').append(tzCategories);
-                                        loadPortfolio();
-                                    }
-                                });
+                            <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>
+                                //Sort tags or categories filter
+                                tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
                             <?php endif;?>
-                        <?php endif;?>
-
-                        <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>
-                            //Sort tags or categories filter
-                            tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
                         <?php endif;?>
 
                         //if there still more item

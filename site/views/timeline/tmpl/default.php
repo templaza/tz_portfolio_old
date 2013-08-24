@@ -27,9 +27,27 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
 <?php if($this -> listsArticle):?>
 
-<?php
-$params = &$this -> params;
-?>
+    <?php
+    $params = &$this -> params;
+
+    if($params -> get('comment_function_type','default') == 'js'):
+        // Ajax show comment count.
+        if($params -> get('tz_show_count_comment',1)):
+            if($params -> get('tz_comment_type') == 'facebook' OR
+                $params -> get('tz_comment_type') == 'disqus'):
+
+                $commentText    = JText::_('COM_TZ_PORTFOLIO_COMMENT_COUNT');
+                $this -> assign('commentText',$commentText);
+                $doc -> addScriptDeclaration('
+                    jQuery(document).ready(function(){
+                        ajaxComments(jQuery(\'#timeline\').find(\'.element\'),'.$this -> Itemid.',\''.$commentText.'\',
+                        \'index.php?option=com_tz_portfolio&task=timeline.ajaxcomments\');
+                    });
+                ');
+            endif;
+        endif;
+    endif;
+    ?>
 
     <script type="text/javascript">
         function tz_init(defaultwidth){

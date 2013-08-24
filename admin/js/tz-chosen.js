@@ -82,7 +82,7 @@
             updater: $var.updater,
             highlighter:$var.highlighter,
             matcher:$var.matcher
-        })
+        });
 
         if($var.sourceEdit){
             $.each($var.sourceEdit,function(index,value){
@@ -105,6 +105,10 @@
         }
 
         return $(this).keyup(function(e){
+            if(!$('#tz_chosen_'+inputName.replace('[]','')+' > .typeahead').length){
+                $('#tz_chosen_'+inputName.replace('[]','')).append($('#tz_chosen_'+inputName.replace('[]',''))
+                    .find('.chzn-choices .typeahead'));
+            }
             if(eval(strKeysNotEqual)){
                 $(this).width(25 + $(this).attr('value').length * 4);
             }

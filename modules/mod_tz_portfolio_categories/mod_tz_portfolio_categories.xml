@@ -11,7 +11,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.1.4</version>
+	<version>3.1.5</version>
 	<description>MOD_CATEGORIES_XML_DESCRIPTION
      <![CDATA[
     <link rel="stylesheet" type="text/css" href="../modules/mod_tz_portfolio_categories/admin/stylemodule/tz-style-module.css" />
@@ -36,6 +36,8 @@
         <language tag="ja-JP">ja-JP/ja-JP.mod_tz_portfolio_categories.sys.ini</language>
 		<language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_categories.ini</language>
         <language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_categories.sys.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.mod_tz_portfolio_categories.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.mod_tz_portfolio_categories.sys.ini</language>
     </languages>
     <config>
         <fields name="params">

@@ -429,7 +429,8 @@ class com_tz_portfolioInstallerScript{
     }
 
     public function installationResult($status){
-        JFactory::getLanguage() -> load('com_tz_portfolio');
+        $lang   = JFactory::getLanguage();
+        $lang -> load('com_tz_portfolio');
         $rows   = 0;
 ?>
         <h2><?php echo JText::_('COM_TZ_PORTFOLIO_HEADING_INSTALL_STATUS'); ?></h2>
@@ -457,8 +458,13 @@ class com_tz_portfolioInstallerScript{
                     <th></th>
                 </tr>
                 <?php foreach ($status->modules as $module): ?>
+                <?php
+                    if($lang -> exists($module['name'])):
+                        $lang -> load($module['name']);
+                    endif;
+                ?>
                 <tr class="row<?php echo (++ $rows % 2); ?>">
-                    <td class="key"><?php echo $module['name']; ?></td>
+                    <td class="key"><?php echo JText::_($module['name']); ?></td>
                     <td class="key"><?php echo ucfirst($module['client']); ?></td>
                     <td><strong><?php echo ($module['result'])?JText::_('COM_TZ_PORTFOLIO_INSTALLED'):JText::_('COM_TZ_PORTFOLIO_NOT_INSTALLED'); ?></strong></td>
                 </tr>
@@ -472,8 +478,13 @@ class com_tz_portfolioInstallerScript{
                     <th></th>
                 </tr>
                 <?php foreach ($status->plugins as $plugin): ?>
+                    <?php
+                        if($lang -> exists($module['name'])):
+                            $lang -> load($module['name']);
+                        endif;
+                    ?>
                 <tr class="row<?php echo (++ $rows % 2); ?>">
-                    <td class="key"><?php echo ucfirst($plugin['name']); ?></td>
+                    <td class="key"><?php echo JText::_(ucfirst($plugin['name'])); ?></td>
                     <td class="key"><?php echo ucfirst($plugin['group']); ?></td>
                     <td><strong><?php echo ($plugin['result'])?JText::_('COM_TZ_PORTFOLIO_INSTALLED'):JText::_('COM_TZ_PORTFOLIO_NOT_INSTALLED'); ?></strong></td>
                 </tr>
@@ -500,7 +511,8 @@ class com_tz_portfolioInstallerScript{
 <?php
     }
     function uninstallationResult($status){
-        JFactory::getLanguage()->load('com_tz_portfolio');
+        $lang   = JFactory::getLanguage();
+        $lang -> load('com_tz_portfolio');
         $rows   = 0;
 ?>
         <h2><?php echo JText::_('COM_TZ_PORTFOLIO_HEADING_REMOVE_STATUS'); ?></h2>
@@ -528,8 +540,13 @@ class com_tz_portfolioInstallerScript{
                     <th></th>
                 </tr>
                 <?php foreach ($status->modules as $module): ?>
+                <?php
+                    if($lang -> exists($module['name'])):
+                        $lang -> load($module['name']);
+                    endif;
+                ?>
                 <tr class="row<?php echo (++ $rows % 2); ?>">
-                    <td class="key"><?php echo $module['name']; ?></td>
+                    <td class="key"><?php echo JText::_($module['name']); ?></td>
                     <td class="key"><?php echo ucfirst($module['client']); ?></td>
                     <td><strong><?php echo ($module['result'])?JText::_('COM_TZ_PORTFOLIO_REMOVED'):JText::_('COM_TZ_PORTFOLIO_NOT_REMOVED'); ?></strong></td>
                 </tr>
@@ -543,8 +560,13 @@ class com_tz_portfolioInstallerScript{
                     <th></th>
                 </tr>
                 <?php foreach ($status->plugins as $plugin): ?>
+                <?php
+                    if($lang -> exists($module['name'])):
+                        $lang -> load($module['name']);
+                    endif;
+                ?>
                 <tr class="row<?php echo (++ $rows % 2); ?>">
-                    <td class="key"><?php echo ucfirst($plugin['name']); ?></td>
+                    <td class="key"><?php echo JText::_(ucfirst($plugin['name'])); ?></td>
                     <td class="key"><?php echo ucfirst($plugin['group']); ?></td>
                     <td><strong><?php echo ($plugin['result'])?JText::_('COM_TZ_PORTFOLIO_REMOVED'):JText::_('COM_TZ_PORTFOLIO_NOT_REMOVED'); ?></strong></td>
                 </tr>

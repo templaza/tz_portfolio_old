@@ -44,6 +44,7 @@
         <language tag="en-GB">en-GB/en-GB.com_tz_portfolio.ini</language>
         <language tag="ja-JP">ja-JP/ja-JP.com_tz_portfolio.ini</language>
 		<language tag="pt-BR">pt-BR/pt-BR.com_tz_portfolio.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.com_tz_portfolio.ini</language>
     </languages>
 
 	<administration>
@@ -85,6 +86,8 @@
             <language tag="ja-JP">ja-JP/ja-JP.com_tz_portfolio.sys.ini</language>
 			<language tag="pt-BR">pt-BR/pt-BR.com_tz_portfolio.ini</language>
             <language tag="pt-BR">pt-BR/pt-BR.com_tz_portfolio.sys.ini</language>
+            <language tag="ru-RU">ru-RU/ru-RU.com_tz_portfolio.ini</language>
+            <language tag="ru-RU">ru-RU/ru-RU.com_tz_portfolio.sys.ini</language>
         </languages>
  	</administration>
     <config>
@@ -265,7 +268,7 @@
             <field name="show_tags_title" default="1"/>
             <field name="disqusSubDomain" default="templazatoturials"/>
             <field name="disqusDevMode" default="1"/>
-            <field name="disqusApiSecretKey" default="DGBlgtq5QMvrAKQaiLh0yqC9GE82jYIHrF3W43go0rks9UBeiho4sLAYadcMks4x"/>
+            <field name="disqusApiSecretKey" default="4sLbLjSq7ZCYtlMkfsG7SS5muVp7DsGgwedJL5gRsfUuXIt6AX5h6Ae6PnNREMiB"/>
             <field name="show_feed_image" default="1"/>
             <field name="feed_image_size" default="S"/>
             <field name="tz_portfolio_layout" default="ajaxButton"/>
@@ -316,6 +319,7 @@
 
             <field name="show_quote_text" default="1"/>
             <field name="show_quote_author" default="1"/>
+            <field name="comment_function_type" default="default"/>
 
         </fields>
     </config>

@@ -63,6 +63,7 @@ class JHtmlIcon
             $link = $base.JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article -> slug, $article -> catid), false);
         }
 
+//        var_dump($link); die();
 		$url	= 'index.php?option=com_mailto&tmpl=component&template='.$template.'&link='.MailToHelper::addLink($link);
 
 		$status = 'width=400,height=350,menubar=yes,resizable=yes';

@@ -39,17 +39,26 @@ class TZ_PortfolioControllerPortfolio extends JControllerLegacy
                 $this -> ajaxtags();
                 break;
         }
+        parent::display($cachable,$urlparams);
     }
+
+    public function getModel($name = 'Portfolio', $prefix = 'TZ_PortfolioModel', $config = array('ignore_request' => true))
+    {
+        $model = parent::getModel($name, $prefix, $config);
+
+        return $model;
+    }
+
     function ajax(){
 
-        $model  = $this -> getModel('Portfolio','TZ_PortfolioModel',array('ignore_request'=>true));
+        $model  = $this -> getModel();
         $list       = $model -> ajax();
         echo $list;
         die();
     }
 
     function ajaxtags(){
-         $model      = $this -> getModel('Portfolio','TZ_PortfolioModel',array('ignore_request'=>true));
+         $model      = $this -> getModel();
         $list       = $model -> ajaxtags();
 
         echo $list;
@@ -57,10 +66,16 @@ class TZ_PortfolioControllerPortfolio extends JControllerLegacy
     }
 
     function ajaxcategories(){
-        $model      = $this -> getModel('Portfolio','TZ_PortfolioModel',array('ignore_request'=>true));
+        $model      = $this -> getModel();
         $list       = $model -> ajaxCategories();
 
         echo $list;
+        die();
+    }
+
+    public function ajaxComments(){
+        $model  = $this -> getModel();
+        echo $model -> ajaxComments();
         die();
     }
 }

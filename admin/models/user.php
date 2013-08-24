@@ -22,6 +22,7 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
 jimport('joomla.filesystem.folder');
+jimport('joomla.filesystem.file');
 
 /**
  * User model.
@@ -185,7 +186,7 @@ class TZ_PortfolioModelUser extends JModelAdmin
         if($fileName){
             $file   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$fileName);
             if(!JFile::exists($file)){
-                $this -> setError(JText::_('Invalid file'));
+                $this -> setError(JText::_('COM_TZ_PORTFOLIO_INVALID_FILE'));
                 return false;
             }
             JFile::delete($file);

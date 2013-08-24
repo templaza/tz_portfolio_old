@@ -71,38 +71,40 @@ abstract class modTZ_PortfolioArticlesNewsHelper
 		}
 
 		//	Retrieve Content
-		$items = $model->getItems();
+		if($items = $model->getItems()){
 
-		foreach ($items as &$item) {
-			$item->readmore = (trim($item->fulltext) != '');
-			$item->slug = $item->id.':'.$item->alias;
-			$item->catslug = $item->catid.':'.$item->category_alias;
+            foreach ($items as &$item) {
+                $item->readmore = (trim($item->fulltext) != '');
+                $item->slug = $item->id.':'.$item->alias;
+                $item->catslug = $item->catid.':'.$item->category_alias;
 
-			if ($access || in_array($item->access, $authorised))
-			{
-				// We know that user has the privilege to view the article
-				$item->link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item->slug, $item->catid));
-				$item->linkText = JText::_('MOD_ARTICLES_NEWS_READMORE');
-			}
-			else {
-				$item->link = JRoute::_('index.php?option=com_users&view=login');
-				$item->linkText = JText::_('MOD_ARTICLES_NEWS_READMORE_REGISTER');
-			}
+                if ($access || in_array($item->access, $authorised))
+                {
+                    // We know that user has the privilege to view the article
+                    $item->link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item->slug, $item->catid));
+                    $item->linkText = JText::_('MOD_ARTICLES_NEWS_READMORE');
+                }
+                else {
+                    $item->link = JRoute::_('index.php?option=com_users&view=login');
+                    $item->linkText = JText::_('MOD_ARTICLES_NEWS_READMORE_REGISTER');
+                }
 
-			$item->introtext = JHtml::_('content.prepare', $item->introtext, '', 'mod_tz_portfolio_articles_news.content');
+                $item->introtext = JHtml::_('content.prepare', $item->introtext, '', 'mod_tz_portfolio_articles_news.content');
 
-			//new
-			if (!$params->get('image')) {
-				$item->introtext = preg_replace('/<img[^>]*>/', '', $item->introtext);
-			}
+                //new
+                if (!$params->get('image')) {
+                    $item->introtext = preg_replace('/<img[^>]*>/', '', $item->introtext);
+                }
 
-			$results = $app->triggerEvent('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$params, 1));
-			$item->afterDisplayTitle = trim(implode("\n", $results));
+                $results = $app->triggerEvent('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$params, 1));
+                $item->afterDisplayTitle = trim(implode("\n", $results));
 
-			$results = $app->triggerEvent('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$params, 1));
-			$item->beforeDisplayContent = trim(implode("\n", $results));
-		}
+                $results = $app->triggerEvent('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$params, 1));
+                $item->beforeDisplayContent = trim(implode("\n", $results));
+            }
 
-		return $items;
+            return $items;
+        }
+        return null;
 	}
 }

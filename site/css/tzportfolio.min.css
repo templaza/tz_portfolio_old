@@ -543,7 +543,7 @@ a{font-weight:normal;font-size:15px;color:#0c0c0c;text-transform:none}.TzBlog .T
 .TzBlogFeatured .TzBlogFeaturedInner .TzItem,
 .TzBlogFeatured .TzBlogFeaturedInner
 .TzLeading{margin:0
-0 40px 0;border-color:rgba(0,0,0,0.1);border-style:solid;border-width:0 0 1px 0;border-radius:0 0 0 0}.TzBlog .TzBlogInner .TzDescription,
+0 40px 0;border-color:rgba(0,0,0,0.1);border-style:solid;border-width:0 0 1px 0;border-radius:0 0 0 0;overflow:hidden}.TzBlog .TzBlogInner .TzDescription,
 .TzBlog .TzTagInner .TzDescription,
 .TzBlog .TzUserInner .TzDescription,
 .TzBlog .TzBlogFeaturedInner .TzDescription,
@@ -843,4 +843,5 @@ a{color:#595959}.TzLink
 .title{margin-top:0}.TzLink .title
 a{font-size:16px}.TzLink .title>p:first-child{display:inline}.TzLink
 .TzFeature{background:none no-repeat scroll 0 0 #F16694;border-radius:4px 4px 4px 4px;color:#FEFEFE;font-size:9px;font-weight:normal;padding:6px;text-transform:uppercase}.TzLetters
-li{display:inline-block}
+li{display:inline-block}.TzBlog .date-group
+h3{border-bottom:1px solid #A0AFE8;color:#A0AFE8;display:inline-block;margin-bottom:25px;padding-bottom:7px}

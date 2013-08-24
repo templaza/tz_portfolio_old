@@ -524,6 +524,13 @@
             <field name="tz_letters" type="text"
                            label="COM_TZ_PORTFOLIO_LETTERS"
                            description="COM_TZ_PORTFOLIO_LETTERS_DESC"/>
+            <field name="comment_function_type" type="list"
+                   label="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_LABEL"
+                    description="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
+                <option value="js">COM_TZ_PORTFOLIO_JAVASCRIPT</option>
+            </field>
             <field type="spacer" name="spacer3" hr="true"/>
 
             <field name="tz_portfolio_custom" type="spacer" class="spacer"

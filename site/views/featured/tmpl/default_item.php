@@ -36,12 +36,12 @@ if($params -> get('tz_use_lightbox',1) == 1){
 }
 
 if($blogItemParams -> get('tz_portfolio_redirect') == 'p_article'){
-    $blogLink       = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this->item->slug, $this->item->catid).$tmpl);
-    $commentLink    = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this->item->slug, $this->item->catid),true,-1);
+    $blogLink           = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this->item->slug, $this->item->catid).$tmpl);
+    $commentCountLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this->item->slug, $this->item->catid),true,-1);
 }
 else{
-    $blogLink       = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this->item->slug, $this->item->catid).$tmpl);
-    $commentLink    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this->item->slug, $this->item->catid),true,-1);
+    $blogLink           = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this->item->slug, $this->item->catid).$tmpl);
+    $commentCountLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this->item->slug, $this->item->catid),true,-1);
 }
 
 $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
@@ -164,9 +164,23 @@ $this -> assign('itemLink',$blogLink);
         <span class="TzLine">|</span>
         <span class="TzPortfolioCommentCount">
             <?php echo JText::_('COM_TZ_PORTFOLIO_COMMENT_COUNT');?>
-            <?php if($params -> get('tz_comment_type') == 'facebook'): ?>
-                <?php if(isset($this -> item -> commentCount)):?>
-                    <?php echo $this -> item -> commentCount;?>
+            <?php if($params -> get('comment_function_type','js') == 'js'):?>
+                <?php if($params -> get('tz_comment_type') == 'disqus'): ?>
+                    <a href="<?php echo $commentCountLink;?>#disqus_thread"><?php echo $this -> item -> commentCount;?></a>
+                <?php elseif($params -> get('tz_comment_type') == 'facebook'):?>
+                    <span class="fb-comments-count" data-href="<?php echo $commentCountLink;?>"></span>
+                <?php endif;?>
+            <?php else:?>
+                <?php if($params -> get('tz_comment_type') == 'facebook'): ?>
+                    <?php if(isset($this -> item -> commentCount)):?>
+                        <?php echo $this -> item -> commentCount;?>
+                    <?php endif;?>
+                <?php endif;?>
+
+                <?php if($params -> get('tz_comment_type') == 'disqus'):?>
+                    <?php if(isset($this -> item -> commentCount)):?>
+                        <?php echo $this -> item -> commentCount;?>
+                    <?php endif;?>
                 <?php endif;?>
             <?php endif;?>
 
@@ -180,11 +194,6 @@ $this -> assign('itemLink',$blogLink);
                         }
                     }
                 ?>
-            <?php endif;?>
-            <?php if($params -> get('tz_comment_type') == 'disqus'):?>
-                <?php if(isset($this -> item -> commentCount)):?>
-                    <?php echo $this -> item -> commentCount;?>
-                <?php endif;?>
             <?php endif;?>
         </span>
     <?php endif;?>

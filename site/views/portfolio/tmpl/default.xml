@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
-        <layout title="COM_TZ_PORTFOLIO_ARTICLE_PORTFOLIO_VIEW_DEFAULT_TITLE" option="COM_TZ_PORTFOLIO_ARTICLE_PORTFOLIO_VIEW_DEFAULT_OPTION">
+        <layout title="COM_TZ_PORTFOLIO_ARTICLE_PORTFOLIO_VIEW_DEFAULT_TITLE"
+                option="COM_TZ_PORTFOLIO_ARTICLE_PORTFOLIO_VIEW_DEFAULT_OPTION">
             <help
                 url="http://wiki.templaza.com/TZ_Portfolio_v3:How_to_use#How_to_create_a_Portfolio_Page"
             />
@@ -313,6 +314,13 @@
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
+            </field>
+            <field name="comment_function_type" type="list"
+                   label="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_LABEL"
+                   description="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
+                <option value="js">COM_TZ_PORTFOLIO_JAVASCRIPT</option>
             </field>
             <field type="spacer" name="spacer3" hr="true"/>
 

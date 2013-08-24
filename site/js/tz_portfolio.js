@@ -15,3 +15,47 @@ function tzSortFilter(srcObj,desObj,order){
     });
     srcObj.each(function(idx, itm) { desObj.append(itm).append('\n');});
 };
+
+function ajaxComments($element,itemid,text,link){
+    if($element.length){
+        if($element.find('.name a').length){
+            var url = 'index.php?option=com_tz_portfolio&task=portfolio.ajaxcomments',
+                $href   = Array(),
+                $articleId  = Array();
+            if(link){
+                url = link;
+            }
+            $element.map(function(index,obj){
+                if(jQuery(obj).find('.name a').length){
+                    if(jQuery(obj).find('.name a').attr('href').length){
+                        $href.push(jQuery(obj).find('.name a').attr('href'));
+                        if(jQuery(obj).attr('id')){
+                            $articleId.push(jQuery(obj).attr('id'));
+                        }
+                    }
+                }
+            });
+
+            jQuery.ajax({
+                type: 'post',
+                url: url,
+                data: {
+                    Itemid: itemid,
+                    url: Base64.encode(JSON.encode($href)),
+                    id: Base64.encode(JSON.encode($articleId))
+                }
+            }).success(function(data){
+                if(data && data.length){
+                    var $comment    = JSON.decode(data);
+                    if(typeof $comment == 'object'){
+                        jQuery.each($comment,function(key,value){
+                            if(jQuery('#'+key).find('.TzPortfolioCommentCount').length){
+                                jQuery('#'+key).find('.TzPortfolioCommentCount').html(text+'<span>'+value+'</span>');
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+};

@@ -21,11 +21,32 @@
 defined('_JEXEC') or die();
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
+$doc    = JFactory::getDocument();
+$doc -> addScript(JUri::base(true).'/components/com_tz_portfolio/js/base64.js');
 ?>
 
 <?php if($this -> listsArticle):?>
 
-    <?php $params = &$this -> params; ?>
+    <?php
+    $params = &$this -> params;
+
+    if($params -> get('comment_function_type','default') == 'js'):
+        // Ajax show comment count.
+        if($params -> get('tz_show_count_comment',1)):
+            if($params -> get('tz_comment_type') == 'facebook' OR
+                $params -> get('tz_comment_type') == 'disqus'):
+
+                $commentText    = JText::_('COM_TZ_PORTFOLIO_COMMENT_COUNT');
+                $this -> assign('commentText',$commentText);
+                $doc -> addScriptDeclaration('
+                    jQuery(document).ready(function(){
+                        ajaxComments(jQuery(\'#portfolio\').find(\'.element\'),'.$this -> Itemid.',\''.$commentText.'\');
+                    });
+                ');
+            endif;
+        endif;
+    endif;
+    ?>
 
     <script type="text/javascript">
         function tz_init(defaultwidth){

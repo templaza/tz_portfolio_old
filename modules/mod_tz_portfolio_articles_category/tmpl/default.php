@@ -19,6 +19,7 @@
 
 // no direct access
 defined('_JEXEC') or die;
+if($list):
 ?>
 <ul class="category-module<?php echo $moduleclass_sfx; ?>">
 <?php if ($grouped) : ?>
@@ -152,3 +153,4 @@ defined('_JEXEC') or die;
 	<?php endforeach; ?>
 <?php endif; ?>
 </ul>
+<?php endif;?>

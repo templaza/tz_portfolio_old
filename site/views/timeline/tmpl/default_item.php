@@ -159,7 +159,7 @@ $categories = $this -> listsCatDate;
             $this -> assign('itemArticle',$row);
         ?>
 
-        <div class="element <?php echo $class.$tzItemClass.$tzItemFeatureClass;?>"
+        <div id="tzelement<?php echo $row -> id;?>" class="element <?php echo $class.$tzItemClass.$tzItemFeatureClass;?>"
              data-category="<?php echo $dataCategory;?>">
             <div class="TzInner">
                 <!-- Begin Icon print, Email or Edit -->
@@ -303,7 +303,7 @@ $categories = $this -> listsCatDate;
                                     <?php echo JText::_('COM_TZ_PORTFOLIO_COMMENT_COUNT');?>
                                     <?php if($params -> get('tz_comment_type') == 'facebook'): ?>
                                         <?php if(isset($row -> commentCount)):?>
-                                            <?php echo $row -> commentCount;?>
+                                            <span><?php echo $row -> commentCount;?></span>
                                         <?php endif;?>
                                     <?php endif;?>
 
@@ -313,14 +313,16 @@ $categories = $this -> listsCatDate;
                                             if (file_exists($comments)){
                                                 require_once($comments);
                                                 if(class_exists('JComments')){
-                                                     echo JComments::getCommentsCount((int) $row -> id,'com_tz_portfolio');
+                                        ?>
+                                                    <span><?php echo JComments::getCommentsCount((int) $row -> id,'com_tz_portfolio');?></span>
+                                        <?php
                                                 }
                                             }
                                         ?>
                                     <?php endif;?>
                                     <?php if($params -> get('tz_comment_type') == 'disqus'):?>
                                         <?php if(isset($row -> commentCount)):?>
-                                            <?php echo $row -> commentCount;?>
+                                            <span><?php echo $row -> commentCount;?></span>
                                         <?php endif;?>
                                     <?php endif;?>
                                 </div>
