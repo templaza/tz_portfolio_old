@@ -243,10 +243,7 @@ function TZ_PortfolioBuildRoute(&$query)
                 ->where('id='.(int)$query['created_by'])
 
             );
-            $alias  = $db->loadResult();
-            $alias  = strtolower($alias);
-            $alias  = trim($alias);
-            $alias  = str_replace(' ','-',$alias);
+            $alias  = JApplication::stringURLSafe($db->loadResult());
             $query['created_by'] = $query['created_by'].':'.$alias;
 
         }
