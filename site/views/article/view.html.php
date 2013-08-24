@@ -171,12 +171,8 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 			$item->text = $item->introtext;
 		}
 
-        if($item -> params -> get('tz_show_count_comment',1) == 1){
-            require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
-            require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
-            $fetch       = new Services_Yadis_PlainHTTPFetcher();
-        }
-        $tzRedirect = $item->params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
+        $item -> commentCount   = 0;
+        $tzRedirect = $item->params -> get('tz_portfolio_redirect','article');
 
         if($tzRedirect == 'p_article'){
             $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid), true ,-1);
@@ -185,50 +181,120 @@ class TZ_PortfolioViewArticle extends JViewLegacy
             $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid), true ,-1);
         }
 
-        if($item->params -> get('tz_comment_type','disqus') == 'facebook'){
-            if($item->params -> get('tz_show_count_comment',1) == 1){
+        if($item -> params -> get('comment_function_type','default') != 'js'){
+            // Compute the article slugs and prepare introtext (runs content plugins).
+            if($item -> params -> get('tz_show_count_comment',1) == 1){
+                require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
+                require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
+                $fetch       = new Services_Yadis_PlainHTTPFetcher();
+            }
+            $threadLink = null;
+            $comments   = null;
+            if($item){
 
-                $url    = 'http://graph.facebook.com/?ids='.$contentUrl;
+                if($item -> params -> get('tz_show_count_comment',1) == 1){
+                    if($item -> params -> get('tz_comment_type','disqus') == 'disqus'){
+                        $threadLink .= '&thread=link:'.$contentUrl;
+                    }elseif($item -> params -> get('tz_comment_type','disqus') == 'facebook'){
+                        $threadLink .= '&ids='.$contentUrl;
+                    }
+                }
+            }
 
-                $content    = $fetch -> get($url);
+            // Get comment counts for all items(articles)
+            if($item -> params -> get('tz_show_count_comment',1) == 1){
+                // From Disqus
+                if($item -> params -> get('tz_comment_type','disqus') == 'disqus'){
+                    if($threadLink){
+                        $url        = 'https://disqus.com/api/3.0/threads/listPosts.json?api_secret='
+                                      .$item -> params -> get('disqusApiSecretKey','4sLbLjSq7ZCYtlMkfsG7SS5muVp7DsGgwedJL5gRsfUuXIt6AX5h6Ae6PnNREMiB')
+                                      .'&forum='.$item -> params -> get('disqusSubDomain','templazatoturials')
+                                      .$threadLink.'&include=approved';
 
-                if($content)
-                    $content    = json_decode($content -> body);
+                        $content    = $fetch -> get($url);
 
-                if(isset($content -> $contentUrl -> comments))
-                    $item -> commentCount   = $content -> $contentUrl  -> comments;
-                else
-                    $item -> commentCount   = 0;
+                        if($content){
+                            if($body    = json_decode($content -> body)){
+                                if($responses = $body -> response){
+                                    $comments   = count($responses);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // From Facebook
+                if($item -> params -> get('tz_comment_type','disqus') == 'facebook'){
+                    if($threadLink){
+                        $url        = 'http://graph.facebook.com/?ids='
+                                      .$threadLink;
+                        $content    = $fetch -> get($url);
+
+                        if($content){
+                            if($body = $content -> body){
+                                if(isset($body -> $contentUrl -> comments)){
+                                    $comments   = $body -> $contentUrl  -> comments;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // End Get comment counts for all items(articles)
+
+            if($comments){
+                $item -> commentCount   = $comments;
+            }
+        }else{
+            // Add facebook script api
+            if($item -> params -> get('tz_show_count_comment',1) == 1){
+                if($item -> params -> get('tz_comment_type','disqus') == 'facebook'){
+                    $doc -> addScriptDeclaration('
+                        (function(d, s, id) {
+                          var js, fjs = d.getElementsByTagName(s)[0];
+                          if (d.getElementById(id)) return;
+                          js = d.createElement(s); js.id = id;
+                          js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
+                          fjs.parentNode.insertBefore(js, fjs);
+                        }(document, \'script\', \'facebook-jssdk\'));
+                   ');
+                }
+
+                // Add disqus script api
+                if($item -> params -> get('tz_comment_type','disqus') == 'disqus'){
+                    $doc -> addScriptDeclaration('
+                        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+                        var disqus_shortname = \'templazatoturials\'; // required: replace example with your forum shortname
+
+                        /* * * DON\'T EDIT BELOW THIS LINE * * */
+                        (function () {
+                        var s = document.createElement(\'script\'); s.async = true;
+                        s.type = \'text/javascript\';
+                        s.src = \'http://\' + disqus_shortname + \'.disqus.com/count.js\';
+                        (document.getElementsByTagName(\'HEAD\')[0] || document.getElementsByTagName(\'BODY\')[0]).appendChild(s);
+                        }());
+                   ');
+                    $doc -> addCustomTag('
+                    <script type="text/javascript">
+                        window.addEvent("load",function(){
+                            var a=document.getElementsByTagName("A");
+
+                            for(var h=0;h<a.length;h++){
+                                if(a[h].href.indexOf("#disqus_thread")>=0){
+                                var span = document.createElement("span");
+                                span.innerHTML  = a[h].innerHTML;
+                                a[h].parentNode.appendChild(span);
+                                a[h].remove();
+                                }
+                            }
+                        });
+                    </script>
+                   ');
+                }
             }
         }
-        if($item ->params -> get('tz_comment_type','disqus') == 'disqus'){
-            if($item ->params -> get('tz_show_count_comment',1) == 1){
-                $url        = 'https://disqus.com/api/3.0/threads/listPosts.json?api_secret='.$item -> params -> get('disqusApiSecretKey')
-							  .'&forum='.$item -> params -> get('disqusSubDomain','templazatoturials')
-							  .'&thread=link:'.$contentUrl
-							  .'&include=approved';
 
-				$content    = $fetch -> get($url);
-
-				if($content)
-					$content    = json_decode($content -> body);
-				$content    = $content -> response;
-				if(is_array($content)){
-					$item -> commentCount	= count($content);
-				}
-				else{
-					$item -> commentCount   = 0;
-				}
-            }
-        }
-//
-//        $tzparams->soundcloud->get('title');
-//        $tzparams->soundcloud->get('alias');
-//        $tzparams->media->get('title');
-//
-//        JPluginHelper::importPlugin('tzportfolio');
-//        $results = $dispatcher->trigger('onTZPortfolioPrepare', array ('com_tz_portfolio.article', &$item, &$this->tzparams, $offset));
-
+        $item ->link    = $contentUrl;
 
 		//
 		// Process the content plugins.
@@ -546,6 +612,82 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 		{
 			$this->document->setMetaData('author', $this->item->author);
 		}
+
+        $metaImage  = null;
+        if($metaMedia = $this -> listMedia):
+            $metaImageSize  = $this -> params -> get('detail_article_image_size','L');
+            if($metaMedia[0] -> type == 'image' || $metaMedia[0] -> type == 'imagegallery'):
+                if(isset($metaMedia[0] -> images) AND !empty($metaMedia[0] -> images)):
+                    $metaImage  = $metaMedia[0] -> images;
+                    $metaImage  = JUri::root().str_replace('.'.JFile::getExt($metaImage),'_'.$metaImageSize.'.'.JFile::getExt($metaImage),$metaImage);
+                endif;
+            elseif($metaMedia[0] -> type == 'video' || $metaMedia[0] -> type == 'audio'):
+                if(isset($metaMedia[0] -> thumb) AND !empty($metaMedia[0] -> thumb)):
+                    $metaImage  = $metaMedia[0] -> thumb;
+                    $metaImage  = JUri::root().str_replace('.'.JFile::getExt($metaImage),'_'.$metaImageSize.'.'.JFile::getExt($metaImage),$metaImage);
+                endif;
+            endif;
+        endif;
+//        $this -> document -> addCustomTag('<meta property="og:locale" content="en_US"/>');
+//        $this -> document -> addCustomTag('<meta property="og:site_name" content="'.JUri::base().'"/>');
+        $this -> document -> addCustomTag('<meta property="og:type" content="article"/>');
+
+        if($metaImage){
+            $this -> document -> addCustomTag('<meta property="og:image" content="'.$metaImage.'"/>');
+        }
+        $this -> document -> addCustomTag('<meta property="article:author" content="'.$this->item->author.'"/>');
+        $this -> document -> addCustomTag('<meta property="article:published_time" content="'
+            .JHtml::_('date', $this->item->created, JText::_('DATE_FORMAT_LC2')).'"/>');
+        $this -> document -> addCustomTag('<meta property="article:modified_time" content="'
+                    .JHtml::_('date', $this->item->modified, JText::_('DATE_FORMAT_LC2')).'"/>');
+        $this -> document -> addCustomTag('<meta property="article:section" content="'
+            .$this->escape($this->item->category_title).'"/>');
+        if($this -> listTags):
+            foreach($this -> listTags as $tag){
+                $tags[] = $tag -> name;
+            }
+            $tags   = implode(',',$tags);
+            if(!empty($tags)){
+                $this -> document -> addCustomTag('<meta property="article:tag" content="'.$tags.'"/>');
+            }
+        endif;
+
+        // Meta twitter
+        $description    = null;
+        if(!empty($this -> item -> introtext)){
+            $description    = strip_tags($this -> item -> introtext);
+            $description    = explode(' ',$description);
+            $description    = array_splice($description,0,25);
+            $description    = trim(implode(' ',$description));
+            if(!strpos($description,'...'))
+                $description    .= '...';
+        }elseif ($this->item->metakey){
+            $description    = $this -> item -> metadesc;
+        }elseif (!$this->item->metakey && $this->params->get('menu-meta_description'))
+        {
+            $description    = $this -> params -> get('menu-meta_description');
+        }
+
+
+        if($author = $this -> listAuthor){
+            if(isset($author -> twitter) && !empty($author -> twitter)){
+                $this -> document -> setMetaData('twitter:card','summary');
+                if(preg_match('/(https)?(:\/\/www\.)?twitter\.com\/(#!\/)?@?([^\/]*)/i',$author -> twitter,$match)){
+                    if(count($match) > 1){
+                        $this -> document -> setMetaData('twitter:site','@'.$match[count($match) - 1]);
+                        $this -> document -> setMetaData('twitter:creator','@'.$match[count($match) - 1]);
+                    }
+                }
+                if($metaImage){
+                    $this -> document -> setMetaData('twitter:image',$metaImage);
+                }
+                if($description){
+                    $this -> document -> setMetaData('twitter:description',$description);
+                }
+            }
+        }
+
+
 
 		$mdata = $this->item->metadata->toArray();
 		foreach ($mdata as $k => $v)

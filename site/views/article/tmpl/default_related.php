@@ -52,21 +52,23 @@ if($lists):
             if($itemParams -> get('tz_portfolio_redirect')){
                 $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
             }
-            if($tzRedirect == 'article'){
-                $item -> _link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid).$tmpl);
+            if($tzRedirect == 'p_article'){
+                $item -> _link = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid).$tmpl);
             }
             else{
-                $item -> _link = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid).$tmpl);
+                $item -> _link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid).$tmpl);
             }
 
             $listMedia      = $media -> getMedia($item -> id);
             $src    = null;
             if($listMedia){
-                if($listMedia[0] -> type == 'video'){
-                    $src    = $listMedia[0] -> thumb;
-                }
-                else{
-                    $src    = $listMedia[0] -> images;
+                if($listMedia[0] -> type != 'quote' && $listMedia[0] -> type != 'link'){
+                    if($listMedia[0] -> type == 'video' || $listMedia[0] -> type == 'audio'){
+                        $src    = $listMedia[0] -> thumb;
+                    }
+                    else{
+                        $src    = $listMedia[0] -> images;
+                    }
                 }
             }
         ?>

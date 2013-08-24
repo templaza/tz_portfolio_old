@@ -29,7 +29,12 @@ class modTZ_PortfolioArchiveHelper
 		$query	= $db->getQuery(true);
 		$query->select('MONTH(created) AS created_month, created, id, title, YEAR(created) AS created_year');
 		$query->from('#__content');
-		$query->where('state = 2 AND checked_out = 0');
+        $query -> where('checked_out = 0');
+        if($params -> get('redirect_to','date') == 'archive'){
+            $query->where('state = 2');
+        }else{
+            $query -> where('state = 1');
+        }
 		$query->group('created_year DESC, created_month DESC');
 
 		// Filter by language
@@ -48,21 +53,29 @@ class modTZ_PortfolioArchiveHelper
 
 		$i		= 0;
 		$lists	= array();
-		foreach ($rows as $row) {
-			$date = JFactory::getDate($row->created);
+		if($rows){
+			foreach ($rows as $row) {
+				$date = JFactory::getDate($row->created);
 
-			$created_month	= $date->format('n');
-			$created_year	= $date->format('Y');
+				$created_month	= $date->format('n');
+				$created_year	= $date->format('Y');
 
-			$created_year_cal	= JHTML::_('date', $row->created, 'Y');
-			$month_name_cal	= JHTML::_('date', $row->created, 'F');
+				$created_year_cal	= JHTML::_('date', $row->created, 'Y');
+				$month_name_cal	= JHTML::_('date', $row->created, 'F');
 
-			$lists[$i] = new stdClass;
+				$lists[$i] = new stdClass;
 
-			$lists[$i]->link	= JRoute::_('index.php?option=com_tz_portfolio&view=archive&year='.$created_year.'&month='.$created_month.$itemid);
-			$lists[$i]->text	= JText::sprintf('MOD_ARTICLES_ARCHIVE_DATE', $month_name_cal, $created_year_cal);
+				if($params -> get('redirect_to','date') == 'archive'){
+					$lists[$i]->link	= JRoute::_('index.php?option=com_tz_portfolio&view=archive&year='
+					.$created_year.'&month='.$created_month.$itemid);
+				}else{
+					$lists[$i]->link	= JRoute::_('index.php?option=com_tz_portfolio&view=date&year='
+					.$created_year.'&month='.$created_month.$itemid);
+				}
+				$lists[$i]->text	= JText::sprintf('MOD_ARTICLES_ARCHIVE_DATE', $month_name_cal, $created_year_cal);
 
-			$i++;
+				$i++;
+			}
 		}
 
 		return $lists;

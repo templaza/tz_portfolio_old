@@ -20,6 +20,14 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+08/24/2013 - 3.1.5
+
+	Change router for all view.
+	Change image name, image slider name and thumb name of video and audio when save article.
+	Insert date articles view (new view).
+	Change Module Archive (have option redirect to date view).
+	Update ja-JP,pt-BR and ru-RU languages.
+
 07/31/2013 - 3.1.4
 	
 	Fix bug with HTTPFetcher file in back-end.
@@ -40,7 +48,7 @@ Demo: http://demo.tzportfolio.com/
     Fix article’s description when create or edit in front-end.
     Fix display tag html of user’s description in all page.
     Fix Filter letter in the category blog page.
-    Fix fields group in back-end for joomla 3.1.4.
+    Fix fields group in back-end for joomla 3.1.5.
 
 
 06/17/2013 - 3.1.2

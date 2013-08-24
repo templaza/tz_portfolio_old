@@ -44,6 +44,8 @@ class TZ_PortfolioViewUsers extends JViewLegacy
 
 		foreach ($rows as $row)
 		{
+            $media  = $model -> getMedia($row -> id);
+
 			// strip html from feed item title
 			$title = $this->escape($row->title);
 			$title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
@@ -69,19 +71,20 @@ class TZ_PortfolioViewUsers extends JViewLegacy
             // image to article
             $image  = null;
             if($params -> get('show_feed_image',1) == 1){
-                $media  = $model -> getMedia($row -> id);
                 $size   = $params -> get('feed_image_size','S');
-                if(strtolower($media[0] -> type) == 'video'){
+                if(strtolower($media[0] -> type) == 'video' || strtolower($media[0] -> type) == 'audio'){
                     $image  = $media[0] -> thumb;
                 }
                 else{
                     $image  = $media[0] -> images;
                 }
-                $image  = str_replace('.'.JFile::getExt($image),'_'.$size.'.'.JFile::getExt($image),$image);
-                $_link  = $link;
-                if(!preg_match('/'.JURI::base().'/',$link))
-                    $_link  = str_replace(JURI::base(true).'/',JURI::base(),$link);
-                $image  = '<a href="'.$_link.'"><img src="'.$image.'" alt="'.$title.'"/></a>';
+                if($image){
+                    $image  = str_replace('.'.JFile::getExt($image),'_'.$size.'.'.JFile::getExt($image),$image);
+                    $_link  = $link;
+                    if(!preg_match('/'.JURI::base().'/',$link))
+                        $_link  = str_replace(JURI::base(true).'/',JURI::base(),$link);
+                    $image  = '<a href="'.$_link.'"><img src="'.$image.'" alt="'.$title.'"/></a>';
+                }
             }
             // Get row fulltext
 			$db = JFactory::getDBO();
@@ -95,10 +98,29 @@ class TZ_PortfolioViewUsers extends JViewLegacy
 			$author			= $row->created_by_alias ? $row->created_by_alias : $row->author;
 			@$date			= ($row->created ? date('r', strtotime($row->created)) : '');
 
+            if(isset($media[0] -> type) && (strtolower($media[0] -> type) == 'quote')){
+                $author = $media[0] -> quote_author;
+            }
+
+            if(isset($media[0] -> type) && (strtolower($media[0] -> type) == 'quote' ||
+                                            strtolower($media[0] -> type) == 'link')){
+                if(strtolower($media[0] -> type) == 'quote'){
+                    $description    = $media[0] -> quote_text.'<span class="author">'.$author.'</span>';
+                }
+            }
+
 			// load individual item creator class
 			$item = new JFeedItem();
-			$item->title		= $title;
-			$item->link			= $link;
+            if((isset($media[0] -> type) && (strtolower($media[0] -> type) != 'quote' &&
+                                strtolower($media[0] -> type) != 'link')) || !isset($media[0] -> type)){
+                $item->title		= $title;
+                $item->link			= $link;
+            }else{
+                if(strtolower($media[0] -> type) == 'link'){
+                    $item->title	= $media[0] -> link_title;
+                    $item ->link    = $media[0] -> link_url;
+                }
+            }
 			$item->description	= $image.$description;
 			$item->date			= $date;
 			$item->category		= $row->category;

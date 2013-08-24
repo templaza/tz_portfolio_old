@@ -91,12 +91,12 @@ JHtml::_('behavior.tooltip');
                         }
                         //Check redirect to view article
                         if($params -> get('tz_portfolio_redirect','p_article') == 'article'){
-                            $row ->link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);
-                            $commentLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
+                            $row ->link         = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);
+                            $commentCountLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
                         }
                         else{
-                            $row ->link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid).$tmpl);
-                            $commentLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid),true,-1);
+                            $row ->link         = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid).$tmpl);
+                            $commentCountLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid),true,-1);
                         }
 
                         $canEdit    = $params -> get('access-edit');
@@ -255,9 +255,23 @@ JHtml::_('behavior.tooltip');
                                 <?php if($params -> get('tz_show_count_comment',1) == 1):?>
                                     <span class="TzPortfolioCommentCount">
                                         <?php echo JText::_('COM_TZ_PORTFOLIO_COMMENT_COUNT');?>
-                                        <?php if($params -> get('tz_comment_type') == 'facebook'): ?>
-                                            <?php if(isset($row -> commentCount)):?>
-                                                <?php echo $row -> commentCount;?>
+
+                                        <?php if($params -> get('comment_function_type','js') == 'js'):?>
+                                            <?php if($params -> get('tz_comment_type') == 'disqus'): ?>
+                                                <a href="<?php echo $commentCountLink;?>#disqus_thread"><?php echo $row -> commentCount;?></a>
+                                            <?php elseif($params -> get('tz_comment_type') == 'facebook'):?>
+                                                <span class="fb-comments-count" data-href="<?php echo $commentCountLink;?>"></span>
+                                            <?php endif;?>
+                                        <?php else:?>
+                                            <?php if($params -> get('tz_comment_type') == 'facebook'): ?>
+                                                <?php if(isset($row -> commentCount)):?>
+                                                    <span><?php echo $row -> commentCount;?></span>
+                                                <?php endif;?>
+                                            <?php endif;?>
+                                            <?php if($params -> get('tz_comment_type') == 'disqus'):?>
+                                                <?php if(isset($row -> commentCount)):?>
+                                                    <span><?php echo $row -> commentCount;?></span>
+                                                <?php endif;?>
                                             <?php endif;?>
                                         <?php endif;?>
 
@@ -266,17 +280,14 @@ JHtml::_('behavior.tooltip');
                                                 $comments = JPATH_SITE.'/components/com_jcomments/jcomments.php';
                                                 if (file_exists($comments)){
                                                     require_once($comments);
-                                                    if(class_exists('JComments')){
-                                                         echo JComments::getCommentsCount((int) $row -> id,'com_tz_portfolio');
+                                                    if(class_exists('JComments')){?>
+                                                    <span><?php echo JComments::getCommentsCount((int) $row -> id,'com_tz_portfolio');?></span>
+                                            <?php
                                                     }
                                                 }
                                             ?>
                                         <?php endif;?>
-                                        <?php if($params -> get('tz_comment_type') == 'disqus'):?>
-                                            <?php if(isset($row -> commentCount)):?>
-                                                <?php echo $row -> commentCount;?>
-                                            <?php endif;?>
-                                        <?php endif;?>
+
                                     </span>
                                 <?php endif;?>
 

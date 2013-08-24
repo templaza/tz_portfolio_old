@@ -122,14 +122,18 @@ class TZ_PortfolioModelArticle extends JModelItem
             }
             $orderBy    = ' ORDER BY '.$orderBy;
 
+            $db     = JFactory::getDbo();
             $query  = 'SELECT c.*,CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug,'
                       .' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'
                       .' FROM #__content AS c'
                       .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
+                      .' LEFT JOIN #__tz_portfolio_xref_content AS x ON x.contentid = c.id'
                       .' WHERE c.state = 1 AND NOT c.id='.$pk
+                      .' AND NOT type='.$db -> quote('quote')
+                      .' AND NOT type='.$db -> quote('link')
                       .' AND c.catid='.$article -> catid
                       .$orderBy;
-            $db     = JFactory::getDbo();
+
             $db -> setQuery($query,0,$limit);
             if(!$db -> query()){
                 $this -> setError($db -> getErrorMsg());

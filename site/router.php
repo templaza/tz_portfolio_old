@@ -38,6 +38,7 @@ function TZ_PortfolioBuildRoute(&$query)
 	$params		= JComponentHelper::getParams('com_tz_portfolio');
 	$advanced	= $params->get('sef_advanced_link', 0);
 
+//    var_dump($query); die();
 	// we need a menu item.  Either the one specified in the query, or the current active one if none specified
 	if (empty($query['Itemid'])) {
 		$menuItem = $menu->getActive();
@@ -169,21 +170,24 @@ function TZ_PortfolioBuildRoute(&$query)
             if($view == 'article'){
                 $segments[] = 'item';
             }
-			$array[0] = (int)$catid.':'.$array[0];
+			$array[0] .= ','.(int)$catid;
 		}
-
 		$segments = array_merge($segments, $array);
 
+
 		if ($view == 'article' || $view == 'p_article') {
+
 			if ($advanced) {
-				list($tmp, $id) = explode(':', $query['id'], 2);
+				list($alias, $id) = explode(':', $query['id'], 2);
 			}
 			else {
-				$id = $query['id'];
+                list($id,$alias) = explode(':', $query['id'], 2);
 			}
+
             if($view == 'article'){
                 $segments[] = 'item';
             }
+			$segments[] = $alias;
 			$segments[] = $id;
 		}
 
@@ -193,6 +197,8 @@ function TZ_PortfolioBuildRoute(&$query)
 	}
 
     if($view == 'tags'){
+        $segments[] = $view;
+
         // Make sure we have the id and the alias
         if (strpos($query['id'], ':') == false) {
             $db = JFactory::getDbo();
@@ -202,12 +208,14 @@ function TZ_PortfolioBuildRoute(&$query)
                 ->where('id='.(int)$query['id'])
             );
             $alias = JApplication::stringURLSafe($db->loadResult());
-            $query['id'] = $query['id'].':'.$alias;
+//            $query['id'] = $query['id'].':'.$alias;
+            $segments[] = $alias;
         }
 
-        $segments[] = $view;
+
+//        $segments[] = $query['id'];
         $segments[] = $query['id'];
-        
+
         if(isset($query['char'])){
             $segments[] = $query['char'];
             unset($query['char']);
@@ -240,39 +248,43 @@ function TZ_PortfolioBuildRoute(&$query)
             $alias  = trim($alias);
             $alias  = str_replace(' ','-',$alias);
             $query['created_by'] = $query['created_by'].':'.$alias;
+
+        }
+        list($userid,$alias)    = explode(':',$query['created_by'],2);
+
+        $userMenuItemGiven  = false;
+        if(isset($menuItem)){
+            if(isset($menuItem -> query)){
+                $query2 = $menuItem -> query;
+                if(isset($query2['created_by'])){
+                    $userMenuItemGiven  = true;
+                }
+            }
         }
 
-        if(isset($item -> query)){
-            $query2     = $item -> query;
-
-            if(isset($query2['created_by']) && $query2['created_by'] != $currentId){
+        if(!$userMenuItemGiven){
+            if(isset($query['view'])){
                 $segments[] = $view;
-                $segments[] = $query['created_by'];
+                unset($query['view']);
             }
-            elseif(!isset($query2['created_by'])){
 
-                $segments[] = $view;
-                $segments[] = $query['created_by'];
+
+            if(isset($query['created_by'])){
+                if(isset($alias) && $alias){
+                    $segments[] = $alias;
+                }
+                if(isset($userid) && $userid){
+                    $segments[] = $userid;
+                }
+                unset($query['created_by']);
             }
 
             if(isset($query['char'])){
                 $segments[] = $query['char'];
                 unset($query['char']);
             }
-            unset($query['view']);
-            unset($query['created_by']);
 
             return $segments;
-        }
-
-        if(isset($query['view'])){
-            $segments[] = $view;
-            unset($query['view']);
-        }
-
-        if(isset($query['created_by'])){
-            $segments[]  = $query['created_by'];
-            unset($query['created_by']);
         }
 
         if(isset($query['char'])){
@@ -280,14 +292,30 @@ function TZ_PortfolioBuildRoute(&$query)
             unset($query['char']);
         }
 
+        unset($query['view']);
+        unset($query['created_by']);
+
         return $segments;
     }
 
-	if ($view == 'archive') {
+	if ($view == 'archive' || $view == 'date') {
+
 		if (!$menuItemGiven) {
 			$segments[] = $view;
 			unset($query['view']);
 		}
+
+        if($view == 'date' && isset($query['view'])){
+//            if(!$menuItemGiven){
+                $segments[] = $view;
+//            }
+            unset($query['view']);
+        }
+
+        $bool   = false;
+        if (isset($query['year']) && isset($query['month'])) {
+            $bool   = true;
+        }
 
 		if (isset($query['year'])) {
 			if ($menuItemGiven) {
@@ -296,12 +324,18 @@ function TZ_PortfolioBuildRoute(&$query)
 			}
 		}
 
-		if (isset($query['year']) && isset($query['month'])) {
-			if ($menuItemGiven) {
-				$segments[] = $query['month'];
-				unset($query['month']);
-			}
-		}
+        if ($bool) {
+            if ($menuItemGiven) {
+                $segments[] = $query['month'];
+                unset($query['month']);
+            }
+        }
+
+        if(isset($query['char'])){
+            $segments[] = $query['char'];
+            unset($query['char']);
+        }
+
 	}
 
 	// if the layout is specified and it is the same as the layout in the menu item, we
@@ -319,6 +353,11 @@ function TZ_PortfolioBuildRoute(&$query)
 			}
 		}
 	}
+
+    if(isset($query['char'])){
+        $segments[] = $query['char'];
+        unset($query['char']);
+    }
 
 	return $segments;
 }
@@ -345,6 +384,16 @@ function TZ_PortfolioParseRoute($segments)
 	$advanced = $params->get('sef_advanced_link', 0);
 	$db = JFactory::getDBO();
 
+    if(preg_match('/.*?\,([0-9]+)/i',$segments[0],$match)){
+        $segments[0]    = $match[1];
+    }
+
+    if(is_numeric($segments[0])){
+        if(isset($segments[count($segments) - 2]) && is_numeric($segments[count($segments) - 2])){
+            unset($segments[count($segments) - 2]);
+        }
+    }
+
 	// Count route segments
 	$count = count($segments);
 	// Standard routing for articles.  If we don't pick up an Itemid then we get the view from the segments
@@ -353,10 +402,14 @@ function TZ_PortfolioParseRoute($segments)
 		$vars['view']	= $segments[0];
 
         if($vars['view'] == 'users'){
-            $vars['created_by'] = (int) $segments[1];
-            if($count > 2){
-                $vars['char'] = $segments[$count - 1];
+            if(!is_numeric($segments[$count - 1])){
+                $vars['created_by'] = (int) $segments[$count - 1];
+            }elseif(strlen($segments[$count - 1]) == 1){
+                $vars['char']   = $segments[$count - 1];
             }
+//            if($count > 2){
+//                $vars['char'] = $segments[$count - 1];
+//            }
         }
         else{
             if (isset($segments[1]) && strlen($segments[1]) == 1){
@@ -367,8 +420,6 @@ function TZ_PortfolioParseRoute($segments)
 
 		return $vars;
 	}
-
-
 
 	// if there is only one segment, then it points to either an article or a category
 	// we test it first to see if it is a category.  If the id and alias match a category
@@ -428,32 +479,66 @@ function TZ_PortfolioParseRoute($segments)
 
         if($segments[0] == 'tags'){
             $vars['view'] = $segments[0];
-            if(isset($segments[count($segments) - 2])){
-                if(JString::strlen($segments[count($segments) - 2]) == 1){
-                    $vars[] = $segments[count($segments) - 2];
+            if(isset($segments[count($segments) - 1])){
+                if(!is_numeric($segments[count($segments) - 1])){
+                    if(JString::strlen($segments[count($segments) - 1]) == 1){
+                        $vars['char'] = $segments[count($segments) - 1];
+                    }
+                    if(isset($segments[count($segments) - 2])){
+                        if(is_numeric($segments[count($segments) - 2])){
+                            $vars['id'] = $segments[count($segments) - 2];
+                        }
+                    }
+                }else{
+                    $vars['id'] = (int) $segments[count($segments)-1];
                 }
+            }else{
+                $vars['id'] = (int) $segments[count($segments)-1];
             }
-            $vars['id'] = (int) $segments[count($segments)-1];
+
+//            $vars['id'] = (int) $segments[count($segments)-1];
             return $vars;
         }
         if($segments[0] == 'users'){
-                $vars['view'] = $segments[0];
-                if(count($segments) > 2){
-                    $vars['created_by'] = (int) $segments[1];
-                    $vars['char'] = (int) $segments[count($segments)-1];
-                }else{
-                    $vars['created_by'] = (int) $segments[count($segments)-1];
-                }
+            $vars['view'] = $segments[0];
+            if(is_numeric($segments[count($segments) - 1])){
+                $vars['created_by'] = $segments[count($segments) - 1];
+            }else{
+                $vars['created_by'] = (int) $segments[count($segments)-2];
+                $vars['char'] = $segments[count($segments)-1];
+            }
+//            if(count($segments) > 2){
+//                $vars['created_by'] = (int) $segments[1];
+//                $vars['char'] = (int) $segments[count($segments)-1];
+//            }else{
+//                $vars['created_by'] = (int) $segments[count($segments)-1];
+//            }
             return $vars;
         }
 
+        if($segments[0] == 'date'){
+            $vars['view']   = $segments[0];
+            if(count($segments) > 1){
+                if(count($segments) > 2){
+                    $vars['year']   = $segments[1];
+                    $vars['month']   = $segments[2];
+                }
+                if( (isset($vars['year']) && isset($vars['month']) && count($segments) > 3) || (count($segments) < 3) )
+                $vars['char']   = $segments[count($segments) - 1];
+            }
+            return $vars;
+        }
+
+        if(preg_match('/.*?\,([0-9]+)/i',$segments[0],$match)){
+            $segments[0]    = $match[1];
+        }
 
 		$cat_id = (int)$segments[0];
         if($segments[0] == 'item'){
            $cat_id = (int)$segments[1];
         }
 
-		$article_id = (int)$segments[$count - 1];
+        $article_id = (int)$segments[$count - 1];
 
 		if ($article_id > 0) {
 			$vars['view'] = 'p_article';
@@ -467,8 +552,9 @@ function TZ_PortfolioParseRoute($segments)
 			$vars['view'] = 'category';
 			$vars['id'] = $cat_id;
 		}
-
-
+        if(isset($segments[$count - 1]) && is_string($segments[$count - 1]) && count($segments[$count - 1]) == 1){
+            $vars['char']   = $segments[$count - 1];
+        }
 
 		return $vars;
 	}

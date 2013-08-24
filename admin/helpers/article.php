@@ -238,21 +238,21 @@ class ArticleHTML
 
         $html   = '<table>';
         $html   .= '<tr>'
-            .'<td>'.JText::_('Text').'</td>'
+            .'<td>'.JText::_('COM_TZ_PORTFOLIO_TEXT').'</td>'
             .'<td><input type="text" name="'.$name.'" value="'.$text.'"></td>'
             .'</tr>';
         $html   .='<tr>'
-            .'<td>'.JText::_('URL').'</td>'
+            .'<td>'.JText::_('COM_TZ_PORTFOLIO_URL').'</td>'
             .'<td><input type="text" name="'.$name.'" value="http://'.$url.'"></td>'
             .'</tr>';
         $html   .='<tr>'
-            .'<td>'.JText::_('Open in').'</td>'
+            .'<td>'.JText::_('COM_TZ_PORTFOLIO_OPEN_IN').'</td>'
             .'<td><select name="'.$name.'">'
             .'<option value="_self" '.(($target=='_self')?' selected="selected"':'').'>'
-            .JText::_('Same window')
+            .JText::_('COM_TZ_PORTFOLIO_SAME_WINDOW')
             .'</option>'
             .'<option value="_blank" '.(($target=='_blank')?' selected="selected"':'').'>'
-            .JText::_('New window')
+            .JText::_('COM_TZ_PORTFOLIO_NEW_WINDOW')
             .'</option>'
             .'</select></td>'
             .'</tr>';

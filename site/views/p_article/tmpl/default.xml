@@ -279,6 +279,13 @@
 
         <fieldset name="tz_fieldset_basic"
                   label="COM_TZ_PORTFOLIO_FIELDSET_BASIC_OPTIONS_LABEL">
+            <field name="comment_function_type" type="list"
+                   label="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_LABEL"
+                    description="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
+                <option value="js">COM_TZ_PORTFOLIO_JAVASCRIPT</option>
+            </field>
             <field name="show_attachments"
                    type="list"
                    default=""

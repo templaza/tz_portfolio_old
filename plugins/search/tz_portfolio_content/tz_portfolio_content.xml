@@ -7,7 +7,7 @@
     <license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
     <authorEmail>support@templaza.com</authorEmail>
     <authorUrl>www.templaza.com/</authorUrl>
-    <version>3.1.4</version>
+    <version>3.1.5</version>
     <description>PLG_SEARCH_TZ_PORTFOLIO_CONTENT_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="tz_portfolio_content">tz_portfolio_content.php</filename>
@@ -20,6 +20,8 @@
 		<language tag="ja-JP">ja-JP/ja-JP.plg_search_tz_portfolio_content.sys.ini</language>
 		<language tag="pt-BR">pt-BR/pt-BR.plg_search_tz_portfolio_content.ini</language>
 		<language tag="pt-BR">pt-BR/pt-BR.plg_search_tz_portfolio_content.sys.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.plg_search_tz_portfolio_content.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_search_tz_portfolio_content.sys.ini</language>
 	</languages>
 	<config>
 		<fields name="params">
@@ -33,7 +35,7 @@
 				/>
 
 				<field name="search_content" type="radio"
-					default="1"
+					default="1" class="btn-group"
 					description="PLG_SEARCH_CONTENT_FIELD_CONTENT_DESC"
 					label="PLG_SEARCH_CONTENT_FIELD_CONTENT_LABEL"
 				>
@@ -42,7 +44,7 @@
 				</field>
 
 				<field name="search_archived" type="radio"
-					default="1"
+					default="1" class="btn-group"
 					description="PLG_SEARCH_CONTENT_FIELD_ARCHIVED_DESC"
 					label="PLG_SEARCH_CONTENT_FIELD_ARCHIVED_LABEL"
 				>

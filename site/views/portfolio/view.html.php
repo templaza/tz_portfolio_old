@@ -179,8 +179,23 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         $this -> assign('availLetter',$this -> get('AvailableLetter'));
 
         $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
-        $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
-            $jscompress -> folder.'/tz_portfolio'.$jscompress -> extfile.'.js" type="text/javascript"></script>');
+
+        if($params -> get('comment_function_type','default') == 'js'){
+            if($params -> get('tz_show_count_comment',1)){
+                if($params -> get('tz_comment_type') == 'facebook' ||
+                        $params -> get('tz_comment_type') == 'disqus'){
+                    $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+                    $jscompress -> folder.'/base64'.$jscompress -> extfile.'.js" type="text/javascript"></script>');
+                }
+            }
+        }
+
+        if($params -> get('tz_show_filter',1) || ($params -> get('tz_show_count_comment',1) &&
+                ($params -> get('tz_comment_type') == 'facebook' ||
+                    $params -> get('tz_comment_type') == 'disqus')) ){
+            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/tz_portfolio'.$jscompress -> extfile.'.js" type="text/javascript"></script>');
+        }
 
         // Add feed links
 		if ($params->get('show_feed_link', 1)) {

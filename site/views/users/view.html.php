@@ -52,68 +52,181 @@ class TZ_PortfolioViewUsers extends JViewLegacy
             $user	= JFactory::getUser();
             $userId	= $user->get('id');
             $guest	= $user->get('guest');
-
-            if($params -> get('tz_show_count_comment',1) == 1){
-                require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
-                require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
-                $fetch       = new Services_Yadis_PlainHTTPFetcher();
-            }
             
             //Get Plugins Model
             $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
 
-            foreach($list as $row){
-                $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-                $itemParams = new JRegistry($row -> attribs); //Get Article's Params
-                //Check redirect to view article
-                if($itemParams -> get('tz_portfolio_redirect')){
-                    $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
+            if($params -> get('comment_function_type','default') != 'js'){
+                // Compute the article slugs and prepare introtext (runs content plugins).
+                if($params -> get('tz_show_count_comment',1) == 1){
+                    require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
+                    require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
+                    $fetch       = new Services_Yadis_PlainHTTPFetcher();
                 }
+                $threadLink = null;
+                $comments   = null;
+                if($list){
+                    foreach($list as $key => $item){
 
-                if($tzRedirect == 'p_article'){
-                    $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug,$row -> catid), true ,-1);
-                }
-                else{
-                    $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug,$row -> catid), true ,-1);
-                }
+                        $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
+                        $itemParams = new JRegistry($item -> attribs); //Get Article's Params
 
-                if($params -> get('tz_comment_type','disqus') == 'facebook'){
-                    if($params -> get('tz_show_count_comment',1) == 1){
+                        //Check redirect to view article
+                        if($itemParams -> get('tz_portfolio_redirect')){
+                            $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
+                        }
 
-                        $url    = 'http://graph.facebook.com/?ids='.$contentUrl;
+                        if($tzRedirect == 'article'){
+                            $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid), true ,-1);
+                        }
+                        else{
+                            $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid), true ,-1);
+                        }
 
-                        $content    = $fetch -> get($url);
-
-                        if($content)
-                            $content    = json_decode($content -> body);
-
-                        if(isset($content -> $contentUrl -> comments))
-                            $row -> commentCount   = $content -> $contentUrl  -> comments;
-                        else
-                            $row -> commentCount   = 0;
-                    }
-                }
-                if($params -> get('tz_comment_type','disqus') == 'disqus'){
-                    if($params -> get('tz_show_count_comment',1) == 1){
-                        $url        = 'https://disqus.com/api/3.0/threads/listPosts.json?api_secret='.$params -> get('disqusApiSecretKey')
-                                      .'&forum='.$params -> get('disqusSubDomain','templazatoturials')
-                                      .'&thread=link:'.$contentUrl
-                                      .'&include=approved';
-
-                        $content    = $fetch -> get($url);
-
-                        if($content)
-                            $content    = json_decode($content -> body);
-                        if($content){
-                            $content    = $content -> response;
-                            if(is_array($content)){
-                                $row -> commentCount	= count($content);
-                            }
-                            else{
-                                $row -> commentCount   = 0;
+                        if($params -> get('tz_show_count_comment',1) == 1){
+                            if($params -> get('tz_comment_type','disqus') == 'disqus'){
+                                $threadLink .= '&thread[]=link:'.$contentUrl;
+                            }elseif($params -> get('tz_comment_type','disqus') == 'facebook'){
+                                $threadLink .= '&urls[]='.$contentUrl;
                             }
                         }
                     }
+                }
+
+                // Get comment counts for all items(articles)
+                if($params -> get('tz_show_count_comment',1) == 1){
+                    // From Disqus
+                    if($params -> get('tz_comment_type','disqus') == 'disqus'){
+                        if($threadLink){
+                            $url        = 'https://disqus.com/api/3.0/threads/list.json?api_secret='
+                                          .$params -> get('disqusApiSecretKey','4sLbLjSq7ZCYtlMkfsG7SS5muVp7DsGgwedJL5gRsfUuXIt6AX5h6Ae6PnNREMiB')
+                                          .'&forum='.$params -> get('disqusSubDomain','templazatoturials')
+                                          .$threadLink.'&include=open';
+
+                            $content    = $fetch -> get($url);
+
+                            if($content){
+                                if($body    = json_decode($content -> body)){
+                                    if($responses = $body -> response){
+                                        foreach($responses as $response){
+                                            $comments[$response ->link]   = $response -> posts;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // From Facebook
+                    if($params -> get('tz_comment_type','disqus') == 'facebook'){
+                        if($threadLink){
+                            $url        = 'http://api.facebook.com/restserver.php?method=links.getStats'
+                                          .$threadLink;
+                            $content    = $fetch -> get($url);
+
+                            if($content){
+                                if($bodies = $content -> body){
+                                    if(preg_match_all('/\<link_stat\>(.*?)\<\/link_stat\>/ims',$bodies,$matches)){
+                                        if(isset($matches[1]) && !empty($matches[1])){
+                                            foreach($matches[1]as $val){
+                                                $match  = null;
+                                                if(preg_match('/\<url\>(.*?)\<\/url\>.*?\<comment_count\>(.*?)\<\/comment_count\>/msi',$val,$match)){
+                                                    if(isset($match[1]) && isset($match[2])){
+                                                        $comments[$match[1]]    = $match[2];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // End Get comment counts for all items(articles)
+            }else{
+                // Add facebook script api
+                if($params -> get('tz_show_count_comment',1) == 1){
+                    if($params -> get('tz_comment_type','disqus') == 'facebook'){
+                        $doc -> addScriptDeclaration('
+                            (function(d, s, id) {
+                              var js, fjs = d.getElementsByTagName(s)[0];
+                              if (d.getElementById(id)) return;
+                              js = d.createElement(s); js.id = id;
+                              js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
+                              fjs.parentNode.insertBefore(js, fjs);
+                            }(document, \'script\', \'facebook-jssdk\'));
+                       ');
+                    }
+
+                    // Add disqus script api
+                    if($params -> get('tz_comment_type','disqus') == 'disqus'){
+                        $doc -> addScriptDeclaration('
+                            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+                            var disqus_shortname = \'templazatoturials\'; // required: replace example with your forum shortname
+
+                            /* * * DON\'T EDIT BELOW THIS LINE * * */
+                            (function () {
+                            var s = document.createElement(\'script\'); s.async = true;
+                            s.type = \'text/javascript\';
+                            s.src = \'http://\' + disqus_shortname + \'.disqus.com/count.js\';
+                            (document.getElementsByTagName(\'HEAD\')[0] || document.getElementsByTagName(\'BODY\')[0]).appendChild(s);
+                            }());
+                       ');
+                        $doc -> addCustomTag('
+                        <script type="text/javascript">
+                            window.addEvent("load",function(){
+                                var a=document.getElementsByTagName("A");
+
+                                for(var h=0;h<a.length;h++){
+                                    if(a[h].href.indexOf("#disqus_thread")>=0){
+                                    var span = document.createElement("span");
+                                    span.innerHTML  = a[h].innerHTML;
+                                    a[h].parentNode.appendChild(span);
+                                    a[h].remove();
+                                    }
+                                }
+                            });
+                        </script>
+                       ');
+                    }
+                }
+            }
+
+            foreach($list as $row){
+                $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
+                $itemParams = new JRegistry($row -> attribs); //Get Article's Params
+
+                if($params -> get('comment_function_type','default') != 'js'){
+                    //Check redirect to view article
+                    if($itemParams -> get('tz_portfolio_redirect')){
+                        $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
+                    }
+
+                    if($tzRedirect == 'article'){
+                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug,$row -> catid), true ,-1);
+                    }
+                    else{
+                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug,$row -> catid), true ,-1);
+                    }
+
+                    if($params -> get('tz_show_count_comment',1) == 1){
+                        if($params -> get('tz_comment_type','disqus') == 'disqus' ||
+                            $params -> get('tz_comment_type','disqus') == 'facebook'){
+                            if($comments){
+                                if(array_key_exists($contentUrl,$comments)){
+                                    $row -> commentCount   = $comments[$contentUrl];
+                                }else{
+                                    $row -> commentCount   = 0;
+                                }
+                            }else{
+                                $row -> commentCount   = 0;
+                            }
+
+                        }
+                    }
+                }else{
+                    $row -> commentCount   = 0;
                 }
 
                 // Compute the asset access permissions.

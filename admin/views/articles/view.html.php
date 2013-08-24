@@ -159,7 +159,7 @@ class TZ_PortfolioViewArticles extends JViewLegacy
 
 
         // Complie button
-        $compileTitle   = JText::_('COM_TZ_PORTFOLIO_COMPLIE_LESS_TO_CSS');
+        $compileTitle   = JText::_('COM_TZ_PORTFOLIO_COMPILE_LESS_TO_CSS');
         $compileIcon    = '<i class="icon-check"></i>&nbsp;';
         $compileClass   = ' class="btn btn-small"';
 

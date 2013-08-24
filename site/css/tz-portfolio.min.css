@@ -5,4 +5,5 @@
 .pagination{width:100%;text-align:center}#TzContent .pagination
 a{text-decoration:none}#TzContent .pagination
 .TzCounter{text-align:center}#TzContent .pagination ul
-li{background:none;display:inline-block;margin:0;padding:0}
+li{background:none;display:inline-block;margin:0;padding:0}.TzBlog .date-group
+h3{border-bottom:1px solid #A0AFE8;color:#A0AFE8;display:inline-block;margin-bottom:25px;padding-bottom:7px}

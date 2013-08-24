@@ -501,116 +501,118 @@ class TZ_PortfolioModelArticles extends JModelList
 	 */
 	public function getItems()
 	{
-		$items	= parent::getItems();
-		$user	= JFactory::getUser();
-		$userId	= $user->get('id');
-		$guest	= $user->get('guest');
-		$groups	= $user->getAuthorisedViewLevels();
+		if($items	= parent::getItems()){
+            $user	= JFactory::getUser();
+            $userId	= $user->get('id');
+            $guest	= $user->get('guest');
+            $groups	= $user->getAuthorisedViewLevels();
 
-		// Get the global params
-		$globalParams = JComponentHelper::getParams('com_tz_portfolio', true);
+            // Get the global params
+            $globalParams = JComponentHelper::getParams('com_tz_portfolio', true);
 
-		// Convert the parameter fields into objects.
-		foreach ($items as &$item)
-		{
-			$articleParams = new JRegistry;
-			$articleParams->loadString($item->attribs);
+            // Convert the parameter fields into objects.
+            foreach ($items as &$item)
+            {
+                $articleParams = new JRegistry;
+                $articleParams->loadString($item->attribs);
 
-			// Unpack readmore and layout params
-			$item->alternative_readmore = $articleParams->get('alternative_readmore');
-			$item->layout = $articleParams->get('layout');
+                // Unpack readmore and layout params
+                $item->alternative_readmore = $articleParams->get('alternative_readmore');
+                $item->layout = $articleParams->get('layout');
 
-			$item->params = clone $this->getState('params');
+                $item->params = clone $this->getState('params');
 
-			// For blogs, article params override menu item params only if menu param = 'use_article'
-			// Otherwise, menu item params control the layout
-			// If menu item is 'use_article' and there is no article param, use global
-			if ((JRequest::getString('layout') == 'blog') || (JRequest::getString('view') == 'featured')
-				|| ($this->getState('params')->get('layout_type') == 'blog')) {
-				// create an array of just the params set to 'use_article'
-				$menuParamsArray = $this->getState('params')->toArray();
-				$articleArray = array();
+                // For blogs, article params override menu item params only if menu param = 'use_article'
+                // Otherwise, menu item params control the layout
+                // If menu item is 'use_article' and there is no article param, use global
+                if ((JRequest::getString('layout') == 'blog') || (JRequest::getString('view') == 'featured')
+                    || ($this->getState('params')->get('layout_type') == 'blog')) {
+                    // create an array of just the params set to 'use_article'
+                    $menuParamsArray = $this->getState('params')->toArray();
+                    $articleArray = array();
 
-				foreach ($menuParamsArray as $key => $value)
-				{
-					if ($value === 'use_article') {
-						// if the article has a value, use it
-						if ($articleParams->get($key) != '') {
-							// get the value from the article
-							$articleArray[$key] = $articleParams->get($key);
-						}
-						else {
-							// otherwise, use the global value
-							$articleArray[$key] = $globalParams->get($key);
-						}
-					}
-				}
+                    foreach ($menuParamsArray as $key => $value)
+                    {
+                        if ($value === 'use_article') {
+                            // if the article has a value, use it
+                            if ($articleParams->get($key) != '') {
+                                // get the value from the article
+                                $articleArray[$key] = $articleParams->get($key);
+                            }
+                            else {
+                                // otherwise, use the global value
+                                $articleArray[$key] = $globalParams->get($key);
+                            }
+                        }
+                    }
 
-				// merge the selected article params
-				if (count($articleArray) > 0) {
-					$articleParams = new JRegistry;
-					$articleParams->loadArray($articleArray);
-					$item->params->merge($articleParams);
-				}
-			}
-			else {
-				// For non-blog layouts, merge all of the article params
-				$item->params->merge($articleParams);
-			}
+                    // merge the selected article params
+                    if (count($articleArray) > 0) {
+                        $articleParams = new JRegistry;
+                        $articleParams->loadArray($articleArray);
+                        $item->params->merge($articleParams);
+                    }
+                }
+                else {
+                    // For non-blog layouts, merge all of the article params
+                    $item->params->merge($articleParams);
+                }
 
-			// get display date
-			switch ($item->params->get('list_show_date'))
-			{
-				case 'modified':
-					$item->displayDate = $item->modified;
-					break;
+                // get display date
+                switch ($item->params->get('list_show_date'))
+                {
+                    case 'modified':
+                        $item->displayDate = $item->modified;
+                        break;
 
-				case 'published':
-					$item->displayDate = ($item->publish_up == 0) ? $item->created : $item->publish_up;
-					break;
+                    case 'published':
+                        $item->displayDate = ($item->publish_up == 0) ? $item->created : $item->publish_up;
+                        break;
 
-				default:
-				case 'created':
-					$item->displayDate = $item->created;
-					break;
-			}
+                    default:
+                    case 'created':
+                        $item->displayDate = $item->created;
+                        break;
+                }
 
-			// Compute the asset access permissions.
-			// Technically guest could edit an article, but lets not check that to improve performance a little.
-			if (!$guest) {
-				$asset	= 'com_tz_portfolio.article.'.$item->id;
+                // Compute the asset access permissions.
+                // Technically guest could edit an article, but lets not check that to improve performance a little.
+                if (!$guest) {
+                    $asset	= 'com_tz_portfolio.article.'.$item->id;
 
-				// Check general edit permission first.
-				if ($user->authorise('core.edit', $asset)) {
-					$item->params->set('access-edit', true);
-				}
-				// Now check if edit.own is available.
-				elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
-					// Check for a valid user and that they are the owner.
-					if ($userId == $item->created_by) {
-						$item->params->set('access-edit', true);
-					}
-				}
-			}
+                    // Check general edit permission first.
+                    if ($user->authorise('core.edit', $asset)) {
+                        $item->params->set('access-edit', true);
+                    }
+                    // Now check if edit.own is available.
+                    elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
+                        // Check for a valid user and that they are the owner.
+                        if ($userId == $item->created_by) {
+                            $item->params->set('access-edit', true);
+                        }
+                    }
+                }
 
-			$access = $this->getState('filter.access');
+                $access = $this->getState('filter.access');
 
-			if ($access) {
-				// If the access filter has been set, we already have only the articles this user can view.
-				$item->params->set('access-view', true);
-			}
-			else {
-				// If no access filter is set, the layout takes some responsibility for display of limited information.
-				if ($item->catid == 0 || $item->category_access === null) {
-					$item->params->set('access-view', in_array($item->access, $groups));
-				}
-				else {
-					$item->params->set('access-view', in_array($item->access, $groups) && in_array($item->category_access, $groups));
-				}
-			}
-		}
+                if ($access) {
+                    // If the access filter has been set, we already have only the articles this user can view.
+                    $item->params->set('access-view', true);
+                }
+                else {
+                    // If no access filter is set, the layout takes some responsibility for display of limited information.
+                    if ($item->catid == 0 || $item->category_access === null) {
+                        $item->params->set('access-view', in_array($item->access, $groups));
+                    }
+                    else {
+                        $item->params->set('access-view', in_array($item->access, $groups) && in_array($item->category_access, $groups));
+                    }
+                }
+            }
 
-		return $items;
+            return $items;
+        }
+        return null;
 	}
 	public function getStart()
 	{

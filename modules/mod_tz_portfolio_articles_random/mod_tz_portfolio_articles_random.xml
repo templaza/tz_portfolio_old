@@ -7,7 +7,7 @@
         <license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
         <authorEmail>support@templaza.com</authorEmail>
         <authorUrl>www.templaza.com/</authorUrl>
-        <version>3.1.4</version>
+        <version>3.1.5</version>
         <description>
             MOD_TZ_PORTFOLIO_ARTICLES_RANDOM_XML_DESCRIPTION
             <![CDATA[
@@ -28,6 +28,8 @@
             <language tag="ja-JP">ja-JP/ja-JP.mod_tz_portfolio_articles_random.sys.ini</language>
 			<language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_articles_random.ini</language>
             <language tag="pt-BR">pt-BR/pt-BR.mod_tz_portfolio_articles_random.sys.ini</language>
+            <language tag="ru-RU">ru-RU/ru-RU.mod_tz_portfolio_articles_random.ini</language>
+            <language tag="ru-RU">ru-RU/ru-RU.mod_tz_portfolio_articles_random.sys.ini</language>
         </languages>
         <config>
             <fields name="params">

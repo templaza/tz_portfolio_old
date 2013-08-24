@@ -358,7 +358,7 @@ class TZ_PortfolioModelField extends JModelAdmin
                         if($_value -> name == $item -> value){
                             $query  = 'UPDATE #__tz_portfolio SET images="'.$_value -> image
                                   .'" WHERE fieldsid='.$fieldsId.' AND contentid='.$item -> contentid.' AND value='.
-                                      $db -> quote(strip_tags($_value->name));
+                                      $db -> quote($_value->name);
                             $db -> setQuery($query);
                             if(!$db -> query()){
                                 JError::raiseError(500,$db -> getErrorMsg());

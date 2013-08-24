@@ -108,17 +108,19 @@ abstract class modTZ_PortfolioArticlesLatestHelper
 
         $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
 
-		foreach ($items as &$item) {
-			$item->slug = $item->id.':'.$item->alias;
-			$item->catslug = $item->catid.':'.$item->category_alias;
+        if($items){
+            foreach ($items as &$item) {
+                $item->slug = $item->id.':'.$item->alias;
+                $item->catslug = $item->catid.':'.$item->category_alias;
 
-			if ($access || in_array($item->access, $authorised)) {
-				// We know that user has the privilege to view the article
-				$item->link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item->slug, $item->catslug));
-			} else {
-				$item->link = JRoute::_('index.php?option=com_users&view=login');
-			}
+                if ($access || in_array($item->access, $authorised)) {
+                    // We know that user has the privilege to view the article
+                    $item->link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item->slug, $item->catslug));
+                } else {
+                    $item->link = JRoute::_('index.php?option=com_users&view=login');
+                }
 
+            }
 		}
 		return $items;
 	}

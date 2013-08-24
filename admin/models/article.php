@@ -409,7 +409,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 //Copy image fields
                 $imageName  = '';
                 if(!empty($row -> images)){
-                    $imageName  = uniqid() .'tz_portfolio_'.time().'.'.JFile::getExt($row -> images);
+                    $imageName  = ((!$table -> alias)?JApplication::stringURLSafe($table -> title):$table -> alias)
+                        .'-'.$newId.'.'.JFile::getExt($row -> images);
                     $subUrl     = substr($row -> images,0,strrpos($row -> images,'/'));
                     $path   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$subUrl).DIRECTORY_SEPARATOR.$imageName;
                     if(JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$row -> images))){
@@ -489,7 +490,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $videoThumb     = '';
                 //Copy Image
                 if(!empty($row -> images)){
-                    $imageName  = uniqid() .'tz_portfolio_'.time().'.'.JFile::getExt($row -> images);
+                    $imageName  = ((!$table -> alias)?JApplication::stringURLSafe($table -> title):$table -> alias)
+                        .'-'.$newId.'.'.JFile::getExt($row -> images);
                     $subUrl     = substr($row -> images,0,strrpos($row -> images,'/'));
                     $imageName  = $subUrl.'/'.$imageName;
 
@@ -512,7 +514,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 //end Image
                 //Copy Image Hover
                 if(!empty($row -> images_hover)){
-                    $imageHoverName     = uniqid() .'tz_portfolio_'.time().'.'.JFile::getExt($row -> images_hover);
+                    $imageHoverName     = ((!$table -> alias)?JApplication::stringURLSafe($table -> title):$table -> alias)
+                        .'-'.$newId.'-h.'.JFile::getExt($row -> images_hover);
                     $subUrl             = substr($row -> images_hover,0,strrpos($row -> images_hover,'/'));
                     $imageHoverName     = $subUrl.'/'.$imageHoverName;
 
@@ -536,8 +539,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 //Copy gallery
                 if(!empty($row -> gallery)){
                     $arr    = explode('///',$row -> gallery);
-                    foreach($arr as $gallery){
-                        $str    = uniqid() .'tz_portfolio_'.time().'.'.JFile::getExt($gallery);
+                    foreach($arr as $i => $gallery){
+                        $str    = ((!$table -> alias)?JApplication::stringURLSafe($table -> title):$table -> alias)
+                            .'-'.$newId.'-'.$i.'.'.JFile::getExt($gallery);
                         $subUrl = substr($gallery,0,strrpos($gallery,'/'));
                         $galleryName[]  = $subUrl.'/'.$str;
 
@@ -566,7 +570,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 //end Gallery
                 //Copy video thumbnail
                 if(!empty($row -> videothumb)){
-                    $videoThumb = uniqid() .'tz_portfolio_'.time().'.'.JFile::getExt($gallery);
+                    $videoThumb = ((!$table -> alias)?JApplication::stringURLSafe($table -> title):$table -> alias)
+                        .'-'.$newId.'.'.JFile::getExt($gallery);
                     $subUrl     = substr($row -> videothumb,0,strrpos($row -> videothumb,'/'));
                     $videoThumb = $subUrl.'/'.$videoThumb;
 
@@ -590,6 +595,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 // Copy audio thumnail
                 $audioData      = null;
 
+                $audioData['id']                            = $newId;
+                $audioData['alias']                         = $table -> alias;
+                $audioData['title']                         = $table -> title;
                 $audioData['audio_soundcloud_id']           = $row -> audio;
                 $audioData['audio_soundcloud_title']        = $row -> audiotitle;
                 $audioData['audio_soundcloud_image_server'] = $row -> audiothumb;
@@ -930,7 +938,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $data -> images = $row -> images;
                 $data -> imagetitle = addslashes(htmlspecialchars($row -> imagetitle));
                 $data -> images_hover       = $row -> images_hover;
-                
+
                 if(preg_match('/.*\/\/\/.*/i',$row -> gallery,$match)){
                     $gallery        = explode('///',$row -> gallery);
                     $gallerytitle   = explode('///',$row -> gallerytitle);
@@ -1204,7 +1212,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             </div>
                         </div>
                     </div>';
-            
+
         }
 
         return $html;
@@ -1238,7 +1246,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             }
             $rows   = $db -> loadColumn();
 
-            
+
             if(count($rows)>0){
                 return array_unique($rows);
 //                foreach($rows as $row){
@@ -1456,7 +1464,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 			$form->setFieldAttribute('state', 'filter', 'unset');
 
 		}
-        
+
 		return $form;
 	}
 
@@ -1808,7 +1816,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $obj    = new JImage($fileClient['tmp_name']);
                         $width  = $obj -> getWidth();
                         $height = $obj -> getHeight();
-                        $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
+//                        $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
+//                                  .JFile::getExt($fileClient['name']);
+                        $str    = $this -> imageUrl.'/cache/'.
+                            ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                            .'-'.$this -> getState($this -> getName().'.id').'-h.'
                                   .JFile::getExt($fileClient['name']);
                         foreach($sizes as $key => $newWidth){
                             // Delete current Image file
@@ -1857,7 +1869,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $obj    = new JImage($originalFile);
                     $width  = $obj -> getWidth();
                     $height = $obj -> getHeight();
-                    $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
+//                    $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
+//                              .JFile::getExt($fileServer);
+                    $str    = $this -> imageUrl.'/cache/'.
+                        ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                        .'-'.$this -> getState($this -> getName().'.id').'-h.'
                               .JFile::getExt($fileServer);
                     foreach($sizes as $key => $newWidth){
                         // Delete current Image file
@@ -1914,11 +1930,15 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         }
                         return null;
                     }
-                    
+
                     $curPath    = null;
                     $str2       = null;
                     if($this -> tztask){
-                        $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
+//                        $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
+//                          .JFile::getExt($curfile);
+                        $str2    = $this -> imageUrl.'/cache/'.
+                            ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                            .'-'.$this -> getState($this -> getName().'.id').'-h.'
                           .JFile::getExt($curfile);
                         foreach($sizes as $key => $val){
                             $curPath    =  str_replace('.'.JFile::getExt($curfile),'_'.$key.'.'.JFile::getExt($curfile),$curfile);
@@ -2000,8 +2020,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $obj    = new JImage($file['tmp_name']);
                     $width  = $obj -> getWidth();
                     $height = $obj -> getHeight();
-                    $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-                              .JFile::getExt($file['name']);
+//                    $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
+//                              .JFile::getExt($file['name']);
+                    $str    = $this -> imageUrl.'/cache/'
+                        .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                        .'-'.$this -> getState($this -> getName().'.id').'.'.JFile::getExt($file['name']);
 
                     foreach($sizes as $key => $newWidth){
                         // Delete current Image file
@@ -2051,8 +2074,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $obj    = new JImage($originalFile);
                 $width  = $obj -> getWidth();
                 $height = $obj -> getHeight();
-                $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-                          .JFile::getExt($fileServer[0]);
+//                $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
+//                          .JFile::getExt($fileServer[0]);
+                $str    = $this -> imageUrl.'/cache/'.
+                    ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                    .'-'.$this -> getState($this -> getName().'.id').'.'.JFile::getExt($fileServer[0]);
 
                 foreach($sizes as $key => $newWidth){
                     // Delete current Image file
@@ -2113,14 +2139,17 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     return $imageGallery;
                 }
             }
-            
+
             if(isset($curfile)){
                 $curPath    = null;
                 $str2       = null;
 //                if($task == 'save2copy'){
                 if($this -> tztask){
-                    $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-                      .JFile::getExt($curfile);
+//                    $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
+//                      .JFile::getExt($curfile);
+                    $str2    = $this -> imageUrl.'/cache/'
+                        .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'
+                        .$this -> getState($this -> getName().'.id').'.'.JFile::getExt($curfile);
                     foreach($sizes as $key => $val){
                         $curPath    =  str_replace('.'.JFile::getExt($curfile),'_'.$key.'.'.JFile::getExt($curfile),$curfile);
                         $curPath    = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$curPath);
@@ -2222,7 +2251,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                             $_type      = strtolower(JFile::getExt($files['name'][$i]));
                             $_type  = '.'.$_type;
-                            $str = $this -> imageUrl.'/cache/'.uniqid().'tz_portfolio_'.(time()).$_type;
+//                            $str = $this -> imageUrl.'/cache/'.uniqid().'tz_portfolio_'.(time()).$_type;
+                            $str = $this -> imageUrl.'/cache/'
+                                .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                                .'-'.$this -> getState($this -> getName().'.id').'-'.$i.$_type;
                             $arr2[$i]   = $str;
 
                             // Check size
@@ -2286,7 +2318,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         return false;
                     }
 
-                    $str = $this -> imageUrl.'/cache/'.uniqid().'tz_portfolio_'.(time()+$i+1).'.'.JFile::getExt($item);
+//                    $str = $this -> imageUrl.'/cache/'.uniqid().'tz_portfolio_'.(time()+$i+1).'.'.JFile::getExt($item);
+                    $str = $this -> imageUrl.'/cache/'
+                        .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'
+                        .$this -> getState($this -> getName().'.id').'-'.$i.'.'.JFile::getExt($item);
                     $arr2[$i]   = $str;
 
                     $curName    = null;
@@ -2328,6 +2363,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     if($this -> tztask){
                         $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
                                         .JFile::getExt($curName);
+                        $str2    = $this -> imageUrl.'/cache/'
+                            .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'
+                            .$this -> getState($this -> getName().'.id').'-'.$i.JFile::getExt($curName);
                         foreach($size as $key => $val){
                             $curPath    =  str_replace('.'.JFile::getExt($curName),'_'.$key.'.'.JFile::getExt($curName),$curName);
                             $curPath    = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$curPath);
@@ -2420,27 +2458,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         $imageGallery -> title  = '';
         $imageGallery -> thumb  = '';
         $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$this ->imageUrl).DIRECTORY_SEPARATOR.'cache';
-        
+
         $params = $this -> getState('params');
         $size   = $this -> _getImageSizes($params);
-//        if(!$size    = $this -> getState('size')){
-//            if($params -> get('tz_image_gallery_xsmall')){
-//                $sizes['XS'] = (int) $params -> get('tz_image_gallery_xsmall');
-//            }
-//            if($params -> get('tz_image_gallery_small')){
-//                $sizes['S'] = (int) $params -> get('tz_image_gallery_small');
-//            }
-//            if($params -> get('tz_image_gallery_medium')){
-//                $sizes['M'] = (int) $params -> get('tz_image_gallery_medium');
-//            }
-//            if($params -> get('tz_image_gallery_large')){
-//                $sizes['L'] = (int) $params -> get('tz_image_gallery_large');
-//            }
-//            if($params -> get('tz_image_gallery_xsmall')){
-//                $sizes['XL'] = (int) $params -> get('tz_image_gallery_xlarge');
-//            }
-//            $size   = $sizes;
-//        }
 
         if(!JFolder::exists($destPath)){
             JFolder::create($destPath);
@@ -2477,14 +2497,18 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                         if(isset($data['tz_thumb_del'])){
                             if(!$this -> tztask){
-                                $this -> deleteThumb($data['jform']['id']);
+                                $this -> deleteThumb($data['id']);
                             }
                             $media['thumb'] = '';
                         }
 
                         if($task != 'save2copy' && !empty($media['thumb'])){
 
-                            $str2    = $this -> imageUrl.'/cache/thumbnail/'.uniqid() .'tz_portfolio_'.time().'.'
+//                            $str2    = $this -> imageUrl.'/cache/thumbnail/'.uniqid() .'tz_portfolio_'.time().'.'
+//                              .JFile::getExt($media['thumb']);
+                            $str2    = $this -> imageUrl.'/cache/thumbnail/'
+                                .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'.
+                                $this -> getState($this -> getName().'.id').'.'
                               .JFile::getExt($media['thumb']);
 
                             foreach($size as $key => $val){
@@ -2504,8 +2528,12 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         if($data['tz_thumb']){
                             if(JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$data['tz_thumb']))){
 
-                                $fileName   = $this -> imageUrl.'/cache/thumbnail/'.uniqid().'tz_portfolio_'.(time()).'.'
-                                              .JFile::getExt($data['tz_thumb']);
+//                                $fileName   = $this -> imageUrl.'/cache/thumbnail/'.uniqid().'tz_portfolio_'.(time()).'.'
+//                                              .JFile::getExt($data['tz_thumb']);
+                                $fileName   = $this -> imageUrl.'/cache/thumbnail/'
+                                    .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'.
+                                    $this -> getState($this -> getName().'.id').'.'
+                                    .JFile::getExt($data['tz_thumb']);
 
                                 $url  = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$data['tz_thumb']);
                                 $obj    = new JImage($url);
@@ -2534,7 +2562,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 case 'youtube':
                     $bool           = 3;
                     if(JRequest::getCmd('task') != 'save2copy'){
-                        $this -> deleteThumb($data['jform']['id']);
+                        $this -> deleteThumb($data['id']);
                     }
                     if(!empty($data['tz_media_code_youtube'])){
                         $media['code']  = 'youtube:'.$data['tz_media_code_youtube'];
@@ -2543,8 +2571,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $file       = new Services_Yadis_PlainHTTPFetcher();
                         $thumb      = $file ->get($thumbUrl);
                         $fileName   = null;
-                        $_fileName   = uniqid().time().'tz_portfolio_'.$data['tz_media_code_youtube']
-                                       .'.'. JFile::getExt($thumbUrl);
+//                        $_fileName   = uniqid().time().'tz_portfolio_'.$data['tz_media_code_youtube']
+//                                       .'.'. JFile::getExt($thumbUrl);
+                        $_fileName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                            .'-'.$this -> getState($this -> getName().'.id')
+                            .'.'. JFile::getExt($thumbUrl);
 
                         if(!JFolder::exists($destPath.DIRECTORY_SEPARATOR.'youtube')){
                             JFolder::create($destPath.DIRECTORY_SEPARATOR.'youtube');
@@ -2589,7 +2620,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 case 'vimeo':
                     $bool           = 3;
                     if(JRequest::getCmd('task') != 'save2copy'){
-                        $this -> deleteThumb($data['jform']['id']);
+                        $this -> deleteThumb($data['id']);
                     }
                     if(!empty($data['tz_media_code_vimeo'])){
                         $media['code']  = 'vimeo:'.$data['tz_media_code_vimeo'];
@@ -2602,7 +2633,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $thumbUrl   = $vimeo[0]['thumbnail_large'];
                         $thumb      = $file -> get($thumbUrl);
                         $fileName   = null;
-                        $_fileName  = uniqid().time().'tz_portfolio_'.$data['tz_media_code_vimeo'].'.'. JFile::getExt($thumbUrl);
+//                        $_fileName  = uniqid().time().'tz_portfolio_'.$data['tz_media_code_vimeo'].'.'. JFile::getExt($thumbUrl);
+                        $_fileName  = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                            .'-'.$this -> getState($this -> getName().'.id').'.'. JFile::getExt($thumbUrl);
 
                         if(!JFolder::exists($destPath.DIRECTORY_SEPARATOR.'vimeo')){
                             JFolder::create($destPath.DIRECTORY_SEPARATOR.'vimeo');
@@ -2701,18 +2734,25 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
     }
 
-    function _save($contentid = null,$task=null){
+    function _save($contentid = null,$task=null,$data=null){
+
+        if($data){
+            $post   = $data;
+        }else{
+            $post   = JRequest::get('post');
+            $post   = array_merge(array_shift($post),$post);
+        }
 
         if($task != 'save2copy'){
 			// Clean the cache.
 			$this->cleanCache();
             $params     = $this -> getState('params');
 
-            $post       = JRequest::get('post');
-
             $typeOfMedia    = JRequest::getString('type_of_media');
 
             $groupid    = $post['groupid'];
+
+
 
             $bool   = 0;
             if(isset($groupid)){
@@ -3126,11 +3166,19 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
     public function save($data)
     {
+        $post   = JRequest::get('post');
+
+        if($data){
+            $post   = array_merge($data,array_shift($post),$post);
+        }else{
+            $post   = array_merge(array_shift($post),$post);
+        }
+
 		// Alter the title for save as copy
 		if (JRequest::getVar('task') == 'save2copy') {
 			list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
 
-            $this -> _save($this -> getState($this -> getName().'.id'),JRequest::getVar('task'));
+            $this -> _save($this -> getState($this -> getName().'.id'),JRequest::getVar('task'),$post);
 
             $this -> tztask   = true;
 
@@ -3141,7 +3189,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
 		}
 
-        $post   = JRequest::get('post');
+
+
         if(isset($post['jform']['attribs']['tz_fieldsid'])){
             $fieldsId   = $post['jform']['attribs']['tz_fieldsid'];
             if(count($fieldsId) == 1 && !empty($fieldsId[0])){
@@ -3153,9 +3202,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $data['attribs']['tz_fieldsid'] = $fieldsId;
             }
         }
-        
+
         if(parent::save($data)){
-            
+
+            $post   = array_merge($post,$data);
+
             //Save parameter of plugins in group tzportfolio
             $plgData    = JRequest::getVar('tzplgform');
             if($plgData){
@@ -3164,8 +3215,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $model -> save($plgData);
             }
 
-            $this -> _save($this -> getState($this -> getName().'.id'));
-            
+            $this -> _save($this -> getState($this -> getName().'.id'),null,$post);
+
             if (isset($data['featured'])) {
                 $this->featured($this->getState($this->getName().'.id'), $data['featured']);
             }
@@ -3380,6 +3431,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $_data  = null;
                 $_data  = $this -> _db -> quote($data['audio_soundcloud_id']);
 
+                $id = $this -> getState($this -> getName().'.id');
+                if(!$id){
+                    $id = $data['id'];
+                }
+
                 // Create folder to save thumb if this folder isn't created.
                 $audioPath  = $this -> imageUrl
                             .DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'thumbnail'
@@ -3401,13 +3457,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 }
 
                 if($file && !empty($file['name'])){ // If choose thumbnail from client
-                    $destName   = uniqid().time().'tz_portfolio_soundcloud_'
-                                            .$data['audio_soundcloud_id'].'.'. JFile::getExt($file['name']);
+                    $destName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'.
+                        $id.'.'. JFile::getExt($file['name']);
                     $image = $this -> uploadImageClient($file,$destName,$audioPath,
                         $fileTypes,$this -> _getImageSizes($params),$data['audio_soundcloud_hidden_image']);
                 }elseif(!empty($data['audio_soundcloud_image_server'])){ // If choose thumbnail from server
-                    $destName   = uniqid().time().'tz_portfolio_soundcloud_'
-                        .$data['audio_soundcloud_id'].'.'
+                    $destName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                        .'-'.$id.'.'
                         .JFile::getExt($data['audio_soundcloud_image_server']);
                     $image  = $this -> uploadImageServer($data['audio_soundcloud_image_server'],$destName,
                         $audioPath,$this -> _getImageSizes($params),$data['audio_soundcloud_hidden_image'],$copy);
@@ -3465,8 +3521,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                 }
 
                                 if($audioTempPath){
-                                    $destName   = uniqid().time().'tz_portfolio_soundcloud_'
-                                        .$data['audio_soundcloud_id'].'.'
+                                    $destName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                                        .'-'.$id.'.'
                                         .JFile::getExt($audioTempPath);
 
                                     $image  = $this -> uploadImageServer($audioTempPath,$destName,$audioPath,

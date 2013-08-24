@@ -205,55 +205,57 @@ abstract class modTZ_PortfolioArticlesCategoryHelper
 		}
 
 		// Prepare data for display using display options
-		foreach ($items as &$item)
-		{
-			$item->slug = $item->id.':'.$item->alias;
-			$item->catslug = $item->catid ? $item->catid .':'.$item->category_alias : $item->catid;
+		if($items){
+			foreach ($items as &$item)
+			{
+				$item->slug = $item->id.':'.$item->alias;
+				$item->catslug = $item->catid ? $item->catid .':'.$item->category_alias : $item->catid;
 
-			if ($access || in_array($item->access, $authorised)) {
-				// We know that user has the privilege to view the article
-				$item->link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item->slug, $item->catslug));
-			}
-			 else {
-				// Angie Fixed Routing
-				$app	= JFactory::getApplication();
-				$menu	= $app->getMenu();
-				$menuitems	= $menu->getItems('link', 'index.php?option=com_users&view=login');
-			if(isset($menuitems[0])) {
-					$Itemid = $menuitems[0]->id;
-				} elseif (JRequest::getInt('Itemid') > 0) { //use Itemid from requesting page only if there is no existing menu
-					$Itemid = JRequest::getInt('Itemid');
+				if ($access || in_array($item->access, $authorised)) {
+					// We know that user has the privilege to view the article
+					$item->link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item->slug, $item->catslug));
+				}
+				 else {
+					// Angie Fixed Routing
+					$app	= JFactory::getApplication();
+					$menu	= $app->getMenu();
+					$menuitems	= $menu->getItems('link', 'index.php?option=com_users&view=login');
+				if(isset($menuitems[0])) {
+						$Itemid = $menuitems[0]->id;
+					} elseif (JRequest::getInt('Itemid') > 0) { //use Itemid from requesting page only if there is no existing menu
+						$Itemid = JRequest::getInt('Itemid');
+					}
+
+					$item->link = JRoute::_('index.php?option=com_users&view=login&Itemid='.$Itemid);
+					}
+
+				// Used for styling the active article
+				$item->active = $item->id == $active_article_id ? 'active' : '';
+
+				$item->displayDate = '';
+				if ($show_date) {
+					$item->displayDate = JHTML::_('date', $item->$show_date_field, $show_date_format);
 				}
 
-				$item->link = JRoute::_('index.php?option=com_users&view=login&Itemid='.$Itemid);
+				if ($item->catid) {
+					$item->displayCategoryLink = JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($item->catid));
+					$item->displayCategoryTitle = $show_category ? '<a href="'.$item->displayCategoryLink.'">'.$item->category_title.'</a>' : '';
+				}
+				else {
+					$item->displayCategoryTitle = $show_category ? $item->category_title : '';
 				}
 
-			// Used for styling the active article
-			$item->active = $item->id == $active_article_id ? 'active' : '';
+				$item->displayHits = $show_hits ? $item->hits : '';
+				$item->displayAuthorName = $show_author ? $item->author : '';
+				if ($show_introtext) {
+					$item->introtext = JHtml::_('content.prepare', $item->introtext, '', 'mod_tz_portfolio_articles_category.content');
+					$item->introtext = self::_cleanIntrotext($item->introtext);
+				}
+				$item->displayIntrotext = $show_introtext ? self::truncate($item->introtext, $introtext_limit) : '';
+				// added Angie show_unauthorizid
+				$item->displayReadmore = $item->alternative_readmore;
 
-			$item->displayDate = '';
-			if ($show_date) {
-				$item->displayDate = JHTML::_('date', $item->$show_date_field, $show_date_format);
 			}
-
-			if ($item->catid) {
-				$item->displayCategoryLink = JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($item->catid));
-				$item->displayCategoryTitle = $show_category ? '<a href="'.$item->displayCategoryLink.'">'.$item->category_title.'</a>' : '';
-			}
-			else {
-				$item->displayCategoryTitle = $show_category ? $item->category_title : '';
-			}
-
-			$item->displayHits = $show_hits ? $item->hits : '';
-			$item->displayAuthorName = $show_author ? $item->author : '';
-			if ($show_introtext) {
-				$item->introtext = JHtml::_('content.prepare', $item->introtext, '', 'mod_tz_portfolio_articles_category.content');
-				$item->introtext = self::_cleanIntrotext($item->introtext);
-			}
-			$item->displayIntrotext = $show_introtext ? self::truncate($item->introtext, $introtext_limit) : '';
-			// added Angie show_unauthorizid
-			$item->displayReadmore = $item->alternative_readmore;
-
 		}
 
 		return $items;

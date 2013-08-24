@@ -521,7 +521,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
         if($fileName){
             $file   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$fileName);
             if(!JFile::exists($file)){
-                $this -> setError(JText::_('Invalid file'));
+                $this -> setError(JText::_('COM_TZ_PORTFOLIO_INVALID_FILE'));
                 return false;
             }
             JFile::delete($file);
@@ -588,12 +588,12 @@ class TZ_PortfolioModelCategory extends JModelAdmin
                 $image  = $image -> get($file);
 
                 if(!in_array($image -> headers['Content-Type'],$arr)){
-                    $this -> setError(JText::_('Invalid file'));
+                    $this -> setError(JText::_('COM_TZ_PORTFOLIO_INVALID_FILE'));
                     return false;
                 }
 
                 if($image -> headers['Content-Length'] > $maxSize){
-                    $this -> setError(JText::_('This file size too large'));
+                    $this -> setError(JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_TOO_LARGE'));
                     return false;
                 }
 
@@ -603,7 +603,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 
                 if(JFolder::exists($tzFolderPath)){
                     if(!JFile::write($desPath,$image -> body)){
-                        $this -> setError(JText::_('Can not upload file'));
+                        $this -> setError(JText::_('COM_TZ_PORTFOLIO_CAN_NOT_UPLOADED_FILEs'));
                         return false;
                     }
                     $image  = new JImage($desPath);

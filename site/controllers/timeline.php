@@ -39,9 +39,17 @@ class TZ_PortfolioControllerTimeLine extends JControllerLegacy
                 break;
         }
     }
+
+    public function getModel($name = 'TimeLine', $prefix = 'TZ_PortfolioModel', $config = array('ignore_request' => true))
+    {
+        $model = parent::getModel($name, $prefix, $config);
+
+        return $model;
+    }
+
     function ajax(){
 
-        $model      = $this -> getModel('TimeLine','TZ_PortfolioModel',array('ignore_request'=>true));
+        $model      = $this -> getModel();
         $list       = $model -> ajax();
 
         echo $list;
@@ -49,7 +57,7 @@ class TZ_PortfolioControllerTimeLine extends JControllerLegacy
     }
     function ajaxtags(){
 
-        $model      = $this -> getModel('TimeLine','TZ_PortfolioModel',array('ignore_request'=>true));
+        $model      = $this -> getModel();
         $list       = $model -> ajaxtags();
 
         echo $list;
@@ -57,10 +65,16 @@ class TZ_PortfolioControllerTimeLine extends JControllerLegacy
     }
 
     function ajaxcategories(){
-        $model      = $this -> getModel('TimeLine','TZ_PortfolioModel',array('ignore_request'=>true));
+        $model      = $this -> getModel();
         $list       = $model -> ajaxCategories();
 
         echo $list;
+        die();
+    }
+
+    public function ajaxComments(){
+        $model  = $this -> getModel();
+        echo $model -> ajaxComments();
         die();
     }
 }
