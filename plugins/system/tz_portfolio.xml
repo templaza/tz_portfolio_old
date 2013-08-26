@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="3.0" group="system" method="upgrade">
+    <name>System-TZ Portfolio</name>
+    <author>DuongTVTemPlaza</author>
+    <creationDate>January 25th 2013</creationDate>
+    <copyright>Copyright (C) 2012 TemPlaza. All rights reserved.</copyright>
+    <license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
+    <authorEmail>support@templaza.com</authorEmail>
+    <authorUrl>www.templaza.com/</authorUrl>
+    <version>3.1.5</version>
+
+    <files>
+        <filename plugin="tz_portfolio">tz_portfolio.php</filename>
+        <filename>index.html</filename>
+    </files>
+    <languages folder="languages">
+        <language tag="en-GB">en-GB/en-GB.plg_system_tz_portfolio.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_system_tz_portfolio.sys.ini</language>
+        <language tag="ja-JP">ja-JP/ja-JP.plg_system_tz_portfolio.ini</language>
+        <language tag="ja-JP">ja-JP/ja-JP.plg_system_tz_portfolio.sys.ini</language>
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="override_user_form" type="radio"
+                       class="btn-group" default="1"
+                       label="PLG_SYSTEM_TZ_PORTFOLIO_OVERRIDE_USER_FORM_LABEL"
+                       description="PLG_SYSTEM_TZ_PORTFOLIO_OVERRIDE_USER_FORM_DESC">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

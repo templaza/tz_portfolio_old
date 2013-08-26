@@ -1,0 +1,52 @@
+/*------------------------------------------------------------------------
+    # (TZ Module, TZ Plugin, TZ Component)
+    # --------------------------------------------------------------------
+    # author    Sunland .,JSC
+    # copyright Copyright (C) 2011 Sunland .,JSC. All Rights Reserved.
+    # @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+    # Websites: http://www.TemPlaza.com
+    # Technical Support:  Forum - http://www.TemPlaza.com/forum/
+-------------------------------------------------------------------------*/
+
+.panel >h3{
+  background: url("../images/bg_fieldset.png") repeat-x transparent !important;
+  border: 1px solid #D8D8D8;
+  border-radius: 3px 3px 3px 3px;
+  font: bold 12px/43px Arial,Helvetica,sans-serif;
+  height: 36px;
+  text-transform: uppercase;
+}
+.pane-sliders .panel {
+    border: medium none !important;
+}
+.pane-toggler span {
+    background: url("../images/tz_arrow.png") no-repeat scroll 5px 50% transparent;
+}
+.pane-toggler-down span{
+  background: url("../images/tz_arrow_down.png") no-repeat scroll 5px 50% transparent;
+}
+.panel h3.pane-toggler-down span{
+  color: #ff6a10 !important;
+}
+.panel h3.pane-toggler:hover span{
+  color: #ff6a10 !important;
+}
+.pane-toggler span{
+  color:#555;
+}
+.panelform input{
+  padding: 7px 10px;
+  border-radius: 2px;
+}
+.panel fieldset.panelform label, .panel fieldset.panelform div.paramrow label,
+.panel fieldset.panelform span.faux-label {
+    min-width: 100px;
+    padding: 0 20px 0 0;
+    text-align: left;
+}
+.panel fieldset select{
+  padding: 5px;
+}
+.panel fieldset select option{
+  padding: 2px 0;
+}

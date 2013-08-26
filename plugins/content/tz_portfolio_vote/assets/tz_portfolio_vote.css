@@ -1,0 +1,142 @@
+ul.TzVote-stars,
+ul.TzVote-stars-small {
+    background-position: left top;
+    display: inline-block;
+    height: 25px;
+    line-height: 25px;
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+    margin: 0!important;
+    overflow: hidden;
+    padding: 0!important;
+    position: relative;
+    vertical-align: middle;
+    width: 125px;
+}
+
+ul.TzVote-stars-small {
+    height: 22px;
+    line-height: 22px;
+    width: 110px;
+}
+
+ul.TzVote-stars li,
+ul.TzVote-stars-small li {
+    background-position: 0!important;
+    background-image: none;
+    display: inline;
+    margin: 0!important;
+    padding: 0!important;
+}
+
+ul.TzVote-stars,
+ul.TzVote-stars li a:hover,
+ul.TzVote-stars li.current-rating,
+ul.TzVote-stars-small,
+ul.TzVote-stars-small li a:hover,
+ul.TzVote-stars-small li.current-rating {
+    background-image: url(../images/star.png)!important;
+    background-color: transparent!important;
+    background-repeat: repeat-x!important;
+}
+
+ul.TzVote-stars li a:hover,
+ul.TzVote-stars li.current-rating,
+ul.TzVote-stars-small li a:hover,
+ul.TzVote-stars-small li.current-rating {
+    background-position: left -1000px;
+}
+
+ul.TzVote-stars-small,
+ul.TzVote-stars-small li a:hover,
+ul.TzVote-stars-small li.current-rating {
+    background-image: url(../images/star_small.png)!important;
+}
+
+ul.TzVote-stars li a,
+ul.TzVote-stars li.current-rating,
+ul.TzVote-stars-small li a,
+ul.TzVote-stars-small li.current-rating {
+    border: medium none;
+    cursor: pointer;
+    left: 0;
+    outline-color: 0;
+    outline-style: none;
+    outline-width: medium;
+    overflow: hidden;
+    position: absolute;
+    text-indent: -1000em!important;
+    top: 0;
+}
+
+ul.TzVote-stars li a,
+ul.TzVote-stars li.current-rating {
+    height: 25px;
+    line-height: 25px;
+}
+
+ul.TzVote-stars-small li a,
+ul.TzVote-stars-small li.current-rating {
+    height: 22px;
+    line-height: 22px;
+}
+
+ul.TzVote-stars li a:hover,
+ul.TzVote-stars-small li a:hover {
+    background-position: left bottom!important;
+}
+
+ul.TzVote-stars li a:focus,
+ul.TzVote-stars li a:active,
+ul.TzVote-stars-small li a:focus,
+ul.TzVote-stars-small li a:active {
+    background: none!important;
+}
+
+ul.TzVote-stars li.current-rating,
+ul.TzVote-stars-small li.current-rating {
+    background-position: left center;
+    z-index: 1;
+}
+
+li a.ev-one-star,
+li a.ev-two-stars,
+li a.ev-three-stars,
+li a.ev-three-stars,
+li a.ev-four-stars,
+li a.ev-five-stars {
+    margin: 0;
+    padding: 0;
+}
+
+li a.ev-one-star {
+    width: 20%;
+    z-index: 6;
+}
+
+li a.ev-two-stars {
+    width: 40%;
+    z-index: 5;
+}
+
+li a.ev-three-stars {
+    width: 60%;
+    z-index: 4;
+}
+
+li a.ev-four-stars {
+    width: 80%;
+    z-index: 3;
+}
+
+li a.ev-five-stars {
+    width: 100%;
+    z-index: 2;
+}
+
+.TzVote-count {
+    display: inline-block;
+    font-size: 90%;
+    vertical-align: middle;
+}

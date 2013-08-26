@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="com_tz_portfolio_gallery_view_default_title" option="com_tz_portfolio_gallery_view_default_option">
+        <help url="http://wiki.templaza.com/TZ_Portfolio_v3:How_to_use#How_to_create_a_Gallery_page"/>
+        <message>
+            <![CDATA[com_tz_portfolio_gallery_view_default_desc]]>
+        </message>
+    </layout>
+
+    <fields name="params">
+        <!-- Add fields to the request variables for the layout. -->
+        <fieldset name="request"
+         >
+
+            <field name="tz_catid" type="category"
+                description="JGLOBAL_CHOOSE_CATEGORY_DESC"
+                extension="com_content"
+                multiple="true"
+                default=""
+                label="JGLOBAL_CHOOSE_CATEGORY_LABEL"
+            >
+                <option value="">JOPTION_ALL_CATEGORIES</option>
+            </field>
+        </fieldset>
+        <fieldset name="basic"
+        label="COM_CONTENT_ATTRIBS_ARTICLE_SETTINGS_LABEL">
+
+            <field
+                name="show_title"
+                type="list"
+                label="JGLOBAL_SHOW_TITLE_LABEL"
+                description="JGLOBAL_SHOW_TITLE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+
+            <field name="show_intro" type="list"
+                description="JGLOBAL_SHOW_INTRO_DESC"
+                label="JGLOBAL_SHOW_INTRO_LABEL"
+                >
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+
+            <field
+                name="show_category"
+                type="list"
+                label="JGLOBAL_SHOW_CATEGORY_LABEL"
+                description="JGLOBAL_SHOW_CATEGORY_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option	value="0">JHIDE</option>
+                <option	value="1">JSHOW</option>
+            </field>
+
+            <field
+                name="show_parent_category"
+                type="list"
+                label="JGLOBAL_SHOW_PARENT_CATEGORY_LABEL"
+                description="JGLOBAL_SHOW_PARENT_CATEGORY_DESC">
+                <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option	value="0">JHIDE</option>
+                <option	value="1">JSHOW</option>
+            </field>
+
+            <field
+                name="show_author"
+                type="list"
+                label="JGLOBAL_SHOW_AUTHOR_LABEL"
+                description="JGLOBAL_SHOW_AUTHOR_DESC">
+                <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option	value="0">JHIDE</option>
+                <option	value="1">JSHOW</option>
+            </field>
+
+            <field
+                name="show_create_date"
+                type="list"
+                label="JGLOBAL_SHOW_CREATE_DATE_LABEL"
+                description="JGLOBAL_SHOW_CREATE_DATE_DESC">
+                <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option	value="0">JHIDE</option>
+                <option	value="1">JSHOW</option>
+            </field>
+
+            <field
+                name="show_modify_date"
+                type="list"
+                label="JGLOBAL_SHOW_MODIFY_DATE_LABEL"
+                description="JGLOBAL_SHOW_MODIFY_DATE_DESC">
+                <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option	value="0">JHIDE</option>
+                <option	value="1">JSHOW</option>
+            </field>
+
+            <field
+                name="show_publish_date"
+                type="list"
+                label="JGLOBAL_SHOW_PUBLISH_DATE_LABEL"
+                description="JGLOBAL_SHOW_PUBLISH_DATE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option	value="0">JHIDE</option>
+                <option	value="1">JSHOW</option>
+            </field>
+
+            <field
+                name="show_hits"
+                type="list"
+                label="JGLOBAL_SHOW_HITS_LABEL"
+                description="JGLOBAL_SHOW_HITS_DESC">
+                <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option	value="0">JHIDE</option>
+                <option	value="1">JSHOW</option>
+            </field>
+        </fieldset>
+
+        <fieldset name="tz_fieldset_basic" label="COM_TZ_PORTFOLIO_FIELDSET_BASIC_OPTIONS_LABEL">
+            <field name="show_article_not_image" type="list"
+                    label="COM_TZ_PORTFOLIO_TZ_GALLERY_SHOW_ARTICLE_NOT_IMAGE"
+                    description="COM_TZ_PORTFOLIO_TZ_GALLERY_SHOW_ARTICLE_NOT_IMAGE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="image_crop_type" type="list"
+                    label="COM_TZ_PORTFOLIO_TZ_GALLERY_IMAGE_CROP_TYPE"
+                    description="COM_TZ_PORTFOLIO_TZ_GALLERY_IMAGE_CROP_TYPE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="h_min">COM_TZ_PORTFOLIO_IMAGE_HEIGHT_MIN</option>
+                <option value="h_input">COM_TZ_PORTFOLIO_ONLY_HEIGHT_INPUT</option>
+                <option value="w_h_input">COM_TZ_PORTFOLIO_WIDTH_HEIGHT_INPUT</option>
+            </field>
+            <field name="tz_gallery_item_width" type="text" default=""
+                   label="COM_TZ_PORTFOLIO_TZ_GALLERY_ITEM_WIDTH"
+                    description="COM_TZ_PORTFOLIO_TZ_GALLERY_ITEM_WIDTH_DESC"/>
+            <field name="tz_gallery_item_height"
+                   type="text" default=""
+                   label="COM_TZ_PORTFOLIO_TZ_GALLERY_ITEM_HEIGHT"
+                    description="COM_TZ_PORTFOLIO_TZ_GALLERY_ITEM_HEIGHT_DESC"/>
+            <field name="column_count" type="text"
+                   label="COM_TZ_PORTFOLIO_TZ_GALLERY_COLUMN_COUNT"
+                    description="COM_TZ_PORTFOLIO_TZ_GALLERY_COLUMN_COUNT_DESC"/>
+            <field name="use_row_count" type="list"
+                   label="COM_TZ_PORTFOLIO_TZ_GALLERY_USE_ROW_COUNT"
+                   description="COM_TZ_PORTFOLIO_TZ_GALLERY_USE_ROW_COUNT_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="row_count" type="text"
+                   label="COM_TZ_PORTFOLIO_TZ_GALLERY_ROW_COUNT"
+                   description="COM_TZ_PORTFOLIO_TZ_GALLERY_ROW_COUNT_DESC"/>
+            <field type="spacer" name="spacer2" hr="true"/>
+
+            <field name="orderby_pri"
+                   type="list"
+                   label="JGLOBAL_CATEGORY_ORDER_LABEL"
+                   description="JGLOBAL_CATEGORY_ORDER_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">JGLOBAL_NO_ORDER</option>
+                <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+                <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+                <option value="order">JGLOBAL_CATEGORY_MANAGER_ORDER</option>
+            </field>
+            <field name="orderby_sec"
+                   type="list"
+                   label="JGLOBAL_Article_Order_Label"
+                   description="JGLOBAL_Article_Order_Desc">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="rdate">JGLOBAL_MOST_RECENT_FIRST</option>
+                <option value="date">JGLOBAL_OLDEST_FIRST</option>
+                <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+                <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+                <option value="author">JGLOBAL_AUTHOR_ALPHABETICAL</option>
+                <option value="rauthor">JGLOBAL_AUTHOR_REVERSE_ALPHABETICAL</option>
+                <option value="hits">JGLOBAL_MOST_HITS</option>
+                <option value="rhits">JGLOBAL_LEAST_HITS</option>
+                <option value="order">JGLOBAL_ARTICLE_MANAGER_ORDER</option>
+            </field>
+        </fieldset>
+
+        <fieldset name="tz_fieldset_image" label="COM_TZ_PORTFOLIO_FIELDSET_IMAGE_OPTIONS_LABEL">
+            <field name="show_image"
+                   type="list"
+                   default=""
+                   label="COM_TZ_PORTFOLIO_SHOW_IMAGE"
+                   description="COM_TZ_PORTFOLIO_SHOW_IMAGE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="portfolio_image_size" type="list"
+                    label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE"
+                    description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
+                <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
+                <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
+                <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
+                <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
+            </field>
+            <field name="detail_article_image_size"
+                   type="list"
+                   label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE"
+                   description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
+                <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
+                <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
+                <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
+                <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
+            </field>
+        </fieldset>
+
+        <fieldset name="tz_fieldset_image_slider" label="COM_TZ_PORTFOLIO_FIELDSET_IMAGE_SLIDER_OPTIONS_LABEL">
+            <field name="show_image_gallery"
+                   type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_IMAGE_GALLERY"
+                   description="COM_TZ_PORTFOLIO_SHOW_IMAGE_GALLERY_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="detail_article_image_gallery_size"
+                   type="list"
+                   label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE"
+                   description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
+                <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
+                <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
+                <option value="L">COM_TZ_PORTFOLIO_LARGE</option>
+                <option value="XL">COM_TZ_PORTFOLIO_XLARGE</option>
+            </field>
+        </fieldset>
+
+        <fieldset name="tz_fieldset_video" label="COM_TZ_PORTFOLIO_FIELDSET_VIDEO_OPTIONS_LABEL">
+            <field name="show_video"
+                   type="list"
+                   default=""
+                   label="COM_TZ_PORTFOLIO_SHOW_VIDEO"
+                   description="COM_TZ_PORTFOLIO_SHOW_VIDEO_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+        </fieldset>
+
+        <fieldset name="tz_fieldset_quote_link" label="COM_TZ_PORTFOLIO_QUOTE_LINK_OPTION_LABEL">
+            <field name="show_quote_text" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_QUOTE_TEXT_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_quote_author" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_QUOTE_AUTHOR_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+
+            <!--<field name="tz_portfolio_spacer_link" type="spacer" class="spacer"-->
+                            <!--label="COM_TZ_PORTFOLIO_SPACER_LINK_LABEL"/>-->
+        </fieldset>
+
+        <fieldset name="tz_fieldset_audio" label="COM_TZ_PORTFOLIO_AUDIO_FIELDSET_OPTION_LABEL">
+            <field name="show_audio" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_AUDIO_LABEL"
+                    description="COM_TZ_PORTFOLIO_SHOW_AUDIO_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+        </fieldset>
+    </fields>
+</metadata>

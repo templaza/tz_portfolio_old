@@ -1,0 +1,21 @@
+ul.TzModPopular li, ul.TzModPopular{
+  padding: 0 !important;
+  background: none !important;
+}
+ul.TzModPopular li img{
+  padding: 5px;
+  background: #fff;
+  float:left;
+  margin-right: 8px;
+}
+ul.TzModPopular li a{
+  text-transform: uppercase;
+}
+ul.TzModPopular li p{
+  margin: 0;
+  line-height: 1.5;
+}
+ul.TzModPopular li{
+  padding: 15px 0 !important;
+  border-bottom: 1px solid #e0e0e0;
+}
