@@ -51,6 +51,7 @@ $description    = strip_tags($this -> item -> introtext);
 $description    = explode(' ',$description);
 $description    = array_splice($description,0,25);
 $description    = trim(implode(' ',$description));
+$description    = htmlspecialchars($description);
 if(!strpos($description,'...'))
     $description    .= '...';
 $doc -> setMetaData('description',$description);
