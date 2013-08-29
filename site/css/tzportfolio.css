@@ -1198,6 +1198,7 @@ ul.TzVote-stars-small li a:hover {
 .tz_portfolio_like_button .GooglePlusOneButton,
 .tz_portfolio_like_button .TzLikeQuestion {
   float: left;
+  display: inline-block;
 }
 .TzTag .TzTagInner {
   border: 1px solid #e4e4ec;
@@ -1385,4 +1386,8 @@ ul.TzVote-stars-small li a:hover {
   display: inline-block;
   margin-bottom: 25px;
   padding-bottom: 7px;
+}
+.PinterestButton,
+.LinkedinButton {
+  display: inline-block;
 }

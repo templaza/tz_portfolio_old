@@ -24,7 +24,8 @@ $params = $this -> item -> params;
 $url    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> slug,$this -> item -> catid),true,-1);
 ?>
 <?php if(($params -> get('show_twitter_button',1) == 1) OR ($params -> get('show_facebook_button',1) == 1)
-         OR ($params -> get('show_google_button',1) == 1)):?>
+         OR ($params -> get('show_google_button',1) == 1) OR $params -> get('show_pinterest_button',1)
+        OR $params -> get('show_linkedin_button',1)):?>
     <div class="tz_portfolio_like_button">
         <div class="TzAdd"></div>
 
@@ -63,7 +64,6 @@ $url    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> sl
 
             <?php if($params -> get('show_google_button',1) == 1): ?>
                 <!-- Google +1 Button -->
-
                 <div class="GooglePlusOneButton">
                     <!-- Place this tag where you want the +1 button to render. -->
                     <div class="g-plusone" data-size="medium" data-href="<?php echo $url?>"></div>
@@ -78,6 +78,34 @@ $url    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> sl
                     </script>
                 </div>
             <?php endif; ?>
+
+            <?php if($params -> get('show_pinterest_button',1)):?>
+            <!-- Pinterest Button -->
+            <div class="PinterestButton">
+                <a href="http://pinterest.com/pin/create/button/?url=<?php echo $url;?>&media=<?php echo $socialInfos -> image;?>&description=<?php echo $socialInfos -> title;?>"
+                        data-pin-do="buttonPin" data-pin-config="beside">
+                        <img src="//assets.pinterest.com/images/pidgets/pin_it_button.png" />
+                </a>
+                <script type="text/javascript">
+                (function(d){
+                    var f = d.getElementsByTagName('SCRIPT')[0], p = d.createElement('SCRIPT');
+                    p.type = 'text/javascript';
+                    p.async = true;
+                    p.src = '//assets.pinterest.com/js/pinit.js';
+                    f.parentNode.insertBefore(p, f);
+                }(document));
+                </script>
+            </div>
+            <?php endif;?>
+
+            <?php if($params -> get('show_linkedin_button',1)):?>
+            <!-- Linkedin Button -->
+            <div class="LinkedinButton">
+                <script src="//platform.linkedin.com/in.js" type="text/javascript"></script>
+                <script type="IN/Share" data-url="<?php echo $url;?>" data-counter="right"></script>
+            </div>
+            <?php endif;?>
+
             <div class="clearfix"></div>
         </div>
     </div>
