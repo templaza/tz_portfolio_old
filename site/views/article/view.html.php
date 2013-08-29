@@ -580,38 +580,59 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 		elseif ($app->getCfg('sitename_pagetitles', 0) == 2) {
 			$title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
 		}
-		if (empty($title)) {
-			$title = $this->item->title;
-		}
-		$this->document->setTitle($title);
+        if (empty($title)) {
+            $title = $this->item->title;
+        }
+        if(!empty($title)){
+            $title  = htmlspecialchars($title);
+        }
+        $this->document->setTitle($title);
 
-		if ($this->item->metadesc)
-		{
-			$this->document->setDescription($this->item->metadesc);
-		}
-		elseif (!$this->item->metadesc && $this->params->get('menu-meta_description'))
-		{
-			$this->document->setDescription($this->params->get('menu-meta_description'));
-		}
+        $description    = null;
+        if ($this->item->metadesc){
+            $description    = $this -> item -> metadesc;
+        }elseif (!$this->item->metadesc && $this->params->get('menu-meta_description'))
+        {
+            $description    = $this -> params -> get('menu-meta_description');
+        }elseif(!empty($this -> item -> introtext)){
+            $description    = strip_tags($this -> item -> introtext);
+            $description    = explode(' ',$description);
+            $description    = array_splice($description,0,25);
+            $description    = trim(implode(' ',$description));
+            if(!strpos($description,'...'))
+                $description    .= '...';
+        }
 
-		if ($this->item->metakey)
-		{
-			$this->document->setMetadata('keywords', $this->item->metakey);
-		}
-		elseif (!$this->item->metakey && $this->params->get('menu-meta_keywords'))
-		{
-			$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
-		}
+        if($description){
+            $description    = htmlspecialchars($description);
+            $this -> document -> setDescription($description);
+        }
 
-		if ($this->params->get('robots'))
-		{
-			$this->document->setMetadata('robots', $this->params->get('robots'));
-		}
+        $tags   = null;
 
-		if ($app->getCfg('MetaAuthor') == '1')
-		{
-			$this->document->setMetaData('author', $this->item->author);
-		}
+        if ($this->item->metakey)
+        {
+            $tags   = $this->item->metakey;
+        }
+        elseif (!$this->item->metakey && $this->params->get('menu-meta_keywords'))
+        {
+            $tags   = $this->params->get('menu-meta_keywords');
+        }elseif($this -> listTags){
+            foreach($this -> listTags as $tag){
+                $tags[] = $tag -> name;
+            }
+            $tags   = implode(',',$tags);
+        }
+
+        if ($this->params->get('robots'))
+        {
+            $this->document->setMetadata('robots', $this->params->get('robots'));
+        }
+
+        if ($app->getCfg('MetaAuthor') == '1')
+        {
+            $this->document->setMetaData('author', $this->item->author);
+        }
 
         $metaImage  = null;
         if($metaMedia = $this -> listMedia):
@@ -628,48 +649,44 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                 endif;
             endif;
         endif;
-//        $this -> document -> addCustomTag('<meta property="og:locale" content="en_US"/>');
-//        $this -> document -> addCustomTag('<meta property="og:site_name" content="'.JUri::base().'"/>');
-        $this -> document -> addCustomTag('<meta property="og:type" content="article"/>');
 
+        $socialInfo = new stdClass();
+        $socialInfo -> title        = $title;
+        $socialInfo -> image        = $metaImage;
+        $socialInfo -> description  = $description;
+        $this -> assign('socialInfo',$socialInfo);
+
+        $this -> document -> setMetaData('copyright','Copyright © '.date('Y',time()).' TemPlaza. All Rights Reserved.');
+
+        // Set metadata tags with prefix property "og:"
+        $this -> document -> addCustomTag('<meta property="og:title" content="'.$title.'"/>');
+        $this -> document -> addCustomTag('<meta property="og:url" content="'.
+        JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this -> item -> slug, $this -> item -> catid),true,-1).'"/>');
+        $this -> document -> addCustomTag('<meta property="og:type" content="article"/>');
         if($metaImage){
             $this -> document -> addCustomTag('<meta property="og:image" content="'.$metaImage.'"/>');
         }
+        if($description){
+            $this -> document -> addCustomTag('<meta property="og:description" content="'.$description.'"/>');
+        }
+        //// End set meta tags with prefix property "og:" ////
+
+        // Set meta tags with prefix property "article:"
         $this -> document -> addCustomTag('<meta property="article:author" content="'.$this->item->author.'"/>');
         $this -> document -> addCustomTag('<meta property="article:published_time" content="'
             .JHtml::_('date', $this->item->created, JText::_('DATE_FORMAT_LC2')).'"/>');
         $this -> document -> addCustomTag('<meta property="article:modified_time" content="'
-                    .JHtml::_('date', $this->item->modified, JText::_('DATE_FORMAT_LC2')).'"/>');
+            .JHtml::_('date', $this->item->modified, JText::_('DATE_FORMAT_LC2')).'"/>');
         $this -> document -> addCustomTag('<meta property="article:section" content="'
             .$this->escape($this->item->category_title).'"/>');
-        if($this -> listTags):
-            foreach($this -> listTags as $tag){
-                $tags[] = $tag -> name;
-            }
-            $tags   = implode(',',$tags);
-            if(!empty($tags)){
-                $this -> document -> addCustomTag('<meta property="article:tag" content="'.$tags.'"/>');
-            }
-        endif;
-
-        // Meta twitter
-        $description    = null;
-        if(!empty($this -> item -> introtext)){
-            $description    = strip_tags($this -> item -> introtext);
-            $description    = explode(' ',$description);
-            $description    = array_splice($description,0,25);
-            $description    = trim(implode(' ',$description));
-            $description    = htmlspecialchars($description);
-            if(!strpos($description,'...'))
-                $description    .= '...';
-        }elseif ($this->item->metakey){
-            $description    = $this -> item -> metadesc;
-        }elseif (!$this->item->metakey && $this->params->get('menu-meta_description'))
-        {
-            $description    = $this -> params -> get('menu-meta_description');
+        if($tags){
+            $tags   = htmlspecialchars($tags);
+            $this -> document-> setMetaData('keywords',$tags);
+            $this -> document -> addCustomTag('<meta property="article:tag" content="'.$tags.'"/>');
         }
+        ///// End set meta tags with prefix property "article:" ////
 
-
+        // Set meta tags with prefix name "twitter:"
         if($author = $this -> listAuthor){
             if(isset($author -> twitter) && !empty($author -> twitter)){
                 $this -> document -> setMetaData('twitter:card','summary');
@@ -687,6 +704,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                 }
             }
         }
+        //// End set meta tags with prefix name "twitter:" ////
 
 
 

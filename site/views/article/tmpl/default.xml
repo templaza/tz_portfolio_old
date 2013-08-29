@@ -766,6 +766,20 @@
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
+            <field name="show_pinterest_button" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_LABEL"
+                   description="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_linkedin_button" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_LABEL"
+                   description="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
         </fieldset>
 
         <fieldset name="tz_fieldset_audio" label="COM_TZ_PORTFOLIO_AUDIO_FIELDSET_OPTION_LABEL">

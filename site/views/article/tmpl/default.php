@@ -37,36 +37,6 @@ $tmpl    = JRequest::getString('tmpl',null);
 if($tmpl){
     $tmpl   = '&tmpl=component';
 }
-
-////////////////////////////////////////////////
-// Add meta tag with article's information
-if($this -> listTags):
-    foreach($this -> listTags as $tag){
-        $tags[] = $tag -> name;
-    }
-    $tags   = implode(',',$tags);
-$doc -> setMetaData('keywords',$tags);
-endif;
-$description    = strip_tags($this -> item -> introtext);
-$description    = explode(' ',$description);
-$description    = array_splice($description,0,25);
-$description    = trim(implode(' ',$description));
-$description    = htmlspecialchars($description);
-if(!strpos($description,'...'))
-    $description    .= '...';
-$doc -> setMetaData('description',$description);
-$doc -> setMetaData('copyright','Copyright © '.date('Y',time()).' TemPlaza. All Rights Reserved.');
-ob_start();
-?>
-<meta property="og:title" content="<?php echo $this -> item -> title;?>"/>
-<meta property="og:url" content="<?php echo JURI::getInstance() -> toString();?>"/>
-<meta property="og:description" content="<?php echo $description;?>"/>
-<?php $meta = ob_get_contents();?>
-<?php ob_end_clean();?>
-<?php
-    $doc -> addCustomTag($meta);
-// End add meta tag
-/////////////////////////////////////////////
 ?>
 <?php if($tmpl):?>
     <style type="text/css">

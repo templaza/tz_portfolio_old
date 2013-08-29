@@ -806,7 +806,7 @@ p{margin:0}.tz_portfolio_user
 .tz_portfolio_like_button .FacebookButton,
 .tz_portfolio_like_button .GooglePlusOneButton,
 .tz_portfolio_like_button
-.TzLikeQuestion{float:left}.TzTag
+.TzLikeQuestion{float:left;display:inline-block}.TzTag
 .TzTagInner{border:1px
 solid #e4e4ec;padding:15px}.TzTag
 h3{margin:0
@@ -844,4 +844,4 @@ a{color:#595959}.TzLink
 a{font-size:16px}.TzLink .title>p:first-child{display:inline}.TzLink
 .TzFeature{background:none no-repeat scroll 0 0 #F16694;border-radius:4px 4px 4px 4px;color:#FEFEFE;font-size:9px;font-weight:normal;padding:6px;text-transform:uppercase}.TzLetters
 li{display:inline-block}.TzBlog .date-group
-h3{border-bottom:1px solid #A0AFE8;color:#A0AFE8;display:inline-block;margin-bottom:25px;padding-bottom:7px}
+h3{border-bottom:1px solid #A0AFE8;color:#A0AFE8;display:inline-block;margin-bottom:25px;padding-bottom:7px}.PinterestButton,.LinkedinButton{display:inline-block}

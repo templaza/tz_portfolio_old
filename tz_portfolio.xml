@@ -7,7 +7,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.1.5</version>
+	<version>3.1.6</version>
 	<description>TZ Portfolio native for Joomla! 2.5.x and 3.0.x</description>
     
     <scriptfile>script.php</scriptfile>
@@ -320,6 +320,9 @@
             <field name="show_quote_text" default="1"/>
             <field name="show_quote_author" default="1"/>
             <field name="comment_function_type" default="default"/>
+			
+			<field name="show_pinterest_button" default="1"/>
+            <field name="show_linkedin_button" default="1"/>
 
         </fields>
     </config>
