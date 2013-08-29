@@ -650,6 +650,12 @@ class TZ_PortfolioViewArticle extends JViewLegacy
             endif;
         endif;
 
+        $socialInfo = new stdClass();
+        $socialInfo -> title        = $title;
+        $socialInfo -> image        = $metaImage;
+        $socialInfo -> description  = $description;
+        $this -> assign('socialInfo',$socialInfo);
+
         $this -> document -> setMetaData('copyright','Copyright © '.date('Y',time()).' TemPlaza. All Rights Reserved.');
 
         // Set metadata tags with prefix property "og:"

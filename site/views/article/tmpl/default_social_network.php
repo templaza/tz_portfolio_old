@@ -20,7 +20,7 @@
  // no direct access
 defined('_JEXEC') or die('Restricted access');
 $params = $this -> item -> params;
-//$url    = JURI::getInstance() -> toString();
+$socialInfos    = $this -> socialInfo;
 $url    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> slug,$this -> item -> catid),true,-1);
 ?>
 <?php if(($params -> get('show_twitter_button',1) == 1) OR ($params -> get('show_facebook_button',1) == 1)
