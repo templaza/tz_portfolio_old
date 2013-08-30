@@ -20,6 +20,11 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+08/29/2013 - 3.1.6
+
+	Fix error with metad tags.
+	Insert 2 social buttons: Pinterest and LinkedIn (have 2 options: "Show Pinterest Button" and "Show LinkedIn Options" in global tab "Social Network - Comments") for Single Article and Portfolio Single Article view.
+
 08/24/2013 - 3.1.5
 
 	Change router for all view.

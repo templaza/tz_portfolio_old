@@ -887,6 +887,20 @@
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
         </field>
+        <field name="show_pinterest_button" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_LABEL"
+               description="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_DESC">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="show_linkedin_button" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_LABEL"
+               description="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_DESC">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
     </fieldset>
     <!-- START THE SOCIAL'S AND THE COMMENT'S PARAMETERS FOR THE DETAIL PAGE -->
 
