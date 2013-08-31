@@ -1391,3 +1391,6 @@ ul.TzVote-stars-small li a:hover {
 .LinkedinButton {
   display: inline-block;
 }
+.PinterestButton {
+  padding-right: 40px;
+}
