@@ -166,10 +166,12 @@ function TZ_PortfolioBuildRoute(&$query)
 
 		$array = array_reverse($array);
 
+        if($view == 'article'){
+            $segments[] = 'item';
+        }
+
 		if (!$advanced && count($array)) {
-            if($view == 'article'){
-                $segments[] = 'item';
-            }
+
             $array[0] = (int)$catid.':'.$array[0];
 		}
 		$segments = array_merge($segments, $array);
