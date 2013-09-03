@@ -18,6 +18,8 @@
         <language tag="en-GB">en-GB/en-GB.plg_system_tz_portfolio.sys.ini</language>
         <language tag="ja-JP">ja-JP/ja-JP.plg_system_tz_portfolio.ini</language>
         <language tag="ja-JP">ja-JP/ja-JP.plg_system_tz_portfolio.sys.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_system_tz_portfolio.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.plg_system_tz_portfolio.sys.ini</language>
     </languages>
     <config>
         <fields name="params">
