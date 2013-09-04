@@ -45,8 +45,8 @@ defined('_JEXEC') or die;
                                     $hiddenImage)?>"/>
                     </a>
                     <div class="clearfix"></div>
-                    <?php echo $this -> form -> getInput('audio_souncloud_delete_image');?>
-                    <?php echo $this -> form -> getLabel('audio_souncloud_delete_image');?>
+                    <?php echo $this -> form -> getInput('audio_soundcloud_delete_image');?>
+                    <?php echo $this -> form -> getLabel('audio_soundcloud_delete_image');?>
                     <?php echo $this -> form -> getInput('audio_soundcloud_hidden_image');?>
                 <?php endif;?>
             </div>
