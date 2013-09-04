@@ -148,7 +148,7 @@
         <field name="audio_soundcloud_image_client" type="file" accept="image/*"
                label="COM_TZ_PORTFOLIO_AUDIO_SOUND_CLOUD_THUMB_LABEL"
                 description="COM_TZ_PORTFOLIO_AUDIO_SOUND_CLOUD_THUMB_DESC"/>
-        <field name="audio_souncloud_delete_image" type="checkbox"
+        <field name="audio_soundcloud_delete_image" type="checkbox"
                label="COM_TZ_PORTFOLIO_DELETE_IMAGES"/>
         <field name="audio_soundcloud_hidden_image" type="hidden"/>
         <field name="audio_soundcloud_image_server" type="media"

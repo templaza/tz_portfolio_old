@@ -21,9 +21,9 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
-jimport( 'joomla.filesystem.folder');
-jimport( 'joomla.filesystem.file');
-
+jimport('joomla.filesystem.folder');
+jimport('joomla.filesystem.file');
+jimport('joomla.event.dispatcher');
 
 //require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/content.php';
 define('TZ_IMAGE_SIZE',10*1024*1024);
@@ -711,18 +711,25 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 	protected function _prepareTable($table)
 	{
 		// Set the publish date to now
-		$db = $this->getDbo();
-		if($table->state == 1 && intval($table->publish_up) == 0) {
-			$table->publish_up = JFactory::getDate()->toSql();
-		}
+        $db = $this->getDbo();
+        if ($table->state == 1 && (int) $table->publish_up == 0)
+        {
+            $table->publish_up = JFactory::getDate()->toSql();
+        }
 
-		// Increment the content version number.
-		$table->version++;
+        if ($table->state == 1 && intval($table->publish_down) == 0)
+        {
+            $table->publish_down = $db->getNullDate();
+        }
 
-		// Reorder the articles within the category so the new article is first
-		if (empty($table->id)) {
-			$table->reorder('catid = '.(int) $table->catid.' AND state >= 0');
-		}
+        // Increment the content version number.
+        $table->version++;
+
+        // Reorder the articles within the category so the new article is first
+        if (empty($table->id))
+        {
+            $table->reorder('catid = ' . (int) $table->catid . ' AND state >= 0');
+        }
 	}
 
     function deleteAttachment(){
@@ -2016,12 +2023,18 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                 // Start check file size
                 if($file['size']<= TZ_IMAGE_SIZE){
+                    // Check and set chmod folder again
+                    $folder         = JPATH_SITE.DIRECTORY_SEPARATOR
+                        .str_replace('/',DIRECTORY_SEPARATOR,$this -> imageUrl).DIRECTORY_SEPARATOR.'cache';
+                    $chmodFolder    = JPath::getPermissions($folder);
+
+                    if($chmodFolder != 'rwxrwxrwx' || $chmodFolder != 'rwxr-xr-x'){
+                        JPath::setPermissions($folder);
+                    }
 
                     $obj    = new JImage($file['tmp_name']);
                     $width  = $obj -> getWidth();
                     $height = $obj -> getHeight();
-//                    $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-//                              .JFile::getExt($file['name']);
                     $str    = $this -> imageUrl.'/cache/'
                         .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
                         .'-'.$this -> getState($this -> getName().'.id').'.'.JFile::getExt($file['name']);
@@ -2143,10 +2156,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             if(isset($curfile)){
                 $curPath    = null;
                 $str2       = null;
-//                if($task == 'save2copy'){
                 if($this -> tztask){
-//                    $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-//                      .JFile::getExt($curfile);
                     $str2    = $this -> imageUrl.'/cache/'
                         .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'
                         .$this -> getState($this -> getName().'.id').'.'.JFile::getExt($curfile);
@@ -2162,8 +2172,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     }
                     $imageGallery -> name   = $str2;
                 }
-
-//                }
                 else{
                     $imageGallery -> name   = $curfile;
                 }
@@ -2237,6 +2245,15 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             $imageDelete    = $data['tz_delete_image_gallery'];
         }
 
+        // Check and set chmod folder again
+        $folder         = JPATH_SITE.DIRECTORY_SEPARATOR
+            .str_replace('/',DIRECTORY_SEPARATOR,$this -> imageUrl).DIRECTORY_SEPARATOR.'cache';
+        $chmodFolder    = JPath::getPermissions($folder);
+
+        if($chmodFolder != 'rwxrwxrwx' || $chmodFolder != 'rwxr-xr-x'){
+            JPath::setPermissions($folder);
+        }
+
         //Upload image
         $arr    = array('image/jpeg','image/jpg','image/bmp','image/gif','image/png','image/ico');
 
@@ -2251,7 +2268,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                             $_type      = strtolower(JFile::getExt($files['name'][$i]));
                             $_type  = '.'.$_type;
-//                            $str = $this -> imageUrl.'/cache/'.uniqid().'tz_portfolio_'.(time()).$_type;
                             $str = $this -> imageUrl.'/cache/'
                                 .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
                                 .'-'.$this -> getState($this -> getName().'.id').'-'.$i.$_type;
@@ -2308,8 +2324,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
             }//Image client
             elseif(!empty($fileServer[$i])){
-
-//                    foreach($fileServer as $i => $item){
                 if(!empty($fileServer[$i])){
                     $original   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$fileServer[$i]);
 
@@ -2318,7 +2332,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         return false;
                     }
 
-//                    $str = $this -> imageUrl.'/cache/'.uniqid().'tz_portfolio_'.(time()+$i+1).'.'.JFile::getExt($item);
                     $str = $this -> imageUrl.'/cache/'
                         .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'
                         .$this -> getState($this -> getName().'.id').'-'.$i.'.'.JFile::getExt($item);
@@ -2353,7 +2366,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     }
                 }
 
-//                    }
             }// Image from server
             else{
                 if(isset($curfile) && isset($curfile[$i]) && !empty($curfile[$i])){
@@ -2361,11 +2373,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $curName   = preg_replace('/'.addcslashes($pattern,'/:').'/','',$curfile[$i]);
                     $curName   = str_replace('_S.'.JFile::getExt($curName),'.'.JFile::getExt($curName),$curName);
                     if($this -> tztask){
-                        $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-                                        .JFile::getExt($curName);
                         $str2    = $this -> imageUrl.'/cache/'
                             .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'
-                            .$this -> getState($this -> getName().'.id').'-'.$i.JFile::getExt($curName);
+                            .$this -> getState($this -> getName().'.id').'-'.$i.'.'.JFile::getExt($curName);
                         foreach($size as $key => $val){
                             $curPath    =  str_replace('.'.JFile::getExt($curName),'_'.$key.'.'.JFile::getExt($curName),$curName);
                             $curPath    = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$curPath);
@@ -2476,6 +2486,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         }
         $destPath   .= DIRECTORY_SEPARATOR.'thumbnail';
 
+        // Check and set chmod folder again
+        $chmodFolder    = JPath::getPermissions($destPath);
+
+        if($chmodFolder != 'rwxrwxrwx' || $chmodFolder != 'rwxr-xr-x'){
+            JPath::setPermissions($destPath);
+        }
+
 
         if($data){
             if(isset($data['tz_thumb_global_hidden'])
@@ -2503,9 +2520,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         }
 
                         if($task != 'save2copy' && !empty($media['thumb'])){
-
-//                            $str2    = $this -> imageUrl.'/cache/thumbnail/'.uniqid() .'tz_portfolio_'.time().'.'
-//                              .JFile::getExt($media['thumb']);
                             $str2    = $this -> imageUrl.'/cache/thumbnail/'
                                 .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'.
                                 $this -> getState($this -> getName().'.id').'.'
@@ -2528,8 +2542,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         if($data['tz_thumb']){
                             if(JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$data['tz_thumb']))){
 
-//                                $fileName   = $this -> imageUrl.'/cache/thumbnail/'.uniqid().'tz_portfolio_'.(time()).'.'
-//                                              .JFile::getExt($data['tz_thumb']);
                                 $fileName   = $this -> imageUrl.'/cache/thumbnail/'
                                     .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'.
                                     $this -> getState($this -> getName().'.id').'.'
@@ -2571,8 +2583,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $file       = new Services_Yadis_PlainHTTPFetcher();
                         $thumb      = $file ->get($thumbUrl);
                         $fileName   = null;
-//                        $_fileName   = uniqid().time().'tz_portfolio_'.$data['tz_media_code_youtube']
-//                                       .'.'. JFile::getExt($thumbUrl);
                         $_fileName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
                             .'-'.$this -> getState($this -> getName().'.id')
                             .'.'. JFile::getExt($thumbUrl);
@@ -2582,6 +2592,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         }
                         if(!JFile::exists($destPath.DIRECTORY_SEPARATOR.'youtube'.DIRECTORY_SEPARATOR.'index.html')){
                             JFile::write($destPath.DIRECTORY_SEPARATOR.'youtube'.DIRECTORY_SEPARATOR.'index.html',htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
+                        }
+                        // Check and set chmod folder again
+                        $folder         = $destPath.DIRECTORY_SEPARATOR.'youtube';
+                        $chmodFolder    = JPath::getPermissions($folder);
+
+                        if($chmodFolder != 'rwxrwxrwx' || $chmodFolder != 'rwxr-xr-x'){
+                            JPath::setPermissions($folder);
                         }
 
                         //Upload Image
@@ -2642,6 +2659,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         }
                         if(!JFile::exists($destPath.DIRECTORY_SEPARATOR.'vimeo'.DIRECTORY_SEPARATOR.'index.html')){
                             JFile::write($destPath.DIRECTORY_SEPARATOR.'vimeo'.DIRECTORY_SEPARATOR.'index.html',htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
+                        }
+                        // Check and set chmod folder again
+                        $folder         = $destPath.DIRECTORY_SEPARATOR.'vimeo';
+                        $chmodFolder    = JPath::getPermissions($folder);
+
+                        if($chmodFolder != 'rwxrwxrwx' || $chmodFolder != 'rwxr-xr-x'){
+                            JPath::setPermissions($folder);
                         }
 
                         if(!JFile::exists($destPath.DIRECTORY_SEPARATOR.'vimeo'.DIRECTORY_SEPARATOR.$_fileName)){
@@ -3163,9 +3187,15 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 	 * @return	boolean	True on success.
 	 * @since	1.6
 	 */
-
     public function save($data)
     {
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $dispatcher = JEventDispatcher::getInstance();
+        }else{
+            $dispatcher = JDispatcher::getInstance();
+        }
+        $table = $this->getTable();
+
         $post   = JRequest::get('post');
 
         if($data){
@@ -3174,9 +3204,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             $post   = array_merge(array_shift($post),$post);
         }
 
-		// Alter the title for save as copy
-		if (JRequest::getVar('task') == 'save2copy') {
-			list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
+        // Alter the title for save as copy
+        if (JRequest::getVar('task') == 'save2copy') {
+            list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
 
             $this -> _save($this -> getState($this -> getName().'.id'),JRequest::getVar('task'),$post);
 
@@ -3184,12 +3214,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
             $data['id'] = 0;
 
-			$data['title']	= $title;
-			$data['alias']	= $alias;
+            $data['title']	= $title;
+            $data['alias']	= $alias;
 
-		}
-
-
+        }
 
         if(isset($post['jform']['attribs']['tz_fieldsid'])){
             $fieldsId   = $post['jform']['attribs']['tz_fieldsid'];
@@ -3203,25 +3231,102 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             }
         }
 
-        if(parent::save($data)){
 
-            $post   = array_merge($post,$data);
+        if ((!empty($data['tags']) && $data['tags'][0] != ''))
+        {
+            $table->newTags = $data['tags'];
+        }
 
-            //Save parameter of plugins in group tzportfolio
-            $plgData    = JRequest::getVar('tzplgform');
-            if($plgData){
-                $model  = JModelLegacy::getInstance('Plugin','TZ_PortfolioModel',array('ignore_request' => true));
-                $model -> setState('com_tz_portfolio.plugin.articleId',$this -> getState('article.id'));
-                $model -> save($plgData);
+        $key = $table->getKeyName();
+        $pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
+        $isNew = true;
+
+        // Include the content plugins for the on save events.
+        JPluginHelper::importPlugin('content');
+
+        // Allow an exception to be thrown.
+        try
+        {
+            // Load the row if saving an existing record.
+            if ($pk > 0)
+            {
+                $table->load($pk);
+                $isNew = false;
             }
 
-            $this -> _save($this -> getState($this -> getName().'.id'),null,$post);
-
-            if (isset($data['featured'])) {
-                $this->featured($this->getState($this->getName().'.id'), $data['featured']);
+            // Bind the data.
+            if (!$table->bind($data))
+            {
+                $this->setError($table->getError());
+                return false;
             }
-            return true;
-		}
+
+            // Prepare the row for saving
+            $this->prepareTable($table);
+            $this->_prepareTable($table);
+
+
+            // Check the data.
+            if (!$table->check())
+            {
+                $this->setError($table->getError());
+                return false;
+            }
+
+            // Trigger the onContentBeforeSave event.
+            $result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $this->name, $table, $isNew));
+            if (in_array(false, $result, true))
+            {
+                $this->setError($table->getError());
+                return false;
+            }
+
+            // Store the data.
+            if (!$table->store())
+            {
+                $this->setError($table->getError());
+                return false;
+            }
+
+            // Clean the cache.
+            $this->cleanCache();
+
+            // Trigger the onContentAfterSave event.
+            $dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, $table, $isNew));
+        }
+        catch (Exception $e)
+        {
+            $this->setError($e->getMessage());
+
+            return false;
+        }
+
+        $pkName = $table->getKeyName();
+
+        if (isset($table->$pkName))
+        {
+            $this->setState($this->getName() . '.id', $table->$pkName);
+        }
+        $this->setState($this->getName() . '.new', $isNew);
+
+
+        $post   = array_merge($post,$data);
+
+        //Save parameter of plugins in group tzportfolio
+        $plgData    = JRequest::getVar('tzplgform');
+        if($plgData){
+            $model  = JModelLegacy::getInstance('Plugin','TZ_PortfolioModel',array('ignore_request' => true));
+            $model -> setState('com_tz_portfolio.plugin.articleId',$this -> getState('article.id'));
+            $model -> save($plgData);
+        }
+
+        $this -> _save($table->$pkName,null,$post);
+
+        if (isset($data['featured'])) {
+            $this->featured($table->$pkName, $data['featured']);
+        }
+
+        return true;
     }
 
 
@@ -3449,10 +3554,16 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
                     }
                 }
+                // Check and set chmod folder again
+                $chmodFolder    = JPath::getPermissions($audioPath);
+
+                if($chmodFolder != 'rwxrwxrwx' || $chmodFolder != 'rwxr-xr-x'){
+                    JPath::setPermissions($audioPath);
+                }
 
                 // Prepare data (Return string to save the database)
                 //// Delete old thumbnail if delete checkbox input is checked
-                if($data['audio_souncloud_delete_image'] && $hiddenImage = $data['audio_soundcloud_hidden_image']){
+                if($data['audio_soundcloud_delete_image'] && $hiddenImage = $data['audio_soundcloud_hidden_image']){
                     $this -> deleteThumb(null,$hiddenImage);
                 }
 
