@@ -1,0 +1,26 @@
+.newsflash .quote,
+.newsflash-horiz .quote,
+.newsflash-vert .quote{
+    font-style: italic;
+}
+.newsflash .quote .author,
+.newsflash-horiz .quote .author,
+.newsflash-vert .quote .author{
+    margin-bottom: 15px;
+}
+.newsflash .quote .text > *,
+.newsflash-horiz .quote .text > *,
+.newsflash-vert .quote .text > *{
+    display: inline;
+}
+.newsflash .quote .icon-quote,
+.newsflash-horiz .quote .icon-quote,
+.newsflash-vert .quote .icon-quote{
+    float: left;
+    padding-right: 3px;
+}
+.newsflash .link .icon-link,
+.newsflash-horiz .link .icon-link,
+.newsflash-vert .link .icon-link{
+    font-weight: normal;
+}

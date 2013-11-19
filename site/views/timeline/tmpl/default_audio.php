@@ -21,7 +21,7 @@
 defined('_JEXEC') or die();
 
 $media      = $this -> listMedia;
-$params     = $this -> mediaParams;
+$params     = $this -> item -> params;
 $audioOption= '';
 if(count($media)):
     if($params -> get('show_soundcloud_artwork',1)){

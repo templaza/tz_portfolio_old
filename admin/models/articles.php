@@ -176,6 +176,9 @@ class TZ_PortfolioModelArticles extends JModelList
             //$query -> join('LEFT','#__tz_portfolio_xref_content AS xc ON g.id=xc.groupid');
         }
 
+        $query -> select('xc2.type');
+        $query -> join('LEFT','#__tz_portfolio_xref_content AS xc2 ON xc2.contentid = a.id');
+
 		// Join over the language
 		$query->select('l.title AS language_title');
 		$query->join('LEFT', $db->quoteName('#__languages').' AS l ON l.lang_code = a.language');
@@ -376,6 +379,33 @@ class TZ_PortfolioModelArticles extends JModelList
 				}
 			}
 		}
+
+        if($items){
+            foreach($items as &$item){
+                if(isset($item -> type)){
+                    switch (strtolower($item -> type)){
+                        default:
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_OPTION_NONE_MEDIA');
+                            break;
+                        case 'image':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_OPTION_IMAGE');
+                            break;
+                        case 'imagegallery':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_OPTION_IMAGE_GALLERY');
+                            break;
+                        case 'video':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_OPTION_VIDEO');
+                            break;
+                        case 'quote':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_QUOTE');
+                            break;
+                        case 'link':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_LINK');
+                            break;
+                    }
+                }
+            }
+        }
 		return $items;
         
 //        return $data;

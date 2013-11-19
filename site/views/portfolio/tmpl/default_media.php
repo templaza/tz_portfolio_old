@@ -20,8 +20,8 @@
 defined('_JEXEC') or die();
 
 $media      = $this -> listMedia;
-$link       = $this -> itemLink;
-$params     = $this -> mediaParams;
+$link       = $this -> item ->link;
+$params     = $this -> item -> params;
 $imgSize    = null;
 $src        = null;
 
@@ -79,7 +79,7 @@ if($params -> get('tz_use_lightbox',1) == 1){
                     <?php if($src): ?>
                         <div class="tz_portfolio_image_gallery">
                             <a<?php echo $class;?> href="<?php echo $link?>">
-                                <img src="<?php echo $src;?>"
+                                <img src="<?php echo JURI::root().$src;?>"
                                      alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
                                      title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"/>
                             </a>
@@ -110,7 +110,7 @@ if($params -> get('tz_use_lightbox',1) == 1){
                 ?>
                     <div class="tz_portfolio_video">
                         <a<?php echo $class;?> href="<?php echo $link?>">
-                            <img width="100%" src="<?php echo $srcVideo;?>" title="<?php echo $media[0] -> imagetitle;?>"
+                            <img src="<?php echo $srcVideo;?>" title="<?php echo $media[0] -> imagetitle;?>"
                                      alt="<?php echo $media[0] -> imagetitle;?>"/>
                         </a>
                     </div>

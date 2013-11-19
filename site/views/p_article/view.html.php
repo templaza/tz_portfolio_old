@@ -146,6 +146,27 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 			}
 		}
 
+        // Create "link" and "fullLink" for article object
+        $tmpl   = null;
+        if($item -> params -> get('tz_use_lightbox',1) == 1){
+            $tmpl   = '&amp;tmpl=component';
+        }
+
+        $item ->link        = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid).$tmpl,true,-1);
+        $item -> fullLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid),true,-1);
+
+        if($item -> params -> get('tz_portfolio_redirect') == 'article'){
+            $configLink =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid).$tmpl, true ,-1);
+        }
+        else{
+            $configLink =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid).$tmpl, true ,-1);
+        }
+
+        // Compare current link and config link to redirect
+        if($item ->link != $configLink){
+            JFactory::getApplication() -> redirect($configLink);
+        }
+
         $url    = JURI::getInstance() -> toString();
 
         $this -> assign('linkCurrent',$url);
@@ -155,11 +176,8 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 
 		// Check the view access to the article (the model has already computed the values).
 		if ($item->params->get('access-view') != true && (($item->params->get('show_noauth') != true &&  $user->get('guest') ))) {
-
-						JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
-
-				return;
-
+			JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
+            return;
 		}
 
 		if ($item->params->get('show_intro', '1')=='1') {
@@ -183,14 +201,6 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 		}
 
         $item -> commentCount   = 0;
-        $tzRedirect = $item->params -> get('tz_portfolio_redirect','p_article');
-
-        if($tzRedirect == 'article'){
-            $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid), true ,-1);
-        }
-        else{
-            $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid), true ,-1);
-        }
 
         if($item -> params -> get('comment_function_type','default') != 'js'){
             // Compute the article slugs and prepare introtext (runs content plugins).
@@ -205,9 +215,9 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 
                 if($item -> params -> get('tz_show_count_comment',1) == 1){
                     if($item -> params -> get('tz_comment_type','disqus') == 'disqus'){
-                        $threadLink .= '&thread=link:'.$contentUrl;
+                        $threadLink .= '&thread=link:'.$item -> fullLink;
                     }elseif($item -> params -> get('tz_comment_type','disqus') == 'facebook'){
-                        $threadLink .= '&ids='.$contentUrl;
+                        $threadLink .= '&ids='.$item -> fullLink;
                     }
                 }
             }
@@ -304,8 +314,6 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                 }
             }
         }
-
-        $item ->link    = $contentUrl;
         
 		//
 		// Process the content plugins.
@@ -453,14 +461,136 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                             type : "inside"
                         },
                         overlay : {
-                            opacity:'.$item -> params -> get('tz_lightbox_opacity',0.75).',
+                            css : {background: "rgba(0,0,0,'.$item -> params -> get('tz_lightbox_opacity',0.75).')"}
                         }
                     }
                 });
                 </script>
             ');
         }
-        
+
+        /* Add scrollbar script */
+        if($item -> params -> get('use_custom_scrollbar',1) && JRequest::getString('tmpl') == 'component' && !$this ->print){
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/jquery.mCustomScrollbar'.$csscompress.'.css');
+            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+                            $jscompress -> folder.'/jquery.mCustomScrollbar'
+                .$jscompress -> extfile.'.js"  type="text/javascript"></script>');
+
+            if($item -> params -> get('horizontalScroll',0)){
+                $horizontalScroll   = 'true';
+            }else{
+                $horizontalScroll   = 'false';
+            }
+            if($item -> params -> get('mouseWheel',1)){
+                $mouseWheel   = 'true';
+            }else{
+                $mouseWheel   = 'false';
+            }
+            if($item -> params -> get('autoDraggerLength',1)){
+                $autoDraggerLength   = 'true';
+            }else{
+                $autoDraggerLength   = 'false';
+            }
+            if($item -> params -> get('autoHideScrollbar',0)){
+                $autoHideScrollbar  = 'true';
+            }else{
+                $autoHideScrollbar   = 'false';
+            }
+            if($item -> params -> get('scrollButtons_enable',1)){
+                $scrollButtons_enable   = 'true';
+            }else{
+                $scrollButtons_enable   = 'false';
+            }
+            if($item -> params -> get('advanced_updateOnBrowserResize',1)){
+                $advanced_updateOnBrowserResize = 'true';
+            }else{
+                $advanced_updateOnBrowserResize = 'false';
+            }
+            if($item -> params -> get('advanced_updateOnContentResize',0)){
+                $advanced_updateOnContentResize = 'true';
+            }else{
+                $advanced_updateOnContentResize = 'false';
+            }
+            if($item -> params -> get('advanced_autoExpandHorizontalScroll',0)){
+                $advanced_autoExpandHorizontalScroll    = 'true';
+            }else{
+                $advanced_autoExpandHorizontalScroll    = 'false';
+            }
+            if($item -> params -> get('advanced_autoScrollOnFocus',1)){
+                $advanced_autoScrollOnFocus = 'true';
+            }else{
+                $advanced_autoScrollOnFocus = 'false';
+            }
+            if($item -> params -> get('advanced_normalizeMouseWheelDelta',0)){
+                $advanced_normalizeMouseWheelDelta  = 'true';
+            }else{
+                $advanced_normalizeMouseWheelDelta  = 'false';
+            }
+            if($item -> params -> get('contentTouchScroll',1)){
+                $contentTouchScroll = 'true';
+            }else{
+                $contentTouchScroll = 'false';
+            }
+            $doc -> addCustomTag('<script type="text/javascript">
+                jQuery(document).ready(function(){
+                    jQuery(".TzPortfolioItemPage").height(jQuery(window).height()).mCustomScrollbar({
+                        set_width:'.($item -> params -> get('set_width')?$item -> params -> get('set_width'):'false').', /*optional element width: boolean, pixels, percentage*/
+                        set_height:'.($item -> params -> get('set_height')?$item -> params -> get('set_height'):'false').', /*optional element height: boolean, pixels, percentage*/
+                        horizontalScroll:'.$horizontalScroll.', /*scroll horizontally: boolean*/
+                        scrollInertia:'.$item -> params -> get('scrollInertia',40).', /*scrolling inertia: integer (milliseconds)*/
+                        mouseWheel: '.$mouseWheel.', /*mousewheel support: boolean*/
+                        mouseWheelPixels:'.($params -> get('mouseWheelPixels')?$params -> get('mouseWheelPixels'):'"auto"').', /*mousewheel pixels amount: integer, "auto"*/
+                        autoDraggerLength:'.$autoDraggerLength.', /*auto-adjust scrollbar dragger length: boolean*/
+                        autoHideScrollbar: '.$autoHideScrollbar.', /*auto-hide scrollbar when idle*/
+                        snapAmount:'.($item -> params -> get('snapAmount')?$item -> params -> get('snapAmount'):'null').', /* optional element always snaps to a multiple of this number in pixels */
+                        snapOffset:'.($item -> params -> get('snapOffset')?$item -> params -> get('snapOffset'):0).', /* when snapping, snap with this number in pixels as an offset */
+                        scrollButtons:{ /*scroll buttons*/
+                            enable: '.$scrollButtons_enable.', /*scroll buttons support: boolean*/
+                            scrollType:"'.($item -> params -> get('scrollButtons_snapOffset')?$item -> params -> get('scrollButtons_snapOffset'):'continuous').'", /*scroll buttons scrolling type: "continuous", "pixels"*/
+                            scrollSpeed:'.($item -> params -> get('scrollButtons_scrollSpeed')?$item -> params -> get('scrollButtons_scrollSpeed'):'"auto"').', /*scroll buttons continuous scrolling speed: integer, "auto"*/
+                            scrollAmount:'.($item -> params -> get('scrollButtons_scrollAmount')?$item -> params -> get('scrollButtons_scrollAmount'):100).' /*scroll buttons pixels scroll amount: integer (pixels)*/
+                        },
+                        advanced:{
+                            updateOnBrowserResize: '.$advanced_updateOnBrowserResize.', /*update scrollbars on browser resize (for layouts based on percentages): boolean*/
+                            updateOnContentResize: '.$advanced_updateOnContentResize.', /*auto-update scrollbars on content resize (for dynamic content): boolean*/
+                            autoExpandHorizontalScroll: '.$advanced_autoExpandHorizontalScroll.', /*auto-expand width for horizontal scrolling: boolean*/
+                            autoScrollOnFocus: '.$advanced_autoScrollOnFocus.', /*auto-scroll on focused elements: boolean*/
+                            normalizeMouseWheelDelta: '.$advanced_normalizeMouseWheelDelta.' /*normalize mouse-wheel delta (-1/1)*/
+                        },
+                        contentTouchScroll: '.$contentTouchScroll.', /*scrolling by touch-swipe content: boolean*/
+                        callbacks:{
+                            onScrollStart:function(){}, /*user custom callback function on scroll start event*/
+                            onScroll:function(){}, /*user custom callback function on scroll event*/
+                            onTotalScroll:function(){}, /*user custom callback function on scroll end reached event*/
+                            onTotalScrollBack:function(){}, /*user custom callback function on scroll begin reached event*/
+                            onTotalScrollOffset:0, /*scroll end reached offset: integer (pixels)*/
+                            onTotalScrollBackOffset:0, /*scroll begin reached offset: integer (pixels)*/
+                            whileScrolling:function(){} /*user custom callback function on scrolling event*/
+                        },
+                        theme:"'.$item -> params -> get('scrollbar_theme','dark-thick').'"
+                    });
+                });
+                jQuery(window).resize(function(){
+                    jQuery(".TzPortfolioItemPage").height(jQuery(this).height());
+                });
+            </script>');
+        }
+        /* End add scrollbar script */
+
+        if($item -> params -> get('show_video',1)){
+            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+                                        $jscompress -> folder.'/fluidvids.v2.0.0'
+                            .$jscompress -> extfile.'.js"></script>');
+            $doc -> addCustomTag('<script type="text/javascript">
+                jQuery(document).ready(function(){
+                Fluidvids.init({
+                    selector: \'.TzArticleMedia iframe\',
+                    players: [\'www.youtube.com\', \'player.vimeo.com\']
+                });
+              });
+              </script>');
+        }
+
         $params -> merge($temp);
         $params -> merge($item -> params);
 
@@ -710,7 +840,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         $socialInfo -> description  = $description;
         $this -> assign('socialInfo',$socialInfo);
 
-        $this -> document -> setMetaData('copyright','Copyright © '.date('Y',time()).' TemPlaza. All Rights Reserved.');
+//        $this -> document -> setMetaData('copyright','Copyright © '.date('Y',time()).' TemPlaza. All Rights Reserved.');
 
         // Set meta tags with prefix property "og:"
         $this -> document -> addCustomTag('<meta property="og:title" content="'.$title.'"/>');

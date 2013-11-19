@@ -29,5 +29,5 @@ include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/de
 include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/tzportfolio.php';
 
 $controller = JControllerLegacy::getInstance('TZ_Portfolio');
-$controller->execute(JRequest::getCmd('task'));
+$controller->execute(JFactory::getApplication()->input->get('task'));
 $controller->redirect();

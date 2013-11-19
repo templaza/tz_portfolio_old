@@ -39,6 +39,15 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 	protected $link_items = array();
 	protected $columns = 1;
 
+    protected $media        = null;
+    protected $extraFields  = null;
+
+    function __construct($config = array()){
+        $this -> media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $this -> extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+        parent::__construct($config);
+    }
+
 	function display($tpl = null)
 	{
 
@@ -122,20 +131,15 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 
                     $slug   = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
 
-                    $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-                    $itemParams = new JRegistry($item -> attribs); //Get Article's Params
-
+                    /*** New source ***/
                     //Check redirect to view article
-                    if($itemParams -> get('tz_portfolio_redirect')){
-                        $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-                    }
-
-                    if($tzRedirect == 'p_article'){
-                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($slug,$item -> catid), true ,-1);
+                    if($item -> params -> get('tz_portfolio_redirect') == 'p_article'){
+                        $contentUrl   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($slug, $item -> catid),true,-1);
                     }
                     else{
-                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($slug,$item -> catid), true ,-1);
+                        $contentUrl   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($slug, $item -> catid),true,-1);
                     }
+                    /*** End New Source ***/
 
                     if($params -> get('tz_show_count_comment',1) == 1){
                         if($params -> get('tz_comment_type','disqus') == 'disqus'){
@@ -162,8 +166,13 @@ class TZ_PortfolioViewCategory extends JViewLegacy
                         if($content){
                             if($body    = json_decode($content -> body)){
                                 if($responses = $body -> response){
-                                    foreach($responses as $response){
-                                        $comments[$response ->link]   = $response -> posts;
+                                    if(!is_array($responses)){
+                                        JError::raiseNotice('300',JText::_('COM_TZ_PORTFOLIO_DISQUS_INVALID_SECRET_KEY'));
+                                    }
+                                    if(is_array($responses) && count($responses)){
+                                        foreach($responses as $response){
+                                            $comments[$response ->link]   = $response -> posts;
+                                        }
                                     }
                                 }
                             }
@@ -249,32 +258,35 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 
 		for ($i = 0, $n = count($items); $i < $n; $i++)
 		{
-			$item = &$items[$i];
+            $item = &$items[$i];
 
-			$item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
+            $item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
 
-            $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-            $itemParams = new JRegistry($item -> attribs); //Get Article's Params
+            /*** New source ***/
+            $tmpl   = null;
+            if($item -> params -> get('tz_use_lightbox',1) == 1){
+                $tmpl   = '&amp;tmpl=component';
+            }
+
+            //Check redirect to view article
+            if($item -> params -> get('tz_portfolio_redirect') == 'p_article'){
+                $item ->link         = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid).$tmpl);
+                $item -> fullLink    = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid),true,-1);
+            }
+            else{
+                $item ->link         = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid).$tmpl);
+                $item -> fullLink = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid),true,-1);
+            }
+            /*** End New Source ***/
 
             if($params -> get('comment_function_type','default') != 'js'){
-                //Check redirect to view article
-                if($itemParams -> get('tz_portfolio_redirect')){
-                    $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-                }
-
-                if($tzRedirect == 'p_article'){
-                    $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid), true ,-1);
-                }
-                else{
-                    $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid), true ,-1);
-                }
 
                 if($params -> get('tz_show_count_comment',1) == 1){
                     if($params -> get('tz_comment_type','disqus') == 'disqus' ||
                         $params -> get('tz_comment_type','disqus') == 'facebook'){
                         if($comments){
-                            if(array_key_exists($contentUrl,$comments)){
-                                $item -> commentCount   = $comments[$contentUrl];
+                            if(array_key_exists($item -> fullLink,$comments)){
+                                $item -> commentCount   = $comments[$item -> fullLink];
                             }else{
                                 $item -> commentCount   = 0;
                             }
@@ -305,7 +317,16 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 
 			// Ignore content plugins on links.
 			if ($i < $numLeading + $numIntro) {
-				$item->introtext = JHtml::_('content.prepare', $item->introtext, '', 'com_tz_portfolio.category');
+                // Old plugins: Ensure that text property is available
+                if (!isset($item->text))
+                {
+                    $item->text = $item->introtext;
+                }
+
+                JPluginHelper::importPlugin('content');
+
+                $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.category', &$item, &$item -> params, 0));
+                $item->introtext = $item->text;
 
 				$results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.category', &$item, &$item->params, 0));
 				$item->event->afterDisplayTitle = trim(implode("\n", $results));
@@ -361,6 +382,13 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 			$limit = $numLeading;
 			for ($i = 0; $i < $limit && $i < $max; $i++) {
 				$this->lead_items[$i] = &$items[$i];
+
+                if($items[$i] -> params -> get('article_leading_image_size')){
+                    $items[$i] -> params -> set('article_leading_image_resize',$items[$i] -> params -> get('article_leading_image_size','L'));
+                }
+                if($items[$i] -> params -> get('article_leading_image_gallery_size')){
+                    $items[$i] -> params -> set('article_leading_image_gallery_resize',$items[$i] -> params -> get('article_leading_image_gallery_size','L'));
+                }
 			}
 
 			// The second group is the intro articles.
@@ -368,6 +396,13 @@ class TZ_PortfolioViewCategory extends JViewLegacy
 			// Order articles across, then down (or single column mode)
 			for ($i = $numLeading; $i < $limit && $i < $max; $i++) {
 				$this->intro_items[$i] = &$items[$i];
+
+                if($items[$i] -> params -> get('article_secondary_image_size')){
+                    $items[$i] -> params -> set('article_secondary_image_resize',$items[$i] -> params -> get('article_secondary_image_size','M'));
+                }
+                if($items[$i] -> params -> get('article_secondary_image_gallery_size')){
+                    $items[$i] -> params -> set('article_secondary_image_gallery_resize',$items[$i] -> params -> get('article_secondary_image_gallery_size','M'));
+                }
 			}
 
 			$this->columns = max(1, $params->def('num_columns', 1));
@@ -457,20 +492,28 @@ class TZ_PortfolioViewCategory extends JViewLegacy
             if($width || $height){
                 $autosize   = 'fitToView: false,autoSize: false,';
             }
+            $scrollHidden   = null;
+            if($params -> get('use_custom_scrollbar',1)){
+                $scrollHidden   = ',scrolling: "no"
+                                    ,iframe: {
+                                        scrolling : "no",
+                                    }';
+            }
             $doc -> addCustomTag('<script type="text/javascript">
                 jQuery(\'.fancybox\').fancybox({
                     type:\'iframe\',
                     openSpeed:'.$params -> get('tz_lightbox_speed',350).',
                     openEffect: "'.$params -> get('tz_lightbox_transition','elastic').'",
                     '.$width.$height.$autosize.'
-		            helpers:  {
+                    helpers:  {
                         title : {
                             type : "inside"
                         },
                         overlay : {
-                            opacity:'.$params -> get('tz_lightbox_opacity',0.75).',
+                            css : {background: "rgba(0,0,0,'.$params -> get('tz_lightbox_opacity',0.75).')"}
                         }
-                    }
+                    }'
+                    .$scrollHidden.'
                 });
                 </script>
             ');

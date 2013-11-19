@@ -20,8 +20,8 @@
 defined('_JEXEC') or die();
 
 $media  = $this -> listMedia;
-$link   = $this -> itemLink;
-$params = $this -> mediaParams;
+$link   = $this -> item ->link;
+$params = $this -> item -> params;
 
 $class  = null;
 if($params -> get('tz_use_lightbox',1) == 1){

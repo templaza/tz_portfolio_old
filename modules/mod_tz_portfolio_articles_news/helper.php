@@ -46,12 +46,12 @@ abstract class modTZ_PortfolioArticlesNewsHelper
 
 		$model->setState('filter.published', 1);
 
-		$model->setState('list.select', 'a.fulltext, a.id, a.title, a.alias, a.title_alias, a.introtext, a.state, a.catid, a.created, a.created_by, a.created_by_alias,' .
+		$model->setState('list.select', 'a.fulltext, a.id, a.title, a.alias, a.introtext, a.state, a.catid, a.created, a.created_by, a.created_by_alias,' .
 			' a.modified, a.modified_by,a.publish_up, a.publish_down, a.attribs, a.metadata, a.metakey, a.metadesc, a.access,' .
 			' a.hits, a.featured,' .
 			' LENGTH(a.fulltext) AS readmore');
 		// Access filter
-		$access = !JComponentHelper::getParams('com_content')->get('show_noauth');
+		$access = !JComponentHelper::getParams('com_tz_portfolio')->get('show_noauth');
 		$authorised = JAccess::getAuthorisedViewLevels(JFactory::getUser()->get('id'));
 		$model->setState('filter.access', $access);
 
@@ -72,8 +72,37 @@ abstract class modTZ_PortfolioArticlesNewsHelper
 
 		//	Retrieve Content
 		if($items = $model->getItems()){
-
+            $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel',array('ignore_request' => true));
             foreach ($items as &$item) {
+                $model2 -> setState('article.id',$item -> id);
+
+                $item -> media  = null;
+                if($media  = $model2 -> getMedia()){
+                    $item -> media  = $media[0];
+                    if($media[0] -> type != 'video' && $media[0] -> type != 'audio'){
+                        if(!empty($media[0] -> images)){
+                            if($params -> get('tz_image_size','S')){
+                                $imageName  = $media[0] -> images;
+                                $item -> media -> images   = JURI::root().str_replace('.'.JFile::getExt($imageName)
+                                    ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
+                            }
+                        }
+                    }
+                    else{
+                        if(!empty($media[0] -> thumb)){
+                            if($params -> get('tz_image_size','S')){
+                                $imageName  = $media[0] -> thumb;
+                                $item -> media -> images   = JURI::root().str_replace('.'.JFile::getExt($imageName)
+                                    ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
+                            }
+                        }
+                    }
+                    if( ($media[0] -> type == 'quote' AND !$params -> get('show_quote',1))
+                        OR ($media[0] -> type == 'link' AND !$params -> get('show_link',1)) ){
+                        $item -> media  = null;
+                    }
+                }
+
                 $item->readmore = (trim($item->fulltext) != '');
                 $item->slug = $item->id.':'.$item->alias;
                 $item->catslug = $item->catid.':'.$item->category_alias;

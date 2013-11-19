@@ -26,4 +26,9 @@ require_once dirname(__FILE__).'/helper.php';
 $list = modTZ_PortfolioArticlesLatestHelper::getList($params);
 $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
 
+if($list){
+    $doc    = JFactory::getDocument();
+    $doc -> addStyleSheet('modules/mod_tz_portfolio_articles_latest/css/style.css');
+}
+
 require JModuleHelper::getLayoutPath('mod_tz_portfolio_articles_latest', $params->get('layout', 'default'));

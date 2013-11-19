@@ -377,12 +377,26 @@ $pluginsTab = $this -> pluginsTab;
                         var video   = new Element('div',{id:'tz_thumb_preview_youtube'}).inject(myLabel,'after');
                         var iframe  = new Element('img',{
                             style: 'margin-top:10px; cursor:pointer; max-width: 200px;',
+                            <?php if(isset($list -> video->thumb)):?>
+                                <?php if($list -> video -> thumb):?>
+                                src: '<?php echo JUri::root().str_replace('.'.JFile::getExt($list -> video -> thumb),
+                                '_S.'.JFile::getExt($list -> video -> thumb),$list -> video -> thumb);?>'
+                                <?php endif;?>
+                            <?php else:?>
                             src:'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
+                            <?php endif;?>
                         }).inject(video);
                         iframe.addEvent('click',function(){
                            SqueezeBox.fromElement(this, {
                                 handler: "image",
+                               <?php if(isset($list -> video->thumb)):?>
+                                    <?php if($list -> video -> thumb):?>
+                                    url: '<?php echo JUri::root().str_replace('.'.JFile::getExt($list -> video -> thumb),
+                                            '_L.'.JFile::getExt($list -> video -> thumb),$list -> video -> thumb);?>'
+                                    <?php endif;?>
+                                <?php else:?>
                                 url: 'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
+                                <?php endif;?>
                            });
                         });
                     }
@@ -1147,7 +1161,7 @@ $pluginsTab = $this -> pluginsTab;
       name="adminForm"
       id="item-form"
       class="form-validate"
-      enctype="multipart/form-data"" >
+      enctype="multipart/form-data">
     <div class="span8 form-horizontal">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#general" data-toggle="tab"><?php echo JText::_('COM_CONTENT_ARTICLE_DETAILS');?></a></li>
@@ -1564,7 +1578,7 @@ $pluginsTab = $this -> pluginsTab;
 		    <?php // This is for legacy reasons. ?>
 
             <?php if ($params['show_urls_images_backend']): ?>
-                <?php echo JHtml::_('bootstrap.addSlide', 'menuOptions', JText::_('COM_CONTENT_FIELDSET_URLS_AND_IMAGES'), 'urls_and_images-options' ); ?>
+                <?php echo JHtml::_('bootstrap.addSlide', 'menuOptions', JText::_('COM_TZ_PORTFOLIO_FIELDSET_URLS_AND_IMAGES'), 'urls_and_images-options' ); ?>
 				<fieldset class="panelform">
                     <div class="control-group">
                         <div class="control-label"><?php echo $this->form->getLabel('images'); ?></div>
@@ -1598,6 +1612,7 @@ $pluginsTab = $this -> pluginsTab;
             <?php echo JHtml::_('bootstrap.addSlide', 'menuOptions', JText::_('JGLOBAL_FIELDSET_METADATA_OPTIONS'), 'meta-options' ); ?>
                 <fieldset class="panelform">
                     <?php echo $this->loadTemplate('metadata'); ?>
+                </fieldset>
             <?php echo JHtml::_('bootstrap.endSlide');?>
         <?php echo JHtml::_('bootstrap.endAccordion');?>
 

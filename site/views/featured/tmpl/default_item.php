@@ -22,33 +22,19 @@ defined('_JEXEC') or die;
 
 // Create a shortcut for params.
 $params = &$this->item->params;
-$blogItemParams = $params;
-$blogItemParams -> merge(new JRegistry($this -> item -> attribs));
+
 $images = json_decode($this->item->images);
 $canEdit	= $this->item->params->get('access-edit');
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.framework');
 
-$tmpl   = null;
-if($params -> get('tz_use_lightbox',1) == 1){
-    $tmpl   = '&tmpl=component';
-}
+$blogLink   = $this -> item ->link;
 
-if($blogItemParams -> get('tz_portfolio_redirect') == 'p_article'){
-    $blogLink           = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this->item->slug, $this->item->catid).$tmpl);
-    $commentCountLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this->item->slug, $this->item->catid),true,-1);
-}
-else{
-    $blogLink           = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this->item->slug, $this->item->catid).$tmpl);
-    $commentCountLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this->item->slug, $this->item->catid),true,-1);
-}
-
-$media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
-$media -> setParams($this -> mediaParams);
+$media  = $this -> media;
+$media -> setParams($params);
 $listMedia      = $media -> getMedia($this -> item -> id);
 $this -> assign('listMedia',$listMedia);
-$this -> assign('itemLink',$blogLink);
 ?>
 
 <?php if ($this->item->state == 0) : ?>
@@ -67,15 +53,8 @@ $this -> assign('itemLink',$blogLink);
             ?>
         <?php endif;?>
 
-        <?php // Require audio?>
-        <?php if($params -> get('audio_layout_type','thumbnail') == 'thumbnail'):?>
-            <?php echo $this -> loadTemplate('audio_thumb');?>
-        <?php else: ?>
-            <?php echo $this -> loadTemplate('audio');?>
-        <?php endif;?>
-
     <?php if (($params->get('show_author',1)) or ($params->get('show_category',1)) or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1)) or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1)) or ($params->get('show_hits',1))) : ?>
-     <div class="TzArticleBlogInfo">
+     <div class="muted TzArticleBlogInfo">
     <?php endif; ?>
 
         <?php if ($params->get('show_create_date')) : ?>
@@ -166,9 +145,9 @@ $this -> assign('itemLink',$blogLink);
             <?php echo JText::_('COM_TZ_PORTFOLIO_COMMENT_COUNT');?>
             <?php if($params -> get('comment_function_type','js') == 'js'):?>
                 <?php if($params -> get('tz_comment_type') == 'disqus'): ?>
-                    <a href="<?php echo $commentCountLink;?>#disqus_thread"><?php echo $this -> item -> commentCount;?></a>
+                    <a href="<?php echo $this -> item -> fullLink;?>#disqus_thread"><?php echo $this -> item -> commentCount;?></a>
                 <?php elseif($params -> get('tz_comment_type') == 'facebook'):?>
-                    <span class="fb-comments-count" data-href="<?php echo $commentCountLink;?>"></span>
+                    <span class="fb-comments-count" data-href="<?php echo $this -> item -> fullLink;?>"></span>
                 <?php endif;?>
             <?php else:?>
                 <?php if($params -> get('tz_comment_type') == 'facebook'): ?>
@@ -229,7 +208,7 @@ $this -> assign('itemLink',$blogLink);
                 <?php echo $this->escape($this->item->title); ?>
             <?php endif; ?>
             <?php if($this -> item -> featured == 1):?>
-            <span class="TzFeature"><?php echo JText::_('COM_TZ_PORTFOLIO_FEATURE');?></span>
+            <span class="label label-important TzFeature"><?php echo JText::_('COM_TZ_PORTFOLIO_FEATURE');?></span>
             <?php endif;?>
         </h3>
     <?php endif; ?>
@@ -245,19 +224,12 @@ $this -> assign('itemLink',$blogLink);
     <?php // to do not that elegant would be nice to group the params ?>
 
     <?php
-        $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+        $extraFields    = $this -> extraFields;
         $extraFields -> setState('article.id',$this -> item -> id);
         $extraFields -> setState('category.id',$this -> item -> catid);
         $extraFields -> setState('orderby',$params -> get('fields_order'));
-
         $extraParams    = $extraFields -> getParams();
-        $itemParams     = new JRegistry($this -> item -> attribs);
-
-        if($itemParams -> get('tz_fieldsid'))
-            $extraParams -> set('tz_fieldsid',$itemParams -> get('tz_fieldsid'));
-
-        $extraFields -> setState('params',$extraParams);
-        $this -> item -> params -> merge($extraParams);
+        $extraFields -> setState('params',$params);
         $this -> assign('listFields',$extraFields -> getExtraFields());
     ?>
     <?php echo $this -> loadTemplate('extrafields');?>
@@ -290,7 +262,7 @@ $this -> assign('itemLink',$blogLink);
         endif;
     ?>
         <?php if($params -> get('show_readmore',1) == 1):?>
-            <a class="TzReadmore<?php if($params -> get('tz_use_lightbox') == 1) echo ' fancybox fancybox.iframe';?>" href="<?php echo $link; ?>"> <i class="icon-chevron-right"></i>
+            <a class="btn TzReadmore<?php if($params -> get('tz_use_lightbox') == 1) echo ' fancybox fancybox.iframe';?>" href="<?php echo $link; ?>"> <i class="icon-chevron-right"></i>
             <?php if (!$params->get('access-view')) :
                     echo JText::_('COM_CONTENT_REGISTER_TO_READ_MORE');
                 elseif ($readmore = $this->item->alternative_readmore) :

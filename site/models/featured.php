@@ -51,6 +51,10 @@ class TZ_PortfolioModelFeatured extends TZ_PortfolioModelArticles
 
 		$params = $this->state->params;
 
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
+        }
+
 		$limit = $params->get('num_leading_articles') + $params->get('num_intro_articles') + $params->get('num_links');
 		$this->setState('list.limit', $limit);
 		$this->setState('list.links', $params->get('num_links'));
@@ -84,20 +88,20 @@ class TZ_PortfolioModelFeatured extends TZ_PortfolioModelArticles
 	 *
 	 * @return	mixed	An array of objects on success, false on failure.
 	 */
-	public function getItems()
-	{
-		$params = clone $this->getState('params');
+    public function getItems()
+    {
+        $params = clone $this->getState('params');
 
-		$limit = $params->get('num_leading_articles') + $params->get('num_intro_articles') + $params->get('num_links');
-		if ($limit > 0)
-		{
-			$this->setState('list.limit', $limit);
+        $limit = $params->get('num_leading_articles') + $params->get('num_intro_articles') + $params->get('num_links');
+        if ($limit > 0)
+        {
+            $this->setState('list.limit', $limit);
 
-			return parent::getItems();
-		}
-		return array();
+            return parent::getItems();
+        }
+        return array();
 
-	}
+    }
 
 	/**
 	 * Method to get a store id based on model configuration state.
@@ -145,6 +149,7 @@ class TZ_PortfolioModelFeatured extends TZ_PortfolioModelArticles
 
 		// Filter by categories
 		if (is_array($featuredCategories = $this->getState('filter.frontpage.categories'))) {
+            $featuredCategories = array_filter($featuredCategories);
 			$query->where(' a.catid IN (' . implode(',', $featuredCategories) . ')');
 		}
 

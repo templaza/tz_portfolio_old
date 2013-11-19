@@ -112,21 +112,21 @@ class TZ_PortfolioModelPlugin extends JModelAdmin{
             $where  = null;
             if($contentid = $this -> getState('com_tz_portfolio.plugin.articleId')){
                 $where  = ' AND contentid='.$contentid;
-            }
 
-            $query  = 'SELECT * FROM'.$db -> quoteName('#__tz_portfolio_plugin')
-                      .' WHERE pluginid ='.$pluginId
-                      .$where;
-            $db -> setQuery($query);
-            if($row = $db -> loadObject()){
-                $items  = new JRegistry();
+                $query  = 'SELECT * FROM'.$db -> quoteName('#__tz_portfolio_plugin')
+                          .' WHERE pluginid ='.$pluginId
+                          .$where;
+                $db -> setQuery($query);
+                if($row = $db -> loadObject()){
+                    $items  = new JRegistry();
 
-                    if(!empty($row -> params)){
-                        $items -> loadString($row -> params);
-                        if(count($items) > 0){
-                            return $items;
+                        if(!empty($row -> params)){
+                            $items -> loadString($row -> params);
+                            if(count($items) > 0){
+                                return $items;
+                            }
                         }
-                    }
+                }
             }
         }
         return null;

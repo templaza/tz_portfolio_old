@@ -25,11 +25,9 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
 <div class="TzBlog blog<?php echo $this->pageclass_sfx;?>">
     <div class="TzBlogInner">
-<!--        --><?php //if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
             <div class="row-fluid">
-<!--        --><?php //endif;?>
         <?php if ($this->params->get('show_page_heading', 1)) : ?>
-        <h1>
+        <h1 class="page-heading">
             <?php echo $this->escape($this->params->get('page_heading')); ?>
         </h1>
         <?php endif; ?>
@@ -44,11 +42,11 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
         <?php endif; ?>
 
         <?php if($this->params -> get('use_filter_first_letter',1)):?>
-            <div class="TzLetters">
-                <div class="breadcrumb">
-                    <?php echo $this -> loadTemplate('letters');?>
-                </div>
+        <div class="TzLetters">
+            <div class="breadcrumb">
+                <?php echo $this -> loadTemplate('letters');?>
             </div>
+        </div>
         <?php endif;?>
 
         <?php if ($this->params->get('show_description', 1) || $this->params->def('show_description_image', 1)) : ?>
@@ -80,17 +78,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
                 <div class="TzLeading leading-<?php echo $leadingcount; ?><?php echo $item->state == 0 ? ' system-unpublished' : null; ?>">
                     <?php
                         $this->item = &$item;
-
-                        $mediaParams    = $this -> mediaParams;
-
-                        if($mediaParams -> get('article_leading_image_size','L')){
-                            $mediaParams -> set('article_leading_image_resize',$mediaParams -> get('article_leading_image_size','L'));
-                        }
-                        if($mediaParams -> get('article_leading_image_gallery_size','L')){
-                            $mediaParams -> set('article_leading_image_gallery_resize',strtolower($mediaParams -> get('article_leading_image_gallery_size','L')));
-                        }
-                        $this -> assign('mediaParams',$mediaParams);
-
                         echo $this->loadTemplate('item');
                     ?>
               <div class="clr"></div>
@@ -121,23 +108,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
                     <div class="TzItem column-<?php echo $rowcount;?><?php echo $item->state == 0 ? ' system-unpublished' : null; ?>">
                         <?php
                             $this->item = &$item;
-
-                            $mediaParams    = $this -> mediaParams;
-
-                            if($mediaParams -> get('article_leading_image_size')){
-                                $mediaParams -> set('article_leading_image_resize','');
-                            }
-                            if($mediaParams -> get('article_leading_image_gallery_size')){
-                                $mediaParams -> set('article_leading_image_gallery_resize','');
-                            }
-                            if($mediaParams -> get('article_secondary_image_size','M')){
-                                $mediaParams -> set('article_secondary_image_resize',$mediaParams -> get('article_secondary_image_size','M'));
-                            }
-                            if($mediaParams -> get('article_secondary_image_gallery_size','M')){
-                                $mediaParams -> set('article_secondary_image_gallery_resize',$mediaParams -> get('article_secondary_image_gallery_size','M'));
-                            }
-                            $this -> assign('mediaParams',$mediaParams);
-
                             echo $this->loadTemplate('item');
                         ?>
                     <div class="clr"></div>
@@ -159,7 +129,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
         <div class="clearfix"></div>
 
         <?php if (($this->params->def('show_pagination', 1) == 1  || ($this->params->get('show_pagination') == 2)) && ($this->pagination->get('pages.total') > 1)) : ?>
-            <div class="TzPagination">
+            <div class="pagination">
 
                 <?php echo $this->pagination->getPagesLinks(); ?>
 

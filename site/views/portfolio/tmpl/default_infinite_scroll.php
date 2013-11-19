@@ -28,9 +28,9 @@ $params = $this -> params;
 
 
 <div id="loadaj" style="display: none;">
-    <a href="<?php echo JURI::root().'index.php?option=com_tz_portfolio&view=portfolio&task=portfolio.ajax'
-        .'&layout=item'.(($this -> char)?'&char='.$this -> char:'').'&Itemid='
-        .$this -> Itemid.'&page=2'; ?>">
+    <a href="<?php echo JURI::root().'index.php?option=com_tz_portfolio&amp;view=portfolio&amp;task=portfolio.ajax'
+        .'&amp;layout=item'.(($this -> char)?'&amp;char='.$this -> char:'').'&amp;Itemid='
+        .$this -> Itemid.'&amp;page=2'; ?>">
     </a>
 </div>
 
@@ -78,6 +78,7 @@ $params = $this -> params;
                         jQuery('#tz_append').removeAttr('style').html('<a class="tzNomore"><?php echo JText::_('COM_TZ_PORTFOLIO_NO_MORE_PAGES');?></a>');
                     <?php endif;?>
                     jQuery('#tz_append a').addClass('tzNomore');
+                    jQuery('#infscr-loading').css('display','none');
                 },
                 loading: {
                     msgText:'<?php echo JText::_('COM_TZ_PORTFOLIO_LOADING_TEXT');?>',
@@ -88,6 +89,7 @@ $params = $this -> params;
                 },
                 // call Isotope as a callback
                 function( newElements ) {
+                    jQuery('#infscr-loading').css('display','none');
 
                     var $newElems =   jQuery( newElements ).css({ opacity: 0 }),
                         $bool = true;

@@ -49,6 +49,7 @@ class TZ_PortfolioModelAttachments extends JModelLegacy
 
                 if(count($attach)>0){
                     foreach($attach as $i => $item){
+                        $data[$i]   = new stdClass();
                         $data[$i] -> _link          = 'index.php?option=com_tz_portfolio&view=article'
                                                       .'&task=article.download&attach='
                                                       .md5($item).'&id='.JRequest::getCmd('id')

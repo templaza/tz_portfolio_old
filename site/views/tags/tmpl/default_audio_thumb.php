@@ -21,8 +21,8 @@
 defined('_JEXEC') or die();
 
 $media      = $this -> listMedia;
-$link       = $this -> itemLink;
-$params     = $this -> mediaParams;
+$link       = $this -> item ->link;
+$params     = $this -> item -> params;
 if(count($media)):
 ?>
 

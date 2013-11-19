@@ -222,6 +222,12 @@
         </fieldset>
 		<fieldset
 			name="basic">
+            <field name="tz_portfolio_redirect" type="list" label="COM_TZ_PORTFOLIO_REDIRECT"
+                   description="COM_TZ_PORTFOLIO_REDIRECT_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="article">COM_TZ_PORTFOLIO_BLOG_ARTICLE</option>
+                <option value="p_article">COM_TZ_PORTFOLIO_PORTFOLIO_ARTICLE</option>
+            </field>
 
 			<field
 				name="category_layout"

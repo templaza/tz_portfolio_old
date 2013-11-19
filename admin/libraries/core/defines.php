@@ -29,3 +29,9 @@ define ('COM_TZ_PORTFOLIO_JVERSION_COMPARE', version_compare(JVERSION,'3.0','ge'
 if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE && !DIRECTORY_SEPARATOR){
     define('DIRECTORY_SEPARATOR','\\');
 }
+
+if(file_exists(JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/tz_portfolio.xml')){
+    define('COM_TZ_PORTFOLIO_VERSION',JFactory::getXML(JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/tz_portfolio.xml')->version);
+}elseif(file_exists(JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/manifest.xml')){
+    define('COM_TZ_PORTFOLIO_VERSION',JFactory::getXML(JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/manifest.xml')->version);
+}

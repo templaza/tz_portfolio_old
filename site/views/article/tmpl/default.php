@@ -38,11 +38,6 @@ if($tmpl){
     $tmpl   = '&tmpl=component';
 }
 ?>
-<?php if($tmpl):?>
-    <style type="text/css">
-        .TzItemPage .TzItemPageInner{border: 0;}
-    </style>
-<?php endif;?>
 
 <div class="TzItemPage item-page<?php echo $this->pageclass_sfx?>">
     <div class="TzItemPageInner">
@@ -70,7 +65,7 @@ if($tmpl){
         or ($params->get('show_hits',1))); ?>
 
         <?php if ($useDefList) : ?>
-        <div class="TzArticleInfo">
+        <div class="muted TzArticleInfo">
         <?php endif; ?>
 
             <?php if ($params->get('show_create_date',1)) : ?>
@@ -208,7 +203,7 @@ if($tmpl){
             <?php endif; ?>
 
         <?php if ($useDefList) : ?>
-          <div class="clr"></div>
+          <div class="clearfix"></div>
             </div>
         <?php endif; ?>
 
@@ -316,11 +311,13 @@ if($tmpl){
             require_once(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'tmpl'.DIRECTORY_SEPARATOR.'default_author.php');
         ?>
 
-        <?php echo $this -> loadTemplate('social_network');?>
+        <?php if (!$this->print) : ?>
+            <?php echo $this -> loadTemplate('social_network');?>
 
-        <?php echo $this -> item -> event -> onTZPortfolioCommentDisplay;?>
+            <?php echo $this -> item -> event -> onTZPortfolioCommentDisplay;?>
 
-        <?php echo $this -> loadTemplate('related');?>
+            <?php echo $this -> loadTemplate('related');?>
+        <?php endif;?>
                 
         <?php
         if (!empty($this->item->pagination) AND $this->item->pagination AND $this->item->paginationposition AND!$this->item->paginationrelative):

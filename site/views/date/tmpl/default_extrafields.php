@@ -19,7 +19,7 @@
  
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-$params = $this -> extraParams;
+$params = $this -> item -> params;
 $list   = $this -> listFields;
 ?>
 <?php if($params -> get('show_extra_fields') != '0'):?>

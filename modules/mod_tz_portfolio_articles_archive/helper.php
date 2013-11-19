@@ -25,17 +25,27 @@ class modTZ_PortfolioArchiveHelper
 	static function getList(&$params)
 	{
 		//get database
-		$db		= JFactory::getDbo();
-		$query	= $db->getQuery(true);
+		$db		    = JFactory::getDbo();
+		$query	    = $db->getQuery(true);
+        $subQuery   = $db -> getQuery(true);
+
 		$query->select('MONTH(created) AS created_month, created, id, title, YEAR(created) AS created_year');
 		$query->from('#__content');
         $query -> where('checked_out = 0');
         if($params -> get('redirect_to','date') == 'archive'){
             $query->where('state = 2');
+            $subQuery->where('state = 2');
         }else{
             $query -> where('state = 1');
+            $subQuery -> where('state = 1');
         }
 		$query->group('created_year DESC, created_month DESC');
+
+        $subQuery -> select('COUNT(*)');
+        $subQuery -> from('#__content');
+        $subQuery -> where('checked_out = 0');
+        $subQuery -> where('MONTH(created) = created_month AND YEAR(created) = created_year');
+        $query -> select('('.$subQuery -> __toString().') AS total');
 
 		// Filter by language
 		if (JFactory::getApplication()->getLanguageFilter()) {
@@ -74,6 +84,10 @@ class modTZ_PortfolioArchiveHelper
 				}
 				$lists[$i]->text	= JText::sprintf('MOD_ARTICLES_ARCHIVE_DATE', $month_name_cal, $created_year_cal);
 
+                $lists[$i] -> total = 0;
+                if(isset($row -> total)){
+                    $lists[$i] -> total = $row -> total;
+                }
 				$i++;
 			}
 		}

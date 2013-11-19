@@ -134,6 +134,11 @@ class TZ_PortfolioModelCategory extends JModelList
 
 		// Load the parameters. Merge Global and Menu Item params into new object
 		$params = $app->getParams();
+
+        // Set value again for option tz_portfolio_redirect
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
+        }
 //        $params = JComponentHelper::getParams('com_content');
 
 		$menuParams = new JRegistry;
@@ -232,15 +237,14 @@ class TZ_PortfolioModelCategory extends JModelList
 	 */
 	function getItems()
 	{
-		$params = $this->getState()->get('params');
+		$params = $this->getState('params');
 
 		$limit = $this->getState('list.limit');
 
 		if ($this->_articles === null && $category = $this->getCategory()) {
-            $params -> merge($category -> params);
             $this -> setState('catParams',$params);
 			$model = JModelLegacy::getInstance('Articles', 'TZ_PortfolioModel', array('ignore_request' => true));
-			$model->setState('params',JFactory::getApplication()->getParams());
+			$model->setState('params',$params);
 			$model->setState('filter.category_id', $category->id);
 			$model->setState('filter.published', $this->getState('filter.published'));
 			$model->setState('filter.access', $this->getState('filter.access'));

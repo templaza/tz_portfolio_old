@@ -87,22 +87,17 @@ if($this -> params -> get('tz_use_lightbox',1) == 1){
 							<?php echo JHtml::_('icon.edit', $article, $params); ?>
 						</span>
 					<?php endif; ?>
+                    <h2 class="TzBlogTitle">
 					<strong class="list-title">
                         <?php
-                            //Check redirect to view article
-                            if($this -> params -> get('tz_portfolio_redirect','article')){
-                                $tzRedirect = $this -> params -> get('tz_portfolio_redirect','article');
-                            }
-                            if($tzRedirect == 'p_article'){
-                                $href = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($article->slug,$article->catid).$tmpl);
-                            }
-                            else{
-                                $href = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article->slug,$article->catid).$tmpl);
-                            }
+                            $href   = $article ->link;
                         ?>
-						<a<?php if($this -> params -> get('tz_use_lightbox') == 1) echo ' class="fancybox fancybox.iframe"';?> href="<?php echo $href; ?>">
+						<a<?php if($this -> params -> get('tz_use_lightbox') == 1) echo ' class="fancybox fancybox.iframe"';?>
+                            href="<?php echo $href; ?>">
 							<?php echo $this->escape($article->title); ?></a>
 					</strong>
+                    </h2>
+
 					<?php if ($this->items[$i]->state == 0): ?>
 						<span class="label label-warning"><?php echo JText::_('JUNPUBLISHED');?></span>
 					<?php endif; ?>
@@ -146,19 +141,9 @@ if($this -> params -> get('tz_use_lightbox',1) == 1){
 							$active		= $menu->getActive();
 							$itemId		= $active->id;
 							$link = JRoute::_('index.php?option=com_users&view=login&Itemid='.$itemId);
-                            //Check redirect to view article
-                            if($this -> params -> get('tz_portfolio_redirect','article')){
-                                $tzRedirect = $this -> params -> get('tz_portfolio_redirect','article');
-                            }
-                            if($tzRedirect == 'p_article'){
-                                $returnURL = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($article->slug,$article->catid).$tmpl);
-                            }
-                            else{
-                                $returnURL = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article->slug,$article->catid).$tmpl);
-                            }
                         
 							$fullURL = new JURI($link);
-							$fullURL->setVar('return', base64_encode($returnURL));
+							$fullURL->setVar('return', base64_encode($this -> item ->link));
 						?>
 						<a<?php if($this -> params -> get('tz_use_lightbox') == 1) echo ' class="fancybox fancybox.iframe"';?> href="<?php echo $fullURL; ?>" class="register">
 							<?php echo JText::_('COM_CONTENT_REGISTER_TO_READ_MORE'); ?></a>

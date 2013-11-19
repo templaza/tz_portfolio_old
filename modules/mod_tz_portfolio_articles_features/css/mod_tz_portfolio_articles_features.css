@@ -3,10 +3,7 @@ ul.TzModFeature li, ul.TzModFeature{
   background: none !important;
 }
 ul.TzModFeature li img{
-  padding: 10px;
-  background: #fff;
   float:left;
-  margin-right: 8px;
 }
 ul.TzModFeature li a.FeatureTitle{
   text-transform: none;
@@ -20,5 +17,17 @@ ul.TzModFeature li p{
 ul.TzModFeature li{
   padding: 15px 0 !important;
   border-bottom: 1px solid #e0e0e0;
-
+}
+.TzModFeature .quote{
+    font-style: italic;
+}
+.TzModFeature .quote .author{
+    margin-bottom: 15px;
+}
+.TzModFeature .quote .text > *{
+    display: inline;
+}
+.TzModFeature .quote .icon-quote{
+    float: left;
+    padding-right: 3px;
 }

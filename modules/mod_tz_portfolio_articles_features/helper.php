@@ -49,7 +49,7 @@ abstract class modTZ_PortfolioArticlesFeaturesHelper
 		$model->setState('filter.access', $access);
 
 		// Category filter
-		$model->setState('filter.category_id', $params->get('catid', array()));
+		$model->setState('filter.category_id', implode($params->get('catid', '')));
 
 		// Filter by language
 		$model->setState('filter.language', $app->getLanguageFilter());
@@ -62,7 +62,7 @@ abstract class modTZ_PortfolioArticlesFeaturesHelper
 
 		$items = $model->getItems();
 
-        $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel',array('ignore_request' => true));
 		foreach ($items as &$item) {
 			$item->slug = $item->id.':'.$item->alias;
 			$item->catslug = $item->catid.':'.$item->category_alias;
@@ -90,10 +90,38 @@ abstract class modTZ_PortfolioArticlesFeaturesHelper
                     $item -> text   = $text;
             }
 
+            $item -> media  = null;
+            $model2 -> setState('article.id',$item -> id);
+            if($media  = $model2 -> getMedia()){
+                $item -> media  = $media[0];
+                if($media[0] -> type != 'video' && $media[0] -> type != 'audio'){
+                    if(!empty($media[0] -> images)){
+                        if($params -> get('tz_image_size','S')){
+                            $imageName  = $media[0] -> images;
+                            $item -> media -> images   = JURI::root().str_replace('.'.JFile::getExt($imageName)
+                                ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
+                        }
+                    }
+                }
+                else{
+                    if(!empty($media[0] -> thumb)){
+                        if($params -> get('tz_image_size','S')){
+                            $imageName  = $media[0] -> thumb;
+                            $item -> media -> images   = JURI::root().str_replace('.'.JFile::getExt($imageName)
+                                ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
+                        }
+                    }
+                }
+                if( ($media[0] -> type == 'quote' AND !$params -> get('show_quote',1))
+                    OR ($media[0] -> type == 'link' AND !$params -> get('show_link',1)) ){
+                    $item -> media  = null;
+                }
+            }
+
             if($model2 && $params -> get('show_tz_image') == '1'){
                 if($image  = $model2 -> getMedia($item -> id)){
                     if($image[0] -> type != 'quote' && $image[0] -> type != 'link'){
-                        if($image[0] -> type != 'video'){
+                        if($image[0] -> type != 'video' && $image[0] -> type != 'audio'){
                             if(!empty($image[0] -> images)){
                                 if($params -> get('tz_image_size','S')){
                                     $imageName  = $image[0] -> images;

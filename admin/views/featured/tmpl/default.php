@@ -122,6 +122,9 @@ $sortFields = $this->getSortFields();
                     <th>
                         <?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
                     </th>
+                    <th width="6%" class="nowrap">
+                        <?php echo JHtml::_('grid.sort', 'COM_TZ_PORTFOLIO_TYPE_OF_MEDIA', 'groupname', $listDirn, $listOrder); ?>
+                    </th>
                     <th width="10%" class="nowrap hidden-phone">
                         <?php echo JHtml::_('grid.sort', 'COM_TZ_PORTFOLIO_HEADING_GROUP', 'groupname', $listDirn, $listOrder); ?>
                     </th>
@@ -238,6 +241,9 @@ $sortFields = $this->getSortFields();
                                     echo JHtml::_('dropdown.render');
                                 ?>
                             </div>
+                        </td>
+                        <td class="small hidden-phone">
+                            <?php echo $item -> type;?>
                         </td>
                         <td class="small hidden-phone">
                                 <a href="index.php?option=com_tz_portfolio&view=groups&task=edit&id=<?php echo $item -> groupid?>">

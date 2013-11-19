@@ -122,13 +122,16 @@ $sortFields = $this->getSortFields();
                         <th>
                             <?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
                         </th>
+                        <th width="6%" class="nowrap">
+                            <?php echo JHtml::_('grid.sort', 'COM_TZ_PORTFOLIO_TYPE_OF_MEDIA', 'groupname', $listDirn, $listOrder); ?>
+                        </th>
                         <th width="10%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('grid.sort', 'COM_TZ_PORTFOLIO_HEADING_GROUP', 'groupname', $listDirn, $listOrder); ?>
                         </th>
                         <th width="10%">
                             <?php echo JHtml::_('grid.sort', 'JCATEGORY', 'category_title', $listDirn, $listOrder); ?>
                         </th>
-                        <th width="10%" class="nowrap hidden-phone">
+                        <th width="6%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ACCESS', 'a.access', $listDirn, $listOrder); ?>
                         </th>
                         <th width="10%" class="nowrap hidden-phone">
@@ -241,9 +244,12 @@ $sortFields = $this->getSortFields();
                                 </div>
                             </td>
                             <td class="small hidden-phone">
-                                    <a href="index.php?option=com_tz_portfolio&task=group.edit&id=<?php echo $item -> groupid?>">
-                                        <?php echo $item -> groupname;?>
-                                    </a>
+                                <?php echo $item -> type;?>
+                            </td>
+                            <td class="small hidden-phone">
+                                <a href="index.php?option=com_tz_portfolio&task=group.edit&id=<?php echo $item -> groupid?>">
+                                    <?php echo $item -> groupname;?>
+                                </a>
                             </td>
                             <td class="small hidden-phone">
                                 <?php echo $this->escape($item->category_title); ?>

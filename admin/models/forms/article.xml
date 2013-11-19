@@ -476,7 +476,6 @@
                    label="COM_TZ_PORTFOLIO_REDIRECT"
                    description="COM_TZ_PORTFOLIO_REDIRECT_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
-                <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
                 <option value="article">COM_TZ_PORTFOLIO_BLOG_ARTICLE</option>
                 <option value="p_article">COM_TZ_PORTFOLIO_PORTFOLIO_ARTICLE</option>
             </field>
@@ -643,6 +642,45 @@
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMSPEED"/>
             <field name="image_gallery_animation_duration" type="text"
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_DURATION"/>
+            <field name="image_gallery_animationLoop" type="list"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_LOOP"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_LOOP_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="image_gallery_smoothHeight" type="list"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SMOOTH_HEIGHT"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SMOOTH_HEIGHT_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="image_gallery_randomize" type="list"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_RANDOMIZE"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_RANDOMIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="image_gallery_startAt" type="text"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_START_AT"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_START_AT_DESC"/>
+
+            <!-- Carousel -->
+            <field name="image_gallery_itemWidth" type="text"
+                   label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ITEM_WIDTH"
+                   description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ITEM_WIDTH_DESC"/>
+            <field name="image_gallery_itemMargin" type="text"
+                   label="COM_TZ_PORTFOLIO_ITEM_MARGIN"
+                   description="COM_TZ_PORTFOLIO_ITEM_MARGIN_DESC"/>
+            <field name="image_gallery_minItems" type="text"
+                   label="COM_TZ_PORTFOLIO_ITEMS_MIN"
+                   description="COM_TZ_PORTFOLIO_ITEMS_MIN_DESC"/>
+            <field name="image_gallery_maxItems" type="text"
+                   label="COM_TZ_PORTFOLIO_ITEMS_MAX"
+                   description="COM_TZ_PORTFOLIO_ITEMS_MAX_DESC"/>
+            <!-- End carousel -->
         </fieldset>
 
         <fieldset name="tz_fieldset_video" label="COM_TZ_PORTFOLIO_FIELDSET_VIDEO_OPTIONS_LABEL">
@@ -864,6 +902,20 @@
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
+            <field name="show_pinterest_button" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_LABEL"
+                   description="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_linkedin_button" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_LABEL"
+                   description="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
         </fieldset>
 
         <fieldset name="basic-tz-extra-fields" label="COM_TZ_PORTFOLIO_TZ_FIELDSET_FIELDS_LABEL">
@@ -888,6 +940,101 @@
                 <option value="image">COM_TZ_PORTFOLIO_FIELD_IMAGE</option>
                 <option value="textimage">COM_TZ_PORTFOLIO_FIELD_TEXT_AND_IMAGE</option>
             </field>
+        </fieldset>
+
+        <fieldset name="tz_fieldset_quote_link" label="COM_TZ_PORTFOLIO_QUOTE_LINK_OPTION_LABEL">
+            <field name="show_quote_text" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_QUOTE_TEXT_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_quote_author" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_QUOTE_AUTHOR_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+
+            <!--<field name="tz_portfolio_spacer_link" type="spacer" class="spacer"-->
+                            <!--label="COM_TZ_PORTFOLIO_SPACER_LINK_LABEL"/>-->
+        </fieldset>
+
+        <fieldset name="tz_fieldset_audio" label="COM_TZ_PORTFOLIO_AUDIO_FIELDSET_OPTION_LABEL">
+            <field name="show_audio" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_AUDIO_LABEL"
+                    description="COM_TZ_PORTFOLIO_SHOW_AUDIO_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="audio_layout_type" type="list"
+                    label="COM_TZ_PORTFOLIO_AUDIO_LAYOUT_TYPE_LABEL"
+                    description="COM_TZ_PORTFOLIO_AUDIO_LAYOUT_TYPE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="thumbnail">COM_TZ_PORTFOLIO_THUMBNAIL</option>
+                <option value="audio">COM_TZ_PORTFOLIO_AUDIO</option>
+            </field>
+            <field name="show_soundcloud_artwork" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_ARTWORK_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="soundcloud_auto_play" type="list"
+                    label="COM_TZ_PORTFOLIO_SOUNDCLOUD_AUTO_PLAY_LABEL"
+                    description="COM_TZ_PORTFOLIO_SOUNDCLOUD_AUTO_PLAY_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="show_soundcloud_sharing" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_SHARING_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_buying" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_BUYING_BUTTON_LABEL"
+                    description="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_BUYING_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_download" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_DOWNLOAD_BUTTON_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_user" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_USER_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_playcount" type="list"
+                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_PLAYCOUNT_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_soundcloud_comments" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_COMMENTS_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="audio_soundcloud_color" type="color"
+                    label="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_COLOR_LABEL"
+                    description="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_COLOR_DESC"/>
+            <field name="audio_soundcloud_theme_color" type="color"
+                    label="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_THEME_COLOR_LABEL"
+                    description="COM_TZ_PORTFOLIO_AUDIO_SOUNDCLOUD_THEME_COLOR_DESC"/>
+            <field name="audio_soundcloud_width" type="text"
+                   label="COM_TZ_PORTFOLIO_AUDIO_WIDTH_LABEL"/>
+            <field name="audio_soundcloud_height" type="text"
+                   label="COM_TZ_PORTFOLIO_AUDIO_HEIGHT_LABEL"/>
         </fieldset>
 
 		<fieldset name="basic-limited" label="COM_CONTENT_ATTRIBS_FIELDSET_LABEL">
@@ -1039,67 +1186,67 @@
 
 	</fields>
 
-	<fields name="images">
-			<field
-				name="image_intro"
-				type="media"
-				label="COM_CONTENT_FIELD_INTRO_LABEL"
-				description="COM_CONTENT_FIELD_INTRO_DESC" />
-			<field
-				name="float_intro"
-				type="list"
-				label="COM_CONTENT_FLOAT_LABEL"
-				description="COM_CONTENT_FLOAT_DESC">
-					<option value="">JGLOBAL_USE_GLOBAL</option>
-					<option value="right">COM_CONTENT_RIGHT</option>
-					<option value="left">COM_CONTENT_LEFT</option>
-					<option value="none">COM_CONTENT_NONE</option>
-			</field>
-			<field name="image_intro_alt"
-				type="text"
-				label="COM_CONTENT_FIELD_IMAGE_ALT_LABEL"
-				description="COM_CONTENT_FIELD_IMAGE_ALT_DESC"
-				class="inputbox"
-				size="20" />
-			<field name="image_intro_caption"
-				type="text"
-				label="COM_CONTENT_FIELD_IMAGE_CAPTION_LABEL"
-				description="COM_CONTENT_FIELD_IMAGE_CAPTION_DESC"
-				class="inputbox"
-				size="20" />
-			<field
-				name="spacer1"
-				type="spacer"
-				hr="true"
-				/>
-			<field
-				name="image_fulltext"
-				type="media"
-				label="COM_CONTENT_FIELD_FULL_LABEL"
-				description="COM_CONTENT_FIELD_FULL_DESC" />
-			<field
-				name="float_fulltext"
-				type="list"
-				label="COM_CONTENT_FLOAT_LABEL"
-				description="COM_CONTENT_FLOAT_DESC">
-					<option value="">JGLOBAL_USE_GLOBAL</option>
-					<option value="right">COM_CONTENT_RIGHT</option>
-					<option value="left">COM_CONTENT_LEFT</option>
-					<option value="none">COM_CONTENT_NONE</option>
-			</field>
-			<field name="image_fulltext_alt"
-				type="text"
-				label="COM_CONTENT_FIELD_IMAGE_ALT_LABEL"
-				description="COM_CONTENT_FIELD_IMAGE_ALT_DESC"
-				class="inputbox"
-				size="20" />
-			<field name="image_fulltext_caption"
-				type="text"
-				label="COM_CONTENT_FIELD_IMAGE_CAPTION_LABEL"
-				description="COM_CONTENT_FIELD_IMAGE_CAPTION_DESC"
-				class="inputbox"
-				size="20" />
-	</fields>
+	<!--<fields name="images">-->
+        <!--<field-->
+            <!--name="image_intro"-->
+            <!--type="media"-->
+            <!--label="COM_CONTENT_FIELD_INTRO_LABEL"-->
+            <!--description="COM_CONTENT_FIELD_INTRO_DESC" />-->
+        <!--<field-->
+            <!--name="float_intro"-->
+            <!--type="list"-->
+            <!--label="COM_CONTENT_FLOAT_LABEL"-->
+            <!--description="COM_CONTENT_FLOAT_DESC">-->
+                <!--<option value="">JGLOBAL_USE_GLOBAL</option>-->
+                <!--<option value="right">COM_CONTENT_RIGHT</option>-->
+                <!--<option value="left">COM_CONTENT_LEFT</option>-->
+                <!--<option value="none">COM_CONTENT_NONE</option>-->
+        <!--</field>-->
+        <!--<field name="image_intro_alt"-->
+            <!--type="text"-->
+            <!--label="COM_CONTENT_FIELD_IMAGE_ALT_LABEL"-->
+            <!--description="COM_CONTENT_FIELD_IMAGE_ALT_DESC"-->
+            <!--class="inputbox"-->
+            <!--size="20" />-->
+        <!--<field name="image_intro_caption"-->
+            <!--type="text"-->
+            <!--label="COM_CONTENT_FIELD_IMAGE_CAPTION_LABEL"-->
+            <!--description="COM_CONTENT_FIELD_IMAGE_CAPTION_DESC"-->
+            <!--class="inputbox"-->
+            <!--size="20" />-->
+        <!--<field-->
+            <!--name="spacer1"-->
+            <!--type="spacer"-->
+            <!--hr="true"-->
+            <!--/>-->
+        <!--<field-->
+            <!--name="image_fulltext"-->
+            <!--type="media"-->
+            <!--label="COM_CONTENT_FIELD_FULL_LABEL"-->
+            <!--description="COM_CONTENT_FIELD_FULL_DESC" />-->
+        <!--<field-->
+            <!--name="float_fulltext"-->
+            <!--type="list"-->
+            <!--label="COM_CONTENT_FLOAT_LABEL"-->
+            <!--description="COM_CONTENT_FLOAT_DESC">-->
+                <!--<option value="">JGLOBAL_USE_GLOBAL</option>-->
+                <!--<option value="right">COM_CONTENT_RIGHT</option>-->
+                <!--<option value="left">COM_CONTENT_LEFT</option>-->
+                <!--<option value="none">COM_CONTENT_NONE</option>-->
+        <!--</field>-->
+        <!--<field name="image_fulltext_alt"-->
+            <!--type="text"-->
+            <!--label="COM_CONTENT_FIELD_IMAGE_ALT_LABEL"-->
+            <!--description="COM_CONTENT_FIELD_IMAGE_ALT_DESC"-->
+            <!--class="inputbox"-->
+            <!--size="20" />-->
+        <!--<field name="image_fulltext_caption"-->
+            <!--type="text"-->
+            <!--label="COM_CONTENT_FIELD_IMAGE_CAPTION_LABEL"-->
+            <!--description="COM_CONTENT_FIELD_IMAGE_CAPTION_DESC"-->
+            <!--class="inputbox"-->
+            <!--size="20" />-->
+	<!--</fields>-->
 	<fields name="urls">
 		<field
 			name="spacer3"

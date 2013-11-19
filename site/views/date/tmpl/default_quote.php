@@ -29,16 +29,16 @@ if($params -> get('show_quote_text',1) OR $params -> get('show_quote_author',1))
 ?>
     <div class="TzQuote">
         <?php if($params -> get('show_quote_text',1)):?>
-        <h2 class="text">
+        <div class="text">
             <i class="icon-quote"></i><?php echo $media[0] -> quote_text;?>
             <?php if($this -> item -> featured == 1):?>
             <span class="TzFeature"><?php echo JText::_('COM_TZ_PORTFOLIO_FEATURE');?></span>
             <?php endif;?>
-        </h2>
+        </div>
         <?php endif;?>
 
         <?php if($params -> get('show_quote_author',1)):?>
-        <span class="author"><?php echo JText::sprintf('COM_TZ_PORTFOLIO_QUOTE_AUTHOR',$media[0] -> quote_author);?></span>
+        <span class="muted author"><?php echo JText::sprintf('COM_TZ_PORTFOLIO_QUOTE_AUTHOR',$media[0] -> quote_author);?></span>
         <?php endif;?>
     </div>
         <?php endif;?>

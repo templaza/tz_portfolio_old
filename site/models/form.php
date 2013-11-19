@@ -305,6 +305,7 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
                         $i=0;
                         foreach($attachFiles as $item){
                             $fileName   = explode('/',$item);
+                            $data[$i]   = new stdClass();
                             $data[$i] -> attachfiles    = $fileName[count($fileName)-1];
                             $data[$i] -> attachtitle    = $attachTitle[$i];
                             $data[$i] -> attachold      = $attachOld[$i];
@@ -312,7 +313,8 @@ class TZ_PortfolioModelForm extends TZ_PortfolioModelArticle
                         }
                    }
                    else{
-                       $fileName   = explode('/',$rows -> attachfiles);
+                       $fileName    = explode('/',$rows -> attachfiles);
+                       $data[0]     = new stdClass();
                        $data[0] -> attachfiles  = $fileName[count($fileName)-1];
                        $data[0] -> attachtitle  = $rows -> attachtitle;
                        $data[0] -> attachold    = $rows -> attachold;

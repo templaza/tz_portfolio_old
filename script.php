@@ -78,7 +78,6 @@ class com_tz_portfolioInstallerScript{
 
         $db -> setQuery($query);
         $db -> query();
-        $this -> UpdateSql();
 
         JFactory::getLanguage() -> load('com_tz_portfolio');
 
@@ -299,10 +298,29 @@ class com_tz_portfolioInstallerScript{
         $this -> uninstallationResult($status);
     }
 
-    function UpdateSql(){
+    function update($adapter){
         $db     = JFactory::getDbo();
         $arr    = null;
+        $listTable  = array(
+            $db -> replacePrefix('#__tz_portfolio_xref'),
+            $db -> replacePrefix('#__tz_portfolio_fields_group'),
+            $db -> replacePrefix('#__tz_portfolio_fields'),
+            $db -> replacePrefix('#__tz_portfolio_categories'),
+            $db -> replacePrefix('#__tz_portfolio'),
+            $db -> replacePrefix('#__tz_portfolio_xref_content'),
+            $db -> replacePrefix('#__tz_portfolio_tags'),
+            $db -> replacePrefix('#__tz_portfolio_plugin')
+        );
+        $disableTables  = array_diff($listTable,$db -> getTableList());
+
+        if(count($disableTables)){
+            $installer  = JInstaller::getInstance();
+            $sql        = $adapter -> getParent() -> manifest;
+            $installer ->parseSQLFiles($sql -> install->sql);
+        }
+
         $fields = $db -> getTableColumns('#__tz_portfolio_xref_content');
+
         if(!array_key_exists('gallery',$fields)){
             $arr[]  = 'ADD `gallery` TEXT NOT NULL';
         }
@@ -381,16 +399,16 @@ class com_tz_portfolioInstallerScript{
         }
 
         //Tz Portfolio Plugin table
-        if(!in_array($db -> getPrefix().'tz_portfolio_plugin',$fields = $db ->getTableList())){
-            $query  =  'CREATE TABLE IF NOT EXISTS `#__tz_portfolio_plugin` (';
-            $query  .= '`id`  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,';
-            $query  .= '`contentid` INT NOT NULL ,';
-            $query  .= '`pluginid` INT NOT NULL,';
-            $query  .= '`params` TEXT NULL';
-            $query  .= ') ENGINE = MYISAM  DEFAULT CHARSET=utf8;';
-            $db -> setQuery($query);
-            $db -> query();
-        }
+//        if(!in_array($db -> getPrefix().'tz_portfolio_plugin',$fields = $db ->getTableList())){
+//            $query  =  'CREATE TABLE IF NOT EXISTS `#__tz_portfolio_plugin` (';
+//            $query  .= '`id`  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,';
+//            $query  .= '`contentid` INT NOT NULL ,';
+//            $query  .= '`pluginid` INT NOT NULL,';
+//            $query  .= '`params` TEXT NULL';
+//            $query  .= ') ENGINE = MYISAM  DEFAULT CHARSET=utf8;';
+//            $db -> setQuery($query);
+//            $db -> query();
+//        }
 
         // Insert portfolio's permission
         $query  = $db -> getQuery(true);
