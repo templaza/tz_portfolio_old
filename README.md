@@ -20,9 +20,17 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+11/19/2013 - 3.1.7
+
+    Fix some bugs (Error when create article with some php version. and some warning).
+    New Features: - A article only display with a single view (Portfolio Single Article or Single Article).
+                  - Can change "item" router name (have option) and switch it for Portfolio's article or Blog's article.
+                  - Insert custom scrollbar (can change css for it) for lightbox.
+                  - Insert some options to display Quote's article, Link's article or Original article for modules: "TZ Portfolio Feature Article", "TZ Most Popular" and " TZ Articles - Newsflash".
+
 08/29/2013 - 3.1.6
 
-	Fix error with metad tags.
+	Fix error with meta tags.
 	Insert 2 social buttons: Pinterest and LinkedIn (have 2 options: "Show Pinterest Button" and "Show LinkedIn Options" in global tab "Social Network - Comments") for Single Article and Portfolio Single Article view.
 
 08/24/2013 - 3.1.5

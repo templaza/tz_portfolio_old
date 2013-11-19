@@ -456,6 +456,7 @@
         <field name="tz_portfolio_redirect" type="list" label="COM_TZ_PORTFOLIO_REDIRECT"
                description="COM_TZ_PORTFOLIO_REDIRECT_DESC">
             <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
             <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
             <option value="article">COM_TZ_PORTFOLIO_BLOG_ARTICLE</option>
             <option value="p_article">COM_TZ_PORTFOLIO_PORTFOLIO_ARTICLE</option>
@@ -491,6 +492,117 @@
                label="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT"
                description="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT_DESC"/>
     </fieldset>
+
+    <!-- START THE SCROLLBAR'S PARAMETERS -->
+    <fieldset name="scrollbar_options" label="COM_TZ_PORTFOLIO_SCROLLBAR_FIELDSET_LABEL">
+        <field name="use_custom_scrollbar" type="list"
+               label="COM_TZ_PORTFOLIO_USE_CUSTOM_SCROLLBAR_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="scrollbar_theme" type="list"
+               label="COM_TZ_PORTFOLIO_SCROLLBAR_THEME_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="light">COM_TZ_PORTFOLIO_LIGHT</option>
+            <option value="dark">COM_TZ_PORTFOLIO_DARK</option>
+            <option value="light-2">COM_TZ_PORTFOLIO_LIGHT_2</option>
+            <option value="dark-2">COM_TZ_PORTFOLIO_DARK_2</option>
+            <option value="light-thick">COM_TZ_PORTFOLIO_LIGHT_THICK</option>
+            <option value="dark-thick">COM_TZ_PORTFOLIO_DARK_THICK</option>
+            <option value="light-thin">COM_TZ_PORTFOLIO_LIGHT_THIN</option>
+            <option value="dark-thin">COM_TZ_PORTFOLIO_DARK_THIN</option>
+        </field>
+        <field name="set_width" type="text" label="COM_TZ_PORTFOLIO_SET_WIDTH_LABEL"/>
+        <field name="set_height" type="text" label="COM_TZ_PORTFOLIO_SET_HEIGHT_LABEL"/>
+        <field name="horizontalScroll" type="list"
+               label="COM_TZ_PORTFOLIO_HORIZONTAL_SCROLL_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="scrollInertia" type="text"
+               label="COM_TZ_PORTFOLIO_SCROLL_INERTIA_LABEL"/>
+        <field name="autoDraggerLength" type="list"
+               label="COM_TZ_PORTFOLIO_AUTO_DRAGGER_LENGTH_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="mouseWheel" type="list"
+               label="COM_TZ_PORTFOLIO_MOUSE_WHEEL_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="mouseWheelPixels" type="text" label="COM_TZ_PORTFOLIO_MOUSE_WHEEL_PIXEL_LABEL"/>
+        <field name="autoHideScrollbar" type="list"
+               label="COM_TZ_PORTFOLIO_AUTO_HIDE_SCROLLBAR_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="snapAmount" type="text"
+               label="COM_TZ_PORTFOLIO_SNAP_AMOUNT_LABEL"
+                description="COM_TZ_PORTFOLIO_SNAP_AMOUNT_DESC"/>
+        <field name="snapOffset" type="text"
+               label="COM_TZ_PORTFOLIO_SNAP_OFFSET_LABEL"
+               description="COM_TZ_PORTFOLIO_SNAP_OFFSET_DESC"/>
+        <field name="scrollButtons_enable" type="list"
+               label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_ENABLE_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="scrollButtons_scrollType" type="list"
+                label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_TYPE_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="continuous">COM_TZ_PORTFOLIO_CONTINUOUS</option>
+            <option value="pixels">COM_TZ_PORTFOLIO_PIXELS</option>
+        </field>
+        <field name="scrollButtons_scrollSpeed" type="text"
+               label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_SPEED_LABEL"/>
+        <field name="scrollButtons_scrollAmount" type="text"
+               label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_AMOUNT_LABEL"/>
+        <field name="advanced_updateOnBrowserResize" type="list"
+               label="COM_TZ_PORTFOLIO_ADVANCED_UPDATE_BROWSER_RESIZE_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="advanced_updateOnContentResize" type="list"
+               label="COM_TZ_PORTFOLIO_ADVANCED_UPDATE_CONTENT_RESIZE_LABEL"
+               description="COM_TZ_PORTFOLIO_ADVANCED_UPDATE_CONTENT_RESIZE_DESC">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="advanced_autoExpandHorizontalScroll" type="list"
+               label="COM_TZ_PORTFOLIO_ADVANCED_AUTO_EXPAND_HORIZONTAL_SCROLL_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="advanced_autoScrollOnFocus" type="list"
+               label="COM_TZ_PORTFOLIO_ADVANCED_AUTO_SCROLL_ON_FOCUS_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="advanced_normalizeMouseWheelDelta"  type="list"
+               label="COM_TZ_PORTFOLIO_ADVANCED_NORMALIZE_MOUSE_WHEEL_DELTA_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="contentTouchScroll" type="list"
+               label="COM_TZ_PORTFOLIO_CONTENT_TOUCH_SCROLL_LABEL">
+            <option value="">JGLOBAL_USE_GLOBAL</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+    </fieldset>
+    <!-- END THE SCROLLBAR'S PARAMETERS -->
 
     <fieldset name="integration">
         <field name="show_feed_link" type="list"

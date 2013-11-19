@@ -64,7 +64,7 @@ html[xmlns] .slides {
 }
 .flexslider ul,
 .flexslider ol {
-  margin: 0 !important;
+  margin: 0;
 }
 .flexslider ul.flex-direction-nav li,
 .flexslider ul.flex-direction-nav li a {

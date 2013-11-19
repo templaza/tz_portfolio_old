@@ -19,7 +19,10 @@
 
 // No direct access
 defined('_JEXEC') or die;
-require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'route.php');
+require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR
+    .'com_tz_portfolio'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'route.php');
+require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR
+    .'com_tz_portfolio'.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR.'defines.php');
 
 /**
  * Pagenavigation plugin class.
@@ -65,14 +68,19 @@ class plgContentTZ_Portfolio_Comment extends JPlugin
 
     /*Facebook*/
     function TZPortfolioFacebookComment($context,&$article,$params,$page=0){
-        if($params -> get('tz_portfolio_redirect') == 'p_article'){
-            $link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article->slug, $article->catid),true,-1);
-        }
-        else{
-            $link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($article->slug, $article->catid),true,-1);
+        if(version_compare(COM_TZ_PORTFOLIO_VERSION,'3.1.7','<')){
+            if($params -> get('tz_portfolio_redirect') == 'p_article'){
+                $link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article->slug, $article->catid),true,-1);
+            }
+            else{
+                $link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($article->slug, $article->catid),true,-1);
+            }
+        }else{
+            $link   = $article -> fullLink;
         }
         $html   = null;
         $html   = '<div class="tz_portfolio_comment">';
+        $html   .= '<div id="fb-root"></div>';
         $html   .= '<div id="fb-root"></div>';
         $html   .= '<script>(function(d, s, id) {
                       var js, fjs = d.getElementsByTagName(s)[0];
@@ -89,11 +97,15 @@ class plgContentTZ_Portfolio_Comment extends JPlugin
 
     /*Disqus*/
     function TZPortfolioDisQusComment($context,&$article,$params,$page=0){
-        if($params -> get('tz_portfolio_redirect') == 'p_article'){
-            $link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article->slug, $article->catid),true,-1);
-        }
-        else{
-            $link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($article->slug, $article->catid),true,-1);
+        if(version_compare(COM_TZ_PORTFOLIO_VERSION,'3.1.7','<')){
+            if($params -> get('tz_portfolio_redirect') == 'p_article'){
+                $link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article->slug, $article->catid),true,-1);
+            }
+            else{
+                $link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($article->slug, $article->catid),true,-1);
+            }
+        }else{
+            $link   = $article -> fullLink;
         }
         $html   = null;
         $html   = '<div class="tz_portfolio_comment">';

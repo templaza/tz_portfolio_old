@@ -2622,6 +2622,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                     ,'_'.$key.'.'.JFile::getExt($_fileName),$_fileName);
                                 $_destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                                 $type       = $this -> _getImageType($str);
+                                $newImage -> crop($newImage -> getWidth(),$newHeight - (ceil($newHeight/$height * 45) * 2),
+                                    0,$newHeight/$height * 45,false);
                                 $newImage -> toFile($_destPath,$type);
                             }
                             $fileName   = $this -> imageUrl.'/cache/thumbnail/youtube/'.$_fileName;
@@ -3458,9 +3460,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             }
 
                             // Delete old thumbnail
-                            if($oldThumb){
-                                $this -> deleteThumb(null,$oldThumb);
-                            }
+//                            if($oldThumb){
+//                                $this -> deleteThumb(null,$oldThumb);
+//                            }
 
                             return str_replace(DIRECTORY_SEPARATOR,'/',$dest);
                         }
@@ -3579,73 +3581,80 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $image  = $this -> uploadImageServer($data['audio_soundcloud_image_server'],$destName,
                         $audioPath,$this -> _getImageSizes($params),$data['audio_soundcloud_hidden_image'],$copy);
                 }else{ // Get thumbnail from soundcloud page
-                    if($client_id = $params -> get('soundcloud_client_id','4a24c193db998e3b88c34cad41154055')){
-                        // Register fetch object
-                        $fetch  = new Services_Yadis_PlainHTTPFetcher();
-                        $url    = 'http://api.soundcloud.com/tracks/'.$data['audio_soundcloud_id']
-                            .'.json?client_id='.$client_id;
+                    if($data['audio_soundcloud_delete_image'] && $hiddenImage = $data['audio_soundcloud_hidden_image']){
+                        $data['audio_soundcloud_hidden_image']  = '';
+                    }
+                    if(!isset($data['audio_soundcloud_hidden_image']) || empty($data['audio_soundcloud_hidden_image'])){
+                        if($client_id = $params -> get('soundcloud_client_id','4a24c193db998e3b88c34cad41154055')){
+                            // Register fetch object
+                            $fetch  = new Services_Yadis_PlainHTTPFetcher();
+                            $url    = 'http://api.soundcloud.com/tracks/'.$data['audio_soundcloud_id']
+                                .'.json?client_id='.$client_id;
 
-                        if($content    = $fetch -> get($url)){
-                            $content    = json_decode($content -> body);
-                            $thumbUrl   = null;
-                            if($content -> artwork_url && !empty($content -> artwork_url)){
-                                $thumbUrl   = $content -> artwork_url;
-                            }
-                            else{
-                                $audioUser   = $content -> user;
-                                if($audioUser -> avatar_url && !empty($audioUser -> avatar_url)){
-                                    $thumbUrl   = $audioUser -> avatar_url;
+                            if($content    = $fetch -> get($url)){
+                                $content    = json_decode($content -> body);
+                                $thumbUrl   = null;
+                                if($content -> artwork_url && !empty($content -> artwork_url)){
+                                    $thumbUrl   = $content -> artwork_url;
                                 }
-                            }
-                            if($thumbUrl){
-                                // Create folder tmp if not exists
-                                if(!JFolder::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
-                                        .DIRECTORY_SEPARATOR.$this -> tzfolder)){
-                                    JFolder::create(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
-                                            .DIRECTORY_SEPARATOR.$this -> tzfolder);
-                                }
-                                if(JFolder::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
-                                        .DIRECTORY_SEPARATOR.$this -> tzfolder)){
-                                    if(!JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
-                                            .DIRECTORY_SEPARATOR.$this -> tzfolder.'index.html')){
-                                        JFile::write(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
-                                            .DIRECTORY_SEPARATOR.$this -> tzfolder.'index.html',
-                                            htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
+                                else{
+                                    $audioUser   = $content -> user;
+                                    if($audioUser -> avatar_url && !empty($audioUser -> avatar_url)){
+                                        $thumbUrl   = $audioUser -> avatar_url;
                                     }
                                 }
-
-                                // Save image from other server to this server (temp file)
-                                $fetch2     = new Services_Yadis_PlainHTTPFetcher();
-                                if($audioTemp  = $fetch2 -> get($thumbUrl)){
-                                    if(in_array($audioTemp -> headers['Content-Type'],$fileTypes)){
-                                        $audioType  = JFile::getExt($thumbUrl);
-                                        if(preg_match('/(.*)(\\|\/|\:|\*|\?|\"|\<|\>|\|.*?)/i',$audioType,$match)){
-                                            $audioType  = $match[1];
+                                if($thumbUrl){
+                                    // Create folder tmp if not exists
+                                    if(!JFolder::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                            .DIRECTORY_SEPARATOR.$this -> tzfolder)){
+                                        JFolder::create(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                                .DIRECTORY_SEPARATOR.$this -> tzfolder);
+                                    }
+                                    if(JFolder::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                            .DIRECTORY_SEPARATOR.$this -> tzfolder)){
+                                        if(!JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                                .DIRECTORY_SEPARATOR.$this -> tzfolder.'index.html')){
+                                            JFile::write(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
+                                                .DIRECTORY_SEPARATOR.$this -> tzfolder.'index.html',
+                                                htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
                                         }
-
-                                        $audioTempPath  = 'media'.DIRECTORY_SEPARATOR.$this -> tzfolder
-                                            .DIRECTORY_SEPARATOR.uniqid().time()
-                                            .'.'.$audioType;
-
-                                        JFile::write(JPATH_SITE.DIRECTORY_SEPARATOR.$audioTempPath,$audioTemp -> body);
                                     }
-                                }
 
-                                if($audioTempPath){
-                                    $destName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
-                                        .'-'.$id.'.'
-                                        .JFile::getExt($audioTempPath);
+                                    // Save image from other server to this server (temp file)
+                                    $fetch2     = new Services_Yadis_PlainHTTPFetcher();
+                                    if($audioTemp  = $fetch2 -> get($thumbUrl)){
+                                        if(in_array($audioTemp -> headers['Content-Type'],$fileTypes)){
+                                            $audioType  = JFile::getExt($thumbUrl);
+                                            if(preg_match('/(.*)(\\|\/|\:|\*|\?|\"|\<|\>|\|.*?)/i',$audioType,$match)){
+                                                $audioType  = $match[1];
+                                            }
 
-                                    $image  = $this -> uploadImageServer($audioTempPath,$destName,$audioPath,
-                                        $this -> _getImageSizes($params));
+                                            $audioTempPath  = 'media'.DIRECTORY_SEPARATOR.$this -> tzfolder
+                                                .DIRECTORY_SEPARATOR.uniqid().time()
+                                                .'.'.$audioType;
 
-                                    if(JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.$audioTempPath)){
-                                        JFile::delete(JPATH_SITE.DIRECTORY_SEPARATOR.$audioTempPath);
+                                            JFile::write(JPATH_SITE.DIRECTORY_SEPARATOR.$audioTempPath,$audioTemp -> body);
+                                        }
+                                    }
+
+                                    if($audioTempPath){
+                                        $destName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                                            .'-'.$id.'.'
+                                            .JFile::getExt($audioTempPath);
+
+                                        $image  = $this -> uploadImageServer($audioTempPath,$destName,$audioPath,
+                                            $this -> _getImageSizes($params));
+
+                                        if(JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.$audioTempPath)){
+                                            JFile::delete(JPATH_SITE.DIRECTORY_SEPARATOR.$audioTempPath);
+                                        }
                                     }
                                 }
                             }
-                        }
 
+                        }
+                    }else{
+                        $image  = $data['audio_soundcloud_hidden_image'];
                     }
                 }
 
@@ -3678,19 +3687,22 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $data   = $data['jform'];
             }
             $_data  = null;
-//            $_data  = $this -> _db -> quote('').','.$this -> _db -> quote('');
             if($data['quote_author']){
                 $_data  = $this -> _db -> quote($data['quote_author']);
+            }else{
+                $_data  = $this -> _db -> quote('');
             }
             if($data['quote_text']){
                 $_data  .= ','.$this -> _db -> quote($data['quote_text']);
+            }else{
+                $_data  .= ','.$this -> _db -> quote('');
             }
-            if($_data){
+            if($_data ){
                 return $_data;
             }
-            return null;
+            return $this -> _db -> quote('').','.$this -> _db -> quote('');
         }
-        return null;
+        return $this -> _db -> quote('').','.$this -> _db -> quote('');
     }
 
     public function prepareLink($data){

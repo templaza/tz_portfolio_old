@@ -26,14 +26,15 @@ $url    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> sl
 <?php if(($params -> get('show_twitter_button',1) == 1) OR ($params -> get('show_facebook_button',1) == 1)
          OR ($params -> get('show_google_button',1) == 1) OR $params -> get('show_pinterest_button',1)
         OR $params -> get('show_linkedin_button',1)):?>
-    <div class="tz_portfolio_like_button">
-        <div class="TzAdd"></div>
-
+    <div class="breadcrumb tz_portfolio_like_button">
+        <span class="icon-plus-2 label-info TzAdd"></span>
         <div class="TzLikeButtonInner">
             <span class="TzLikeQuestion"><?php echo JText::_('COM_TZ_PORTFOLIO_SOCIAL_QUESTION');?></span>
             <?php if($params -> get('show_facebook_button',1) == 1): ?>
                 <!-- Facebook Button -->
                 <div class="FacebookButton">
+                    <?php if(!$params -> get('show_comment') OR ($params -> get('show_comment')
+                                        AND $params -> get('tz_comment_type') != 'facebook')): ?>
                     <div id="fb-root"></div>
                     <script type="text/javascript">
                         (function(d, s, id) {
@@ -44,6 +45,7 @@ $url    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> sl
                           fjs.parentNode.insertBefore(js, fjs);
                         }(document, 'script', 'facebook-jssdk'));
                     </script>
+                    <?php endif;?>
                     <div class="fb-like" data-send="false" data-width="200" data-show-faces="true"
                           data-layout="button_count" data-href="<?php echo $url;?>"></div>
                 </div>
@@ -82,9 +84,9 @@ $url    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> sl
             <?php if($params -> get('show_pinterest_button',1)):?>
             <!-- Pinterest Button -->
             <div class="PinterestButton">
-                <a href="http://pinterest.com/pin/create/button/?url=<?php echo $url;?>&media=<?php echo $socialInfos -> image;?>&description=<?php echo $socialInfos -> title;?>"
+                <a href="http://pinterest.com/pin/create/button/?url=<?php echo $url;?>&amp;media=<?php echo urlencode($socialInfos -> image);?>&amp;description=<?php echo urlencode($socialInfos -> title);?>"
                         data-pin-do="buttonPin" data-pin-config="beside">
-                        <img src="//assets.pinterest.com/images/pidgets/pin_it_button.png" />
+                        <img src="//assets.pinterest.com/images/pidgets/pin_it_button.png" alt=""/>
                 </a>
                 <script type="text/javascript">
                 (function(d){

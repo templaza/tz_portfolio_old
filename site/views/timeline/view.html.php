@@ -26,13 +26,24 @@ require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIREC
 class TZ_PortfolioViewTimeLine extends JViewLegacy
 {
     protected $item = null;
+    protected $media        = null;
+    protected $extraFields  = null;
+
+    function __construct($config = array()){
+        $this -> item           = new stdClass();
+        $this -> media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $this -> extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+        parent::__construct($config);
+    }
+
     
     function display($tpl=null){
-        $this -> item   = new stdClass();
         
         $menus		= JMenu::getInstance('site');
         $active     = $menus->getActive();
         $state      = $this -> get('State');
+
+        $_params    = $state -> get('params');
 
         $params = $this -> get('Params');
 
@@ -48,12 +59,20 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
             $this -> assign('listsTags',$this -> get('Tags'));
             $this -> assign('listsCategories',$this -> get('Categories'));
         }
+
+        // Set value again for option tz_portfolio_redirect
+        if($_params -> get('tz_portfolio_redirect') == 'default'){
+            $_params -> set('tz_portfolio_redirect','article');
+        }
+
+        //Escape strings for HTML output
+        $this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
         
         $this -> assign('listsCatDate',$this -> get('DateCategories'));
-        $this -> assign('params',$state -> get('params'));
+        $this -> assign('params',$_params);
         $this -> assign('pagination',$this -> get('Pagination'));
         $this -> assign('Itemid',$active -> id);
-        $this -> assign('limitstart',$state -> get('offset'));
+        $this -> assign('limitstart',$state -> get('list.start'));
 
         $model  = JModelLegacy::getInstance('Portfolio','TZ_PortfolioModel',array('ignore_request' => true));
         $model -> setState('params',$params);
@@ -175,6 +194,13 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
             if($width || $height){
                 $autosize   = 'fitToView: false,autoSize: false,';
             }
+            $scrollHidden   = null;
+            if($params -> get('use_custom_scrollbar',1)){
+                $scrollHidden   = ',scrolling: "no"
+                                    ,iframe: {
+                                        scrolling : "no",
+                                    }';
+            }
             $doc -> addCustomTag('<script type="text/javascript">
                 jQuery(\'.fancybox\').fancybox({
                     type:\'iframe\',
@@ -186,9 +212,10 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
                             type : "inside"
                         },
                         overlay : {
-                            opacity:'.$params -> get('tz_lightbox_opacity',0.75).',
+                            css : {background: "rgba(0,0,0,'.$params -> get('tz_lightbox_opacity',0.75).')"}
                         }
-                    }
+                    }'
+                    .$scrollHidden.'
                 });
                 </script>
             ');

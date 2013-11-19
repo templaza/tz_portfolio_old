@@ -31,14 +31,12 @@ $urls       = json_decode($this->item->urls);
 $canEdit	= $this->item->params->get('access-edit');
 JHtml::_('behavior.caption');
 $user		= JFactory::getUser();
-$doc        = JFactory::getDocument();
 
 $tmpl   = JRequest::getString('tmpl');
 if($tmpl){
     $tmpl   = '&tmpl=component';
 }
 ?>
-    
 <div class="TzPortfolioItemPage item-page<?php echo $this->pageclass_sfx?>">
     <div class="TzItemPageInner">
         <?php if ($this->params->get('show_page_heading', 1)) : ?>
@@ -65,7 +63,7 @@ if($tmpl){
         or ($params->get('show_hits',1))); ?>
 
         <?php if ($useDefList) : ?>
-        <div class="TzArticleInfo">
+        <div class="muted TzArticleInfo">
         <?php endif; ?>
 
             <?php if ($params->get('show_create_date',1)) : ?>
@@ -282,7 +280,7 @@ if($tmpl){
             echo $this->item->event->beforeDisplayContent;
             echo $this->item->event->TZbeforeDisplayContent;
         ?>
-                
+
         <?php $this -> item -> text = trim($this -> item -> text);
             $this -> item -> fulltext = trim($this -> item -> fulltext);?>
         <?php if(!empty($this -> item -> text)):?>
@@ -311,11 +309,13 @@ if($tmpl){
             require_once(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'tmpl'.DIRECTORY_SEPARATOR.'default_author.php');
         ?>
 
-        <?php echo $this -> loadTemplate('social_network');?>
+        <?php if (!$this->print) : ?>
+            <?php echo $this -> loadTemplate('social_network');?>
 
-        <?php echo $this -> item -> event -> onTZPortfolioCommentDisplay;?>
+            <?php echo $this -> item -> event -> onTZPortfolioCommentDisplay;?>
 
-        <?php echo $this -> loadTemplate('related');?>
+            <?php echo $this -> loadTemplate('related');?>
+        <?php endif;?>
 
         <?php
         if (!empty($this->item->pagination) AND $this->item->pagination AND $this->item->paginationposition AND !$this->item->paginationrelative):
@@ -369,6 +369,6 @@ if($tmpl){
             echo $this->item->event->afterDisplayContent;
             echo $this->item->event->TZafterDisplayContent;
         ?>
-    
+
     </div>
 </div>

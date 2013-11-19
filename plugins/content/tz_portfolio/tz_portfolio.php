@@ -309,12 +309,17 @@ class plgContentTZ_Portfolio extends JPlugin
 				$pnSpace = " ";
 			}
 
+            $tmpl   = null;
+            if($params -> get('tz_use_lightbox')){
+                $tmpl   = '&amp;tmpl=component';
+            }
+
 			if ($row->prev) {
                 if($view == 'p_article'){
-				    $row->prev = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row->prev->slug, $row->prev->catslug));
+				    $row->prev = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row->prev->slug, $row->prev->catslug).$tmpl);
                 }
                 else{
-				    $row->prev = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row->prev->slug, $row->prev->catslug));
+				    $row->prev = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row->prev->slug, $row->prev->catslug).$tmpl);
                 }
 			} else {
 				$row->prev = '';
@@ -322,10 +327,10 @@ class plgContentTZ_Portfolio extends JPlugin
 
 			if ($row->next) {
                 if($view == 'p_article'){
-				    $row->next = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row->next->slug, $row->next->catslug));
+				    $row->next = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row->next->slug, $row->next->catslug).$tmpl);
                 }
                 else{
-				    $row->next = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row->next->slug, $row->next->catslug));
+				    $row->next = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row->next->slug, $row->next->catslug).$tmpl);
                 }
 			} else {
 				$row->next = '';

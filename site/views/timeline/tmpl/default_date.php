@@ -21,15 +21,13 @@ defined('_JEXEC') or die();
 
     $list   = $this -> listsArticle;
 ?>
-    <?php $i=0;?>
-    <?php foreach($list as $row):?>
+    <?php foreach($list as $i => $row):?>
         <?php
             $strMonth   = date('M',strtotime($row -> created));
             $strMonth   = strtolower($strMonth);
         ?>
         <?php if($i == 0):?>
             <a href="#<?php echo $strMonth?><?php echo $row -> year;?>">
-               <?php //echo JText::_($strMonth);?>
                 <?php echo JHtml::_('date', strtotime($row -> created), 'M');?>
             </a>
         <?php endif;?>
@@ -37,10 +35,8 @@ defined('_JEXEC') or die();
             if($i != 0 && $list[$i-1] -> tz_date != $list[$i] -> tz_date):
         ?>
            <a href="#<?php echo $strMonth?><?php echo $row -> year;?>">
-<!--               --><?php //echo JText::_($strMonth);?>
                <?php echo JHtml::_('date', strtotime($row -> created), 'M');?>
            </a>
         <?php endif;?>
-        <?php $i++;?>
     <?php endforeach;?>
 <?php //endif;?>

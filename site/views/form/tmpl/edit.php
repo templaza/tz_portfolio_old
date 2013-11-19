@@ -86,7 +86,7 @@ $doc -> addScriptDeclaration('
                     <i class="icon-ok"></i><?php echo JText::_('JSAVE') ?>
                 </button>
                 <button type="button" class="btn" onclick="Joomla.submitbutton('article.cancel')">
-                    <i class="icon-cancel"></i><?php echo JText::_('JCANCEL') ?>
+                    <i class="icon-remove"></i><?php echo JText::_('JCANCEL') ?>
                 </button>
             </div>
             <fieldset class="TzEditor">
@@ -106,6 +106,8 @@ $doc -> addScriptDeclaration('
                             </div>
                         <?php endif; ?>
                     </div>
+                </div>
+
 
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tz_content" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_CONTENT');?></a></li>
@@ -116,9 +118,10 @@ $doc -> addScriptDeclaration('
                         <li><a href="#tztabsAttachment" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_ATTACHMENTS');?></a></li>
                         <li><a href="#tztabsQuote" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_QUOTE');?></a></li>
                         <li><a href="#tztabsLink" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_LINK');?></a></li>
-                        <li><a href="#tztabsAudio" data-toggle="tab" class="hasTip"
+                        <li><a href="#tztabsAudio" data-toggle="tab" class="hasTooltip"
                                title="<?php echo JText::_('COM_TZ_PORTFOLIO_AUDIO')?>::<?php echo JText::_('COM_TZ_PORTFOLIO_TAB_AUDIO_DESC')?>"><?php echo JText::_('COM_TZ_PORTFOLIO_AUDIO');?></a></li>
                     </ul>
+                <div class="row-fluid">
                     <div class="span12">
                         <!-- Begin Content -->
                         <div class="tab-content">
@@ -128,100 +131,143 @@ $doc -> addScriptDeclaration('
                             </div>
                             <div class="tab-pane" id="tztabsImage">
                                 <div id="tz_images">
-                                    <table class="admintable" style="width: 100%">
-                                        <tr>
-                                            <td style="background: #F6F6F6; min-width:100px;" align="right" rowspan="2" valign="top">
-                                                <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE');?></strong>
-                                            </td>
-                                            <td>
-                                                <input type="file" name="tz_img" id="tz_img" value="">
-                                            </td>
-                                        </tr>
-                                        <tr class="input-prepend input-append">
-                                            <td id="tz_img_server">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="background: #F6F6F6; min-width:100px;" align="right">
-                                                <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE_TITLE');?></strong>
-                                            </td>
-                                            <td>
-                                                <input type="text" name="tz_image_title" id="tz_image_title"
-                                                       value="<?php //echo $list -> imagetitle;?>">
-                                                <input type="hidden" name="tz_img_image" value="image">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="background: #F6F6F6; min-width:100px;" align="right" rowspan="2" valign="top">
-                                                <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FROM_IMAGE_HOVER');?></strong>
-                                            </td>
-                                            <td>
-                                                <input type="file" name="tz_img_hover" id="tz_img_hover" value="">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td id="tz_img_hover_server" class="input-prepend input-append">
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE');?></strong>
+                                        </div>
+                                        <div class="controls">
+                                            <input type="file" name="tz_img" id="tz_img" value="">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="control-label">
+
+                                        </div>
+                                        <div class="controls">
+                                            <div id="tz_img_server" class="input-prepend input-append"></div>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE_TITLE');?></strong>
+                                        </div>
+                                        <div class="controls">
+                                            <input type="text" name="tz_image_title" id="tz_image_title"
+                                                   value="<?php //echo $list -> imagetitle;?>">
+                                            <input type="hidden" name="tz_img_image" value="image">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FROM_IMAGE_HOVER');?></strong>
+                                        </div>
+                                        <div class="controls">
+                                            <input type="file" name="tz_img_hover" id="tz_img_hover" value="">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="control-label">
+
+                                        </div>
+                                        <div id="tz_img_hover_server" class="controls input-prepend input-append">
+                                        </div>
+                                    </div>
+<!--                                    <table class="admintable" style="width: 100%">-->
+<!--                                        <tr>-->
+<!--                                            <td style="background: #F6F6F6; min-width:100px;" align="right" rowspan="2" valign="top">-->
+<!--                                                <strong>--><?php //echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE');?><!--</strong>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                <input type="file" name="tz_img" id="tz_img" value="">-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                        <tr class="input-prepend input-append">-->
+<!--                                            <td id="tz_img_server">-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td style="background: #F6F6F6; min-width:100px;" align="right">-->
+<!--                                                <strong>--><?php //echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE_TITLE');?><!--</strong>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                <input type="text" name="tz_image_title" id="tz_image_title"-->
+<!--                                                       value="--><?php ////echo $list -> imagetitle;?><!--">-->
+<!--                                                <input type="hidden" name="tz_img_image" value="image">-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td style="background: #F6F6F6; min-width:100px;" align="right" rowspan="2" valign="top">-->
+<!--                                                <strong>--><?php //echo JText::_('COM_TZ_PORTFOLIO_FROM_IMAGE_HOVER');?><!--</strong>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                <input type="file" name="tz_img_hover" id="tz_img_hover" value="">-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td id="tz_img_hover_server" class="input-prepend input-append">-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                    </table>-->
                                 </div>
                             </div>
 
                             <div class="tab-pane" id="tztabsGallery">
-                                <div>
-                                    <table  id="tz_image_gallery">
-                                        <tr>
-                                            <td id="tz_img_gallery"><!--<input type="text" class="inputbox image-select" name="img_old[]" id="image-select-1" value="" style="width:283px;" />--></td>
-                                        </tr>
-                                    </table>
-                                </div>
+                                    <div id="tz_image_gallery">
+                                        <div class="control-group">
+                                            <div id="tz_img_gallery" class="controls"></div>
+                                        </div>
+                                    </div>
+<!--                                    <table  id="tz_image_gallery">-->
+<!--                                        <tr>-->
+<!--                                            <td id="tz_img_gallery"></td>-->
+<!--                                        </tr>-->
+<!--                                    </table>-->
                             </div>
 
                             <div class="tab-pane" id="tztabsMedia">
                                 <div id="tz_media">
-                                    <table>
-                                        <tr>
-                                            <td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">
-                                                <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_TYPE')?></strong>
-                                            </td>
-                                            <td>
-                                                <select name="tz_media_type" id="tz_media_type">
-                                                    <option value="default"<?php echo ($list -> video -> type =='default')?' selected="selected"':''?>>Default</option>
-                                                    <option value="youtube"<?php echo ($list -> video -> type =='youtube')?' selected="selected"':''?>>Youtube</option>
-                                                    <option value="vimeo"<?php echo ($list -> video -> type =='vimeo')?' selected="selected"':''?>>Vimeo</option>
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_TYPE')?></strong>
+                                        </div>
+                                        <div class="controls">
+                                            <select name="tz_media_type" id="tz_media_type">
+                                                <option value="default"<?php echo ($list -> video -> type =='default')?' selected="selected"':''?>>Default</option>
+                                                <option value="youtube"<?php echo ($list -> video -> type =='youtube')?' selected="selected"':''?>>Youtube</option>
+                                                <option value="vimeo"<?php echo ($list -> video -> type =='vimeo')?' selected="selected"':''?>>Vimeo</option>
 
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr id="tz_media_code_outer">
-                                            <td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">
-                                                <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_SOURCE')?></strong>
-                                            </td>
-                                            <td id="tz_media_code">
-                                                <?php echo JText::_('COM_TZ_PORTFOLIO_PASTE_HTML_CODE');?><br/>
-                                                <textarea rows="10" cols="20" name="tz_media_code">
-                                                    <?php echo $list -> video -> code;?>
-                                                </textarea>
-                                            </td>
-                                        </tr>
-                                        <tr id="tz_thumb">
-                                            <td id="tz_thumb_inner" valign="top" align="right" style="background: #F6F6F6; min-width:100px;">
-                                            </td>
-                                            <td id="tz_thumb_preview">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="tz_media_code_outer" class="control-group">
+                                        <div class="control-label">
+                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_SOURCE')?></strong>
+                                        </div>
+                                        <div id="tz_media_code" class="controls">
+                                            <?php echo JText::_('COM_TZ_PORTFOLIO_PASTE_HTML_CODE');?><br/>
+                                            <textarea rows="10" cols="20" name="tz_media_code">
+                                                <?php echo $list -> video -> code;?>
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div id="tz_thumb" class="control-group">
+                                        <div id="tz_thumb_inner" class="control-label">
+                                        </div>
+                                        <div id="tz_thumb_preview" class="controls">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="control-label">
+                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_TITLE');?></strong>
+                                        </div>
+                                        <div id="tz_media_title" class="controls">
+                                            <input type="text"
+                                                   name="tz_media_title"
+                                                   value="<?php echo trim($list -> video -> title);?>">
+                                        </div>
+                                    </div>
 
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">
-                                                <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_TITLE');?></strong>
-                                            </td>
-                                            <td id="tz_media_title">
-                                                <input type="text"
-                                                       name="tz_media_title"
-                                                       value="<?php echo trim($list -> video -> title);?>">
-                                            </td>
-                                        </tr>
-                                    </table>
+
                                 </div>
                             </div>
 
@@ -246,7 +292,8 @@ $doc -> addScriptDeclaration('
                                     </table>
                                     <?php endif; ?>
 
-                                    <table id="tz_attachments_table"></table>
+<!--                                    <table id="tz_attachments_table"></table>-->
+                                    <div id="tz_attachments_table"></div>
                                 </div>
                             </div>
                             <!-- End Begin Tabs -->
@@ -423,44 +470,43 @@ $doc -> addScriptDeclaration('
                             if($('tz_thumb'))
                                 $('tz_thumb').dispose();
                             <?php //endif;?>
-                            var myTr = new Element('tr', {id: 'tz_thumb'})
+                            var myTr = new Element('div', {id: 'tz_thumb',class:'control-group'})
                                     .inject($('tz_media_code_outer'),'after');
-                            var myThumbInner    = new Element('td',{
+                            var myThumbInner    = new Element('div',{
                                 id: 'tz_thumb_inner',
-                                valign: "top",
-                                align: "right",
-                                style: "background: #F6F6F6; min-width:100px;"
+                                class:'control-label'
                             }).inject(myTr);
                             var myElement  = new Element('strong');
                             myElement.appendText('<?php echo JText::_('COM_TZ_PORTFOLIO_THUMBNAIL');?>');
                             myThumbInner.adopt(myElement);
 
-                            var myThumbPre  = new Element('td',{
+                            var myThumbPre  = new Element('div',{
                                 id: 'tz_thumb_preview',
-                                class: 'input-prepend input-append'
+                                class: 'controls'
                             }).inject(myThumbInner,'after');
 
 //                            var tz_e = location.href.match(/^(.+)\/index\.php.*/i)[1];
 
+                            var div = new Element('div',{class: 'input-prepend input-append'});
+                            div.inject($('tz_thumb_preview'));
                             var icon = new Element('div',{
                                 class: 'add-on',
-                                html: '<\i class="icon-eye"></i>'
-                            }).inject($('tz_thumb_preview'));
+                                html: '<\i class="icon-eye-open"></i>'
+                            }).inject(div);
                             var tz_a = new Element('input',{
                                 type:"text",
                                 class:"inputbox image-select",
                                 name:"tz_thumb",
                                 id:"image-thumb",
-                                readonly:'true',
-                                style:"width:200px;"
+                                readonly:'true'
                             });
-                            tz_a.inject($('tz_thumb_preview'));
+                            tz_a.inject(div);
                             var tz_d = "image-thumb",
                                 tz_b = (new Element("button", {
                                     type: "button",
                                     class: 'btn',
                                     "id": "tz_thumb_button"
-                                })).set('html', '<i class="icon-file"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_BROWSE_SERVER');?>').inject(tz_a,'after'),
+                                })).set('html', '<i class="icon-file"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_BROWSE_SERVER');?>').inject(div),
                                 tz_f = (new Element("button", {
                                     "name": "tz_thumb_cancel",
                                     "id"  : "tz_thumb_cancel",
@@ -470,7 +516,7 @@ $doc -> addScriptDeclaration('
                                 tz_g = (new Element("div", {
                                     "class": "tz-image-preview",
                                     "style": "clear:both;"
-                                })).inject(tz_f,'after');
+                                })).inject($('tz_thumb_preview'));
 
                             if(tz_g)
                                 tz_g.empty();
@@ -503,7 +549,8 @@ $doc -> addScriptDeclaration('
                                     style:'clear:both;',
                                     name: 'tz_thumb_del',
                                     id: 'tz_thumb_del'
-                                }).inject(tz_img,'after');
+                                });
+                            $('tz_thumb_preview').adopt(tz_checkbox);
                                 var tz_label = new Element('label',{
                                     'for': 'tz_thumb_del',
                                     style: 'clear: none; margin: 2px 3px;',
@@ -849,10 +896,12 @@ $doc -> addScriptDeclaration('
 
 //                            var tz_e = location.href.match(/^(.+)\/index\.php.*/i)[1];
 
+                            var div = new Element('div',{class: 'input-prepend input-append'});
+                            div.inject($(id));
                             var icon = new Element('div',{
                                 class: 'add-on',
-                                html: '<\i class="icon-eye"></i>'
-                            }).inject($(id));
+                                html: '<\i class="icon-eye-open"></i>'
+                            }).inject(div);
                             var tz_a = new Element('input',{
                                 type:"text",
                                 class:"inputbox image-select",
@@ -861,7 +910,7 @@ $doc -> addScriptDeclaration('
                                 readonly:'true',
                                 style:"width:200px;"
                             });
-                            tz_a.inject($(id));
+                            tz_a.inject(div);
                             var tz_d = "image-select-" + tz_count,
                                 tz_b = (new Element("button", {
                                     type: "button",
@@ -876,7 +925,7 @@ $doc -> addScriptDeclaration('
                                 tz_g = (new Element("div", {
                                     "class": "tz-image-preview",
                                     "style": "clear:both;"
-                                })).inject(tz_f,'after');
+                                })).inject(div,'after');
 
                             tz_a.setProperty("id", tz_d);
                             if(value){
@@ -1007,20 +1056,14 @@ $doc -> addScriptDeclaration('
                     $('tz_image_gallery').empty();
 
                     var _tz_portfolio_myGallery = function(name,title,i){
-                        var myTr = new Element('tr',{});
+                        var myTr = new Element('div',{class:"control-group"});
                         myTr.inject($('tz_image_gallery'));
-                        var myTd = new Element('td',{
+                        var myTd = new Element('div',{
                             html:'<strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE');?></strong>',
-                            valign:'top',
-                            align:'right',
-                            rowspan:'2',
-                            styles:{
-                                background: '#F6F6F6',
-                                'min-width':'100px'
-                            }
+                            class:"control-label"
                         });
                         myTd.inject(myTr);
-                        var myTd = new Element('td',{});
+                        var myTd = new Element('div',{class: "controls"});
                         myTd.inject(myTr);
                         var myFile = new Element('input',{
                             type:'file',
@@ -1031,48 +1074,45 @@ $doc -> addScriptDeclaration('
                         myFile.inject(myTd);
 
                         //row 2
-                        var myTr2 = new Element('tr',{});
+                        var myTr2 = new Element('div',{class: 'control-group'});
                         myTr2.inject($('tz_image_gallery'));
-                        var myTd = new Element('td',{class: 'input-prepend input-append'
-                        });
-                        myTd.inject(myTr2);
+                        var myTd2   = new Element('div',{class: 'controls'});
+                        myTd2.inject(myTr2);
+//                        var myTd2 = new Element('div',{
+//                        });
+//                        myTd2.inject(myTd);
 
-                        var myField = tz_portfolio_image(myTd,'tz_img_gallery_server[]',name,title,i);
+                        var myField = tz_portfolio_image(myTd2,'tz_img_gallery_server[]',name,title,i);
 
                         if(name.length >0){
                             var tz_hidden = new Element('input',{
                                 'type': 'hidden',
                                 'name': 'tz_image_gallery_current[]',
                                 'value': name
-                            }).inject(myTd);
+                            }).inject(myTd2);
                             var tz_checkbox = new Element("input",{
                                 type: 'checkbox',
                                 id: 'tz_del_gallery_'+i,
                                 'name': 'tz_delete_image_gallery[]',
                                 'value': i,
                                 style: 'clear: both'
-                            }).inject(myTd);
+                            }).inject(myTd2);
                             var tz_label = new Element('label',{
                                 'for': 'tz_del_gallery_'+i,
                                 style: 'clear: none; margin: 2px 3px;',
                                 html: '<?php echo JText::_('COM_TZ_PORTFOLIO_CURRENT_IMAGE_DESC');?>'
-                            }).inject(myTd);
+                            }).inject(myTd2);
                         }
 
                         //row 3
-                        var myTr3 = new Element('tr',{});
+                        var myTr3 = new Element('div',{class: 'control-group'});
                         myTr3.inject($('tz_image_gallery'));
-                        var myTd = new Element('td',{
+                        var myTd = new Element('div',{
                             html:'<strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE_TITLE');?></strong>',
-                            align:'right',
-                            valign:'top',
-                            styles:{
-                                background: '#F6F6F6',
-                                'min-width':'100px'
-                            }
+                            class: 'control-label'
                         });
                         myTd.inject(myTr3);
-                        var myTd = new Element('td',{});
+                        var myTd = new Element('div',{class:'controls'});
                         myTd.inject(myTr3);
 
                         var myInput = new Element('input',{
@@ -1085,17 +1125,17 @@ $doc -> addScriptDeclaration('
                         myInput.inject(myTd);
 
                         //row 4
-                        var myTr4 = new Element('tr',{});
+                        var myTr4 = new Element('div',{class:'control-group'});
                         myTr4.inject($('tz_image_gallery'));
-                        var myTd = new Element('td',{
+                        var myTd = new Element('div',{ class: 'controls'
                         });
-                        myTd.inject(myTr4);
-                        var myTd = new Element('td',{
-                            styles:{
-                                //float:'right'
-                            }
-                        });
-                        myTd.inject(myTr4);
+                        myTr4.adopt(myTd);
+//                        var myTd = new Element('td',{
+//                            styles:{
+//                                //float:'right'
+//                            }
+//                        });
+//                        myTd.inject(myTr4);
 
                         if(tz_count>2){
                             var myRemove = new Element('button',{
@@ -1103,7 +1143,7 @@ $doc -> addScriptDeclaration('
                                 name:'tz_remove_image_'+i,
                                 class: 'btn',
                                 style: 'margin-bottom: 10px;',
-                                html:'<i class="icon-cancel"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_REMOVE');?>',
+                                html:'<i class="icon-remove"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_REMOVE');?>',
                                events:{
                                    click:function(e){
                                        e.stop();
@@ -1125,6 +1165,8 @@ $doc -> addScriptDeclaration('
                     });
                     hidden.inject($('tz_image_gallery'),'after');
                     var k=1;
+                    var tr_add  = new Element('div',{class: 'control-group'}).inject($('tz_image_gallery')),
+                        td_add  = new Element('div',{class: 'control-label', style: 'text-align: left;'}).inject(tr_add);
                     var myGallery = new Element('button',{
                         class: 'btn',
                         html:'<i class="icon-plus"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_ADD_NEW');?>',
@@ -1136,14 +1178,17 @@ $doc -> addScriptDeclaration('
                             }
                         }
                     });
-                    myGallery.inject($('tz_image_gallery'));
-                    var myDiv = (new Element("div", {
-                        "style": "clear:both;"
-                    })).inject(myGallery,'after');
+                    myGallery.inject(td_add);
+//                    var myDiv = (new Element("div", {
+//                        "style": "clear:both;"
+//                    })).inject(myGallery,'after');
 
                      <?php
                     if(count($list -> gallery -> images)>1){
-                        $galleryTitle   = $list -> gallery -> title;
+                        $galleryTitle   = null;
+                        if(isset($list -> gallery -> title)){
+                            $galleryTitle   = $list -> gallery -> title;
+                        }
                         foreach($list -> gallery -> images as $i => $item):
                             $src    = null;
                             if($pos = strpos($item,'.')){
@@ -1153,7 +1198,7 @@ $doc -> addScriptDeclaration('
 
                     ?>
 
-                        _tz_portfolio_myGallery('<?php echo $src;?>','<?php echo $galleryTitle[$i];?>',<?php echo $i;?>);
+                        _tz_portfolio_myGallery('<?php echo $src;?>','<?php echo ($galleryTitle)?$galleryTitle[$i]:'';?>',<?php echo $i;?>);
                     <?php
                         endforeach;
                     }
@@ -1249,40 +1294,30 @@ $doc -> addScriptDeclaration('
                             }
                         }).inject($('tz_attachments'));
 
-                        var myTr0 = new Element('tr',{
+                        var myTr0 = new Element('div',{ class: 'control-group'
                         }).inject($('tz_attachments_table'));
-                        var myTd = new Element('td',{colspan: 2
-                        }).inject(myTr0);
+//                        var myTd = new Element('div',{class: 'controls'
+//                        }).inject(myTr0);
 
                         var myButton = new Element('button',{
                             class: 'btn',
                             html:'<i class="icon-plus"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_ADD_ATTACHMENT_FIELD');?>'
-                        }).inject(myTd);
+                        }).inject(myTr0);
                         var myI = new Element('i',{
                            html:'<?php echo JText::_('COM_TZ_PORTFOLIO_ADD_ATTACHMENT_FIELD_DESC');?>'
-                        }).inject(myTd);
+                        }).inject(myTr0);
 
                         myButton.addEvent('click',function(e){
                             e.stop();
-                            var myTr1 = new Element('tr',{
-                                styles:{
-                                    'margin-top':'10px'
-                                }
+                            var myTr1 = new Element('div',{class: 'control-group'
                             }).inject($('tz_attachments_table'));
 
-                            var myTd = new Element('td',{
-                                html:'File attachments',
-                                align:'right',
-                                valign:'center',
-                                styles:{
-                                    background: '#F6F6F6',
-                                    'min-width':'100px'
-                                }
+                            var myTd = new Element('div',{
+                                html:'<?php echo JText::_('COM_TZ_PORTFOLIO_FILED_ATTACHMENTS');?>',
+                                class: 'control-label'
                             }).inject(myTr1);
-                            var myTd = new Element('td',{
-                                styles:{
-
-                                }
+                            var myTd = new Element('div',{
+                                class: 'controls'
                             }).inject(myTr1);
 
                             var myFile = new Element('input',{
@@ -1291,19 +1326,14 @@ $doc -> addScriptDeclaration('
                                 size:'60%'
                             }).inject(myTd);
 
-                            var myTr2 = new Element('tr',{
+                            var myTr2 = new Element('div',{ class: 'control-group'
                             }).inject($('tz_attachments_table'));
-                            var myTd = new Element('td',{
-                                align:'right',
-                                valign:'center',
-                                html:'Link title',
-                                styles:{
-                                    background: '#F6F6F6',
-                                    'min-width':'100px'
-                                }
+                            var myTd = new Element('div',{
+                                class: 'control-label',
+                                html:'<?php echo JText::_('COM_TZ_PORTFOLIO_FORM_LINK_TITLE');?>',
                             }).inject(myTr2);
-                            var myTd = new Element('td',{
-
+                            var myTd = new Element('div',{
+                                class: 'controls'
                             }).inject(myTr2);
 
                             var myInput = new Element('input',{
@@ -1312,17 +1342,17 @@ $doc -> addScriptDeclaration('
                                 value:'',
                                 size:'70%'
                             }).inject(myTd);
-                            var myTr3 = new Element('tr',{
-                            }).inject($('tz_attachments_table'));
+//                            var myTr3 = new Element('tr',{
+//                            }).inject($('tz_attachments_table'));
 
-                            var myTd = new Element('td',{
-                               colspan:'2',
-                                align: 'right'
+                            var myTr3 = new Element('div',{class:'control-group'}).inject($('tz_attachments_table'));
+                            var myTd = new Element('div',{
+                                class: 'controls'
                             }).inject(myTr3);
                             var myRemove = new Element('button',{
                                 type:'button',
                                 class: 'btn',
-                                html:'<i class="icon-cancel"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_REMOVE');?>',
+                                html:'<i class="icon-remove"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_REMOVE');?>',
                                 events:{
                                     click: function(e){
                                         e.stop();
@@ -1389,7 +1419,7 @@ $doc -> addScriptDeclaration('
 <!--                        <input type="text" name="tz_tags" value="--><?php //echo $this -> listsTags;?><!--"-->
 <!--                               size="50"-->
 <!--                                placeholder="--><?php //echo JText::_('COM_TZ_PORTFOLIO_FORM_TAGS_DESC');?><!--"/>-->
-                        <input type="text" name="tz_tags[]" class="suggest"
+                        <input type="text" name="tz_tags[]" class="suggest tagsinput"
                                data-provide="typeahead"/>
                     </div>
                 </div>

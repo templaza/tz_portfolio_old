@@ -28,35 +28,14 @@ $categories = $this -> listsCatDate;
 ?>
 <?php
     if($list):
-        $_categories = JCategories::getInstance('Content');
-        $media      = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
-        $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+        $media          = $this -> media;
+        $extraFields    = $this -> extraFields;
 ?>
     <?php foreach($list as $i => $row):?>
         <?php
-            $category   = $_categories->get($row -> catid);
-            $params = clone($this -> params);
+            $this -> item   = clone($row);
+            $params = clone($row -> params);
 
-            $catParams  = new JRegistry($category -> params);
-
-            $params -> merge($catParams);
-
-            $itemParams = new JRegistry($row -> attribs); //Get Article's Params
-            $params -> merge($itemParams);
-
-            $tmpl   = null;
-            if($params -> get('tz_use_lightbox',1) == 1){
-                $tmpl   = '&tmpl=component';
-            }
-            //Check redirect to view article
-            if($params -> get('tz_portfolio_redirect') == 'article'){
-                $row ->link     = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);
-                $commentLink    = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
-            }
-            else{
-                $row ->link     = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid).$tmpl);
-                $commentLink    = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid),true,-1);
-            }
             if($params -> get('tz_timeline_time_type','month-year') == 'year'):
                 $dataCategory   = $row -> year;
             elseif($params -> get('tz_timeline_time_type','month-year') == 'month'):
@@ -143,24 +122,26 @@ $categories = $this -> listsCatDate;
         ?>
         <?php if($year OR $strMonth):?>
             <div class="element TzDate <?php if($data) echo $data;?>"
-                 data-category="<?php echo $dataCategory?>">
+                 data-category="<?php echo $dataCategory?>"
+                 data-title=""
+                 data-date="<?php echo strtotime($row -> created)+strtotime($dataCategory)+1;?>"
+                 data-hits="<?php echo ((int) $row -> maxhits) +strtotime($dataCategory) + 1; ?>">
                 <h2 id="<?php echo strtolower(date('M',strtotime($row -> created))).$year;?>">
-                    <span><?php echo JText::_(trim($strMonth)).'&nbsp;'.$year;?></span>
+                    <span class="label label-info date"><?php echo JText::_(trim($strMonth)).'&nbsp;'.$year;?></span>
                 </h2>
             </div>
         <?php endif;?>
 
         <?php
             $listMedia      = $media -> getMedia($row -> id);
-
-            $this -> assign('mediaParams',$params);
             $this -> assign('listMedia',$listMedia);
-            $this -> assign('itemLink',$row ->link);
-            $this -> assign('itemArticle',$row);
         ?>
 
         <div id="tzelement<?php echo $row -> id;?>" class="element <?php echo $class.$tzItemClass.$tzItemFeatureClass;?>"
-             data-category="<?php echo $dataCategory;?>">
+             data-category="<?php echo $dataCategory;?>"
+             data-title="<?php echo $this->escape($row -> title); ?>"
+             data-date="<?php echo strtotime($row->created); ?>"
+             data-hits="<?php echo ((int) $row -> hits) + strtotime($dataCategory); ?>">
             <div class="TzInner">
                 <!-- Begin Icon print, Email or Edit -->
                 <?php if($params -> get('show_icons',0)):?>
@@ -226,8 +207,12 @@ $categories = $this -> listsCatDate;
                             <?php echo $row -> event -> TZafterDisplayTitle;?>
                         <?php endif;?>
 
-                        <?php //Show voting?>
+                        <?php
+                         //Show voting
+                        if($params -> get('show_vote') AND $row -> event -> TZPortfolioVote):
+                        ?>
                         <?php echo $row->event->TZPortfolioVote;?>
+                        <?php endif; ?>
 
                         <?php //Call event onContentBeforeDisplay and onTZPluginBeforeDisplay on plugin?>
                         <?php echo $row -> event -> beforeDisplayContent; ?>
@@ -235,15 +220,15 @@ $categories = $this -> listsCatDate;
 
 
                         <?php  if ($params->get('show_intro',1) == 1 AND !empty($row -> introtext)) :?>
-                            <div class="TzPortfolioIntrotext">
-                                    <?php echo $row -> introtext;?>
-                            </div>
+                        <div class="TzPortfolioIntrotext">
+                            <?php echo $row -> introtext;?>
+                        </div>
                         <?php endif; ?>
 
                         <div class="TzSeparator"></div>
 
                         <?php if (($params->get('show_author',1)) or ($params->get('show_category',1)) or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1)) or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1)) or ($params->get('show_hits',1))) : ?>
-                                <div class="TzArticle-info">
+                            <div class="muted TzArticle-info">
                         <?php endif; ?>
 
                             <?php if ($params->get('show_category',1)) : ?>
@@ -330,9 +315,7 @@ $categories = $this -> listsCatDate;
 
                             <?php
                                 $extraFields -> setState('article.id',$row -> id);
-                                $extraFields -> setState('params',$params);
-                                $this -> item -> params = clone($params);
-
+                                $extraFields -> setState('params',$row -> params);
                                 $this -> assign('listFields',$extraFields -> getExtraFields());
                             ?>
                             <?php echo $this -> loadTemplate('extrafields');?>
@@ -341,7 +324,7 @@ $categories = $this -> listsCatDate;
                                 </div>
                             <?php endif; ?>
                         <?php if($params -> get('show_readmore',1)):?>
-                        <a class="TzPortfolioReadmore<?php if($params -> get('tz_use_lightbox') == 1){echo ' fancybox fancybox.iframe';}?>" href="<?php echo $row ->link; ?>">
+                        <a class="btn btn-primary TzPortfolioReadmore<?php if($params -> get('tz_use_lightbox') == 1){echo ' fancybox fancybox.iframe';}?>" href="<?php echo $row ->link; ?>">
                             <?php echo JText::sprintf('COM_TZPORTFOLIO_READMORE'); ?>
                         </a>
                         <?php endif;?>

@@ -51,6 +51,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
     <script type="text/javascript">
         function tz_init(defaultwidth){
+
             var contentWidth    = jQuery('#TzContent').width();
             var columnWidth     = defaultwidth;
             var curColCount     = 0;
@@ -78,14 +79,10 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
             }
 
             jQuery('.element').width(newColWidth);
-            jQuery('.tz_item .TzTimeLineMedia').each(function(){
-                jQuery(this).find('img').first().attr('width','100%');
-            });
 
             jQuery('.tz_feature_item').width(featureColWidth);
-            jQuery('.TzDate').each(function(){
-               jQuery(this).width(contentWidth);
-            });
+            jQuery('.TzDate').width(contentWidth);
+
             var $container = jQuery('#timeline');
             $container.imagesLoaded(function(){
                 $container.isotope({
@@ -97,7 +94,12 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
         }
     </script>
 
-    <div id="TzContent">
+    <div id="TzContent" class="<?php echo $this->pageclass_sfx;?>">
+        <?php if ($params->get('show_page_heading', 1)) : ?>
+        <h1 class="page-heading">
+            <?php echo $this->escape($params->get('page_heading')); ?>
+        </h1>
+        <?php endif; ?>
 
         <?php if($params -> get('use_filter_first_letter',1)):?>
             <div class="TzLetters">
@@ -110,7 +112,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
         <div id="tz_options" class="clearfix">
             <?php if($params -> get('tz_show_filter',1)):?>
             <div class="option-combo">
-                <h2 class="TzFilter"><?php echo JText::_('COM_TZ_PORTFOLIO_FILTER');?></h2>
+                <div class="filter-title TzFilter"><?php echo JText::_('COM_TZ_PORTFOLIO_FILTER');?></div>
 
 
                 <div id="filter" class="option-set clearfix" data-option-key="filter">
@@ -130,31 +132,50 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
             </div>
             <?php endif;?>
 
-            <?php if($params -> get('show_sort',1)):?>
-                <div class="option-combo">
-                  <h2><?php echo JText::_('COM_TZ_PORTFOLIO_SORT')?></h2>
-                  <div id="sort" class="option-set clearfix" data-option-key="sortBy">
-                      <a class="btn btn-small" href="#title" data-option-value="name"><?php echo JText::_('COM_TZ_PORTFOLIO_TITLE');?></a>
-                      <a class="btn btn-small selected" href="#date" data-option-value="date"><?php echo JText::_('COM_TZ_PORTFOLIO_DATE');?></a>
-                  </div>
-                </div>
+            <?php if($params -> get('show_sort',1) AND $sortfields = $params -> get('sort_fields',array('date','hits','title'))):?>
+            <div class="option-combo">
+                <div class="filter-title"><?php echo JText::_('COM_TZ_PORTFOLIO_SORT')?></div>
+                    <div id="sort" class="option-set clearfix" data-option-key="sortBy">
+                    <?php
+                    foreach($sortfields as $sortfield):
+                        switch($sortfield):
+                            case 'title':
+                    ?>
+                        <a class="btn btn-small" href="#title" data-option-value="name"><?php echo JText::_('COM_TZ_PORTFOLIO_TITLE');?></a>
+                        <?php
+                                break;
+                            case 'date':
+                        ?>
+                        <a class="btn btn-small selected" href="#date" data-option-value="date"><?php echo JText::_('COM_TZ_PORTFOLIO_DATE');?></a>
+                        <?php
+                                break;
+                            case 'hits':
+                        ?>
+                        <a class="btn btn-small" href="#hits" data-option-value="hits"><?php echo JText::_('JGLOBAL_HITS');?></a>
+                    <?php
+                                break;
+                        endswitch;
+                    endforeach;
+                    ?>
+                    </div>
+            </div>
             <?php endif;?>
 
             <?php if($params -> get('show_layout',1)):?>
-                <div class="option-combo">
-                    <h2><?php echo JText::_('COM_TZ_PORTFOLIO_LAYOUT');?></h2>
-                    <div id="layouts" class="option-set clearfix" data-option-key="layoutMode">
-                    <?php
-                        if(count($params -> get('layout_type',array('masonry','fitRows','straightDown')))>0):
-                            foreach($params -> get('layout_type',array('masonry','fitRows','straightDown')) as $i => $param):
-                    ?>
-                            <a class="btn btn-small<?php if($i == 0) echo ' selected'?>" href="#<?php echo $param?>" data-option-value="<?php echo $param?>">
-                                <?php echo $param?>
-                            </a>
-                        <?php endforeach;?>
-                    <?php endif;?>
-                    </div>
+            <div class="option-combo">
+                <div class="filter-title"><?php echo JText::_('COM_TZ_PORTFOLIO_LAYOUT');?></div>
+                <div id="layouts" class="option-set clearfix" data-option-key="layoutMode">
+                <?php
+                    if(count($params -> get('layout_type',array('masonry','fitRows','straightDown')))>0):
+                        foreach($params -> get('layout_type',array('masonry','fitRows','straightDown')) as $i => $param):
+                ?>
+                        <a class="btn btn-small<?php if($i == 0) echo ' selected'?>" href="#<?php echo $param?>" data-option-value="<?php echo $param?>">
+                            <?php echo $param?>
+                        </a>
+                    <?php endforeach;?>
+                <?php endif;?>
                 </div>
+            </div>
             <?php endif;?>
 
             <?php if($params -> get('tz_portfolio_layout') == 'default'):?>
@@ -209,24 +230,41 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
                     itemSelector    : '.element',
                     layoutMode      : '<?php echo $layout[0];?>',
                     sortBy          : 'date',
+                    sortAscending   : false,
                     getSortData     : {
-                        name: function( $elem ) {
-                            var name = $elem.find('.name'),
-                                _date   = $elem.attr('data-category'),
+                        date: function($elem){
+                            var number = ($elem.hasClass('element') && $elem.attr('data-date').length) ?
+                                $elem.attr('data-date'):$elem.find('.create').text();
+                            return parseInt(number);
+                        }
+                        <?php
+                         if($params -> get('show_sort',1) AND $params -> get('sort_fields',array('date','hits','title'))):
+                            if(in_array('hits',$params -> get('sort_fields',array('date','hits','title')))):
+                        ?>
+                        ,hits: function($elem){
+                           var number = ($elem.hasClass('element') && $elem.attr('data-hits').length) ?
+                               $elem.attr('data-hits'):$elem.find('.hits').text();
+                           return parseInt(number);
+                        }
+                        <?php
+                            endif;
+                            if(in_array('title',$params -> get('sort_fields',array('date','hits','title')))):
+                        ?>
+                        ,name: function( $elem ) {
+                            var name = ($elem.hasClass('element') && $elem.find('.name').length)?$elem.find('.name').text().trim():
+                                    (($elem.attr('data-title').length)?$elem.attr('data-title'):''),
+                                _date   = ($elem.hasClass('element') && $elem.attr('data-category').length)?
+                                    $elem.attr('data-category'):'',
                                 itemText = name.length ? name : $elem.text();
                             if(_date.length){
                                 itemText = _date + itemText;
                             }
-
-                            return itemText;
-                        },
-                        date: function($elem){
-                            var number = $elem.hasClass('element') ?
-                              $elem.find('.create').text() :
-                              $elem.attr('data-date');
-                            return number;
-
+                            return itemText.toString();
                         }
+                        <?php
+                            endif;
+                        endif;
+                        ?>
                     }
                 },function(){
     
@@ -241,6 +279,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
             function loadTimeline(){
                   var $optionSets = jQuery('#tz_options .option-set'),
                      $optionLinks = $optionSets.find('a');
+                    var $r_options    = null;
                   $optionLinks.click(function(event){
                       event.preventDefault();
                     var $this = jQuery(this);
@@ -266,7 +305,22 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
                       changeLayoutMode( $this, options )
                     } else {
                       // otherwise, apply new options
+                      if(value == 'name'){
+                          options['sortAscending']    = true;
+                      }
+                      else{
+                          options['sortAscending']    = false;
+                          if( key != 'sortBy'){
+                              if($r_options){
+                                  if($r_options['sortBy'] == 'name'){
+                                      options['sortAscending']    = true;
+                                  }
+                              }
+                          }
+                      }
+                      options = jQuery.extend($r_options,options);
                       $container.isotope( options );
+                      $r_options  = options;
                     }
 
                     return false;

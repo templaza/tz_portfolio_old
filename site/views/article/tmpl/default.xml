@@ -623,6 +623,36 @@
                    label="COM_TZ_PORTFOLIO_GMAP_CUSTOM_TOOLTIP"/>
         </fieldset>
 
+        <fieldset name="tz_fieldset_lightbox" label="COM_TZ_PORTFOLIO_FIELDSET_LIGHTBOX_OPTIONS_LABEL">
+            <field type="list" name="tz_use_lightbox"
+                   label="COM_TZ_PORTFOLIO_USE_LIGHTBOX"
+                   description="COM_TZ_PORTFOLIO_USE_LIGHTBOX_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="tz_lightbox_transition" type="list"
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_TRANSITION"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_TRANSITION_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">COM_TZ_PORTFOLIO_NONE</option>
+                <option value="elastic">COM_TZ_PORTFOLIO_ELASTIC</option>
+                <option value="fade">COM_TZ_PORTFOLIO_FADE</option>
+            </field>
+            <field name="tz_lightbox_speed" type="text"
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_SPEED"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_SPEED_DESC"/>
+            <field name="tz_lightbox_opacity" type="text"
+                   label="COM_TZ_PORTFOLIO_OPACITY"
+                   description="COM_TZ_PORTFOLIO_OPACITY_DESC"/>
+            <field name="tz_lightbox_width" type="text"
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_WIDTH"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_WIDTH_DESC"/>
+            <field name="tz_lightbox_height" type="text"
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT_DESC"/>
+        </fieldset>
+
         <fieldset name="tz_fieldset_cloud_zoom"
                   label="COM_TZ_PORTFOLIO_FIELDSET_CLOUD_ZOOM_OPTIONS_LABEL">
             <field name="useCloudZoom"

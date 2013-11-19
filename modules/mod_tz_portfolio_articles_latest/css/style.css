@@ -1,0 +1,13 @@
+.latestnews .quote{
+    font-style: italic;
+}
+.latestnews .quote .author{
+    margin-bottom: 15px;
+}
+.latestnews .quote .text > *{
+    display: inline;
+}
+.latestnews .quote .icon-quote{
+    float: left;
+    padding-right: 3px;
+}

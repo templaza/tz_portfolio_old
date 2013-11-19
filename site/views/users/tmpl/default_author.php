@@ -16,7 +16,7 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
+
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -27,63 +27,66 @@ $tmpl           = JRequest::getString('tmpl');
 <?php if($authorParams -> get('show_user',1)):?>
     <?php if($this -> listAuthor):?>
         <?php
-            if($this -> listAuthor -> images){
-                $images = JURI::root().$this -> listAuthor -> images;
-            }
-            else{
-                $images = JURI::root().'components/com_tz_portfolio/assets/no_user.png';
-            }
-        
+        if($this -> listAuthor -> images){
+            $images = JURI::root().$this -> listAuthor -> images;
+        }
+        else{
+            $images = JURI::root().'components/com_tz_portfolio/assets/no_user.png';
+        }
+
 
         ?>
         <?php
-            $target = '';
-            if(isset($tmpl) AND !empty($tmpl)):
-                $target = ' target="_blank"';
-            endif;
+        $target = '';
+        if(isset($tmpl) AND !empty($tmpl)):
+            $target = ' target="_blank"';
+        endif;
         ?>
         <div class="clr"></div>
-        <div class="tz_portfolio_user tz_portfolio_clear">
+        <div class="tz_portfolio_user">
             <h3 class="TzArticleAuthorTitle"><?php echo JText::_('ARTICLE_AUTHOR_TITLE'); ?></h3>
-            <div class="AuthorBlock">
-                    <div class="AuthorAvatar">
-                        <img src="<?php echo $images;?>" width="<?php echo $authorParams -> get('tz_user_image_width')?>"/>
-                    </div>
-                    <div class="AuthorDetails">
-                        <h3 class="AuthorName" >
-                            <a href="<?php echo JRoute::_('index.php?option=com_tz_portfolio&amp;view=users&amp;created_by='.$this -> listAuthor -> id.'&amp;Itemid='.JRequest::getCmd('Itemid'));?>"<?php echo $target?>>
-                                <?php echo $this -> listAuthor -> name;?>
-                            </a>
-                        </h3>
+            <div class="media">
+                <div class="AuthorAvatar pull-left">
+                    <img src="<?php echo $images;?>"/>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="<?php echo JRoute::_('index.php?option=com_tz_portfolio&amp;view=users&amp;created_by='.$this -> listAuthor -> id.'&amp;Itemid='.JRequest::getCmd('Itemid'));?>"<?php echo $target?>>
+                            <?php echo $this -> listAuthor -> name;?>
+                        </a>
+                    </h4>
 
-                        <?php if($authorParams -> get('show_gender_user')):?>
-                            <?php if($this -> listAuthor -> gender):?>
-                                <span class="AuthorGender">
+                    <?php if($authorParams -> get('show_gender_user')):?>
+                        <?php if($this -> listAuthor -> gender):?>
+                            <span class="muted AuthorGender">
                                     <?php echo JText::_('COM_TZ_PORTFOLIO_GENDER');?>
-                                    <span><?php if($this -> listAuthor -> gender == 'm'): echo JText::_('Male');?>
-                                        <?php elseif($this -> listAuthor -> gender == 'f'): echo JText::_('Female');?>
-                                        <?php endif;?>
+                                <span><?php if($this -> listAuthor -> gender == 'm'): echo JText::_('Male');?>
+                                    <?php elseif($this -> listAuthor -> gender == 'f'): echo JText::_('Female');?>
+                                    <?php endif;?>
                                     </span>
                                 </span>
-                            <?php endif;?>
                         <?php endif;?>
+                    <?php endif;?>
 
-                        <?php if($authorParams -> get('show_email_user')):?>
-                            <?php if($this -> listAuthor -> email):?>
-                                <span class="AuthorEmail">
+                    <?php if($authorParams -> get('show_email_user')):?>
+                        <?php if($this -> listAuthor -> email):?>
+                            <span class="muted AuthorEmail">
                                     <?php echo JText::_('COM_TZ_PORTFOLIO_EMAIL');?>
-                                    <span>
+                                <span>
                                         <?php echo $this -> listAuthor -> email;?>
                                     </span>
                                 </span>
-                            <?php endif;?>
                         <?php endif;?>
-                        
-                        <?php if($authorParams -> get('show_description_user')  AND !empty($this -> listAuthor -> description)):?>
-                            <?php echo $this -> listAuthor -> description?>
-                        <?php endif;?>
-                    </div>
-                    <div class="TzAuthorInfo">
+                    <?php endif;?>
+
+                    <?php if($authorParams -> get('show_description_user')  AND !empty($this -> listAuthor -> description)):?>
+                        <?php echo $this -> listAuthor -> description?>
+                    <?php endif;?>
+
+                    <?php if(($authorParams -> get('show_url_user',1) AND !empty($this -> listAuthor -> url))
+                            OR (!empty($this -> listAuthor -> twitter) OR !empty($this -> listAuthor -> facebook)
+                            OR !empty($this -> listAuthor -> google_one))):?>
+                    <div class="AuthorSocial">
                         <span><?php echo JText::_('COM_TZ_PORTFOLIO_QUESTION');?></span>
                         <?php if($authorParams -> get('show_url_user',1) AND !empty($this -> listAuthor -> url)):?>
                             <span class="AuthorUrl">
@@ -94,9 +97,9 @@ $tmpl           = JRequest::getString('tmpl');
                                 </a>
                             </span>
                         <?php endif;?>
-                        
+
                         <?php if(!empty($this -> listAuthor -> twitter) OR !empty($this -> listAuthor -> facebook)
-                                OR !empty($this -> listAuthor -> google_one)):?>
+                            OR !empty($this -> listAuthor -> google_one)):?>
                             <span class="TzLine">|</span>
                         <?php endif;?>
                         <?php if(!empty($this -> listAuthor -> twitter)): ?>
@@ -116,8 +119,10 @@ $tmpl           = JRequest::getString('tmpl');
                             </a>
                         <?php endif;?>
                     </div>
-                <div class="clr"></div>
+                    <?php endif;?>
+                </div>
             </div>
+
         </div>
 
     <?php endif;?>

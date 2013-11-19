@@ -29,6 +29,8 @@ class TZ_PortfolioController extends JControllerLegacy
 	 */
 	protected $extension;
 
+    protected $input;
+
 	/**
 	 * Constructor.
 	 *
@@ -38,6 +40,7 @@ class TZ_PortfolioController extends JControllerLegacy
 	 */
 	public function __construct($config = array())
 	{
+        $this -> input  = JFactory::getApplication() -> input;
 		parent::__construct($config);
 
 		// Guess the JText message prefix. Defaults to the option.
@@ -85,10 +88,10 @@ class TZ_PortfolioController extends JControllerLegacy
         $document = JFactory::getDocument();
 
         // Set the default view name and format from the Request.
-        $vName		= JRequest::getCmd('view', 'articles');
+        $vName		= $this -> input -> get('view', 'articles');
         $vFormat	= $document->getType();
-        $lName		= JRequest::getCmd('layout', 'default');
-        $id			= JRequest::getInt('id');
+        $lName		= $this -> input -> get('layout', 'default');
+        $id			= $this -> input -> getInt('id');
 
         // Check for edit form.
         if ($vName == 'category' && $lName == 'edit' && !$this->checkEditId('com_tz_portfolio.edit.category', $id)) {

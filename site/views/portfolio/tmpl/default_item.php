@@ -26,35 +26,13 @@ JFactory::getLanguage()->load('com_tz_portfolio');
 
 <?php if($this -> listsArticle):?>
     <?php
-        $categories     = JCategories::getInstance('Content');
-        $media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
-        $extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+        $media          = $this -> media;
+        $extraFields    = $this -> extraFields;
     ?>
     <?php foreach($this -> listsArticle as $i => $row):?>
         <?php
-            $category   = $categories->get($row -> catid);
-            $params = clone($this -> params);
-
-            $catParams  = new JRegistry($category -> params);
-
-            $params -> merge($catParams);
-
-            $itemParams = new JRegistry($row -> attribs); //Get Article's Params
-            $params -> merge($itemParams);
-
-            $tmpl   = null;
-            if($params -> get('tz_use_lightbox',1) == 1){
-                $tmpl   = '&tmpl=component';
-            }
-            //Check redirect to view article
-            if($params -> get('tz_portfolio_redirect','p_article') == 'article'){
-                $row ->link   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid).$tmpl);
-                $commentLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug, $row -> catid),true,-1);
-            }
-            else{
-                $row ->link   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid).$tmpl);
-                $commentLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug, $row -> catid),true,-1);
-            }
+            $this -> item   = $row;
+            $params = $row -> params;
 
             if($params -> get('tz_column_width',230))
                 $tzItemClass    = ' tz_item';
@@ -81,13 +59,13 @@ JFactory::getLanguage()->load('com_tz_portfolio');
 
         <?php
             $listMedia      = $media -> getMedia($row -> id);
-
-            $this -> assign('mediaParams',$params);
             $this -> assign('listMedia',$listMedia);
-            $this -> assign('itemLink',$row ->link);
-            $this -> assign('itemArticle',$row);
         ?>
-        <div id="tzelement<?php echo $row -> id;?>" class="element <?php echo $class.$tzItemClass.$tzItemFeatureClass;?>">
+        <div id="tzelement<?php echo $row -> id;?>"
+             data-date="<?php echo strtotime($row -> created); ?>"
+             data-title="<?php echo $this->escape($row -> title); ?>"
+             data-hits="<?php echo (int) $row -> hits; ?>"
+             class="element <?php echo $class.$tzItemClass.$tzItemFeatureClass;?>">
             <div class="TzInner">
                 <!-- Begin Icon print, Email or Edit -->
                 <?php if($params -> get('show_icons',0)):?>
@@ -134,15 +112,15 @@ JFactory::getLanguage()->load('com_tz_portfolio');
 
                     <div class="TzPortfolioDescription">
                         <?php if($params -> get('show_title',1)): ?>
-                            <h3 class="TzPortfolioTitle name">
-                                <?php if($params->get('link_titles',1)) : ?>
-                                    <a<?php if($params -> get('tz_use_lightbox') == 1){echo ' class="fancybox fancybox.iframe"';}?> href="<?php echo $row ->link; ?>">
-                                        <?php echo $this->escape($row -> title); ?>
-                                    </a>
-                                <?php else : ?>
+                        <h3 class="TzPortfolioTitle name">
+                            <?php if($params->get('link_titles',1)) : ?>
+                                <a<?php if($params -> get('tz_use_lightbox') == 1){echo ' class="fancybox fancybox.iframe"';}?> href="<?php echo $row ->link; ?>">
                                     <?php echo $this->escape($row -> title); ?>
-                                <?php endif; ?>
-                            </h3>
+                                </a>
+                            <?php else : ?>
+                                <?php echo $this->escape($row -> title); ?>
+                            <?php endif; ?>
+                        </h3>
                         <?php endif;?>
 
                         <?php if(!$params -> get('show_intro')):?>
@@ -152,7 +130,7 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                         <?php endif;?>
 
                         <?php //Show vote?>
-                        <?php if($params -> get('show_vote')):?>
+                        <?php if($params -> get('show_vote') AND $row -> event -> TZPortfolioVote):?>
                         <?php echo $row -> event -> TZPortfolioVote;?>
                         <?php endif;?>
 
@@ -168,7 +146,7 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                         <div class="TzSeparator"></div>
 
                         <?php if (($params->get('show_author',1)) or ($params->get('show_category',1)) or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1)) or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1)) or ($params->get('show_hits',1))) : ?>
-                            <div class="TzArticle-info">
+                            <div class="muted TzArticle-info">
                         <?php endif; ?>
 
                         <?php if ($params->get('show_category',1)) : ?>
@@ -183,7 +161,7 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                         </div>
                         <?php endif; ?>
                         <?php if ($params->get('show_create_date',1)) : ?>
-                        <div class="TzPortfolioDate" data-date="<?php echo strtotime($row -> created); ?>">
+                        <div class="TzPortfolioDate">
                             <?php echo JText::sprintf('COM_CONTENT_CREATED_DATE_ON', JHtml::_('date', $row->created, JText::_('DATE_FORMAT_LC2'))); ?>
                         </div>
                         <?php endif; ?>
@@ -238,7 +216,7 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                                             if(class_exists('JComments')){
                                     ?>
 
-                                                <span><?php echo JComments::getCommentsCount((int) $row -> id,'com_tz_portfolio');?></span>
+                                        <span><?php echo JComments::getCommentsCount((int) $row -> id,'com_tz_portfolio');?></span>
                                     <?php   }
                                         }
                                     ?>
@@ -252,14 +230,8 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                         <?php endif;?>
 
                         <?php
-
                             $extraFields -> setState('article.id',$row -> id);
-                            $extraFields -> setState('params',$params);
-
-                            if(!isset($this -> item) || empty($this -> item)){
-                                $this -> item   = new stdClass();
-                            }
-                            $this -> item -> params = clone($params);
+                            $extraFields -> setState('params',$row -> params);
                             $this -> assign('listFields',$extraFields -> getExtraFields());
                         ?>
                         <?php echo $this -> loadTemplate('extrafields');?>
@@ -269,7 +241,7 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                         <?php endif; ?>
 
                         <?php if($params -> get('show_readmore',1)):?>
-                        <a class="TzPortfolioReadmore<?php if($params -> get('tz_use_lightbox') == 1){echo ' fancybox fancybox.iframe';}?>" href="<?php echo $row ->link; ?>">
+                        <a class="btn btn-primary TzPortfolioReadmore<?php if($params -> get('tz_use_lightbox') == 1){echo ' fancybox fancybox.iframe';}?>" href="<?php echo $row ->link; ?>">
                             <?php echo JText::sprintf('COM_TZPORTFOLIO_READMORE'); ?>
                         </a>
                         <?php endif;?>

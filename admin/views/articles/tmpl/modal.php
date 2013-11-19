@@ -84,6 +84,9 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
 				<th class="title">
 					<?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
 				</th>
+                <th width="6%" class="nowrap">
+                    <?php echo JHtml::_('grid.sort', 'COM_TZ_PORTFOLIO_TYPE_OF_MEDIA', 'groupname', $listDirn, $listOrder); ?>
+                </th>
 				<th width="15%">
 					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); ?>
 				</th>
@@ -116,6 +119,9 @@ $listDirn	= $this->escape($this->state->get('list.direction'));
                        onclick="if (window.parent) window.parent.<?php echo $this->escape($function);?>('<?php echo $item->id; ?>', '<?php echo $this->escape(addslashes($item->title)); ?>', '<?php echo $this->escape($item->catid); ?>', null, '<?php echo $this->escape(TZ_PortfolioHelperRoute::getArticleRoute($item->id)); ?>');">
 						<?php echo $this->escape($item->title); ?></a>
 				</td>
+                <td class="small hidden-phone">
+                    <?php echo $item -> type;?>
+                </td>
 				<td class="center small">
 					<?php echo $this->escape($item->access_level); ?>
 				</td>

@@ -38,6 +38,6 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_tz_portfolio')) {
 // Execute the task.
 $controller	= JControllerLegacy::getInstance('TZ_Portfolio');
 
-    $controller->execute(JRequest::getVar('task'));
+    $controller->execute(JFactory::getApplication()->input->get('task'));
 
 $controller->redirect();

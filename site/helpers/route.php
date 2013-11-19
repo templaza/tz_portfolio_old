@@ -44,15 +44,15 @@ abstract class TZ_PortfolioHelperRoute
 				$needles['category'] = array_reverse($category->getPath());
 				$needles['categories'] = $needles['category'];
 				$needles['portfolio'] = $needles['category'];
-				$link .= '&catid='.$catid;
+				$link .= '&amp;catid='.$catid;
 			}
 		} 
 
 		if ($item = self::_findItem($needles)) {
-			$link .= '&Itemid='.$item;
+			$link .= '&amp;Itemid='.$item;
 		}
 		elseif ($item = self::_findItem()) {
-			$link .= '&Itemid='.$item;
+			$link .= '&amp;Itemid='.$item;
 		}
 
 		return $link;
@@ -132,10 +132,10 @@ abstract class TZ_PortfolioHelperRoute
 					);
 
 					if ($item = self::_findItem($needles)) {
-						$link .= '&Itemid='.$item;
+						$link .= '&amp;Itemid='.$item;
 					}
 					elseif ($item = self::_findItem()) {
-						$link .= '&Itemid='.$item;
+						$link .= '&amp;Itemid='.$item;
 					}
 				}
 			}

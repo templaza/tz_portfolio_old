@@ -21,8 +21,8 @@
 defined('_JEXEC') or die();
 
 $media      = $this -> listMedia;
-$link       = $this -> itemLink;
-$params     = $this -> mediaParams;
+$link       = $this -> item ->link;
+$params     = $this -> item -> params;
 if(count($media)):
 ?>
 
@@ -52,7 +52,7 @@ if(count($media)):
         ?>
             <div class="tz_audio_thumbnail">
                 <a<?php echo $class;?> href="<?php echo $link?>">
-                    <img width="100%" src="<?php echo $srcAudio;?>" title="<?php echo $media[0] -> imagetitle;?>"
+                    <img src="<?php echo $srcAudio;?>" title="<?php echo $media[0] -> imagetitle;?>"
                              alt="<?php echo $media[0] -> imagetitle;?>"/>
                 </a>
             </div>

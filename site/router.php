@@ -166,8 +166,12 @@ function TZ_PortfolioBuildRoute(&$query)
 
 		$array = array_reverse($array);
 
-        if($view == 'article'){
-            $segments[] = 'item';
+        $opView = 'p_article';
+        if($params -> get('view_router_switch',1) == 2){
+            $opView = 'article';
+        }
+        if($view == $opView){
+            $segments[] = $params -> get('view_router_name','item');
         }
 
 		if (!$advanced && count($array)) {
@@ -439,7 +443,7 @@ function TZ_PortfolioParseRoute($segments)
 		// we check to see if an alias is given.  If not, we assume it is an article
         //Old
 		if (strpos($segments[0], ':') === false) {
-			$vars['view'] = 'p_article';
+			$vars['view'] = 'article';
 			$vars['id'] = (int)$segments[0];
 			return $vars;
 		}
@@ -461,7 +465,7 @@ function TZ_PortfolioParseRoute($segments)
 
 			if ($article) {
 				if ($article->alias == $alias) {
-					$vars['view'] = 'p_article';
+					$vars['view'] = 'article';
 					$vars['catid'] = (int)$article->catid;
 					$vars['id'] = (int)$id;
 
@@ -533,17 +537,30 @@ function TZ_PortfolioParseRoute($segments)
 //            $segments[0]    = $match[1];
 //        }
 
+        $temp       = $item -> params;
+        $menuParams = clone($params);
+        $menuParams -> merge($temp);
+
 		$cat_id = (int)$segments[0];
-        if($segments[0] == 'item'){
+        if($segments[0] == $menuParams -> get('view_router_name','item')){
            $cat_id = (int)$segments[1];
         }
 
         $article_id = (int)$segments[$count - 1];
 
 		if ($article_id > 0) {
-			$vars['view'] = 'p_article';
-            if($segments[0] == 'item'){
-                $vars['view'] = 'article';
+			$vars['view'] = 'article';
+
+            if($menuParams -> get('view_router_switch',1) == 2){
+                $vars['view'] = 'p_article';
+            }
+
+            if($segments[0] == $menuParams -> get('view_router_name','item')){
+                $vars['view'] = 'p_article';
+
+                if($menuParams -> get('view_router_switch',1) == 2){
+                    $vars['view'] = 'article';
+                }
             }
 			$vars['catid'] = $cat_id;
 			$vars['id'] = $article_id;

@@ -26,9 +26,18 @@ require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIREC
 
 class TZ_PortfolioViewPortfolio extends JViewLegacy
 {
-    protected $item = null;
+    protected $item         = null;
+    protected $media        = null;
+    protected $extraFields  = null;
+
+    function __construct($config = array()){
+        $this -> item           = new stdClass();
+        $this -> media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $this -> extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
+        parent::__construct($config);
+    }
+
     function display($tpl=null){
-        $this -> item   = new stdClass();
         $menus		= JMenu::getInstance('site');
         $active     = $menus->getActive();
 
@@ -140,20 +149,29 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
             if($width || $height){
                 $autosize   = 'fitToView: false,autoSize: false,';
             }
+
+            $scrollHidden   = null;
+            if($params -> get('use_custom_scrollbar',1)){
+                $scrollHidden   = ',scrolling: "no"
+                                    ,iframe: {
+                                        scrolling : "no",
+                                    }';
+            }
             $doc -> addCustomTag('<script type="text/javascript">
                 jQuery(\'.fancybox\').fancybox({
                     type:\'iframe\',
                     openSpeed:'.$params -> get('tz_lightbox_speed',350).',
                     openEffect: "'.$params -> get('tz_lightbox_transition','elastic').'",
                     '.$width.$height.$autosize.'
-		            helpers:  {
+                    helpers:  {
                         title : {
                             type : "inside"
                         },
                         overlay : {
-                            opacity:'.$params -> get('tz_lightbox_opacity',0.75).',
+                            css : {background: "rgba(0,0,0,'.$params -> get('tz_lightbox_opacity',0.75).')"}
                         }
-                    }
+                    }'
+                    .$scrollHidden.'
                 });
                 </script>
             ');
@@ -170,9 +188,17 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
             $this -> assign('listsCategories',$this -> get('Categories'));
         }
 
+        // Set value again for option tz_portfolio_redirect
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
+        }
+
+        //Escape strings for HTML output
+        $this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
         $this -> assign('listsArticle',$list);
-        $this -> assign('params',$state -> params);
-        $this -> assign('mediaParams',$state -> params);
+        $this -> assign('params',$params);
+        $this -> assign('mediaParams',$params);
         $this -> assign('pagination',$this -> get('Pagination'));
         $this -> assign('Itemid',$active -> id);
         $this -> assign('char',$state -> get('char'));

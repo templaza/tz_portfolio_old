@@ -34,6 +34,18 @@ class TZ_PortfolioModelArticle extends JModelItem
 	 */
 	protected $_context = 'com_tz_portfolio.article';
 
+    protected $parameter_merge_fields = array();
+
+    public function __construct($config = array()){
+        parent::__construct($config);
+
+        // Add the parameter fields white list.
+        $this -> parameter_merge_fields = array(
+            'show_extra_fields', 'field_show_type',
+            'tz_portfolio_redirect'
+        );
+    }
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -56,8 +68,7 @@ class TZ_PortfolioModelArticle extends JModelItem
 
 		// Load the parameters.
 		$params = $app->getParams();
-//        $params = JComponentHelper::getParams('com_content');
-//        var_dump($params);
+
 		$this->setState('params', $params);
 
 		// TODO: Tune these values based on other permissions.
@@ -250,12 +261,27 @@ class TZ_PortfolioModelArticle extends JModelItem
 					return JError::raiseError(404, JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'));
 				}
 
+                $params = $this->getState('params');
+
+                /*** Merge category params to menu params ***/
+                $categories = JCategories::getInstance('Content');
+
+                $category   = $categories->get($data -> catid);
+                $catParams  = new JRegistry($category -> params);
+
+                if($this -> parameter_merge_fields){
+                    foreach($this -> parameter_merge_fields as $value){
+                        if($catParams -> get($value) != ''){
+                            $params -> set($value,$catParams -> get($value));
+                        }
+                    }
+                }
 
 				// Convert parameter fields to objects.
 				$registry = new JRegistry;
 				$registry->loadString($data->attribs);
 
-				$data->params = clone $this->getState('params');
+				$data->params = clone $params;
 				$data->params->merge($registry);
 
 				$registry = new JRegistry;

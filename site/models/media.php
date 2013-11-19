@@ -30,6 +30,15 @@ class TZ_PortfolioModelMedia extends JModelLegacy
     function populateState(){
         $pk = JRequest::getInt('id');
         $this -> setState('article.id',$pk);
+
+        $user   = JFactory::getUser();
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // limit to published for people who can't edit or edit.state.
+            $this->setState('filter.published', 1);
+        }
+        else {
+            $this->setState('filter.published', array(0, 1, 2));
+        }
     }
 
     function getCatParams($catid = null){
@@ -58,10 +67,34 @@ class TZ_PortfolioModelMedia extends JModelLegacy
         
         $data   = array();
 
-        $query  = 'SELECT c.featured,xc.*,c.catid,c.attribs AS param FROM #__tz_portfolio_xref_content AS xc'
-                  .' LEFT JOIN #__content AS c ON c.id=xc.contentid'
-                  .' WHERE c.state=1 AND xc.contentid='.$articleId;
-        $db = JFactory::getDbo();
+        $db     = JFactory::getDbo();
+        $query  = $db -> getQuery(true);
+
+        $query -> select('c.featured,xc.*,c.catid,c.attribs AS param');
+
+        $query -> from('#__tz_portfolio_xref_content AS xc');
+
+        $query -> join('LEFT','#__content AS c ON c.id=xc.contentid');
+
+        // Filter by published state
+        $published = $this->getState('filter.published');
+
+        if (is_numeric($published)) {
+            // Use article state if badcats.id is null, otherwise, force 0 for unpublished
+            $query->where('c.state = ' . (int) $published);
+        }
+        elseif (is_array($published)) {
+            JArrayHelper::toInteger($published);
+            $published = implode(',', $published);
+            // Use article state if badcats.id is null, otherwise, force 0 for unpublished
+            $query->where('c.state IN ('.$published.')');
+        }
+
+        $query -> where('xc.contentid='.$articleId);
+
+//        $query  = 'SELECT c.featured,xc.*,c.catid,c.attribs AS param FROM #__tz_portfolio_xref_content AS xc'
+//                  .' LEFT JOIN #__content AS c ON c.id=xc.contentid'
+//                  .' WHERE c.state=1 AND xc.contentid='.$articleId;
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
