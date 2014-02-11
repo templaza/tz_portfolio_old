@@ -36,7 +36,7 @@ a{font-size:12px;padding-left:1.2em;font-weight:normal}.docs #content
 h2{border-top:1px solid #333;padding-top:0.8em;margin-bottom:0.8em}.docs #content h2:target{padding:10px;background:white;color:#222}.docs #content
 h3{color:#FEC;background:rgba(191,191,191,0.05);padding:2px
 0.5em;margin-bottom:0.5em;font-size:1.15em}.docs #content
-h4{margin-bottom:0.5em;font-size:14px}footer{font-size:12px;font-style:italic;border-top:1px solid #333;padding:0.8em 0}pre{padding:10px}pre,code{background:black;color:white;font-family:'Monaco',monospace,sans-serif}#content
+h4{margin-bottom:0.5em;font-size:14px}#content
 code{font-size:12px}#content
 pre{line-height:1.6em}h3#tz_options{padding-bottom:0}.option-def dl dt,
 .option-def dl

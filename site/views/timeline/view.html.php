@@ -27,7 +27,7 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
 {
     protected $item = null;
     protected $media        = null;
-    protected $extraFields  = null;
+    public $extraFields  = null;
 
     function __construct($config = array()){
         $this -> item           = new stdClass();
@@ -46,6 +46,23 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
         $_params    = $state -> get('params');
 
         $params = $this -> get('Params');
+
+        if($params -> get('fields_option_order')){
+            switch($params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $this -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
 
         $list       = $this -> get('Article');
         
@@ -67,6 +84,15 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
 
         //Escape strings for HTML output
         $this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
+        if ($active)
+        {
+            $params->def('page_heading', $params->get('page_title', $active->title));
+        }
+        else
+        {
+            $params->def('page_heading', JText::_('JGLOBAL_ARTICLES'));
+        }
         
         $this -> assign('listsCatDate',$this -> get('DateCategories'));
         $this -> assign('params',$_params);

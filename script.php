@@ -375,6 +375,20 @@ class com_tz_portfolioInstallerScript{
             }
         }
 
+        $fields2 = $db -> getTableColumns('#__tz_portfolio');
+        $arr2   = null;
+        if(!array_key_exists('ordering',$fields2)){
+            $arr2[]  = 'ADD `ordering` INT NOT NULL';
+        }
+        if($arr2 && count($arr2)>0){
+            $arr2    = implode(',',$arr2);
+            if($arr2){
+                $query  = 'ALTER TABLE `#__tz_portfolio` '.$arr2;
+                $db -> setQuery($query);
+                $db -> query();
+            }
+        }
+
         //TZ Categories
         $fields = $db -> getTableColumns('#__tz_portfolio_categories');
         if(!array_key_exists('images',$fields)){

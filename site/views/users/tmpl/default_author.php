@@ -47,7 +47,7 @@ $tmpl           = JRequest::getString('tmpl');
             <h3 class="TzArticleAuthorTitle"><?php echo JText::_('ARTICLE_AUTHOR_TITLE'); ?></h3>
             <div class="media">
                 <div class="AuthorAvatar pull-left">
-                    <img src="<?php echo $images;?>"/>
+                    <img src="<?php echo $images;?>" alt="<?php echo $this -> listAuthor -> name;?>"/>
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading">
@@ -104,22 +104,24 @@ $tmpl           = JRequest::getString('tmpl');
                         <?php endif;?>
                         <?php if(!empty($this -> listAuthor -> twitter)): ?>
                             <a class="TzSocialLink" href="<?php echo $this -> listAuthor -> twitter?>"<?php echo $target?>>
-                                <img src="components/com_tz_portfolio/assets/twitter.png"/>
+                                <img src="components/com_tz_portfolio/assets/twitter.png"
+                                    alt=""/>
 
                             </a>
                         <?php endif;?>
                         <?php if(!empty($this -> listAuthor -> facebook)):?>
                             <a class="TzSocialLink" href="<?php echo $this -> listAuthor -> facebook;?>"<?php echo $target?>>
-                                <img src="components/com_tz_portfolio/assets/facebook.png"/>
+                                <img src="components/com_tz_portfolio/assets/facebook.png" alt=""/>
                             </a>
                         <?php endif;?>
                         <?php if($this -> listAuthor -> google_one AND !empty($this -> listAuthor -> google_one)):?>
                             <a class="TzSocialLink" href="<?php echo $this -> listAuthor -> google_one?>"<?php echo $target?>>
-                                <img src="components/com_tz_portfolio/assets/google_one.png"/>
+                                <img src="components/com_tz_portfolio/assets/google_one.png" alt=""/>
                             </a>
                         <?php endif;?>
                     </div>
                     <?php endif;?>
+                    <div class="clr"></div>
                 </div>
             </div>
 

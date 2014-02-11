@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS `#__tz_portfolio` (
 `fieldsid` INT NOT NULL,
 `value` TEXT NOT NULL,
 `images` TEXT NOT NULL ,
-`imagetitle` VARCHAR( 255 ) NOT NULL
+`imagetitle` VARCHAR( 255 ) NOT NULL,
+`ordering` INT NOT NULL
 ) ENGINE = MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__tz_portfolio_xref_content` (

@@ -28,7 +28,7 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
 {
     protected $item         = null;
     protected $media        = null;
-    protected $extraFields  = null;
+    public $extraFields  = null;
 
     function __construct($config = array()){
         $this -> item           = new stdClass();
@@ -46,6 +46,23 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         $params         = null;
         $state          =  $this -> get('State');
         $params         = $state -> get('params');
+
+        if($params -> get('fields_option_order')){
+            switch($params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $this -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
 
         $csscompress    = null;
         if($params -> get('css_compression',0)){
@@ -195,6 +212,15 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
 
         //Escape strings for HTML output
         $this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
+        if ($active)
+        {
+            $params->def('page_heading', $params->get('page_title', $active->title));
+        }
+        else
+        {
+            $params->def('page_heading', JText::_('JGLOBAL_ARTICLES'));
+        }
 
         $this -> assign('listsArticle',$list);
         $this -> assign('params',$params);

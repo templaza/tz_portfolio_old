@@ -32,6 +32,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
         $this -> setState('category.id',null);
         $this -> setState('params',null);
         $this -> setState('orderby',null);
+        $this -> setState('filter.option.order',null);
     }
 
     public function getExtraFields($articleId=null){
@@ -65,6 +66,7 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
         }
         $orderBy    = null;
         $order      = null;
+
         if($this -> getState('orderby')){
             $order  = $this -> getState('orderby');
         }
@@ -91,6 +93,11 @@ class TZ_PortfolioModelExtraFields extends JModelLegacy
                 $orderBy    = 'f.ordering ASC';
                 break;
         }
+
+        if($this ->  getState('filter.option.order')){
+            $orderBy    .= ','.$this -> getState('filter.option.order');
+        }
+
         if($orderBy){
             $orderBy    = ' ORDER BY '.$orderBy;
         }

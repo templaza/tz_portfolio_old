@@ -71,6 +71,10 @@ class TZ_PortfolioModelArticles extends JModelList
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
+
+        // List state information.
+        parent::populateState('a.id', 'desc');
+
 		// Initialise variables.
 		$app = JFactory::getApplication();
 		$session = JFactory::getSession();
@@ -80,8 +84,6 @@ class TZ_PortfolioModelArticles extends JModelList
 		if ($layout = JRequest::getVar('layout')) {
 			$this->context .= '.'.$layout;
 		}
-
-//        var_dump($this->getName(),$this -> context,$layout); die();
 
         $group  = $this -> getUserStateFromRequest($this -> context.'.group','filter_group',0,'int');
         $this -> setState('filter.group',$group);
@@ -107,11 +109,8 @@ class TZ_PortfolioModelArticles extends JModelList
 
 		$language = $this->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
-
-		// List state information.
-		parent::populateState('a.id', 'desc');
 	}
-    
+
 	/**
 	 * Method to get a store id based on model configuration state.
 	 *
@@ -280,7 +279,7 @@ class TZ_PortfolioModelArticles extends JModelList
 		// Add the list ordering clause.
 		$orderCol	= $this->state->get('list.ordering', 'a.title');
 		$orderDirn	= $this->state->get('list.direction', 'asc');
-        
+
 		if ($orderCol == 'a.ordering' || $orderCol == 'category_title') {
 			$orderCol = 'c.title '.$orderDirn.', a.ordering';
 		}
@@ -396,6 +395,9 @@ class TZ_PortfolioModelArticles extends JModelList
                         case 'video':
                             $item -> type  = JText::_('COM_TZ_PORTFOLIO_OPTION_VIDEO');
                             break;
+                        case 'audio':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_AUDIO');
+                            break;
                         case 'quote':
                             $item -> type  = JText::_('COM_TZ_PORTFOLIO_QUOTE');
                             break;
@@ -407,7 +409,7 @@ class TZ_PortfolioModelArticles extends JModelList
             }
         }
 		return $items;
-        
+
 //        return $data;
 	}
 }

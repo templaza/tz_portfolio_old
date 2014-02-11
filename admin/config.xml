@@ -108,6 +108,14 @@
 			<option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
 			<option value="order">JGLOBAL_ARTICLE_MANAGER_ORDER</option>
         </field>
+        <field name="fields_option_order" type="list"
+               default="none"
+               label="COM_TZ_PORTFOLIO_TZ_FIELDS_OPTION_ORDER_LABEL">
+            <option value="none">JFIELD_OPTION_NONE</option>
+            <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+            <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+			<option value="ordering">COM_TZ_PORTFOLIO_ORDERING</option>
+        </field>
     </fieldset>
     <!-- END PARAMETERS FOR ALL PAGE -->
 
@@ -1826,6 +1834,20 @@
                default="1"
                label="COM_TZ_PORTFOLIO_JAVASCRIPT_COMPRESSION"
                description="COM_TZ_PORTFOLIO_JAVASCRIPT_COMPRESSION_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field type="radio" name="enable_jquery"
+               default="1" class="btn-group"
+               label="COM_TZ_PORTFOLIO_ENABLE_JQUERY_LIBRARY_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field type="radio" name="enable_bootstrap"
+               default="1" class="btn-group"
+               label="COM_TZ_PORTFOLIO_ENABLE_BOOTSTRAP_LIBRARY_LABEL">
             <option value="0">JNO</option>
             <option value="1">JYES</option>
         </field>

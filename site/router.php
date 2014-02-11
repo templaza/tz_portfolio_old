@@ -58,7 +58,7 @@ function TZ_PortfolioBuildRoute(&$query)
 	}
 
 	// are we dealing with an article or category that is attached to a menu item?
-	if (($menuItem instanceof stdClass) && $menuItem->query['view'] == $query['view'] && isset($query['id']) && $menuItem->query['id'] == intval($query['id'])) {
+    if (($menuItem instanceof stdClass && isset($menuItem->query['view'])) && $menuItem->query['view'] == $query['view'] && isset($query['id']) && isset($menuItem->query['id']) && $menuItem->query['id'] == intval($query['id'])) {
         if(isset($query['char'])){
             $segments[] = $query['char'];
             unset($query['char']);

@@ -70,7 +70,7 @@ class TZ_PortfolioModelMedia extends JModelLegacy
         $db     = JFactory::getDbo();
         $query  = $db -> getQuery(true);
 
-        $query -> select('c.featured,xc.*,c.catid,c.attribs AS param');
+        $query -> select('c.featured,xc.*,c.catid,c.attribs AS param,c.title AS c_title');
 
         $query -> from('#__tz_portfolio_xref_content AS xc');
 
@@ -118,7 +118,13 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                         $data[0] -> type           = strtolower($rows -> type);
                         $data[0] -> featured       = $rows -> featured;
                         $data[0] -> images         = $rows -> images;
-                        $data[0] -> imagetitle     = htmlspecialchars($rows -> imagetitle);
+                        $data[0] -> imagetitle     = '';
+
+                        if(isset($rows -> imagetitle) && !empty($rows -> imagetitle)){
+                            $data[0] -> imagetitle     = htmlspecialchars($rows -> imagetitle);
+                        }elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
+                            $data[0] -> imagetitle     = $rows -> c_title;
+                        }
                         $data[0] -> images_hover    = $rows -> images_hover;
                         $data[0] -> articleId   = $articleId;
                         break;
@@ -131,10 +137,13 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                                 $data[$i] -> type           = strtolower($rows -> type);
                                 $data[$i] -> featured       = $rows -> featured;
                                 $data[$i] -> images         = $item;
-                                if(isset($title[$i]))
+                                $data[$i] -> imagetitle     = '';
+
+                                if(isset($title[$i]) && !empty($title[$i])){
                                     $data[$i] -> imagetitle     = htmlspecialchars(trim($title[$i]));
-                                else
-                                    $data[$i] -> imagetitle     = '';
+                                }elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
+                                    $data[0] -> imagetitle     = $rows -> c_title;
+                                }
 
                                 $data[$i] -> articleId   = $articleId;
                             }
@@ -157,8 +166,14 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                                 $data[0] -> featured    = $rows -> featured;
                                 $data[0] -> images      = substr($rows -> video,$pos + 1,strlen($rows -> video));
                                 $data[0] -> from        = substr($rows -> video,0,$pos);
-                                $data[0] -> imagetitle  = htmlspecialchars($rows -> videotitle);
                                 $data[0] -> thumb       = $rows -> videothumb;
+                                $data[0] -> imagetitle  = '';
+
+                                if(isset($rows -> videotitle) && !empty($rows -> videotitle)){
+                                    $data[0] -> imagetitle  = htmlspecialchars($rows -> videotitle);
+                                }elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
+                                    $data[0] -> imagetitle  = $rows -> c_title;
+                                }
                             }
                         }
                         break;
@@ -168,8 +183,14 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                             $data[0] -> type        = $rows -> type;
                             $data[0] -> featured    = $rows -> featured;
                             $data[0] -> audio_id    = $rows -> audio;
-                            $data[0] -> imagetitle  = htmlspecialchars($rows -> audiotitle);
                             $data[0] -> thumb       = $rows -> audiothumb;
+                            $data[0] -> imagetitle  = '';
+
+                            if(isset($rows -> audiotitle) && !empty($rows -> audiotitle)){
+                                $data[0] -> imagetitle  = htmlspecialchars($rows -> audiotitle);
+                            }elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
+                                $data[0] -> imagetitle  = $rows -> c_title;
+                            }
                         }
                         break;
                     case 'quote':

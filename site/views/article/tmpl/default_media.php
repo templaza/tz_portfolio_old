@@ -97,8 +97,8 @@ endif;
                             <?php if(isset($srcHover)):?>
                                 <img class="tz_image_hover"
                                     src="<?php echo $srcHover;?>"
-                                 alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                                 title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>">
+                                 alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                                 title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>">
                             <?php endif;?>
                         <?php endif;?>
                     <?php if($params -> get('useCloudZoom',1) == 1):?>
@@ -238,7 +238,8 @@ endif;
                                               .'.'.JFile::getExt($rowMedia -> images),$rowMedia -> images);
                                 ?>
                                 <li>
-                                    <img src="<?php echo $src;?>" alt="<?php echo $rowMedia -> imagetitle;?>"
+                                    <img src="<?php echo $src;?>"
+                                         alt="<?php echo ($rowMedia -> imagetitle)?($rowMedia -> imagetitle):($this -> item -> title);?>"
                                         <?php if(!empty($rowMedia -> imagetitle)):?>
                                             title="<?php echo $rowMedia -> imagetitle;?>"
                                         <?php endif; ?>

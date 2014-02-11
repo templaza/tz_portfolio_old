@@ -109,16 +109,8 @@ abstract class modTZ_PortfolioArticlesLatestHelper
         $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel',array('ignore_request' => true));
 
         if($items){
-            foreach ($items as &$item) {
+            foreach ($items as $i => &$item) {
                 $item -> media  = null;
-                $model2 -> setState('article.id',$item -> id);
-                if($media  = $model2 -> getMedia()){
-                    $item -> media  = $media[0];
-                    if( ($media[0] -> type == 'quote' AND !$params -> get('show_quote',1))
-                        OR ($media[0] -> type == 'link' AND !$params -> get('show_link',1)) ){
-                        $item -> media  = null;
-                    }
-                }
 
                 $item->slug = $item->id.':'.$item->alias;
                 $item->catslug = $item->catid.':'.$item->category_alias;
@@ -129,9 +121,17 @@ abstract class modTZ_PortfolioArticlesLatestHelper
                 } else {
                     $item->link = JRoute::_('index.php?option=com_users&view=login');
                 }
+                $model2 -> setState('article.id',$item -> id);
+                if($media  = $model2 -> getMedia()){
+                    $item -> media  = $media[0];
+                    if( ($media[0] -> type == 'quote' AND !$params -> get('show_quote',1))
+                        OR ($media[0] -> type == 'link' AND !$params -> get('show_link',1)) ){
+                        unset($items[$i]);
+                    }
+                }
 
             }
 		}
-		return $items;
+		return array_reverse($items);
 	}
 }

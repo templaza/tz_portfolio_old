@@ -226,6 +226,23 @@ class TZ_PortfolioModelPortfolio extends JModelList
         require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'portfolio'.DIRECTORY_SEPARATOR.'view.html.php';
         $view   = new TZ_PortfolioViewPortfolio();
 
+        if($params -> get('fields_option_order')){
+            switch($params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $view -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
+
         JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
         if($offset >= $this -> getTotal()){
@@ -397,6 +414,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $query -> group('t.id');
         $db -> setQuery($query);
         if($rows = $db -> loadObjectList()){
+            foreach($rows as $row){
+                $row -> name    = trim($row -> name);
+                $row -> tagFilter   = JApplication::stringURLSafe($row -> name);
+            }
             return $rows;
         }
         return null;
@@ -415,7 +436,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 $rows   = $db -> loadObjectList();
                 if(count($rows)){
                     foreach($rows as $row){
-                        $tagName[]  = str_replace(' ','-',trim($row -> name));
+                        $tagName[]  = JApplication::stringURLSafe(trim($row -> name));
                     }
                 }
             }
@@ -444,6 +465,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
             if(count($rows)>0){
                 foreach($rows as &$item){
                     $item -> name   = trim($item -> name);
+                    $item -> tagFilter  = JApplication::stringURLSafe(trim($item -> name));
                 }
                 $this -> rowsTag    = $rows;
             }

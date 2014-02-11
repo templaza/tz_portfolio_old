@@ -23,6 +23,7 @@ $params         = $this -> item -> params;
 $doc            = JFactory::getDocument();
 $socialInfos    = $this -> socialInfo;
 $url = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this -> item -> slug,$this -> item -> catid),true,-1);
+//$url    = 'http://www.templaza.com';
 ?>
 <?php if(($params -> get('show_twitter_button',1) == 1) OR ($params -> get('show_facebook_button',1) == 1)
          OR ($params -> get('show_google_button',1) == 1) OR $params -> get('show_pinterest_button',1)
