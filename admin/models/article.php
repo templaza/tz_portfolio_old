@@ -406,23 +406,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             $val    = array();
             $rows   = $db -> loadObjectList();
             foreach($rows as $row){
-                //Copy image fields
-                $imageName  = '';
-                if(!empty($row -> images)){
-                    $imageName  = ((!$table -> alias)?JApplication::stringURLSafe($table -> title):$table -> alias)
-                        .'-'.$newId.'.'.JFile::getExt($row -> images);
-                    $subUrl     = substr($row -> images,0,strrpos($row -> images,'/'));
-                    $path   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$subUrl).DIRECTORY_SEPARATOR.$imageName;
-                    if(JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$row -> images))){
-                        JFile::copy(JPATH_SITE.DIRECTORY_SEPARATOR.$row -> images,$path);
-                    }
-                }
-                $val[]  = '('.$newId.','.$row -> fieldsid.',"'.$row -> value.'","'.$subUrl.'/'.$imageName.'","'.$row -> imagetitle.'")';
+                $val[]  = '('.$newId.','.$row -> fieldsid.',"'.$row -> value.'","'.$row -> images.'","'
+                    .$row -> imagetitle.'",'.$row -> ordering.')';
             }
             if(count($val)>0){
                 $val    = implode(',',$val);
 
-                $query2 = 'INSERT INTO #__tz_portfolio(`contentid`,`fieldsid`,`value`,`images`,`imagetitle`)'
+                $query2 = 'INSERT INTO #__tz_portfolio(`contentid`,`fieldsid`,`value`,`images`,`imagetitle`,'
+                    .$db -> quoteName('ordering').')'
                           .' VALUES '.$val;
                 $db -> setQuery($query2);
                 if(!$db -> query()){
@@ -2984,6 +2975,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                         $fieldsid   = str_replace('tzfields','',$key);
 
+                        $ordering   = 0;
+
                         // Get value extra fields
 						if($fieldsid){
 							if(is_array($val)){
@@ -2998,15 +2991,22 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                         $optionField    = $this -> getOptionField($fieldsid,0);
                                     }
 
+
+                                    if($optionField -> ordering){
+                                        $ordering   = $optionField -> ordering;
+                                    }
+
 									if(!empty($row)){
 
 										if(preg_match('/(@\[\{\(\&\*\_)[0-9]$/',$row,$match2)){
 											$tzFields[] = '('.$this -> getState($this -> getName().'.id').','
-													  .$fieldsid.',\''.str_replace($match2[0],'',$row).'\',\''.$optionField -> image.'\')';
+                                                .$fieldsid.',\''.str_replace($match2[0],'',$row).'\',\''
+                                                .$optionField -> image.'\','.$ordering.')';
 										}
 										else
 											$tzFields[] = '('.$this -> getState($this -> getName().'.id').','
-														  .$fieldsid.',\''.(string) $row.'\',\''.$optionField -> image.'\')';
+                                                .$fieldsid.',\''.(string) $row.'\',\''
+                                                .$optionField -> image.'\','.$ordering.')';
 
 									}
 								}
@@ -3024,11 +3024,12 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 										$optionField    = $this -> getOptionField($fieldsid,0);
 										if($optionField){
 											$tzFields[] = '('.$this -> getState($this -> getName().'.id')
-													  .','.$fieldsid.',\''.(string) $val.'\',\''.$optionField -> image.'\')';
+                                                .','.$fieldsid.',\''.(string) $val.'\',\''
+                                                .$optionField -> image.'\','.$ordering.')';
 										}
 										else{
 											$tzFields[] = '('.$this -> getState($this -> getName().'.id')
-													  .','.$fieldsid.',\''.(string) $val.'\',\'\')';
+													  .','.$fieldsid.',\''.(string) $val.'\',\'\','.$ordering.')';
 										}
 									}
 								}
@@ -3154,7 +3155,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 if(!empty($tzFields)){
                     $tzFields   = (count($tzFields)>0)?implode(',',$tzFields):'(\'\',\'\',\'\')';
 
-                    $query  = 'INSERT INTO #__tz_portfolio(`contentid`,`fieldsid`,`value`,`images`)'
+                    $query  = 'INSERT INTO #__tz_portfolio(`contentid`,`fieldsid`,`value`,`images`,'
+                        .$db -> quoteName('ordering').')'
                             .' VALUES'.$tzFields;
 
                     $db -> setQuery($query);

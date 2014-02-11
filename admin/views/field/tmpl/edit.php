@@ -24,6 +24,9 @@ $fields = $this -> item -> defvalue;
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.tooltip');
 JHtml::_('formbehavior.chosen', 'select');
+
+$saveOrderingUrl = 'index.php?option=com_tz_portfolio&task=fields.saveOrderAjax&tmpl=component';
+JHtml::_('sortablelist.sortable', 'articleList', 'adminForm', strtolower($this -> state -> filter_order_Dir), $saveOrderingUrl);
 ?>
 
 <script type="text/javascript ">
@@ -116,6 +119,9 @@ window.addEvent('load', function() {
                     click: function(e){
                         e.stop();
 
+                        var myDivm = new Element('div');
+                        myDivm.inject($('fieldvalue'));
+
                         var myDiv = new Element('div',{
                             styles:{
                                 display:'block',
@@ -124,7 +130,7 @@ window.addEvent('load', function() {
                                 'padding-top':'25px'
                             }
                         });
-                        myDiv.inject($('fieldvalue'));
+                        myDiv.inject(myDivm);
                         //value
                         var myValue = new Element('input',{
                             type: 'text',
@@ -138,12 +144,8 @@ window.addEvent('load', function() {
                             events:{
                                 click: function(e){
                                     e.stop();
-                                    myDiv.dispose();
-                                    myValue.dispose();
-                                    myDefault.dispose();
-                                    myRemove.dispose();
-                                    myBox.dispose();
-                                    tz_count--;
+                                    this.getParent().getParent().dispose();
+//                                    tz_count--;
                                 }
                             }
                         });
@@ -164,9 +166,12 @@ window.addEvent('load', function() {
                             }).inject(myRemove,'after');
                         }
 
-                        var myBox = createBox($('fieldvalue'),'jform[option_icon][]',tz_count+1,'');
+                        var myBox = createBox(myDivm,'jform[option_icon][]',tz_count+1,'');
 
-
+                        var myOrder = new Element('div',{
+                            style: 'padding-top: 10px; clear: both;',
+                            html: '<span style="padding-right: 10px;"><?php echo JText::_('JFIELD_ORDERING_LABEL')?></span><input type="text" name="jform[ordering][]">'
+                        }).inject(myBox,'after');
                         tz_count++;
                     }
                 }
@@ -184,6 +189,9 @@ window.addEvent('load', function() {
                 image       = '<?php echo $fields[$i] -> image;?>';
             }
 
+            var myDivm = new Element('div');
+            myDivm.inject($('fieldvalue'));
+
             var myDiv = new Element('div',{
                 styles:{
                     float:'left',
@@ -191,7 +199,7 @@ window.addEvent('load', function() {
                     'padding-top':'25px'
                 }
             });
-            myDiv.inject($('fieldvalue'));
+            myDiv.inject(myDivm);
             var myValue = new Element('input',{
                 type: 'text',
                 'name': 'jform[option_name][]',
@@ -204,11 +212,8 @@ window.addEvent('load', function() {
                 events:{
                     click: function(e){
                         e.stop();
-                        myDiv.dispose();
-                        myValue.dispose();
-                        myRemove.dispose();
-                        myBox.dispose();
-                        tz_count--;
+                        this.getParent().getParent().dispose();
+//                        tz_count--;
                     }
                 }
             });
@@ -222,6 +227,7 @@ window.addEvent('load', function() {
                         ' \style="margin:0;"/><\span style="padding-left:5px; font-size: 11px;">'+
                         '<i><?php echo JText::_('COM_TZ_PORTFOLIO_DEFAULT_VALUES');?></i></span>'
                 }).inject(myRemove,'after');
+
             }
 
             if($('type').value == 'select' || $('type').value == 'radio'){
@@ -234,7 +240,12 @@ window.addEvent('load', function() {
                 }).inject(myRemove,'after');
             }
 
-            var myBox = createBox($('fieldvalue'),'jform[option_icon][]',<?php echo $i+1;?>,image);
+            var myBox = createBox(myDivm,'jform[option_icon][]',<?php echo $i+1;?>,image);
+            var myOrder = new Element('div',{
+                style: 'padding-top: 10px; clear: both;',
+                html: '<span style="padding-right: 10px;"><?php echo JText::_('JFIELD_ORDERING_LABEL')?></span>'
+                    +'<input type="text" name="jform[ordering][]" value="<?php echo $fields[$i] -> ordering;?>">'
+            }).inject(myBox,'after');
 
             tz_count++;
             <?php $i++;?>

@@ -64,10 +64,10 @@ if($params -> get('tz_use_lightbox',1) == 1){
                                  title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"/>
                         <?php if($params -> get('tz_use_image_hover',1) == 1):?>
                             <?php if(isset($srcHover)):?>
-                                <img class="tz_image_hover"
-                                    src="<?php echo $srcHover;?>"
-                                 alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                                 title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"/>
+                            <img class="tz_image_hover"
+                                src="<?php echo $srcHover;?>"
+                             alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                             title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"/>
                             <?php endif;?>
                         <?php endif;?>
                     </a>
@@ -95,8 +95,8 @@ if($params -> get('tz_use_lightbox',1) == 1){
                 <div class="tz_portfolio_image_gallery">
                     <a<?php echo $class;?> href="<?php echo $link?>">
                         <img src="<?php echo $srcgallery;?>"
-                             alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                             title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"/>
+                             alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                             title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"/>
                     </a>
                 </div>
             <?php endif;?>
@@ -111,8 +111,9 @@ if($params -> get('tz_use_lightbox',1) == 1){
             ?>
                 <div class="tz_portfolio_video">
                     <a<?php echo $class;?> href="<?php echo $link?>">
-                        <img src="<?php echo $srcVideo;?>" title="<?php echo $media[0] -> imagetitle;?>"
-                             alt="<?php echo $media[0] -> imagetitle;?>"/>
+                        <img src="<?php echo $srcVideo;?>"
+                             title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                             alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"/>
                     </a>
                 </div>
             <?php endif;?>

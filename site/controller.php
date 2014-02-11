@@ -30,7 +30,8 @@ class TZ_PortfolioController extends JControllerLegacy
     protected $input;
 	function __construct($config = array())
 	{
-        $this->input = JFactory::getApplication()->input;
+        $this->input    = JFactory::getApplication()->input;
+        $params         = JFactory::getApplication() -> getParams();
 
 		// Article frontpage Editor pagebreak proxying:
 		if (($this->input -> get('view') == 'article' || $this->input -> get('view') == 'p_article')
@@ -50,12 +51,17 @@ class TZ_PortfolioController extends JControllerLegacy
 
             $doc    = JFactory::getDocument();
             //Add Script to the header
-            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/jquery-1.9.1.js');
-            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/jquery-noconflict.js');
-            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/js/bootstrap.min.js');
-            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap.css');
-            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap-responsive.css');
-            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/css/tz-portfolio.css');
+            if($params -> get('enable_jquery',1)){
+                $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/jquery-1.9.1.js');
+                $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/jquery-noconflict.js');
+                $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/jquery-migrate-1.2.1.js');
+            }
+            if($params -> get('enable_bootstrap',1)){
+                $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/js/bootstrap.min.js');
+                $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap.css');
+                $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap-responsive.css');
+            }
+//            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/css/tz-portfolio.css');
 //            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/chosen.jquery.min.js');
 //            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery.ui.core.min.js');
 //            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery.ui.sortable.min.js');

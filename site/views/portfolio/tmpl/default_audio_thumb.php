@@ -50,12 +50,13 @@ if(count($media)):
                 $class=' class = "fancybox fancybox.iframe"';
             }
         ?>
-            <div class="tz_audio_thumbnail">
-                <a<?php echo $class;?> href="<?php echo $link?>">
-                    <img src="<?php echo $srcAudio;?>" title="<?php echo $media[0] -> imagetitle;?>"
-                             alt="<?php echo $media[0] -> imagetitle;?>"/>
-                </a>
-            </div>
+        <div class="tz_audio_thumbnail">
+            <a<?php echo $class;?> href="<?php echo $link?>">
+                <img src="<?php echo $srcAudio;?>"
+                     title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                     alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"/>
+            </a>
+        </div>
         <?php endif;?>
     <?php endif;?>
 <?php endif;?>

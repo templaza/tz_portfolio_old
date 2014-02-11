@@ -87,7 +87,7 @@ $list   = $this -> blogFields;
 
                                         ?>
 											<?php if(isset($src) AND $src):?>
-                                            <img src="<?php echo $src?>">
+                                            <img src="<?php echo $src?>" alt="<?php echo isset($row -> title)?$row -> title:'';?>">
 											<?php endif;?>
                                         <?php
                                                     if(preg_match('/^<a.*?>.*?<\/a>$/',htmlspecialchars_decode($item),$match)):

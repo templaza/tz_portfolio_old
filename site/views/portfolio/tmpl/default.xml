@@ -462,6 +462,14 @@
                 <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
                 <option value="order">JGLOBAL_ARTICLE_MANAGER_ORDER</option>
             </field>
+            <field name="fields_option_order" type="list"
+                   label="COM_TZ_PORTFOLIO_TZ_FIELDS_OPTION_ORDER_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">JFIELD_OPTION_NONE</option>
+                <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+                <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+                <option value="ordering">COM_TZ_PORTFOLIO_ORDERING</option>
+            </field>
             <field type="spacer" name="spacer9" hr="true"/>
 
             <field name="tz_portfolio_tag_user" type="spacer" class="spacer"

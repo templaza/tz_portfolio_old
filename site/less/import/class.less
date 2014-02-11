@@ -15,3 +15,9 @@
   transition: @properties;
   -webkit-backface-visibility: hidden;
 }
+.animation(@properties) {
+  -webkit-animation: @properties;
+  -moz-animation: @properties;
+  -o-animation: @properties;
+  animation: @properties;
+}

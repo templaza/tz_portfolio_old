@@ -33,6 +33,7 @@ class TZ_PortfolioModelPlugin extends JModelAdmin{
 
     function populateState(){
         parent::populateState();
+
         $this -> setState('com_tz_portfolio.plugin.articleId',null);
         $this -> setState('com_tz_portfolio.plugin.pluginid',null);
 

@@ -250,6 +250,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                         $url        = 'http://graph.facebook.com/?ids='
                                       .$threadLink;
                         $content    = $fetch -> get($url);
+                        $contentUrl = $item -> fullLink;
 
                         if($content){
                             if($body = $content -> body){
@@ -397,6 +398,22 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 
 		$extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
         $extraFields -> setState('article.id',JRequest::getInt('id'));
+        if($item -> params -> get('fields_option_order')){
+            switch($item -> params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
         $extraFields -> setState('params',$item -> params);
         $this -> assign('portfolioFields',$extraFields -> getExtraFields());
 
@@ -580,7 +597,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         if($item -> params -> get('show_video',1)){
             $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
                                         $jscompress -> folder.'/fluidvids.v2.0.0'
-                            .$jscompress -> extfile.'.js"></script>');
+                            .$jscompress -> extfile.'.js" type="text/javascript"></script>');
             $doc -> addCustomTag('<script type="text/javascript">
                 jQuery(document).ready(function(){
                 Fluidvids.init({
@@ -858,9 +875,9 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         // Set meta tags with prefix property "article:"
         $this -> document -> addCustomTag('<meta property="article:author" content="'.$this->item->author.'"/>');
         $this -> document -> addCustomTag('<meta property="article:published_time" content="'
-            .JHtml::_('date', $this->item->created, JText::_('DATE_FORMAT_LC2')).'"/>');
+            .$this->item->created.'"/>');
         $this -> document -> addCustomTag('<meta property="article:modified_time" content="'
-            .JHtml::_('date', $this->item->modified, JText::_('DATE_FORMAT_LC2')).'"/>');
+            .$this->item->modified.'"/>');
         $this -> document -> addCustomTag('<meta property="article:section" content="'
             .$this->escape($this->item->category_title).'"/>');
         if($tags){

@@ -33,9 +33,15 @@ if($list):
                 <a class="title" href="<?php echo $item->link; ?>">
                     <?php echo $item->title; ?></a>
             <?php endif;?>
+            <?php if($params -> get('show_created_date',0)):?>
+            <div class="created">
+                <?php echo JHtml::_('date',$item -> created,'DATE_FORMAT_LC2'); ?>
+            </div>
+            <?php endif; ?>
             <?php if($params -> get('show_image',0) == 1):?>
                 <?php
                     if($media):
+                        $image  = null;
                         if($media -> type == 'image' || $media -> type == 'imagegallery'){
                             $image  = JURI::base().str_replace('.'.JFile::getExt($media -> images),
                                                   '_'.$params -> get('image_size','XS').'.'
@@ -46,10 +52,12 @@ if($list):
                                                   '_'.$params -> get('image_size','XS').'.'
                                                   .JFile::getExt($media -> thumb),$media -> thumb);
                         }
+                        if($image):
                 ?>
                 <a href="<?php echo $item ->link;?>">
-                    <img src="<?php echo $image?>" alt="<?php echo $media[0] -> imagetitle?>" title="<?php echo $media[0] -> imagetitle?>"/>
+                    <img src="<?php echo $image?>" alt="<?php echo $media -> imagetitle?>" title="<?php echo $media -> imagetitle?>"/>
                 </a>
+                    <?php endif;?>
                 <?php endif;?>
             <?php endif;?>
             <?php if($params -> get('show_introtext',1)):?>

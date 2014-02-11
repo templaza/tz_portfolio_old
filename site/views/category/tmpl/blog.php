@@ -55,7 +55,8 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
                 <?php
                     $catParams  = $this -> category -> getParams();
                 ?>
-                    <img src="<?php echo JURI::root().$this -> listImage -> images; ?>"/>
+                    <img src="<?php echo JURI::root().$this -> listImage -> images; ?>"
+                        alt="<?php echo isset($this -> category -> title)?$this->category->title:''; ?>"/>
             <?php endif; ?>
             <?php if ($this->params->get('show_description') && $this->category->description) : ?>
                 <?php echo JHtml::_('content.prepare', $this->category->description, '', 'com_tz_portfolio.category'); ?>

@@ -21,8 +21,8 @@
 ?>
 <?php if($this -> listsTags):?>
     <?php foreach($this -> listsTags as $item):?>
-        <a class="btn btn-small" href="#<?php echo str_replace(' ','-',$item -> name)?>"
-           data-option-value=".<?php echo str_replace(' ','-',$item -> name)?>">
+        <a class="btn btn-small" href="#<?php echo $item -> tagFilter; ?>"
+           data-option-value=".<?php echo $item -> tagFilter; ?>">
             <?php echo $item -> name;?>
         </a><?php endforeach;?>
 <?php endif;?>

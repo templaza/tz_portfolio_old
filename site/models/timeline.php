@@ -146,6 +146,23 @@ class TZ_PortfolioModelTimeLine extends JModelList
 
         require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'timeline'.DIRECTORY_SEPARATOR.'view.html.php';
         $view   = new TZ_PortfolioViewTimeLine();
+
+        if($params -> get('fields_option_order')){
+            switch($params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $view -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
         
         JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
@@ -387,7 +404,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
         }
         //Get Catid, created by article
         $query  = 'SELECT cc.id,cc.title,YEAR(c.created) AS year,MONTH(c.created) AS month,'
-                  .'CONCAT_WS(":",YEAR(c.created),MONTH(c.created)) AS tz_date'
+                  .'CONCAT_WS("-",YEAR(c.created),MONTH(c.created)) AS tz_date'
                   .' FROM #__categories AS cc'
                   .' LEFT JOIN #__content AS c ON c.catid=cc.id'
                   .' WHERE cc.extension="com_content" AND cc.published=1 AND c.state=1'
@@ -474,7 +491,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 $rows   = $db -> loadObjectList();
                 if(count($rows)){
                     foreach($rows as $row){
-                        $tagName[]  = trim(str_replace(' ','-',$row -> name));
+                        $tagName[]  = JApplication::stringURLSafe(trim($row -> name));
                     }
                 }
             }
@@ -1068,6 +1085,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
             if(count($rows)>0){
                 foreach($rows as &$item){
                     $item -> name   = trim($item -> name);
+                    $item -> tagFilter  = JApplication::stringURLSafe($item -> name);
                 }
                 $this -> rowsTag    = $rows;
             }
@@ -1092,6 +1110,10 @@ class TZ_PortfolioModelTimeLine extends JModelList
         $query -> group('t.id');
         $db -> setQuery($query);
         if($rows = $db -> loadObjectList()){
+            foreach($rows as $row){
+                $row -> name    = trim($row -> name);
+                $row -> tagFilter   = JApplication::stringURLSafe($row -> name);
+            }
             return $rows;
         }
         return null;

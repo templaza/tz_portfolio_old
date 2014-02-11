@@ -107,6 +107,7 @@ class TZ_PortfolioModelField extends JModelAdmin
                     $list[$i] -> target         = $param -> get('target');
                     $list[$i] -> editor         = $param -> get('editor');
                     $list[$i] -> image          = $param -> get('image');
+                    $list[$i] -> ordering       = $param -> get('ordering');
                     $i++;
                 }
                 $item -> defvalue       = $list;
@@ -188,7 +189,7 @@ class TZ_PortfolioModelField extends JModelAdmin
                             if(isset($_data['option_name'][$i]) && !empty($_data['option_name'][$i])){
                                 $values[]   = '{"name":"'.strip_tags($_data['option_name'][$i])
                                     .'","value":"'.$count.'","target":"null","editor":"null","image":"'
-                                              .$_data['option_icon'][$i].'"}';
+                                              .$_data['option_icon'][$i].'","ordering":"'.$_data['ordering'][$i].'"}';
                                 if(in_array($i,$data['default_value'])){
                                     $defautValue[$i]   = strip_tags($_data['option_name'][$i]);
                                 }
@@ -357,7 +358,8 @@ class TZ_PortfolioModelField extends JModelAdmin
 
                         if($_value -> name == $item -> value){
                             $query  = 'UPDATE #__tz_portfolio SET images="'.$_value -> image
-                                  .'" WHERE fieldsid='.$fieldsId.' AND contentid='.$item -> contentid.' AND value='.
+                                .'",'.$db -> quoteName('ordering').'='.$_value -> ordering
+                                .' WHERE fieldsid='.$fieldsId.' AND contentid='.$item -> contentid.' AND value='.
                                       $db -> quote($_value->name);
                             $db -> setQuery($query);
                             if(!$db -> query()){

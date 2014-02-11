@@ -25,6 +25,9 @@ jimport('joomla.application.component.modellist');
 class TZ_PortfolioModelTags extends JModelList
 {
     function populateState($ordering = null, $direction = null){
+
+        parent::populateState('id','desc');
+
         $app    = JFactory::getApplication();
 
         $state  = $this -> getUserStateFromRequest('com_tz_portfolio.tags.filter_state','filter_state',null,'string');
@@ -44,8 +47,6 @@ class TZ_PortfolioModelTags extends JModelList
 
         $orderDir  = $this -> getUserStateFromRequest('com_tz_portfolio.tags.filter_order_Dir','filter_order_Dir','asc','string');
         $this -> setState('filter_order_Dir',$orderDir);
-
-        parent::populateState('id','desc');
     }
 
     protected function getListQuery(){

@@ -124,7 +124,7 @@ $categories = $this -> listsCatDate;
             <div class="element TzDate <?php if($data) echo $data;?>"
                  data-category="<?php echo $dataCategory?>"
                  data-title=""
-                 data-date="<?php echo strtotime($row -> created)+strtotime($dataCategory)+1;?>"
+                 data-date="<?php echo strtotime($row -> created)+strtotime($dataCategory) + count($list)+1;?>"
                  data-hits="<?php echo ((int) $row -> maxhits) +strtotime($dataCategory) + 1; ?>">
                 <h2 id="<?php echo strtolower(date('M',strtotime($row -> created))).$year;?>">
                     <span class="label label-info date"><?php echo JText::_(trim($strMonth)).'&nbsp;'.$year;?></span>
@@ -140,7 +140,7 @@ $categories = $this -> listsCatDate;
         <div id="tzelement<?php echo $row -> id;?>" class="element <?php echo $class.$tzItemClass.$tzItemFeatureClass;?>"
              data-category="<?php echo $dataCategory;?>"
              data-title="<?php echo $this->escape($row -> title); ?>"
-             data-date="<?php echo strtotime($row->created); ?>"
+             data-date="<?php echo strtotime($row->created) + strtotime($dataCategory) + $i; ?>"
              data-hits="<?php echo ((int) $row -> hits) + strtotime($dataCategory); ?>">
             <div class="TzInner">
                 <!-- Begin Icon print, Email or Edit -->

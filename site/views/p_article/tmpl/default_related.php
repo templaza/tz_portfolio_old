@@ -93,7 +93,7 @@ if($lists):
                 <div class="TzImage">
                     <a<?php if($params -> get('tz_use_lightbox',1) == 1){echo ' class="fancybox fancybox.iframe"';}?>
                             href="<?php echo $item -> _link;?>">
-                        <img src="<?php echo $src;?>" alt="<?php echo $item -> title?>" title="<?php echo $item -> title;?>"/>
+                        <img src="<?php echo $src;?>" alt="<?php echo $item -> title; ?>" title="<?php echo $item -> title;?>"/>
                     </a>
                 </div>
                 <?php endif;?>

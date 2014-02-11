@@ -73,6 +73,23 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
 
 		$params = &$state->params;
 
+        if($params -> get('fields_option_order')){
+            switch($params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $this -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
+
         $csscompress    = null;
         if($params -> get('css_compression',0)){
             $csscompress    = '.min';

@@ -21,6 +21,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.controllerform');
+jimport('joomla.filesystem.file');
 
 class TZ_PortfolioControllerArticle extends JControllerForm
 {

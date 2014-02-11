@@ -90,7 +90,8 @@ $list   = $this -> listFields;
 
                                         ?>
 											<?php if($src AND !empty($images[$j])):?>
-                                            <img src="<?php echo $src?>"/>
+                                            <img src="<?php echo $src?>"
+                                                alt="<?php  echo isset($row -> title)?$row -> title:''; ?>"/>
 											<?php endif;?>
                                         <?php
                                                     if(preg_match('/^<a.*?>.*?<\/a>$/',htmlspecialchars_decode($item),$match)):

@@ -22,7 +22,7 @@ $params = $this -> item -> params;
 if($params -> get('tz_show_gmap',1) == 1):
     
 ?>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.x&language=en&libraries=places&sensor=false"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.x&amp;language=en&amp;libraries=places&amp;sensor=false"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         jQuery(window).load(function(){

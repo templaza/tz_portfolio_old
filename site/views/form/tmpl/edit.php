@@ -49,7 +49,7 @@ if($list){
 }
 
 $doc -> addCustomTag('<script src="'.JUri::base(true).'/administrator/components/com_tz_portfolio/js/tz-chosen.js"'.
-'type="text/javascript"></script>');
+' type="text/javascript"></script>');
 
 if(!$this -> tagsSuggest){
     $this -> tagsSuggest    = 'null';

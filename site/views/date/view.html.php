@@ -54,6 +54,23 @@ class TZ_PortfolioViewDate extends JViewLegacy{
         $state		= $this->get('State');
         $params		= $state->params;
 
+        if($params -> get('fields_option_order')){
+            switch($params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $this -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
+
         // Set value again for option tz_portfolio_redirect
         if($params -> get('tz_portfolio_redirect') == 'default'){
             $params -> set('tz_portfolio_redirect','article');

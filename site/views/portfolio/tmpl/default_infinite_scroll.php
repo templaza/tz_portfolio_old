@@ -20,7 +20,7 @@
 defined('_JEXEC') or die();
 $params = $this -> params;
 ?>
-<div id="tz_append">
+<div id="tz_append" class="text-center">
     <?php if($params -> get('tz_portfolio_layout') == 'ajaxButton'):?>
     <a href="#tz_append" class="btn btn-large btn-block"><?php echo JText::_('COM_TZ_PORTFOLIO_ADD_ITEM_MORE');?></a>
     <?php endif;?>
@@ -81,7 +81,7 @@ $params = $this -> params;
                     jQuery('#infscr-loading').css('display','none');
                 },
                 loading: {
-                    msgText:'<?php echo JText::_('COM_TZ_PORTFOLIO_LOADING_TEXT');?>',
+                    msgText:'<i class="tz-icon-spinner tz-spin"></i><?php echo JText::_('COM_TZ_PORTFOLIO_LOADING_TEXT');?>',
                     finishedMsg: '',
                     img:'<?php echo JURI::root();?>components/com_tz_portfolio/assets/ajax-loader.gif',
                     selector: '#tz_append'

@@ -34,10 +34,29 @@ class TZ_PortfolioViewUsers extends JViewLegacy
         parent::__construct($config);
     }
     function display($tpl = null){
-        $doc    = JFactory::getDocument();
+        $doc        = JFactory::getDocument();
+        $menus		= JMenu::getInstance('site');
+        $active     = $menus->getActive();
 
         $state  = $this -> get('State');
         $params = $state -> params;
+
+        if($params -> get('fields_option_order')){
+            switch($params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $this -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
 
         // Set value again for option tz_portfolio_redirect
         if($params -> get('tz_portfolio_redirect') == 'default'){
@@ -290,6 +309,15 @@ class TZ_PortfolioViewUsers extends JViewLegacy
 
         //Escape strings for HTML output
         $this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
+        if ($active)
+        {
+            $params->def('page_heading', $params->get('page_title', $active->title));
+        }
+        else
+        {
+            $params->def('page_heading', JText::_('JGLOBAL_ARTICLES'));
+        }
 
         $this -> assign('listsUsers',$list);
         $this -> assign('authorParams',$params);

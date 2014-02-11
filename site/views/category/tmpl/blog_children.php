@@ -35,7 +35,8 @@ $class = ' class="first"';
 		<li<?php echo $class; ?>>
 			<?php $class = ''; ?>
             <?php if (isset($this->listImage->images)) : ?>
-                <img src="<?php echo JURI::root().$this -> listImage -> images; ?>"/>
+                <img src="<?php echo JURI::root().$this -> listImage -> images; ?>"
+                    alt="<?php echo isset($child->title)?$child->title:''; ?>"/>
             <?php endif; ?>
 
 			<span class="item-title"><a href="<?php echo JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($child->id));?>">

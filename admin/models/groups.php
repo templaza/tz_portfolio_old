@@ -28,6 +28,9 @@ class TZ_PortfolioModelGroups extends JModelList{
     }
 
     public function populateState($ordering = null, $direction = null){
+
+        parent::populateState('id','desc');
+
         $app        = JFactory::getApplication();
         $context    = 'com_tz_portfolio.groups';
 
@@ -39,8 +42,6 @@ class TZ_PortfolioModelGroups extends JModelList{
         $this -> setState('filter_order',$order);
         $orderDir  = $app -> getUserStateFromRequest($context.'.filter_order_Dir','filter_order_Dir','asc','string');
         $this -> setState('filter_order_Dir',$orderDir);
-
-        parent::populateState('id','desc');
     }
 
     protected function getListQuery(){

@@ -20,6 +20,21 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+02/11/2014 - 3.1.8
+
+	Update bootrap library to version 2.3 and icon_moon(insert some icons).
+	Update some code for module Tz_portfolio_articles_latest (in file helper.php)
+	Update jQuery-migrate library for jQuery-1.9.1
+	Remove code css in module tz_portfolio_articles_lates.php
+	Insert option show Created date for module "mod_tz_portfolio_articles_lates".
+	Insert options On/Off bootstrap and on/off jQuery libraries.
+	Insert attribute alt for img tag in all views.
+	Fix bug: Download Attachment when Enable Engine Friendly URLs.
+	Fix bug: Tag is not filter when it is separated by dot "."
+	Fix bug: Pagination after editting article.
+	Fix bug: media type displays in Articles Manager (in admin).
+	Fix bug: Image author in views: Single Article and Portfolio Single Article.
+
 11/19/2013 - 3.1.7
 
     Fix some bugs (Error when create article with some php version. and some warning).
