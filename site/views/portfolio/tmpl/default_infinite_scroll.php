@@ -54,7 +54,6 @@ $params = $this -> params;
                     jQuery('#filter a').each(function (index) {
                        tags.push(jQuery(this).attr('data-option-value').replace(".category",""));
                     });
-                    console.log(tags);
                     return JSON.encode(tags);
                 }
             <?php endif;?>
