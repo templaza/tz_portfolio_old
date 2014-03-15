@@ -22,6 +22,7 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
 $params = $this->params;
+if($this -> items):
 ?>
 
 <div id="archive-items">
@@ -206,3 +207,4 @@ $params = $this->params;
 <div class="pagination">
 	<p class="counter"> <?php echo $this->pagination->getPagesCounter(); ?> </p>
 	<?php echo $this->pagination->getPagesLinks(); ?> </div>
+<?php endif;?>

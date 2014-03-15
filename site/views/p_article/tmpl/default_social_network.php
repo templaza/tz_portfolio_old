@@ -58,7 +58,7 @@ $url = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this -> item
             <?php if($params -> get('show_twitter_button',1) == 1): ?>
             <!-- Twitter Button -->
             <div class="TwitterButton">
-                <a href="<?php echo $url;?>" class="twitter-share-button"
+                <a href="https://twitter.com/share" data-url="<?php echo $url;?>" class="twitter-share-button"
                    data-count="horizontal"<?php //if($this->item->params->get('twitterUsername')): ?>
                    data-via="<?php //echo $this->item->params->get('twitterUsername'); ?>"
                             data-size="small">

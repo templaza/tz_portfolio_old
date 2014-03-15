@@ -255,7 +255,7 @@ $doc -> addScript(JUri::base(true).'/components/com_tz_portfolio/js/base64.js');
                 ?>
             }
         },function(){
-            <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>
+            <?php if($params -> get('tz_show_filter',1) AND $filter = $params -> get('filter_tags_categories_order',null)):?>
                 //Sort tags or categories filter
                 tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
             <?php endif;?>

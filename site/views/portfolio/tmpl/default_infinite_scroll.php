@@ -144,6 +144,7 @@ $params = $this -> params;
                                 <?php endif;?>
 
                                 <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
+                                    console.log(getCategories());
                                     jQuery.ajax({
                                         url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxcategories',
                                         data:{

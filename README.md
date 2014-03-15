@@ -20,6 +20,14 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+03/14/2014 - 3.1.9
+
+	Fix Twitter share button for 2 views: article  and p_article.
+	Fix notice for view archive.
+	Fix some notices and category's link for module mod_tz_categories.
+	Fix error with function "TzSortfilter" for 2 views: portfolio and timeline.
+	Quality for Audio's thumbnail.
+
 02/11/2014 - 3.1.8
 
 	Update bootrap library to version 2.3 and icon_moon(insert some icons).

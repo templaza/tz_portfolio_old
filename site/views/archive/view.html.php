@@ -48,7 +48,7 @@ class TZ_PortfolioViewArchive extends JViewLegacy
 		// Get the page/component configuration
 		$params = &$state->params;
 
-        if($items){
+        if(isset($items) && $items && !empty($items)){
             foreach ($items as $item)
             {
                 $item->catslug = ($item->category_alias) ? ($item->catid . ':' . $item->category_alias) : $item->catid;
