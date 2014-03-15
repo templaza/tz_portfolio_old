@@ -3606,6 +3606,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                     }
                                 }
                                 if($thumbUrl){
+
+                                    if(JString::strrpos($thumbUrl,'-',0) != false){
+                                        $thumbUrl = JString::substr($thumbUrl,0,JString::strrpos($thumbUrl,'-',0)+1).'t500x500.'.JFile::getExt($thumbUrl);
+                                    }
+
                                     // Create folder tmp if not exists
                                     if(!JFolder::exists(JPATH_SITE.DIRECTORY_SEPARATOR.'media'
                                             .DIRECTORY_SEPARATOR.$this -> tzfolder)){

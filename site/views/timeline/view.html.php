@@ -38,7 +38,7 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
 
     
     function display($tpl=null){
-        
+        JHtml::_('behavior.framework');
         $menus		= JMenu::getInstance('site');
         $active     = $menus->getActive();
         $state      = $this -> get('State');

@@ -55,9 +55,8 @@ class com_tz_portfolioInstallerScript{
             $attribute  = $field -> attributes();
             if(!in_array((string)$attribute -> name,$paramNames)){
                 if($attribute -> multiple == 'true'){
-                    $arr   = array();
-                    $options    = $manifest -> xPath('config/fields/field/option');
-                    foreach($options as $option){
+				$arr   = null;
+                    foreach($field -> option as $option){
                         $opAttr = $option -> attributes();
                         $arr[]  = (string)$opAttr -> value;
                     }
@@ -68,7 +67,6 @@ class com_tz_portfolioInstallerScript{
                     $params -> set((string)$attribute -> name,(string)$attribute ->default);
             }
         }
-
 
         $params = $params -> toString();
 

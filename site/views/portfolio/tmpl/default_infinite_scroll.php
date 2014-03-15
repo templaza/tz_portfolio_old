@@ -54,6 +54,7 @@ $params = $this -> params;
                     jQuery('#filter a').each(function (index) {
                        tags.push(jQuery(this).attr('data-option-value').replace(".category",""));
                     });
+                    console.log(tags);
                     return JSON.encode(tags);
                 }
             <?php endif;?>
@@ -144,6 +145,7 @@ $params = $this -> params;
                                 <?php endif;?>
 
                                 <?php if($params -> get('tz_filter_type','tags') == 'categories'):?>
+                                    console.log(getCategories());
                                     jQuery.ajax({
                                         url:'index.php?option=com_tz_portfolio&task=portfolio.ajaxcategories',
                                         data:{
