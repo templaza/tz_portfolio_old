@@ -40,7 +40,7 @@ abstract class modTZ_PortfolioCategoriesHelper
         if($params -> get('catid'))
             $catIds         = implode(',',$params -> get('catid'));
         if($catIds){
-            $categoryName   = strtolower(modTZ_PortfolioCategoriesHelper::getCategoryName($catIds));
+            $categoryName   = strtolower(self::getCategoryName($catIds));
         }
         if($params -> get('show_total',1))
             $total  = ',(SELECT COUNT(*) FROM #__content AS c WHERE c.catid = a.id) AS total';
@@ -83,9 +83,7 @@ abstract class modTZ_PortfolioCategoriesHelper
         if($items   = $db -> loadObjectList()){
             $i=0;
             foreach($items as $item){
-//              $items[$i] ->link   = 'index.php?option=com_tz_portfolio&view=category&id='
-//                                    .$item -> id.'&Itemid='.JRequest::getInt('Itemid');
-                $items[$i] ->link   = JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($item->id));
+                $items[$i] ->link   = JRoute::_(self::getCategoryRoute($item->id));
                 $registry = new JRegistry;
                 $registry->loadString($item->params);
                 $images = $registry->toArray();
