@@ -470,7 +470,8 @@ $pluginsTab = $this -> pluginsTab;
                 }).inject($('tz_media_title'));
             break;
         }
-        $$('#tz_media_type_chzn .chzn-drop li').addEvent('click',function(){
+        //$$('#tz_media_type_chzn .chzn-drop li').addEvent('click',function(){
+        jQuery('#tz_media_type').bind('change',function(){
 
             switch ($('tz_media_type').value){
                 case 'youtube':
