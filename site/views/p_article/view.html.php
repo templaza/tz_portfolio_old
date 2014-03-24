@@ -628,6 +628,12 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 		$this->_prepareDocument();
 
 		parent::display($tpl);
+
+        if($this -> item -> params -> get('show_vote',1)){
+            if($this -> item -> rating){
+                echo $this -> _addRichSnippes();
+            }
+        }
 	}
 
     protected function FindItemId($_tagid=null)
@@ -880,6 +886,13 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
             .$this->item->modified.'"/>');
         $this -> document -> addCustomTag('<meta property="article:section" content="'
             .$this->escape($this->item->category_title).'"/>');
+
+        if($this->params -> get('show_vote',1)){
+            if($this -> item -> rating){
+                $this -> document -> addCustomTag('<meta property="article:ratingValue" content="'.$this -> item -> rating.'"/> ');
+                $this -> document -> addCustomTag('<meta property="article:reviewCount" content="'.$this -> item -> rating_count.'"/> ');
+            }
+        }
         if($tags){
             $tags   = htmlspecialchars($tags);
             $this -> document-> setMetaData('keywords',$tags);
@@ -929,4 +942,20 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 			$this->document->setMetaData('robots', 'noindex, nofollow');
 		}
 	}
+
+    protected function _addRichSnippets(){
+
+        $media  = $this -> listMedia;
+        $params = $this -> item -> params;
+
+        $html   = null;
+        $html   = '<div itemscope itemtype="http://schema.org/Article">';
+        $html  .= '<meta itemprop="name" content="'.$this -> item -> title.'"/>';
+        $html  .= '<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">';
+        $html  .= '<meta itemprop="ratingValue" content="'.$this -> item -> rating.'"/>';
+        $html  .= '<meta itemprop="ratingCount" content="'.$this -> item -> rating_count.'"/>';
+        $html  .= '</div>';
+        $html  .= '</div>';
+        return $html;
+    }
 }

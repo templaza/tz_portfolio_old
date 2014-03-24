@@ -106,6 +106,7 @@ $pluginsTab = $this -> pluginsTab;
                    $('jform_attribs_tz_fieldsid_content-lbl').getParent('div').setStyle('display','none');
                    if(data){
                        $('tz_fieldsid_content').set('html',data);
+
                        $('tz_fieldsid_content').getParent('div').set('style','');
                        $('jform_attribs_tz_fieldsid_content-lbl').getParent('div').set('style','');
                    }
@@ -131,8 +132,10 @@ $pluginsTab = $this -> pluginsTab;
 //            $('tz_fieldsid_content').getParent('div').setStyle('display','none');
 //            ajax();
 //        });
-        $$('#groupid_chzn .chzn-drop li').addEvent('click',function(e){
-            e.stop();
+//        $$('#groupid_chzn .chzn-drop li').addEvent('click',function(e){
+        jQuery('#groupid').bind('change',function(e){
+            e.preventDefault();
+//            e.stop();
             $('tz_fieldsid_content').getParent('div').setStyle('display','none');
             $('jform_attribs_tz_fieldsid_content-lbl').getParent('div').setStyle('display','none');
             ajax();
@@ -183,7 +186,8 @@ $pluginsTab = $this -> pluginsTab;
             }
         }).send();
 
-        $$('#jform_catid_chzn .chzn-drop li').addEvent('click',function(e){
+//        $$('#jform_catid_chzn .chzn-drop li').addEvent('click',function(e){
+        jQuery('#jform_catid').bind('change',function(e){
             e.stop();
 
             ajax();
@@ -203,8 +207,10 @@ $pluginsTab = $this -> pluginsTab;
         });
 
         var tz_portfolio_groupChange = function(){
-            $$('#groupid_chzn .chzn-drop li').addEvent('click',function(e){
-                e.stop();
+//            $$('#groupid_chzn .chzn-drop li').addEvent('click',function(e){
+            jQuery('#groupid').bind('change',function(e){
+//                e.stop();
+                e.preventDefault();
                 tz_portfolio_extraFields();
             });
         }
@@ -1026,7 +1032,8 @@ $pluginsTab = $this -> pluginsTab;
                     id:'tz_attachments_delete_<?php echo $i;?>',
                     html:'<i class="icon-remove"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_BUTTON_DELETE');?>'
                 }).inject(myTd);
-                $('tz_attachments_delete_<?php echo $i;?>').addEvent('click',function(){
+<!--                $('tz_attachments_delete_--><?php //echo $i;?><!--').addEvent('click',function(){-->
+                jQuery('#tz_attachments_delete_<?php echo $i;?>').bind('click',function(){
                     var jSonRequest = new Request.JSON({url: "index.php?option=com_tz_portfolio&task=article.deleteAttachment",
                         onComplete: function(){
                             window.location.reload();
@@ -1539,7 +1546,7 @@ $pluginsTab = $this -> pluginsTab;
                                     <?php if($field -> name != 'jform[attribs][tz_fieldsid_content]'):?>
                                         <div class="control-label"><?php echo $field->label; ?></div>
                                         <div class="controls"><?php echo $field->input; ?></div>
-                                    <?php else:?>
+                                    <?php else: ?>
                                         <div class="control-label"><?php echo $field->label; ?></div>
                                         <div class="controls">
                                             <div id="tz_fieldsid_content"></div>

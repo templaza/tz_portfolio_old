@@ -110,6 +110,8 @@ class TZ_PortfolioModelTags extends JModelList
     protected function getListQuery(){
         $params = $this -> getState('params');
 
+        $user		= JFactory::getUser();
+
         $db     = JFactory::getDbo();
         $query  = $db -> getQuery(true);
 
@@ -137,6 +139,22 @@ class TZ_PortfolioModelTags extends JModelList
             $published = implode(',', $published);
             // Use article state if badcats.id is null, otherwise, force 0 for unpublished
             $query->where('c.state IN ('.$published.')');
+        }
+
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // Filter by start and end dates.
+            $nullDate = $db->Quote($db->getNullDate());
+            $nowDate = $db->Quote(JFactory::getDate()->toSQL());
+
+            $query->where('(c.publish_up = ' . $nullDate . ' OR c.publish_up <= ' . $nowDate . ')');
+            $query->where('(c.publish_down = ' . $nullDate . ' OR c.publish_down >= ' . $nowDate . ')');
+        }
+
+        // Filter by access level.
+        if (!$params->get('show_noauth')) {
+            $groups	= implode(',', $user->getAuthorisedViewLevels());
+            $query->where('c.access IN ('.$groups.')');
+            $query->where('cc.access IN ('.$groups.')');
         }
 
         $query -> where('t.published=1 AND x.tagsid='.$this -> getState('tags.id'));

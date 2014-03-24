@@ -506,6 +506,8 @@ class TZ_PortfolioModelTimeLine extends JModelList
     protected function getListQuery(){
         $params = $this -> getState('params');
 
+        $user		= JFactory::getUser();
+
         $db     = JFactory::getDbo();
         $query  = $db -> getQuery(true);
 
@@ -539,6 +541,22 @@ class TZ_PortfolioModelTimeLine extends JModelList
             $published = implode(',', $published);
             // Use article state if badcats.id is null, otherwise, force 0 for unpublished
             $query->where('c.state IN ('.$published.')');
+        }
+
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // Filter by start and end dates.
+            $nullDate = $db->Quote($db->getNullDate());
+            $nowDate = $db->Quote(JFactory::getDate()->toSQL());
+
+            $query->where('(c.publish_up = ' . $nullDate . ' OR c.publish_up <= ' . $nowDate . ')');
+            $query->where('(c.publish_down = ' . $nullDate . ' OR c.publish_down >= ' . $nowDate . ')');
+        }
+
+        // Filter by access level.
+        if (!$params->get('show_noauth')) {
+            $groups	= implode(',', $user->getAuthorisedViewLevels());
+            $query->where('c.access IN ('.$groups.')');
+            $query->where('cc.access IN ('.$groups.')');
         }
 
         $_catid     = $params -> get('tz_catid');
@@ -642,10 +660,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
         $subQuery -> join('LEFT',$db -> quoteName('#__tz_portfolio_tags_xref').' AS x ON x.contentid=c.id');
         $subQuery -> join('LEFT',$db -> quoteName('#__tz_portfolio_tags').' AS t ON t.id=x.tagsid');
         $subQuery -> join('LEFT',$db -> quoteName('#__users').' AS u ON u.id=c.created_by');
-//        $subQuery -> group('c.id');
-//        $subQuery -> order($cateOrder.'c.created DESC,'.$orderby);
 
-//        var_dump($subQuery->__toString());
         $query -> select('('.$subQuery -> __toString().') AS maxhits');
         /** End query **/
 
