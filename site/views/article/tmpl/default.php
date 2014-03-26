@@ -39,7 +39,7 @@ if($tmpl){
 }
 ?>
 
-<div class="TzItemPage item-page<?php echo $this->pageclass_sfx?>">
+<div class="TzItemPage item-page<?php echo $this->pageclass_sfx?>" >
     <div class="TzItemPageInner">
         <?php if ($this->params->get('show_page_heading', 1)) : ?>
             <h1 class="TzHeadingTitle">

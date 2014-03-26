@@ -214,7 +214,7 @@ class TZ_PortfolioModelArticle extends JModelItem
 				$query->join('LEFT', '#__categories as parent ON parent.id = c.parent_id');
 
 				// Join on voting table
-				$query->select('ROUND(v.rating_sum / v.rating_count, 0) AS rating, v.rating_count as rating_count');
+				$query->select('ROUND(v.rating_sum / v.rating_count, 1) AS rating, v.rating_count as rating_count');
 				$query->join('LEFT', '#__content_rating AS v ON a.id = v.content_id');
 
 				$query->where('a.id = ' . (int) $pk);

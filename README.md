@@ -20,6 +20,13 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+03/14/2014 - 3.2.0
+
+	Fix some mootool code when edit article in admin with joomla 3.2.3.
+	Fix Publish start date for Portfolio and Timeline view.
+	Insert rating rich snippet for Portfolio Single Article and Single Article view.
+	Change some languages in files: admin/en-GB.com_tz_portfolio.ini, module/en-GB.mod_tz_portfolio_articles_categories.ini and plugin/en-GB.plg_content_tz_portfolio.ini
+	
 03/14/2014 - 3.1.9
 
 	Fix Twitter share button for 2 views: article  and p_article.

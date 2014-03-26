@@ -91,9 +91,18 @@ class TZ_PortfolioModelPortfolio extends JModelList
             $limit  = (int) $params -> get('tz_article_limit',10);
         }
 
+        $db		= $this->getDbo();
+        $query	= $db->getQuery(true);
+
         if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
             // limit to published for people who can't edit or edit.state.
             $this->setState('filter.published', 1);
+            // Filter by start and end dates.
+            $nullDate = $db->Quote($db->getNullDate());
+            $nowDate = $db->Quote(JFactory::getDate()->toSQL());
+
+            $query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')');
+            $query->where('(a.publish_down = ' . $nullDate . ' OR a.publish_down >= ' . $nowDate . ')');
         }
         else {
             $this->setState('filter.published', array(0, 1, 2));
@@ -476,6 +485,8 @@ class TZ_PortfolioModelPortfolio extends JModelList
     protected function getListQuery(){
         $params = $this -> getState('params');
 
+        $user		= JFactory::getUser();
+
         $db     = JFactory::getDbo();
         $query  = $db -> getQuery(true);
 
@@ -506,6 +517,22 @@ class TZ_PortfolioModelPortfolio extends JModelList
             $published = implode(',', $published);
             // Use article state if badcats.id is null, otherwise, force 0 for unpublished
             $query->where('c.state IN ('.$published.')');
+        }
+
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // Filter by start and end dates.
+            $nullDate = $db->Quote($db->getNullDate());
+            $nowDate = $db->Quote(JFactory::getDate()->toSQL());
+
+            $query->where('(c.publish_up = ' . $nullDate . ' OR c.publish_up <= ' . $nowDate . ')');
+            $query->where('(c.publish_down = ' . $nullDate . ' OR c.publish_down >= ' . $nowDate . ')');
+        }
+
+        // Filter by access level.
+        if (!$params->get('show_noauth')) {
+            $groups	= implode(',', $user->getAuthorisedViewLevels());
+            $query->where('c.access IN ('.$groups.')');
+            $query->where('cc.access IN ('.$groups.')');
         }
 
         $catids = $params -> get('tz_catid');
