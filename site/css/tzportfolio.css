@@ -1664,6 +1664,9 @@ div#infscr-loading img {
 .LinkedinButton {
   display: inline-block;
 }
+.PinterestButton {
+  padding-right: 30px;
+}
 .TzArticleTag {
   margin-bottom: 20px;
 }

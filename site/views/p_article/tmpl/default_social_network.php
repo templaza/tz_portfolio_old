@@ -87,8 +87,8 @@ $url = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($this -> item
             <?php if($params -> get('show_pinterest_button',1)):?>
             <!-- Pinterest Button -->
             <div class="PinterestButton">
-                <a href="http://pinterest.com/pin/create/button/?url=<?php echo urlencode($url);?>&amp;media=<?php echo urlencode($socialInfos -> image);?>&amp;description=<?php echo urlencode($socialInfos -> title);?>"
-                        data-pin-do="buttonPin" data-pin-config="beside">
+                <a href="//www.pinterest.com/pin/create/button/?url=<?php echo urlencode($url);?>"
+                        data-pin-do="buttonPin" data-pin-config="beside" data-pin-color="red">
                         <img src="//assets.pinterest.com/images/pidgets/pin_it_button.png" alt=""/>
                 </a>
                 <script type="text/javascript">
