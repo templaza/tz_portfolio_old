@@ -631,7 +631,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 
         if($this -> item -> params -> get('show_vote',1)){
             if($this -> item -> rating){
-                echo $this -> _addRichSnippes();
+                echo $this -> _addRichSnippets();
             }
         }
 	}
