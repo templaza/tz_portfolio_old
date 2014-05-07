@@ -20,7 +20,7 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
-05/06/2014 - 3.2.1
+05/07/2014 - 3.2.1
 	
 	Fix some error with joomla 3.3
 	Update Portuguese(Brazil) and Russian(Russia) languages from transifex.com
