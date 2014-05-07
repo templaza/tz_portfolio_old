@@ -7,7 +7,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.2.0</version>
+	<version>3.2.1</version>
 
 	<files>
         <filename plugin="tz_portfolio">tz_portfolio.php</filename>
@@ -17,6 +17,7 @@
         <language tag="en-GB">en-GB/en-GB.plg_content_tz_portfolio.ini</language>
         <language tag="pt-BR">pt-BR/pt-BR.plg_content_tz_portfolio.ini</language>
         <language tag="ja-JP">ja-JP/ja-JP.plg_content_tz_portfolio.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.plg_content_tz_portfolio.ini</language>
     </languages>
     <config>
         <fields name="params">

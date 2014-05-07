@@ -1098,17 +1098,19 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                 $j=0;
                 for($i=0;$i<count($param);$i++){
-                    $param[$i]  = json_decode($param[$i]);
-                    $param[$i] -> fieldsid  = $row -> id;
-                    //new
-                    if($row -> type != 'link' && $row -> type != 'textfield' && $row -> type != 'textarea'){
-                        if(isset($defaultValue) && $defaultValue){
-                            if(!isset($fieldEdits) || (isset($fieldEdits) && count($fieldEdits)<=0)){
-                                if(in_array($param[$i] -> value,$defaultValue)){
-                                    $_fieldEdits[$j]   = new stdClass();
-                                    $_fieldEdits[$j] -> fieldsid     = $row -> id;
-                                    $_fieldEdits[$j] -> value        = $param[$i] -> name;
-                                    $j++;
+                    if(!empty($param[$i])){
+                        $param[$i]  = json_decode($param[$i]);
+                        $param[$i] -> fieldsid  = $row -> id;
+                        //new
+                        if($row -> type != 'link' && $row -> type != 'textfield' && $row -> type != 'textarea'){
+                            if(isset($defaultValue) && $defaultValue){
+                                if(!isset($fieldEdits) || (isset($fieldEdits) && count($fieldEdits)<=0)){
+                                    if(in_array($param[$i] -> value,$defaultValue)){
+                                        $_fieldEdits[$j]   = new stdClass();
+                                        $_fieldEdits[$j] -> fieldsid     = $row -> id;
+                                        $_fieldEdits[$j] -> value        = $param[$i] -> name;
+                                        $j++;
+                                    }
                                 }
                             }
                         }
@@ -1136,6 +1138,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                 $name   = 'tzfields'.$row -> id;
                 $html  .= '<tr><td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">'.$row -> title.'</td><td>';
+
+//                $param  = array_filter($param);
 
                 switch($row -> type){
                     case 'textfield':
@@ -3018,7 +3022,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 										$optionField    = $this -> getOptionField($fieldsid,$stt);
 
 										$tzFields[] = '('.$this -> getState($this -> getName().'.id')
-												  .','.$fieldsid.',\''.str_replace($match2[0],'',$val).'\',\''.$optionField -> image.'\')';
+												  .','.$fieldsid.',\''.str_replace($match2[0],'',$val).'\',\''.$optionField -> image.'\','.$ordering.')';
 									}
 									else{
 										$optionField    = $this -> getOptionField($fieldsid,0);
@@ -3038,7 +3042,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 						}
                         //////end get
                     }
-
 
                     $m++;
                 }

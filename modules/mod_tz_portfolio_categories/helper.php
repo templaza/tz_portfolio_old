@@ -194,6 +194,7 @@ abstract class modTZ_PortfolioCategoriesHelper
                         self::$sView['Itemid']    = $item -> id;
                         if ($catids) {
                             $catids = array_filter($catids);
+                            $catids = array_reverse($catids);
                             if (is_array($catids)) {
                                 if(count($catids)){
                                     for ($i =0; $i<count($catids); $i++){
