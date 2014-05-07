@@ -20,9 +20,13 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+05/06/2014 - 3.2.1
+	
+	Fix some error with joomla 3.3
+	Update Portuguese(Brazil) and Russian(Russia) languages from transifex.com
+
 03/14/2014 - 3.2.0
 
-	Fix for pinit button.
 	Fix some mootool code when edit article in admin with joomla 3.2.3.
 	Fix Publish start date for Portfolio and Timeline view.
 	Insert rating rich snippet for Portfolio Single Article and Single Article view.

@@ -183,11 +183,11 @@ class TZ_PortfolioModelArticles extends JModelList
 		$id .= ':'.$this->getState('filter.featured');
 		$id .= ':'.$this->getState('filter.article_id');
 		$id .= ':'.$this->getState('filter.article_id.include');
-		$id .= ':'.$this->getState('filter.category_id');
+		$id .= ':'.serialize($this->getState('filter.category_id'));
 		$id .= ':'.$this->getState('filter.category_id.include');
-		$id .= ':'.$this->getState('filter.author_id');
+		$id .= ':'.serialize($this->getState('filter.author_id'));
 		$id .= ':'.$this->getState('filter.author_id.include');
-		$id .= ':'.$this->getState('filter.author_alias');
+		$id .= ':'.serialize($this->getState('filter.author_alias'));
 		$id .= ':'.$this->getState('filter.author_alias.include');
 		$id .= ':'.$this->getState('filter.date_filtering');
 		$id .= ':'.$this->getState('filter.date_field');

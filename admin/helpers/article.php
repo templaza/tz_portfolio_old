@@ -92,37 +92,39 @@ class ArticleHTML
         $html   = '<select name="'.$name.'"'.$id.$multiple.' size="'.$size.'"'.$javascript.' >';
         $str    = '';
 
-        foreach($rows as $row){
+        if(count($rows)){
+            foreach($rows as $row){
 
-            if($multiple){
-                if($selected){
-                    if(count($selected)>0){
-                        foreach($selected as $item){
-                            if(($item -> fieldsid) == ($row -> fieldsid) && ($item -> value)==($row -> name)){
-                                $_selected   = ' selected="selected"';
-                                break;
+                if($multiple){
+                    if($selected){
+                        if(count($selected)>0){
+                            foreach($selected as $item){
+                                if(($item -> fieldsid) == ($row -> fieldsid) && ($item -> value)==($row -> name)){
+                                    $_selected   = ' selected="selected"';
+                                    break;
+                                }
+                                else
+                                    $_selected  = '';
                             }
-                            else
-                                $_selected  = '';
                         }
                     }
+                    else
+                        $_selected   = '';
                 }
-                else
-                    $_selected   = '';
-            }
-            else{
-                if($selected){
-                    if(($row -> name == $selected[0] -> value) && ($row -> fieldsid == $selected[0] -> fieldsid))
-                        $_selected  = ' selected="selected"';
+                else{
+                    if($selected){
+                        if(($row -> name == $selected[0] -> value) && ($row -> fieldsid == $selected[0] -> fieldsid))
+                            $_selected  = ' selected="selected"';
+                        else
+                            $_selected  = '';
+                    }
                     else
                         $_selected  = '';
                 }
-                else
-                    $_selected  = '';
+                    $str .= '<option value="'.$row -> name.$prefix.$row -> value.'"'
+                            .($_selected).'>'
+                            .$row -> name.'</option>';
             }
-                $str .= '<option value="'.$row -> name.$prefix.$row -> value.'"'
-                        .($_selected).'>'
-                        .$row -> name.'</option>';
         }
         $html   .= $str
                   .'</select>';
