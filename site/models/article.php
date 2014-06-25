@@ -77,6 +77,8 @@ class TZ_PortfolioModelArticle extends JModelItem
 			$this->setState('filter.published', 1);
 			$this->setState('filter.archived', 2);
 		}
+
+        $this->setState('filter.language', JLanguageMultilang::isEnabled());
 	}
 
     public function download(){
@@ -131,19 +133,26 @@ class TZ_PortfolioModelArticle extends JModelItem
                     $orderBy    = 'c.hits ASC';
                     break;
             }
-            $orderBy    = ' ORDER BY '.$orderBy;
+//            $orderBy    = ' ORDER BY '.$orderBy;
 
             $db     = JFactory::getDbo();
-            $query  = 'SELECT c.*,CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug,'
-                      .' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'
-                      .' FROM #__content AS c'
-                      .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
-                      .' LEFT JOIN #__tz_portfolio_xref_content AS x ON x.contentid = c.id'
-                      .' WHERE c.state = 1 AND NOT c.id='.$pk
-                      .' AND NOT type='.$db -> quote('quote')
-                      .' AND NOT type='.$db -> quote('link')
-                      .' AND c.catid='.$article -> catid
-                      .$orderBy;
+            $query  = $db -> getQuery(true);
+            $query -> select('c.*,CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug');
+            $query -> select('CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug');
+            $query -> from($db -> quoteName('#__content').' AS c');
+            $query -> join('LEFT',$db -> quoteName('#__categories').' AS cc ON cc.id=c.catid');
+            $query -> join('LEFT',$db -> quoteName('#__tz_portfolio_xref_content').' AS x ON x.contentid = c.id');
+            $query -> where('c.state = 1');
+            $query -> where('NOT c.id='.$pk);
+            $query -> where('NOT x.type='.$db -> quote('quote'));
+            $query -> where('NOT x.type='.$db -> quote('link'));
+            $query -> where('c.catid='.$article -> catid);
+            // Filter by language
+            if ($this->getState('filter.language'))
+            {
+                $query->where('c.language in (' . $db->quote(JFactory::getLanguage()->getTag()) . ',' . $db->quote('*') . ')');
+            }
+            $query -> order($orderBy);
 
             $db -> setQuery($query,0,$limit);
             if(!$db -> query()){
@@ -199,6 +208,12 @@ class TZ_PortfolioModelArticle extends JModelItem
 				// Join on user table.
 				$query->select('u.name AS author');
 				$query->join('LEFT', '#__users AS u on u.id = a.created_by');
+
+                // Filter by language
+                if ($this->getState('filter.language'))
+                {
+                    $query->where('a.language in (' . $db->quote(JFactory::getLanguage()->getTag()) . ',' . $db->quote('*') . ')');
+                }
 
 				// Join on contact table
 				$subQuery = $db->getQuery(true);

@@ -23,9 +23,9 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 ?>
 
-<div class="TzBlog blog<?php echo $this->pageclass_sfx;?>">
+<div class="TzBlog blog<?php echo $this->pageclass_sfx;?>" itemscope itemtype="http://schema.org/Blog">
     <div class="TzBlogInner">
-            <div class="row-fluid">
+        <div class="row-fluid">
         <?php if ($this->params->get('show_page_heading', 1)) : ?>
         <h1 class="page-heading">
             <?php echo $this->escape($this->params->get('page_heading')); ?>
@@ -76,7 +76,8 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
         <?php if (!empty($this->lead_items)) : ?>
         <div class="TzItemsLeading">
             <?php foreach ($this->lead_items as &$item) : ?>
-                <div class="TzLeading leading-<?php echo $leadingcount; ?><?php echo $item->state == 0 ? ' system-unpublished' : null; ?>">
+                <div class="TzLeading leading-<?php echo $leadingcount; ?><?php echo $item->state == 0 ? ' system-unpublished' : null; ?>"
+                     itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
                     <?php
                         $this->item = &$item;
                         echo $this->loadTemplate('item');
@@ -106,7 +107,8 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
                 <div class="TzItemsRow cols-<?php echo (int) $this->columns;?> <?php echo 'row-'.$row ; ?>">
                 <?php endif; ?>
                 <div class="span<?php echo round((12 / $this->columns));?>">
-                    <div class="TzItem column-<?php echo $rowcount;?><?php echo $item->state == 0 ? ' system-unpublished' : null; ?>">
+                    <div class="TzItem column-<?php echo $rowcount;?><?php echo $item->state == 0 ? ' system-unpublished' : null; ?>"
+                         itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
                         <?php
                             $this->item = &$item;
                             echo $this->loadTemplate('item');
@@ -142,9 +144,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
             </div>
         <?php  endif; ?>
         <div class="clearfix"></div>
-        
-<!--        --><?php //if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
         </div>
-<!--    --><?php //endif;?>
     </div>
 </div>

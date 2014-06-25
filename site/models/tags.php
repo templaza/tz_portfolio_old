@@ -98,6 +98,8 @@ class TZ_PortfolioModelTags extends JModelList
             $this->setState('filter.published', array(0, 1, 2));
         }
 
+        $this->setState('filter.language', $app->getLanguageFilter());
+
         $params -> set('access-view',true);
 
         $this -> setState('list.limit',$limit);
@@ -213,6 +215,12 @@ class TZ_PortfolioModelTags extends JModelList
                 break;
         }
         $query -> order($cateOrder.$orderby);
+
+        // Filter by language
+        if ($this->getState('filter.language')) {
+            $query->where('c.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
+//            $query->where('(contact.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').') OR contact.language IS NULL)');
+        }
 
         return $query;
     }

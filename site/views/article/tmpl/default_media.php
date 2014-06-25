@@ -92,7 +92,8 @@ endif;
                     <?php endif;?>
 
                         <img src="<?php echo $src;?>" alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                                 title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>">
+                                 title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
+                                 itemprop="thumbnailUrl">
                         <?php if($params -> get('tz_use_image_hover',1) == 1):?>
                             <?php if(isset($srcHover)):?>
                                 <img class="tz_image_hover"
@@ -262,7 +263,7 @@ endif;
             <?php
             if($media[0] -> type == 'video'):
             ?>
-                <div class="tz_portfolio_video">
+                <div class="tz_portfolio_video" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
                     <?php
                         switch ($media[0] -> from):
                             case 'default':
@@ -273,7 +274,7 @@ endif;
                         <iframe src="http://player.vimeo.com/video/<?php echo $media[0] -> images;?>?title=0&amp;byline=0&amp;portrait=0&amp;wmode=transparent"
                             width="<?php echo ($params -> get('video_width'))?$params -> get('video_width'):'600';?>"
                             height="<?php echo ($params -> get('video_height'))?$params -> get('video_height'):'255';?>"
-                            frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen>
+                            frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen itemprop="embedUrl">
                         </iframe>
                     <?php
                                 break;
@@ -282,7 +283,7 @@ endif;
                             <iframe  width="<?php echo ($params -> get('video_width'))?$params -> get('video_width'):'600';?>"
                                     height="<?php echo ($params -> get('video_height'))?$params -> get('video_height'):'315';?>"
                                     src="http://www.youtube.com/embed/<?php echo $media[0] -> images;?><?php echo (!empty($media[0] -> imagetitle))?'?title='.$media[0] -> imagetitle:'';?>"
-                                    frameborder="0" allowfullscreen wmode="transparent">
+                                    frameborder="0" allowfullscreen wmode="transparent" itemprop="embedUrl">
                             </iframe>
                         <?php break;?>
                     <?php endswitch;?>

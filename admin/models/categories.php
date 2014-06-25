@@ -108,6 +108,15 @@ class TZ_PortfolioModelCategories extends JModelList
 
 		$language = $this->getUserStateFromRequest($context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
+
+        // Force a language
+        $forcedLanguage = $app->input->get('forcedLanguage');
+
+        if (!empty($forcedLanguage))
+        {
+            $this->setState('filter.language', $forcedLanguage);
+            $this->setState('filter.forcedLanguage', $forcedLanguage);
+        }
 	}
 
 	/**

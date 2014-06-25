@@ -373,13 +373,13 @@ window.addEvent('load', function() {
 
     renderElement(0);
 
-//        $('type').addEvent('change', function (e) {
-//            var tz_count_gb = 0;
-//            renderElement(tz_count_gb);
-//        });
-
     $$('.chzn-drop li').addEvent('click',function(e){
         e.stop();
+        var tz_count_gb = 0;
+        renderElement(tz_count_gb);
+    })
+    jQuery('#type').bind('change',function(e){
+        e.preventDefault();
         var tz_count_gb = 0;
         renderElement(tz_count_gb);
     })

@@ -53,7 +53,7 @@ if(count($media)):
             <div class="tz_audio_thumbnail">
                 <a<?php echo $class;?> href="<?php echo $link?>">
                     <img src="<?php echo $srcAudio;?>" title="<?php echo $media[0] -> imagetitle;?>"
-                             alt="<?php echo $media[0] -> imagetitle;?>"/>
+                             alt="<?php echo $media[0] -> imagetitle;?>" itemprop="thumbnailUrl"/>
                 </a>
             </div>
         <?php endif;?>

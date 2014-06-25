@@ -248,129 +248,131 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
                 }
             }
         }
-        
-		foreach ($items as $i => & $item)
-		{
-            $item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
 
-            /*** New source ***/
-            $tmpl   = null;
-            if($item -> params -> get('tz_use_lightbox',1) == 1){
-                $tmpl   = '&amp;tmpl=component';
-            }
+        if($items){
+            foreach ($items as $i => & $item)
+            {
+                $item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
 
-            //Check redirect to view article
-            if($item -> params -> get('tz_portfolio_redirect') == 'p_article'){
-                $item ->link        = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid).$tmpl);
-                $item -> fullLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid),true,-1);
-            }
-            else{
-                $item ->link        = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid).$tmpl);
-                $item -> fullLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid),true,-1);
-            }
-            /*** End New Source ***/
+                /*** New source ***/
+                $tmpl   = null;
+                if($item -> params -> get('tz_use_lightbox',1) == 1){
+                    $tmpl   = '&amp;tmpl=component';
+                }
 
-            if($params -> get('comment_function_type','default') != 'js'){
+                //Check redirect to view article
+                if($item -> params -> get('tz_portfolio_redirect') == 'p_article'){
+                    $item ->link        = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid).$tmpl);
+                    $item -> fullLink   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid),true,-1);
+                }
+                else{
+                    $item ->link        = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid).$tmpl);
+                    $item -> fullLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid),true,-1);
+                }
+                /*** End New Source ***/
 
-                if($params -> get('tz_show_count_comment',1) == 1){
-                    if($params -> get('tz_comment_type','disqus') == 'disqus' ||
-                        $params -> get('tz_comment_type','disqus') == 'facebook'){
-                        if($comments){
-                            if(array_key_exists($item -> fullLink,$comments)){
-                                $item -> commentCount   = $comments[$item -> fullLink];
+                if($params -> get('comment_function_type','default') != 'js'){
+
+                    if($params -> get('tz_show_count_comment',1) == 1){
+                        if($params -> get('tz_comment_type','disqus') == 'disqus' ||
+                            $params -> get('tz_comment_type','disqus') == 'facebook'){
+                            if($comments){
+                                if(array_key_exists($item -> fullLink,$comments)){
+                                    $item -> commentCount   = $comments[$item -> fullLink];
+                                }else{
+                                    $item -> commentCount   = 0;
+                                }
                             }else{
                                 $item -> commentCount   = 0;
                             }
-                        }else{
-                            $item -> commentCount   = 0;
+
                         }
+                    }
+                }else{
+                    $item -> commentCount   = 0;
+                }
 
+                $model  = JModelLegacy::getInstance('Category','TZ_PortfolioModel', array('ignore_request' => true));
+                $model -> setState('category.id',$item -> catid);
+                $category   = $model -> getCategory();
+
+                $catParams2 = new JRegistry();
+
+                $catParams  = new JRegistry();
+                if($category)
+                    $catParams -> loadString($category -> params);
+                $catParams  = $catParams -> toArray();
+
+                $this -> category   = $category;
+
+                if(count($catParams)>0){
+                    foreach($catParams as $key => $val){
+                        if(preg_match('/.*?article.*?/',$key)){
+                            $catParams2 -> set($key,$val);
+                        }
                     }
                 }
-            }else{
-                $item -> commentCount   = 0;
-            }
 
-            $model  = JModelLegacy::getInstance('Category','TZ_PortfolioModel', array('ignore_request' => true));
-            $model -> setState('category.id',$item -> catid);
-            $category   = $model -> getCategory();
 
-            $catParams2 = new JRegistry();
-
-            $catParams  = new JRegistry();
-            if($category)
-                $catParams -> loadString($category -> params);
-            $catParams  = $catParams -> toArray();
-
-            $this -> category   = $category;
-
-            if(count($catParams)>0){
-                foreach($catParams as $key => $val){
-                    if(preg_match('/.*?article.*?/',$key)){
-                        $catParams2 -> set($key,$val);
-                    }
+                $item->catslug = ($item->category_alias) ? ($item->catid . ':' . $item->category_alias) : $item->catid;
+                $item->parent_slug = ($item->parent_alias) ? ($item->parent_id . ':' . $item->parent_alias) : $item->parent_id;
+                // No link for ROOT category
+                if ($item->parent_alias == 'root') {
+                    $item->parent_slug = null;
                 }
-            }
 
+                $item->event = new stdClass();
 
-			$item->catslug = ($item->category_alias) ? ($item->catid . ':' . $item->category_alias) : $item->catid;
-			$item->parent_slug = ($item->parent_alias) ? ($item->parent_id . ':' . $item->parent_alias) : $item->parent_id;
-			// No link for ROOT category
-			if ($item->parent_alias == 'root') {
-				$item->parent_slug = null;
-			}
+                $dispatcher = JDispatcher::getInstance();
 
-			$item->event = new stdClass();
+                //Get plugin Params for this article
+                $pmodel -> setState('filter.contentid',$item -> id);
+                $pluginItems    = $pmodel -> getItems();
+                $pluginParams   = $pmodel -> getParams();
+                $item -> pluginparams   = clone($pluginParams);
 
-			$dispatcher = JDispatcher::getInstance();
-
-            //Get plugin Params for this article
-            $pmodel -> setState('filter.contentid',$item -> id);
-            $pluginItems    = $pmodel -> getItems();
-            $pluginParams   = $pmodel -> getParams();
-            $item -> pluginparams   = clone($pluginParams);
-            
-			// Ignore content plugins on links.
-			if ($i < $numLeading + $numIntro)
-			{
-				// Old plugins: Ensure that text property is available
-                if (!isset($item->text))
+                // Ignore content plugins on links.
+                if ($i < $numLeading + $numIntro)
                 {
-                    $item->text = $item->introtext;
+                    // Old plugins: Ensure that text property is available
+                    if (!isset($item->text))
+                    {
+                        $item->text = $item->introtext;
+                    }
+
+                    //Call trigger in group content
+                    JPluginHelper::importPlugin('content');
+                    $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.category', &$item, &$params, 0));
+                    $item->introtext = $item->text;
+
+                    $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.featured', &$item, &$item->params, 0));
+                    $item->event->afterDisplayTitle = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.featured', &$item, &$item->params, 0));
+                    $item->event->beforeDisplayContent = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.featured', &$item, &$item->params, 0));
+                    $item->event->afterDisplayContent = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.category', &$item, &$item->params, 0));
+                    $item->event->TZPortfolioVote = trim(implode("\n", $results));
+
+
+
+                    //Call trigger in group tz_portfolio
+                    JPluginHelper::importPlugin('tz_portfolio');
+                    $item->introtext = JHtml::_('article.tzprepare', $item->introtext, '',$pluginParams, 'com_tz_portfolio.featured');
+
+                    $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.featured', &$item, &$params,&$pluginParams, 0));
+                    $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.featured', &$item, &$params,&$pluginParams, 0));
+                    $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
+
+                    $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.featured', &$item, &$params,&$pluginParams, 0));
+                    $item->event->TZafterDisplayContent = trim(implode("\n", $results));
                 }
-
-                //Call trigger in group content
-                JPluginHelper::importPlugin('content');
-                $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.category', &$item, &$params, 0));
-                $item->introtext = $item->text;
-
-				$results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.featured', &$item, &$item->params, 0));
-				$item->event->afterDisplayTitle = trim(implode("\n", $results));
-
-				$results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.featured', &$item, &$item->params, 0));
-				$item->event->beforeDisplayContent = trim(implode("\n", $results));
-
-				$results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.featured', &$item, &$item->params, 0));
-				$item->event->afterDisplayContent = trim(implode("\n", $results));
-
-                $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.category', &$item, &$item->params, 0));
-				$item->event->TZPortfolioVote = trim(implode("\n", $results));
-
-
-
-                //Call trigger in group tz_portfolio
-                JPluginHelper::importPlugin('tz_portfolio');
-                $item->introtext = JHtml::_('article.tzprepare', $item->introtext, '',$pluginParams, 'com_tz_portfolio.featured');
-
-                $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.featured', &$item, &$params,&$pluginParams, 0));
-                $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
-
-                $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.featured', &$item, &$params,&$pluginParams, 0));
-                $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
-
-                $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.featured', &$item, &$params,&$pluginParams, 0));
-                $item->event->TZafterDisplayContent = trim(implode("\n", $results));
-			}
+            }
 		}
 
 		// Preprocess the breakdown of leading, intro and linked articles.

@@ -108,6 +108,8 @@ class TZ_PortfolioModelPortfolio extends JModelList
             $this->setState('filter.published', array(0, 1, 2));
         }
 
+        $this->setState('filter.language', $app->getLanguageFilter());
+
         $this -> setState('params',$params);
         $this -> setState('list.start', $offset);
         $this -> setState('Itemid',$params -> get('id'));
@@ -226,6 +228,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
         else {
             $this->setState('filter.published', array(0, 1, 2));
         }
+
+        $app    = JFactory::getApplication();
+
+        $this->setState('filter.language', $app->getLanguageFilter());
 
         $this -> setState('list.limit',$limit);
         $this -> setState('list.start',$offset);
@@ -611,6 +617,12 @@ class TZ_PortfolioModelPortfolio extends JModelList
         }
 
         $query -> order($cateOrder.$orderby);
+
+        // Filter by language
+        if ($this->getState('filter.language')) {
+            $query->where('c.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
+//            $query->where('(contact.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').') OR contact.language IS NULL)');
+        }
 
         $query -> group('c.id');
 

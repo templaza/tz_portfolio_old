@@ -25,11 +25,11 @@ $params = &$this -> tagsParams;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.tooltip');
+//JHtml::_('behavior.tooltip');
 ?>
 
 <?php if($lists):?>
-    <div class="TzTag <?php echo $this -> pageclass_sfx;?>">
+    <div class="TzTag <?php echo $this -> pageclass_sfx;?>" itemscope itemtype="http://schema.org/Blog">
         <div class="TzTagInner">
             <?php if ($params->get('show_page_heading', 1)) : ?>
             <h1 class="page-heading">
@@ -69,7 +69,7 @@ JHtml::_('behavior.tooltip');
             ?>
                 <div class="clr"></div>
                 <div class="<?php if($i == 0): echo 'TzItemsLeading'; else: echo 'TzItemsRow row-0'; endif;?>">
-                    <div class="TzLeading leading-0">
+                    <div class="TzLeading leading-0" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
                         <?php echo $this -> loadTemplate('item');?>
                     </div>
                 </div>

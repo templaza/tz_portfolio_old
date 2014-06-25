@@ -24,13 +24,13 @@ $lists  = $this -> listsUsers;
 $params = &$this -> params;
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHtml::_('behavior.tooltip');
+//JHtml::_('behavior.tooltip');
 JHtml::_('behavior.framework');
 ?>
 
 <?php if($lists):?>
 
-    <div class="TzUser <?php echo $this -> pageclass_sfx;?>">
+    <div class="TzUser <?php echo $this -> pageclass_sfx;?>" itemscope itemtype="http://schema.org/Blog">
         <div class="TzUserInner">
             <?php if ($params->get('show_page_heading', 1)) : ?>
             <h1 class="page-heading">
@@ -66,7 +66,7 @@ JHtml::_('behavior.framework');
                 $this -> item   = &$row;
             ?>
             <div class="<?php if($i == 0): echo 'TzItemsLeading'; else: echo 'TzItemsRow row-0'; endif;?>">
-                <div class="TzLeading leading-0">
+                <div class="TzLeading leading-0" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
                 <?php echo $this -> loadTemplate('item');?>
                 </div>
             </div>
