@@ -365,6 +365,59 @@
                 <option value="year">COM_TZ_PORTFOLIO_YEAR</option>
                 <option value="month-year">COM_TZ_PORTFOLIO_MONTH_YEAR</option>
             </field>
+
+            <field type="list" name="classic_page_easing"
+                   label="COM_TZ_PORTFOLIO_TIMELINE_CLASSIC_SCROLL_PAGE_EASING_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="linear">linear</option>
+                <option value="swing">swing</option>
+                <option value="easeInQuad">easeInQuad</option>
+                <option value="easeOutQuad">easeOutQuad</option>
+                <option value="easeInOutQuad">easeInOutQuad</option>
+                <option value="easeInCubic">easeInCubic</option>
+                <option value="easeOutCubic">easeOutCubic</option>
+                <option value="easeInOutCubic">easeInOutCubic</option>
+                <option value="easeInQuart">easeInQuart</option>
+                <option value="easeOutQuart">easeOutQuart</option>
+                <option value="easeInOutQuart">easeInOutQuart</option>
+                <option value="easeInQuint">easeInQuint</option>
+                <option value="easeOutQuint">easeOutQuint</option>
+                <option value="easeInOutQuint">easeInOutQuint</option>
+                <option value="easeInExpo">easeInExpo</option>
+                <option value="easeOutExpo">easeOutExpo</option>
+                <option value="easeInOutExpo">easeInOutExpo</option>
+                <option value="easeInSine">easeInSine</option>
+                <option value="easeOutSine">easeOutSine</option>
+                <option value="easeInOutSine">easeInOutSine</option>
+                <option value="easeInCirc">easeInCirc</option>
+                <option value="easeOutCirc">easeOutCirc</option>
+                <option value="easeInOutCirc">easeInOutCirc</option>
+                <option value="easeInElastic">easeInElastic</option>
+                <option value="easeOutElastic">easeOutElastic</option>
+                <option value="easeInOutElastic">easeInOutElastic</option>
+                <option value="easeInBack">easeInBack</option>
+                <option value="easeOutBack">easeOutBack</option>
+                <option value="easeInOutBack">easeInOutBack</option>
+                <option value="easeInBounce">easeInBounce</option>
+                <option value="easeOutBounce">easeOutBounce</option>
+                <option value="easeInOutBounce">easeInOutBounce</option>
+            </field>
+            <field type="text" name="classic_page_speed"
+                   label="COM_TZ_PORTFOLIO_TIMELINE_CLASSIC_PAGE_SCROLL_SPEED_LABEL"/>
+            <field type="list" name="classic_perspective"
+                   label="COM_TZ_PORTFOLIO_TIMELINE_CLASSIC_PERSPECTIVE_LABEL"
+                   description="COM_TZ_PORTFOLIO_TIMELINE_CLASSIC_PERSPECTIVE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field type="list" name="class_show_time_links"
+                   label="COM_TZ_PORTFOLIO_TIMELINE_SHOW_TIME_LINKS_LABEL"
+                   description="COM_TZ_PORTFOLIO_TIMELINE_SHOW_TIME_LINKS_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
             <field type="list" name="tz_portfolio_layout"
                    label="COM_TZ_PORTFOLIO_PORTFOLIO_TIMELINE_PAGINATION_LAYOUT"
                    description="COM_TZ_PORTFOLIO_PORTFOLIO_TIMELINE_PAGINATION_LAYOUT_DESC">

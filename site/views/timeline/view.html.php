@@ -127,7 +127,18 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
                 $jscompress -> folder.'/jquery.easing.1.3'.$jscompress -> extfile.'.js"></script>');
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/modernizr.custom.11333'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
                 $jscompress -> folder.'/blog'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addCustomTag('<script type="text/javascript">
+                jQuery(document).ready(function(){
+                    jQuery().tzSlideScroll({
+                        scollPageSpeed: '.$params -> get('classic_page_speed',2000).',
+                        scollPageEasing: "'.$params -> get('classic_page_easing').'",
+                        hasPerspective: '.$params -> get('classic_perspective',0).'
+                    });
+                });
+            </script>');
         else:
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
                 $jscompress -> folder.'/jquery.infinitescroll.min'.$jscompress -> extfile.'.js"></script>');

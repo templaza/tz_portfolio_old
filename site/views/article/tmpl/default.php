@@ -39,8 +39,9 @@ if($tmpl){
 }
 ?>
 
-<div class="TzItemPage item-page<?php echo $this->pageclass_sfx?>" >
+<div class="TzItemPage item-page<?php echo $this->pageclass_sfx?>"  itemscope itemtype="http://schema.org/Article">
     <div class="TzItemPageInner">
+        <meta itemprop="inLanguage" content="<?php echo ($this->item->language === '*') ? JFactory::getConfig()->get('language') : $this->item->language; ?>" />
         <?php if ($this->params->get('show_page_heading', 1)) : ?>
             <h1 class="TzHeadingTitle">
             <?php echo $this->escape($this->params->get('page_heading')); ?>
@@ -69,7 +70,7 @@ if($tmpl){
         <?php endif; ?>
 
             <?php if ($params->get('show_create_date',1)) : ?>
-                <span class="TzCreate">
+                <span class="TzCreate" itemprop="dateCreated">
                 <?php echo JText::sprintf('COM_CONTENT_CREATED_DATE_ON', JHtml::_('date', $this->item->created, JText::_('DATE_FORMAT_LC2'))); ?>
                 </span>
             <?php endif; ?>
@@ -83,9 +84,10 @@ if($tmpl){
             <?php endif;?>
 
             <?php if ($params->get('show_author',1) && !empty($this->item->author )) : ?>
-                <span class="TzCreatedby">
+                <span class="TzCreatedby" itemprop="author" itemscope itemtype="http://schema.org/Person">
                     <span class="TzLine">|</span>
                 <?php $author = $this->item->created_by_alias ? $this->item->created_by_alias : $this->item->author; ?>
+                    <?php $author = '<span itemprop="name">' . $author . '</span>'; ?>
                 <?php if ($params->get('link_author') == true): ?>
                 <?php
                     $target = '';
@@ -99,7 +101,7 @@ if($tmpl){
                     }
                     $cntlink = $needle.$userItemid;
                 ?>
-                <?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', JHtml::_('link', JRoute::_($cntlink), $author,$target)); ?>
+                <?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', JHtml::_('link', JRoute::_($cntlink), $author,$target.' itemprop="url"')); ?>
                 <?php else: ?>
                     <?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', $author); ?>
                 <?php endif; ?>
@@ -110,6 +112,7 @@ if($tmpl){
                 <span class="TzHits">
                     <span class="TzLine">|</span>
                     <?php echo JText::sprintf('COM_CONTENT_ARTICLE_HITS',$this->item->hits); ?>
+                    <meta itemprop="interactionCount" content="UserPageVisits:<?php echo $this->item->hits; ?>" />
                 </span>
             <?php endif; ?>
 
@@ -124,13 +127,13 @@ if($tmpl){
                     if(isset($tmpl) AND !empty($tmpl)):
                         $target = ' target="_blank"';
                     endif;
-                    $url = '<a href="'.JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($this->item->catslug)).'"'.$target.'>'.$title.'</a>';
+                    $url = '<a href="'.JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($this->item->catslug)).'"'.$target.' itemprop="genre">'.$title.'</a>';
 
                 ?>
                 <?php if ($params->get('link_category',1) and $this->item->catslug) : ?>
                     <?php echo JText::sprintf('COM_CONTENT_CATEGORY', $url); ?>
                 <?php else : ?>
-                    <?php echo JText::sprintf('COM_CONTENT_CATEGORY', $title); ?>
+                    <?php echo JText::sprintf('COM_CONTENT_CATEGORY',  '<span itemprop="genre">' . $title . '</span>'); ?>
                 <?php endif; ?>
             </span>
             <?php endif; ?>
@@ -145,12 +148,12 @@ if($tmpl){
                     if(isset($tmpl) AND !empty($tmpl)):
                         $target = ' target="_blank"';
                     endif;
-                    $url = '<a href="'.JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($this->item->parent_slug)).'"'.$target.'>'.$title.'</a>';
+                    $url = '<a href="'.JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($this->item->parent_slug)).'"'.$target.' itemprop="genre">'.$title.'</a>';
                 ?>
                 <?php if ($params->get('link_parent_category') and $this->item->parent_slug) : ?>
                     <?php echo JText::sprintf('COM_CONTENT_PARENT', $url); ?>
                 <?php else : ?>
-                    <?php echo JText::sprintf('COM_CONTENT_PARENT', $title); ?>
+                    <?php echo JText::sprintf('COM_CONTENT_PARENT',  '<span itemprop="genre">' . $title . '</span>'); ?>
                 <?php endif; ?>
             </span>
             <?php endif; ?>
@@ -197,7 +200,7 @@ if($tmpl){
             <?php endif;?>
 
             <?php if ($params->get('show_publish_date')) : ?>
-                <span class="TZPublished">
+                <span class="TZPublished" itemprop="datePublished">
                 <?php echo JText::sprintf( JHtml::_('date', $this->item->publish_up, JText::_('DATE_FORMAT_LC2'))); ?>
                 </span>
             <?php endif; ?>
@@ -234,7 +237,7 @@ if($tmpl){
         <?php endif; ?>
 
         <?php if ($params->get('show_title',1)) : ?>
-            <h2 class="TzArticleTitle">
+            <h2 class="TzArticleTitle" itemprop="name">
             <?php if ($params->get('link_titles',1) AND !empty($this->item->readmore_link)) : ?>
                 <?php
                     if($params -> get('tz_use_lightbox') == 1):
@@ -243,7 +246,7 @@ if($tmpl){
                         $titleLink  = $this->item->readmore_link;
                     endif;
                 ?>
-                <a href="<?php echo $titleLink; ?>">
+                <a href="<?php echo $titleLink; ?>" itemprop="url">
                     <?php echo $this->escape($this->item->title); ?>
                 </a>
             <?php else : ?>

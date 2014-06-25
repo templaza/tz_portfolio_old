@@ -629,11 +629,11 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 
 		parent::display($tpl);
 
-        if($this -> item -> params -> get('show_vote',1)){
-            if($this -> item -> rating){
-                echo $this -> _addRichSnippets();
-            }
-        }
+//        if($this -> item -> params -> get('show_vote',1)){
+//            if($this -> item -> rating){
+//                echo $this -> _addRichSnippets();
+//            }
+//        }
 	}
 
     protected function FindItemId($_tagid=null)
@@ -943,19 +943,19 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 		}
 	}
 
-    protected function _addRichSnippets(){
-
-        $media  = $this -> listMedia;
-        $params = $this -> item -> params;
-
-        $html   = null;
-        $html   = '<div itemscope itemtype="http://schema.org/Article">';
-        $html  .= '<meta itemprop="name" content="'.$this -> item -> title.'"/>';
-        $html  .= '<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">';
-        $html  .= '<meta itemprop="ratingValue" content="'.$this -> item -> rating.'"/>';
-        $html  .= '<meta itemprop="ratingCount" content="'.$this -> item -> rating_count.'"/>';
-        $html  .= '</div>';
-        $html  .= '</div>';
-        return $html;
-    }
+//    protected function _addRichSnippets(){
+//
+//        $media  = $this -> listMedia;
+//        $params = $this -> item -> params;
+//
+//        $html   = null;
+//        $html   = '<div itemscope itemtype="http://schema.org/Article">';
+//        $html  .= '<meta itemprop="name" content="'.$this -> item -> title.'"/>';
+//        $html  .= '<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">';
+//        $html  .= '<meta itemprop="ratingValue" content="'.$this -> item -> rating.'"/>';
+//        $html  .= '<meta itemprop="ratingCount" content="'.$this -> item -> rating_count.'"/>';
+//        $html  .= '</div>';
+//        $html  .= '</div>';
+//        return $html;
+//    }
 }

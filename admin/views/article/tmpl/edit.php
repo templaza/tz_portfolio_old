@@ -77,6 +77,10 @@ if($list){
 
 $pluginsTab = $this -> pluginsTab;
 
+$assoc  = false;
+if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+    $assoc = JLanguageAssociations::isEnabled();
+}
 ?>
 
 <script type="text/javascript">
@@ -1173,6 +1177,9 @@ $pluginsTab = $this -> pluginsTab;
     <div class="span8 form-horizontal">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#general" data-toggle="tab"><?php echo JText::_('COM_CONTENT_ARTICLE_DETAILS');?></a></li>
+            <?php if($assoc):?>
+            <li><a href="#associations" data-toggle="tab"><?php echo JText::_('Associations');?></a></li>
+            <?php endif;?>
             <li><a href="#permissions" data-toggle="tab"><?php echo JText::_('COM_CONTENT_FIELDSET_RULES');?></a></li>
 
         </ul>
@@ -1457,6 +1464,12 @@ $pluginsTab = $this -> pluginsTab;
 
                 </div>
             </div>
+            <?php if ($assoc) : ?>
+            <div class="tab-pane" id="associations">
+                <?php echo $this->loadTemplate('associations'); ?>
+
+            </div>
+            <?php endif; ?>
             <div class="tab-pane" id="permissions">
                 <?php echo $this->form->getInput('rules'); ?>
             </div>

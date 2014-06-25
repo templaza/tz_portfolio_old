@@ -179,27 +179,25 @@ h2.ss-subtitle:after {
   margin-left: 30%;
 }
 .ss-container h3 {
-  margin-top: 34px;
-  padding: 10px 15px;
-  background: rgba(26,27,33,0.6);
   text-shadow: 1px 1px 1px rgba(26,27,33,0.8);
-}
-.ss-container .ss-medium h3 {
-  margin-top: 82px;
-}
-.ss-container .ss-large h3 {
-  margin-top: 92px;
 }
 #ss-links span {
   display: none;
 }
-.ss-container .ss-left h3 {
-  border-right: 5px solid rgba(164,166,181,0.8);
+.ss-left-inner,
+.ss-right-inner {
+  margin-top: 34px;
   padding: 10px 15px;
-}
-.ss-container .ss-right h3 {
+  background: rgba(26,27,33,0.6);
   border-left: 5px solid rgba(164,166,181,0.8);
-  padding: 10px 15px;
+}
+.ss-container .ss-large .ss-left-inner,
+.ss-container .ss-large .ss-right-inner {
+  margin-top: 92px;
+}
+.ss-container .ss-medium .ss-left-inner,
+.ss-container .ss-medium .ss-right-inner {
+  margin-top: 82px;
 }
 .ss-container h3 span {
   color: rgba(255,255,255,0.8);
@@ -221,9 +219,6 @@ h2.ss-subtitle:after {
 .ss-container h3 a {
   text-decoration: none;
   font-size: 18px;
-}
-.TzTimlinePagination {
-  display: none;
 }
 #TzTimeline {
   position: relative;
