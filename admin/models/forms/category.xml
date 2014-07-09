@@ -75,6 +75,11 @@
 		class="inputbox"
 		size="40"/>
 
+    <field type="tztemplates" name="template_id"
+           label="COM_TZ_PORTFOLIO_TEMPLATE_LABEL">
+        <option value="0">JOPTION_USE_DEFAULT</option>
+    </field>
+
 	<field
 		name="description"
 		type="editor"

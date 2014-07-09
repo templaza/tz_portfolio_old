@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fieldset name="template_details">
+        <field name="id"  type="text" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
+               description ="JGLOBAL_FIELD_ID_DESC" size="10" default="0"
+               readonly="true"  />
+        <field type="text" name="title"
+               required="true" label="JGLOBAL_TITLE"/>
+        <field name="home" type="radio"
+                label="COM_TEMPLATES_FIELD_HOME_LABEL"
+                description="COM_TEMPLATES_FIELD_HOME_ADMINISTRATOR_DESC"
+                class="btn-group btn-group-yesno"
+                default="0">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field type="categoriesassignment" name="categories_assignment" class="checkbox"/>
+
+        <field type="modal_articles_assignment" name="articles_assignment"
+               edit = "true"
+               label="COM_TZ_PORTFOLIO_ARTICLES_ASSIGNMENT"/>
+    </fieldset>
+</form>

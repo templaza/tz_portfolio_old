@@ -307,7 +307,8 @@ class com_tz_portfolioInstallerScript{
             $db -> replacePrefix('#__tz_portfolio'),
             $db -> replacePrefix('#__tz_portfolio_xref_content'),
             $db -> replacePrefix('#__tz_portfolio_tags'),
-            $db -> replacePrefix('#__tz_portfolio_plugin')
+            $db -> replacePrefix('#__tz_portfolio_plugin'),
+            $db -> replacePrefix('#__tz_portfolio_templates')
         );
         $disableTables  = array_diff($listTable,$db -> getTableList());
 
@@ -317,6 +318,22 @@ class com_tz_portfolioInstallerScript{
             $installer ->parseSQLFiles($sql -> install->sql);
         }
 
+        $fields = $db -> getTableColumns('#__tz_portfolio_categories');
+
+        if(!array_key_exists('template_id',$fields)){
+            $arr[]  = 'ADD `template_id` INT UNSIGNED NOT NULL';
+        }
+
+        if($arr && count($arr)>0){
+            $arr    = implode(',',$arr);
+            if($arr){
+                $query  = 'ALTER TABLE `#__tz_portfolio_categories` '.$arr;
+                $db -> setQuery($query);
+                $db -> query();
+            }
+        }
+
+        $arr    = null;
         $fields = $db -> getTableColumns('#__tz_portfolio_xref_content');
 
         if(!array_key_exists('gallery',$fields)){
@@ -363,6 +380,9 @@ class com_tz_portfolioInstallerScript{
         }
         if(!array_key_exists('link_attribs',$fields)){
             $arr[]  = 'ADD `link_attribs`  VARCHAR(5120)';
+        }
+        if(!array_key_exists('template_id',$fields)){
+            $arr[]  = 'ADD `template_id` INT UNSIGNED NOT NULL';
         }
         if($arr && count($arr)>0){
             $arr    = implode(',',$arr);

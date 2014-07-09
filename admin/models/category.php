@@ -435,6 +435,9 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 			$data = $this->getItem();
 		}
 
+        $template   = JModelLegacy::getInstance('Template','TZ_PortfolioModel');
+        $data -> set('template_id',$template -> getItemTemplate(null,$this -> getState($this->getName() . '.id')));
+
 		return $data;
 	}
 
@@ -923,11 +926,12 @@ class TZ_PortfolioModelCategory extends JModelAdmin
                     $value  = array();
 
                     foreach($groupid as $row){
-                        $value[]  = '('.$table -> id.','.$row.',"'.$image.'")';
+                        $value[]  = '('.$table -> id.','.$row.',"'.$image.'",'.$data['template_id'].')';
                     }
 
                     $value  = implode(',',$value);
-                    $query  = 'INSERT INTO #__tz_portfolio_categories(`catid`,`groupid`,`images`)'
+                    $query  = 'INSERT INTO #__tz_portfolio_categories(`catid`,`groupid`,`images`,'
+                        .$db -> quoteName('template_id').')'
                                   .' VALUES'.$value;
 
                     $db -> setQuery($query);

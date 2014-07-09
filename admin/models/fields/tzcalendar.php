@@ -1,11 +1,21 @@
 <?php
-/**
- * @package     Joomla.Platform
- * @subpackage  Form
- *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
- */
+/*------------------------------------------------------------------------
+
+# TZ Portfolio Extension
+
+# ------------------------------------------------------------------------
+
+# author    DuongTVTemPlaza
+
+# copyright Copyright (C) 2012 templaza.com. All Rights Reserved.
+
+# @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+
+# Websites: http://www.templaza.com
+
+# Technical Support:  Forum - http://templaza.com/Forum
+
+-------------------------------------------------------------------------*/
 
 defined('JPATH_PLATFORM') or die;
 

@@ -1305,6 +1305,14 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                                     <?php echo $this->form->getInput('language'); ?>
                                 </div>
                             </div>
+                            <div class="control-group">
+                                <div class="control-label">
+                                    <?php echo $this->form->getLabel('template_id'); ?>
+                                </div>
+                                <div class="controls">
+                                    <?php echo $this->form->getInput('template_id'); ?>
+                                </div>
+                            </div>
                         </div>
 
 
