@@ -20,6 +20,10 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+07/09/2014 - 3.2.3
+	
+	New Feature: Layout builder of template style for Article Single.
+
 06/20/2014 - 3.2.2
 
 	Fix some error: with plazart v3.5 (hidden menu when press mouse on right), js when create or edit field in admin.
