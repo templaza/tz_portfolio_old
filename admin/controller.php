@@ -89,6 +89,7 @@ class TZ_PortfolioController extends JControllerLegacy
 
         // Set the default view name and format from the Request.
         $vName		= $this -> input -> get('view', 'articles');
+
         $vFormat	= $document->getType();
         $lName		= $this -> input -> get('layout', 'default');
         $id			= $this -> input -> getInt('id');

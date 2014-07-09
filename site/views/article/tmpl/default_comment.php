@@ -21,10 +21,4 @@
 defined('_JEXEC') or die('Restricted access');
 $params = $this -> item -> params;
 ?>
-<?php if($params -> get('show_comment',1)):?>
-    <div class="clr"></div>
-    <div class="tz_portfolio_comment">
-        <div id="fb-root"></div>
-        <fb:comments href="<?php echo $this -> linkCurrent;?>" num_posts="2" ></fb:comments>
-    </div>
-<?php endif;?>
+<?php echo $this -> item -> event -> onTZPortfolioCommentDisplay;?>

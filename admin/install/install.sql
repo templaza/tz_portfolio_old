@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS `#__tz_portfolio_categories` (
 `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `groupid` INT NOT NULL ,
 `catid` INT NOT NULL,
-`images` TEXT NOT NULL
+`images` TEXT NOT NULL,
+`template_id` INT UNSIGNED NOT NULL
 ) ENGINE = MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__tz_portfolio` (
@@ -62,7 +63,8 @@ CREATE TABLE IF NOT EXISTS `#__tz_portfolio_xref_content` (
 `quote_text` TEXT NOT NULL,
 `link_url` VARCHAR( 1000 ) NOT NULL ,
 `link_title` VARCHAR( 1000 ) NOT NULL,
-`link_attribs` VARCHAR(5120) NOT NULL
+`link_attribs` VARCHAR(5120) NOT NULL,
+`template_id` INT UNSIGNED NOT NULL
 ) ENGINE = MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__tz_portfolio_tags` (
@@ -94,3 +96,11 @@ CREATE TABLE IF NOT EXISTS `#__tz_portfolio_plugin` (
 `pluginid` INT NOT NULL,
 `params` TEXT NULL
 ) ENGINE = MYISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `#__tz_portfolio_templates` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `home` char(7) NOT NULL,
+  `params` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MYISAM  DEFAULT CHARSET=utf8;

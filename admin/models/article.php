@@ -1555,6 +1555,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 				$app = JFactory::getApplication();
 				$data->set('catid', JRequest::getInt('catid', $app->getUserState('com_tz_portfolio.articles.filter.category_id')));
 			}
+            $template   = JModelLegacy::getInstance('Template','TZ_PortfolioModel');
+            $data -> set('template_id',$template -> getItemTemplate($this -> getState('article.id')));
 		}
 
 		return $data;
@@ -3189,6 +3191,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $value['link']  = $this -> prepareLink($post);
                 // End get and prepare data for link
 
+                $value['template_id']   = $data['template_id'];
+
                 $value  = '('.implode(',',$value).')';
 
                 $query  = 'DELETE FROM #__tz_portfolio_xref_content WHERE contentid = '.$contentid;
@@ -3202,7 +3206,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $query  = 'INSERT INTO `#__tz_portfolio_xref_content`'
                     .'(`groupid`,`contentid`,`images`,`imagetitle`,`images_hover`,`gallery`,`gallerytitle`,'
                     .'`video`,`videotitle`,`attachfiles`,`attachtitle`,`attachold`,`videothumb`,`type`'
-                    .$audioFields.$quoteFields.$linkFields.')'
+                    .$audioFields.$quoteFields.$linkFields.',template_id)'
                     .' VALUES '.$value;
 
                 $db -> setQuery($query);

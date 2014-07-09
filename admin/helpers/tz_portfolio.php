@@ -61,6 +61,9 @@ class TZ_PortfolioHelper
         call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_USERS'),
                     'index.php?option=com_tz_portfolio&view=users',
                     $vName == 'users'));
+        call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_TEMPLATES'),
+                    'index.php?option=com_tz_portfolio&view=templates',
+                    $vName == 'templates'));
 	}
 
 	/**

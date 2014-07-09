@@ -38,6 +38,12 @@
 			class="inputbox" required="true"
 		>
 		</field>
+
+        <field type="tztemplates" name="template_id"
+               label="COM_TZ_PORTFOLIO_TEMPLATE_LABEL">
+            <option value="0">JOPTION_USE_DEFAULT</option>
+        </field>
+
 		<field
 			name="buttonspacer"
 			description="JGLOBAL_ACTION_PERMISSIONS_DESCRIPTION"
@@ -471,7 +477,8 @@
 			</field>
 		</fieldset>
 
-        <fieldset name="tz_fieldset_basic" label="COM_TZ_PORTFOLIO_FIELDSET_BASIC_OPTIONS_LABEL">
+        <fieldset name="tz_fieldset_basic" addfieldpath="/administrator/components/com_tz_portfolio/models/fields"
+                  label="COM_TZ_PORTFOLIO_FIELDSET_BASIC_OPTIONS_LABEL">
             <field name="tz_portfolio_redirect" type="list"
                    label="COM_TZ_PORTFOLIO_REDIRECT"
                    description="COM_TZ_PORTFOLIO_REDIRECT_DESC">
