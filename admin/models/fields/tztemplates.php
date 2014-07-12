@@ -37,7 +37,7 @@ class JFormFieldTZTemplates extends JFormFieldList
 
     protected function getOptions()
     {
-        $options = null;
+        $options = array();
 
         $db     = JFactory::getDbo();
         $query  = $db -> getQuery(true);

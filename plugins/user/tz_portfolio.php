@@ -57,6 +57,7 @@ class plgUserTZ_Portfolio extends JPlugin
             $currentImage       = JRequest::getString('current_images');
             $userData['url']    = JRequest::getVar( 'url', '', 'post', 'string' );
 
+
             $description        = trim($description);
             $userData['usersid']        = $user ['id'];
             $userData['gender']         = JRequest::getCmd('gender');
@@ -95,9 +96,11 @@ class plgUserTZ_Portfolio extends JPlugin
                 $userData['images'] = '';
             }
 
-            if(!$model -> saveUser($userData)){
-                $this -> setError($this -> getError());
-                return false;
+            if(!empty($userData['url']) || !empty($userData['description']) || !empty($userData['twitter']) || !empty($userData['facebook']) || !empty($userData['google_one']) || !empty($userData['images'])){
+                if(!$model -> saveUser($userData)){
+                    $this -> setError($this -> getError());
+                    return false;
+                }
             }
 
         }
