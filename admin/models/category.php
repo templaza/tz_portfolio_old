@@ -516,40 +516,42 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 		$form->setFieldAttribute('rules', 'section', $name);
 
         // Association category items
-        $assoc = $this->getAssoc();
-        if ($assoc)
-        {
-            $languages = JLanguageHelper::getLanguages('lang_code');
-
-            // Force to array (perhaps move to $this->loadFormData())
-            $data = (array) $data;
-
-            $addform = new SimpleXMLElement('<form />');
-            $fields = $addform->addChild('fields');
-            $fields->addAttribute('name', 'associations');
-            $fieldset = $fields->addChild('fieldset');
-            $fieldset->addAttribute('name', 'item_associations');
-            $fieldset->addAttribute('description', 'COM_CATEGORIES_ITEM_ASSOCIATIONS_FIELDSET_DESC');
-            $add = false;
-            foreach ($languages as $tag => $language)
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $assoc = $this->getAssoc();
+            if ($assoc)
             {
-                if (empty($data['language']) || $tag != $data['language'])
+                $languages = JLanguageHelper::getLanguages('lang_code');
+
+                // Force to array (perhaps move to $this->loadFormData())
+                $data = (array) $data;
+
+                $addform = new SimpleXMLElement('<form />');
+                $fields = $addform->addChild('fields');
+                $fields->addAttribute('name', 'associations');
+                $fieldset = $fields->addChild('fieldset');
+                $fieldset->addAttribute('name', 'item_associations');
+                $fieldset->addAttribute('description', 'COM_CATEGORIES_ITEM_ASSOCIATIONS_FIELDSET_DESC');
+                $add = false;
+                foreach ($languages as $tag => $language)
                 {
-                    $add = true;
-                    $field = $fieldset->addChild('field');
-                    $field->addAttribute('name', $tag);
-                    $field->addAttribute('type', 'modal_category');
-                    $field->addAttribute('language', $tag);
-                    $field->addAttribute('label', $language->title);
-                    $field->addAttribute('translate_label', 'false');
-                    $field->addAttribute('extension', $extension);
-                    $field->addAttribute('edit', 'true');
-                    $field->addAttribute('clear', 'true');
+                    if (empty($data['language']) || $tag != $data['language'])
+                    {
+                        $add = true;
+                        $field = $fieldset->addChild('field');
+                        $field->addAttribute('name', $tag);
+                        $field->addAttribute('type', 'modal_category');
+                        $field->addAttribute('language', $tag);
+                        $field->addAttribute('label', $language->title);
+                        $field->addAttribute('translate_label', 'false');
+                        $field->addAttribute('extension', $extension);
+                        $field->addAttribute('edit', 'true');
+                        $field->addAttribute('clear', 'true');
+                    }
                 }
-            }
-            if ($add)
-            {
-                $form->load($addform, false);
+                if ($add)
+                {
+                    $form->load($addform, false);
+                }
             }
         }
 
