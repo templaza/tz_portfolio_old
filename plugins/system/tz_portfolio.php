@@ -72,8 +72,10 @@ class plgSystemTZ_Portfolio extends JPlugin {
             $user = JFactory::getUser();
 
             if($option == 'com_users' && $view == 'registration' && !$layout){
-                    require_once (JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_users'.DIRECTORY_SEPARATOR.'controller.php');
-                    $controller = new UsersController;
+
+                JLoader::register('UsersController', JPATH_ADMINISTRATOR .'/components/com_users/controller.php');
+                $controller = JControllerLegacy::getInstance('Controller',array('name' => 'Users'));
+
                     $views = $controller->getView($view, 'html');
                     $tplName    = JFactory::getApplication() -> getTemplate();
                     $tplPath    = JPATH_THEMES.DIRECTORY_SEPARATOR.$tplName.DIRECTORY_SEPARATOR.'html'
@@ -97,10 +99,8 @@ class plgSystemTZ_Portfolio extends JPlugin {
             if($user -> username && $option == 'com_users'
                && $view == 'profile' && ($layout == 'edit' || $task == 'profile.edit')){
 
-
-                require_once (JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_users'.DIRECTORY_SEPARATOR.'controller.php');
-
-                $controller = new UsersController;
+                JLoader::register('UsersController', JPATH_ADMINISTRATOR .'/components/com_users/controller.php');
+                $controller = JControllerLegacy::getInstance('Controller',array('name' => 'Users'));
 
                 $views = $controller->getView($view, 'html');
 
@@ -117,9 +117,8 @@ class plgSystemTZ_Portfolio extends JPlugin {
 
                 $views->setLayout('profile');
 
-                require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'
-                             .DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'user.php');
-                $model  = new TZ_PortfolioModelUser;
+                JLoader::register('TZ_PortfolioModelUser', JPATH_ADMINISTRATOR .'/components/com_tz_portfolio/models/user.php');
+                $model              = JModelAdmin::getInstance('User','TZ_PortfolioModel',array('ignore_request' => true));
 
                 $userData   = $model -> getUsers($user -> id);
 

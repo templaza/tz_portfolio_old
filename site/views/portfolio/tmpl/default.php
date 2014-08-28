@@ -265,6 +265,7 @@ $doc -> addScript(JUri::base(true).'/components/com_tz_portfolio/js/base64.js');
     });
 
     function loadPortfolio(){
+
         var $optionSets = jQuery('#tz_options .option-set'),
          $optionLinks = $optionSets.find('a');
         var $r_options    = null;

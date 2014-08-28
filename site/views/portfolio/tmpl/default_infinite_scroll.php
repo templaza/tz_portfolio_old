@@ -22,7 +22,7 @@ $params = $this -> params;
 ?>
 <div id="tz_append" class="text-center">
     <?php if($params -> get('tz_portfolio_layout') == 'ajaxButton'):?>
-    <a href="#tz_append" class="btn btn-large btn-block"><?php echo JText::_('COM_TZ_PORTFOLIO_ADD_ITEM_MORE');?></a>
+    <a href="javascript:" class="btn btn-large btn-block"><?php echo JText::_('COM_TZ_PORTFOLIO_ADD_ITEM_MORE');?></a>
     <?php endif;?>
 </div>
 
@@ -139,6 +139,10 @@ $params = $this -> params;
                                             jQuery('#filter').append(tztag);
                                             loadPortfolio();
 
+                                            <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>
+                                            //Sort tags or categories filter
+                                            tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
+                                            <?php endif;?>
                                         }
                                     });
                                 <?php endif;?>
@@ -156,15 +160,16 @@ $params = $this -> params;
                                             tzCategories   = jQuery(data);
                                             jQuery('#filter').append(tzCategories);
                                             loadPortfolio();
+
+                                            <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>
+                                            //Sort tags or categories filter
+                                            tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
+                                            <?php endif;?>
                                         }
                                     });
                                 <?php endif;?>
                             <?php endif;?>
 
-                            <?php if($filter = $params -> get('filter_tags_categories_order',null)):?>
-                                //Sort tags or categories filter
-                                tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
-                            <?php endif;?>
                         <?php endif;?>
 
                         //if there still more item
