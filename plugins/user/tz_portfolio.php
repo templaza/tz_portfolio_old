@@ -16,7 +16,7 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
+
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -47,9 +47,9 @@ class plgUserTZ_Portfolio extends JPlugin
         $task = JRequest::getCmd('task');
 
         if($mainframe->isSite() && $task != 'activate'){
-            require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'
-                         .DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'user.php');
-            $model              = new TZ_PortfolioModelUser();
+
+            JLoader::register('TZ_PortfolioModelUser', JPATH_ADMINISTRATOR .'/components/com_tz_portfolio/models/user.php');
+            $model              = JModelAdmin::getInstance('User','TZ_PortfolioModel',array('ignore_request' => true));
 
             $avatar             = JRequest::getVar('jform','','files','array');
             $description        = JRequest::getVar( 'description', '', 'post', 'string', JREQUEST_ALLOWHTML );
@@ -65,6 +65,7 @@ class plgUserTZ_Portfolio extends JPlugin
             $userData['twitter']        = JRequest::getVar( 'url_twitter', '', 'post', 'string' );
             $userData['facebook']       = JRequest::getVar( 'url_facebook', '', 'post', 'string' );
             $userData['google_one']     = JRequest::getVar( 'url_google_one_plus', '', 'post', 'string' );
+            $image  = null;
 
 
             if(!$userData['gender'])
@@ -96,7 +97,8 @@ class plgUserTZ_Portfolio extends JPlugin
                 $userData['images'] = '';
             }
 
-            if(!empty($userData['url']) || !empty($userData['description']) || !empty($userData['twitter']) || !empty($userData['facebook']) || !empty($userData['google_one']) || !empty($userData['images'])){
+            if(!empty($userData['url']) || !empty($userData['description']) || !empty($userData['twitter'])
+                || !empty($userData['facebook']) || !empty($userData['google_one']) || !empty($userData['images'])){
                 if(!$model -> saveUser($userData)){
                     $this -> setError($this -> getError());
                     return false;
@@ -106,5 +108,5 @@ class plgUserTZ_Portfolio extends JPlugin
         }
 
     }
-    
+
 }

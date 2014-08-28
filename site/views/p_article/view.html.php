@@ -779,7 +779,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                 $margin = 'margin: '.$children -> margin.';';
             }
             if($children -> padding){
-                $padding = 'padding: '.$children -> margin.';';
+                $padding = 'padding: '.$children -> padding.';';
             }
             if($background || $color){
                 $this -> document -> addStyleDeclaration('

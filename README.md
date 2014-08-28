@@ -20,6 +20,13 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+08/28/2014 - 3.2.4
+
+	Fix error with introtext in 2 detail view.
+	Fix code in plugin plg_user_tz_portfolio with joomla 3.3.3
+	Fix sort category filter in portfolio and timeline view (if the option "Category Order" was chosen).
+	Fix some warnings in script.php file when install or uninstall this extension.
+
 07/09/2014 - 3.2.3
 	
 	New Feature: Layout builder of template style for Article Single.
