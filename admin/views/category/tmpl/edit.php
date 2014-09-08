@@ -29,6 +29,11 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 JHtml::_('formbehavior.chosen', 'select');
 $listImage  = $this -> listImage;
+
+$assoc = false;
+if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+    $assoc = JLanguageAssociations::isEnabled();
+}
 ?>
 
 <script type="text/javascript">
@@ -202,6 +207,9 @@ $listImage  = $this -> listImage;
         <ul class="nav nav-tabs">
 			<li class="active"><a href="#details" data-toggle="tab"><?php echo JText::_('COM_CATEGORIES_FIELDSET_DETAILS');?></a></li>
 			<li><a href="#options" data-toggle="tab"><?php echo JText::_('CATEGORIES_FIELDSET_OPTIONS');?></a></li>
+            <?php if($assoc):?>
+                <li><a href="#associations" data-toggle="tab"><?php echo JText::_('Associations');?></a></li>
+            <?php endif;?>
 			<li><a href="#metadata" data-toggle="tab"><?php echo JText::_('JGLOBAL_FIELDSET_METADATA_OPTIONS');?></a></li>
 			<?php if ($this->canDo->get('core.admin')): ?>
 				<li><a href="#permissions" data-toggle="tab"><?php echo JText::_('COM_CATEGORIES_FIELDSET_RULES');?></a></li>
@@ -238,6 +246,14 @@ $listImage  = $this -> listImage;
                         <label for="image-select"><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE');?></label>
                     </div>
                     <div class="controls input-prepend input-append" id="tz_category_image_server" style="display: block;">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label">
+                        <?php echo $this -> form -> getLabel('template_id');?>
+                    </div>
+                    <div class="controls">
+                        <?php echo $this -> form -> getInput('template_id');?>
                     </div>
                 </div>
 
@@ -348,6 +364,11 @@ $listImage  = $this -> listImage;
             <div class="tab-pane" id="options">
                 <?php echo $this->loadTemplate('options'); ?>
             </div>
+            <?php if ($assoc) : ?>
+            <div class="tab-pane" id="associations">
+                <?php echo $this->loadTemplate('associations'); ?>
+            </div>
+            <?php endif; ?>
             <div class="tab-pane" id="metadata">
                 <?php echo $this->loadTemplate('metadata'); ?>
             </div>

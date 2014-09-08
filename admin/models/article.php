@@ -96,6 +96,51 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         $this -> setState('article.id',JRequest::getInt('id'));
     }
 
+    protected function preprocessForm(JForm $form, $data, $group = 'content')
+    {
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            // Association content items
+            $app = JFactory::getApplication();
+            $assoc = JLanguageAssociations::isEnabled();
+            if ($assoc)
+            {
+                $languages = JLanguageHelper::getLanguages('lang_code');
+
+                // force to array (perhaps move to $this->loadFormData())
+                $data = (array) $data;
+
+                $addform = new SimpleXMLElement('<form />');
+                $fields = $addform->addChild('fields');
+                $fields->addAttribute('name', 'associations');
+                $fieldset = $fields->addChild('fieldset');
+                $fieldset->addAttribute('name', 'item_associations');
+                $fieldset->addAttribute('description', 'COM_CONTENT_ITEM_ASSOCIATIONS_FIELDSET_DESC');
+                $add = false;
+                foreach ($languages as $tag => $language)
+                {
+                    if (empty($data['language']) || $tag != $data['language'])
+                    {
+                        $add = true;
+                        $field = $fieldset->addChild('field');
+                        $field->addAttribute('name', $tag);
+                        $field->addAttribute('type', 'modal_article');
+                        $field->addAttribute('language', $tag);
+                        $field->addAttribute('label', $language->title);
+                        $field->addAttribute('translate_label', 'false');
+                        $field->addAttribute('edit', 'true');
+                        $field->addAttribute('clear', 'true');
+                    }
+                }
+                if ($add)
+                {
+                    $form->load($addform, false);
+                }
+            }
+        }
+
+        parent::preprocessForm($form, $data, $group);
+    }
+
     public function saveorder($pks = null, $order = null){
         return parent::saveorder($pks,$order);
     }
@@ -1396,6 +1441,27 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
 		}
 
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            // Load associated content items
+            $app = JFactory::getApplication();
+            $assoc = JLanguageAssociations::isEnabled();
+
+            if ($assoc)
+            {
+                $item->associations = array();
+
+                if ($item->id != null)
+                {
+                    $associations = JLanguageAssociations::getAssociations('com_content', '#__content', 'com_content.item', $item->id);
+
+                    foreach ($associations as $tag => $association)
+                    {
+                        $item->associations[$tag] = $association->id;
+                    }
+                }
+            }
+        }
+
 		return $item;
 	}
 
@@ -1489,6 +1555,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 				$app = JFactory::getApplication();
 				$data->set('catid', JRequest::getInt('catid', $app->getUserState('com_tz_portfolio.articles.filter.category_id')));
 			}
+            $template   = JModelLegacy::getInstance('Template','TZ_PortfolioModel');
+            $data -> set('template_id',$template -> getItemTemplate($this -> getState('article.id')));
 		}
 
 		return $data;
@@ -3123,6 +3191,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $value['link']  = $this -> prepareLink($post);
                 // End get and prepare data for link
 
+                $value['template_id']   = $data['template_id'];
+
                 $value  = '('.implode(',',$value).')';
 
                 $query  = 'DELETE FROM #__tz_portfolio_xref_content WHERE contentid = '.$contentid;
@@ -3136,7 +3206,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $query  = 'INSERT INTO `#__tz_portfolio_xref_content`'
                     .'(`groupid`,`contentid`,`images`,`imagetitle`,`images_hover`,`gallery`,`gallerytitle`,'
                     .'`video`,`videotitle`,`attachfiles`,`attachtitle`,`attachold`,`videothumb`,`type`'
-                    .$audioFields.$quoteFields.$linkFields.')'
+                    .$audioFields.$quoteFields.$linkFields.',template_id)'
                     .' VALUES '.$value;
 
                 $db -> setQuery($query);
@@ -3331,6 +3401,73 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
         if (isset($data['featured'])) {
             $this->featured($table->$pkName, $data['featured']);
+        }
+
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $assoc = JLanguageAssociations::isEnabled();
+            if ($assoc)
+            {
+                $id = (int) $this->getState($this->getName() . '.id');
+                $item = $this->getItem($id);
+
+                // Adding self to the association
+                $associations = $data['associations'];
+
+                foreach ($associations as $tag => $id)
+                {
+                    if (empty($id))
+                    {
+                        unset($associations[$tag]);
+                    }
+                }
+
+                // Detecting all item menus
+                $all_language = $item->language == '*';
+
+                if ($all_language && !empty($associations))
+                {
+                    JError::raiseNotice(403, JText::_('COM_CONTENT_ERROR_ALL_LANGUAGE_ASSOCIATED'));
+                }
+
+                $associations[$item->language] = $item->id;
+
+                // Deleting old association for these items
+                $db = JFactory::getDbo();
+                $query = $db->getQuery(true)
+                    ->delete('#__associations')
+                    ->where('context=' . $db->quote('com_content.item'))
+                    ->where('id IN (' . implode(',', $associations) . ')');
+                $db->setQuery($query);
+                $db->execute();
+
+                if ($error = $db->getErrorMsg())
+                {
+                    $this->setError($error);
+                    return false;
+                }
+
+                if (!$all_language && count($associations))
+                {
+                    // Adding new association for these items
+                    $key = md5(json_encode($associations));
+                    $query->clear()
+                        ->insert('#__associations');
+
+                    foreach ($associations as $id)
+                    {
+                        $query->values($id . ',' . $db->quote('com_content.item') . ',' . $db->quote($key));
+                    }
+
+                    $db->setQuery($query);
+                    $db->execute();
+
+                    if ($error = $db->getErrorMsg())
+                    {
+                        $this->setError($error);
+                        return false;
+                    }
+                }
+            }
         }
 
         return true;

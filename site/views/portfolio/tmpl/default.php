@@ -185,7 +185,8 @@ $doc -> addScript(JUri::base(true).'/components/com_tz_portfolio/js/base64.js');
             <?php endif;?>
         </div>
 
-        <div id="portfolio" class="super-list variable-sizes clearfix">
+        <div id="portfolio" class="super-list variable-sizes clearfix"
+             itemscope itemtype="http://schema.org/Blog">
             <?php echo $this -> loadTemplate('item');?>
         </div>
 
@@ -264,6 +265,7 @@ $doc -> addScript(JUri::base(true).'/components/com_tz_portfolio/js/base64.js');
     });
 
     function loadPortfolio(){
+
         var $optionSets = jQuery('#tz_options .option-set'),
          $optionLinks = $optionSets.find('a');
         var $r_options    = null;

@@ -28,3 +28,10 @@
     width: 14px;
     height: 14px;
 }
+.form-horizontal .controls{
+    border: none;
+    min-height: 0;
+}
+.ui-helper-hidden-accessible{
+    display: none;
+}

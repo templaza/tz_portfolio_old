@@ -54,7 +54,8 @@ if(count($media)):
                 <a<?php echo $class;?> href="<?php echo $link?>">
                     <img src="<?php echo $srcAudio;?>"
                          title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
-                             alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"/>
+                             alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                             itemprop="thumbnailUrl"/>
                 </a>
             </div>
         <?php endif;?>

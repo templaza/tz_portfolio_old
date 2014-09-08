@@ -109,6 +109,15 @@ class TZ_PortfolioModelArticles extends JModelList
 
 		$language = $this->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
+
+        // Force a language
+        $forcedLanguage = $app->input->get('forcedLanguage');
+
+        if (!empty($forcedLanguage))
+        {
+            $this->setState('filter.language', $forcedLanguage);
+            $this->setState('filter.forcedLanguage', $forcedLanguage);
+        }
 	}
 
 	/**
@@ -199,6 +208,17 @@ class TZ_PortfolioModelArticles extends JModelList
 		// Join over the users for the author.
 		$query->select('ua.name AS author_name');
 		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
+
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            // Join over the associations.
+            if (JLanguageAssociations::isEnabled())
+            {
+                $query->select('COUNT(asso2.id)>1 as association')
+                    ->join('LEFT', '#__associations AS asso ON asso.id = a.id AND asso.context=' . $db->quote('com_content.item'))
+                    ->join('LEFT', '#__associations AS asso2 ON asso2.key = asso.key')
+                    ->group('a.id');
+            }
+        }
 
 		// Filter by access level.
 		if ($access = $this->getState('filter.access')) {

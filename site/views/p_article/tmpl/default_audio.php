@@ -92,11 +92,12 @@ if(count($media)):
         if($media[0] -> type == 'audio'):
 
         ?>
-            <div class="tz_audio">
+            <div class="tz_audio" itemprop="audio" itemscope itemtype="http://schema.org/AudioObject">
                 <iframe width="<?php echo $audioWidth;?>"
                         height="<?php echo $audioHeight;?>"
                         src="http://w.soundcloud.com/player/?url=http://api.soundcloud.com/tracks/<?php echo $media[0] -> audio_id.$audioOption;?>"
-                        frameborder="0" allowfullscreen>
+                        frameborder="0" allowfullscreen
+                        itemprop="embedUrl">
                 </iframe>
             </div>
         <?php endif;?>

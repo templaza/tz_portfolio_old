@@ -98,6 +98,8 @@ class TZ_PortfolioModelTimeLine extends JModelList
             $this->setState('filter.published', array(0, 1, 2));
         }
 
+        $this->setState('filter.language', $app->getLanguageFilter());
+
         $params -> set('useCloudZoom',0);
         $this -> setState('list.start',JRequest::getUInt('limitstart',0));
         $this -> setState('list.limit',$limit);
@@ -138,6 +140,9 @@ class TZ_PortfolioModelTimeLine extends JModelList
         else {
             $this->setState('filter.published', array(0, 1, 2));
         }
+
+        $app    = JFactory::getApplication();
+        $this->setState('filter.language', $app->getLanguageFilter());
 
         $this -> setState('list.limit',$limit);
         $this -> setState('list.start',$offset);
@@ -327,40 +332,66 @@ class TZ_PortfolioModelTimeLine extends JModelList
 
         return $data;
     }
+
     function getCategories(){
         $catids = $this -> categories;
+        $params = $this -> getState('params');
+        $db     = JFactory::getDbo();
+        $query  = $db -> getQuery(true);
 
-        if(count($catids) > 1){
-            if(empty($catids[0])){
-                array_shift($catids);
+        $query -> select('id,title');
+        $query -> from($db -> quoteName('#__categories'));
+        $query -> where('published = 1');
+        $query -> where('extension='.$db -> quote('com_content'));
+
+        if(is_array($catids)){
+            $catids = array_filter($catids);
+            if(count($catids)){
+                $query -> where('id IN('.implode(',',$catids).')');
             }
-            $catids = implode(',',$catids);
-        }
-        else{
-            if(!empty($catids[0])){
-                $catids = $catids[0];
-            }
-            else
-                $catids = null;
+        }elseif(!empty($catids)){
+            $query -> where('id IN('.$catids.')');
         }
 
-        $where  = null;
-        if($catids){
-            $where  = ' AND cc.id IN('.$catids.')';
+        // Order by artilce
+        switch ($params -> get('orderby_pri')){
+            case 'alpha' :
+                $query -> order('title');
+                break;
+
+            case 'ralpha' :
+                $query -> order('title DESC ');
+                break;
+
+            case 'order' :
+                $query -> order('lft');
+                break;
         }
-        $query  = 'SELECT cc.id,cc.title FROM #__categories AS cc'
-                  .' LEFT JOIN #__content AS c ON c.catid=cc.id'
-                  .' WHERE cc.published=1 AND cc.extension="com_content" AND c.state=1'
-                  .$where
-                  .' GROUP BY cc.id';
-        $db = JFactory::getDbo();
+
+        $query -> group('id');
+
         $db -> setQuery($query);
-        if(!$db -> query()){
-            var_dump($db -> getErrorMsg());
-            return false;
-        }
 
         if($rows = $db -> loadObjectList()){
+            if($allCatIds  = $this -> getAllCategories()){
+                foreach($allCatIds as &$allCatId){
+                    $allCatId   = (int) $allCatId -> id;
+                }
+            }
+
+            $array      = array();
+            $revArray   = array();
+            if(is_array($catids)){
+                $array      = array_intersect($allCatIds,$catids);
+                $revArray   = array_flip($array);
+            }
+
+            foreach($rows as $item){
+                $item -> order  = 0;
+                if(in_array($item -> id,$array)){
+                    $item -> order  = $revArray[$item -> id];
+                }
+            }
             return $rows;
         }
 
@@ -384,6 +415,22 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 $query -> where('id IN('.$catid.')');
             }
         }
+
+        // Order by artilce
+        switch ($params -> get('orderby_pri')){
+            case 'alpha' :
+                $query -> order('title');
+                break;
+
+            case 'ralpha' :
+                $query -> order('title DESC ');
+                break;
+
+            case 'order' :
+                $query -> order('lft');
+                break;
+        }
+
         $db -> setQuery($query);
         if($rows = $db -> loadObjectList()){
             return $rows;
@@ -663,6 +710,12 @@ class TZ_PortfolioModelTimeLine extends JModelList
 
         $query -> select('('.$subQuery -> __toString().') AS maxhits');
         /** End query **/
+
+        // Filter by language
+        if ($this->getState('filter.language')) {
+            $query->where('c.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
+//            $query->where('(contact.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').') OR contact.language IS NULL)');
+        }
 
         return $query;
     }
@@ -970,7 +1023,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 if($model  = JModelLegacy::getInstance('Media','TZ_PortfolioModel')){
                     if($media  = $model -> getMedia($item -> id)){
 
-                        if($media[0] -> type != 'video'){
+                        if($media[0] -> type != 'video' && $media[0] -> type != 'audio'){
                             if($params -> get('portfolio_image_size','M')){
 
 

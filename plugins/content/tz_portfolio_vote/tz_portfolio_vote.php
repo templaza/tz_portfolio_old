@@ -152,7 +152,8 @@ var TzVote_text=Array('".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_NO_AJAX')."','".JTEXT::
                 $count  = $rating_sum / $rating_count;
 
             }
-            $html = "
+            $html = "<div class=\"content_rating\"  itemprop=\"aggregateRating\" itemscope itemtype=\"http://schema.org/AggregateRating\">";
+            $html .= "
               <div class=\"rating\">
                 <a href=\"javascript:void(null)\"
                  onclick=\"javascript:JVXVote(this,".$id.",5,".$rating_sum.",".$rating_count.",'".$xid."',".$counter.",".$this -> params -> get('style',1).");\"
@@ -210,7 +211,10 @@ var TzVote_text=Array('".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_NO_AJAX')."','".JTEXT::
               </ul>";
         }
 
-        $html .= "<span id=\"TzVote_".$id."_".$xid."\" class=\"TzVote-count\"><small>";
+        $html .= "<span id=\"TzVote_".$id."_".$xid."\" class=\"TzVote-count\" itemprop=\"ratingCount\"><small>";
+        $html  .= '<meta itemprop="worstRating" content="0" />';
+        $html  .= '<meta itemprop="bestRating" content="5" />';
+        $html  .= '<meta itemprop="ratingValue" content="'.$rating_sum.'"/>';
 
         if ( $counter > 0 ) {
             $html .= "( ";
@@ -222,6 +226,7 @@ var TzVote_text=Array('".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_NO_AJAX')."','".JTEXT::
             $html .=" )";
         }
         $html .="</small></span>&nbsp;" . $br;
+        $html .="</div>";
 
         return $html;
     }

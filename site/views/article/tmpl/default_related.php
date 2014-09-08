@@ -19,17 +19,19 @@
 
 // no direct access
 defined('_JEXEC') or die;
-$doc    = JFactory::getDocument();
 
-$lists  = $this -> itemMore;
-// Create shortcuts to some parameters.
-$params		= $this->item->params;
-$tmpl       = null;
-if($params -> get('tz_use_lightbox') == 1){
-    $tmpl   = '&tmpl=component';
-}
-if($lists):
-    if($params -> get('show_related_article',1)):
+if (!$this->print) :
+    $doc    = JFactory::getDocument();
+
+    $lists  = $this -> itemMore;
+    // Create shortcuts to some parameters.
+    $params		= $this->item->params;
+    $tmpl       = null;
+    if($params -> get('tz_use_lightbox') == 1){
+        $tmpl   = '&tmpl=component';
+    }
+    if($lists):
+        if($params -> get('show_related_article',1)):
 ?>
 <div class="TzRelated">
     <?php if($params -> get('show_related_heading',1)):?>
@@ -110,5 +112,6 @@ if($lists):
     </ul>
 </div>
  
+        <?php endif;?>
     <?php endif;?>
 <?php endif;?>

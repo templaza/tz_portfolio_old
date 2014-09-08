@@ -24,6 +24,8 @@ jimport('joomla.application.component.modeladmin');
 jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
 
+//JLoader::register('CategoryHelper', JPATH_ADMINISTRATOR . '/components/com_tz_portfolio/helpers/categories.php');
+
 /**
  * Categories Component Category Model
  */
@@ -326,6 +328,22 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 			}
 		}
 
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $assoc = $this->getAssoc();
+            if ($assoc)
+            {
+                if ($result->id != null)
+                {
+                    $result->associations = CategoriesHelper::getAssociations($result->id, $result->extension);
+                    JArrayHelper::toInteger($result->associations);
+                }
+                else
+                {
+                    $result->associations = array();
+                }
+            }
+        }
+
 		return $result;
 	}
 
@@ -417,6 +435,9 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 			$data = $this->getItem();
 		}
 
+        $template   = JModelLegacy::getInstance('Template','TZ_PortfolioModel');
+        $data -> set('template_id',$template -> getItemTemplate(null,$this -> getState($this->getName() . '.id')));
+
 		return $data;
 	}
 
@@ -494,9 +515,81 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 		$form->setFieldAttribute('rules', 'component', $component);
 		$form->setFieldAttribute('rules', 'section', $name);
 
+        // Association category items
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $assoc = $this->getAssoc();
+            if ($assoc)
+            {
+                $languages = JLanguageHelper::getLanguages('lang_code');
+
+                // Force to array (perhaps move to $this->loadFormData())
+                $data = (array) $data;
+
+                $addform = new SimpleXMLElement('<form />');
+                $fields = $addform->addChild('fields');
+                $fields->addAttribute('name', 'associations');
+                $fieldset = $fields->addChild('fieldset');
+                $fieldset->addAttribute('name', 'item_associations');
+                $fieldset->addAttribute('description', 'COM_CATEGORIES_ITEM_ASSOCIATIONS_FIELDSET_DESC');
+                $add = false;
+                foreach ($languages as $tag => $language)
+                {
+                    if (empty($data['language']) || $tag != $data['language'])
+                    {
+                        $add = true;
+                        $field = $fieldset->addChild('field');
+                        $field->addAttribute('name', $tag);
+                        $field->addAttribute('type', 'modal_category');
+                        $field->addAttribute('language', $tag);
+                        $field->addAttribute('label', $language->title);
+                        $field->addAttribute('translate_label', 'false');
+                        $field->addAttribute('extension', $extension);
+                        $field->addAttribute('edit', 'true');
+                        $field->addAttribute('clear', 'true');
+                    }
+                }
+                if ($add)
+                {
+                    $form->load($addform, false);
+                }
+            }
+        }
+
 		// Trigger the default form events.
 		parent::preprocessForm($form, $data, $group);
 	}
+
+    public function getAssoc()
+    {
+        static $assoc = null;
+
+        if (!is_null($assoc))
+        {
+            return $assoc;
+        }
+
+        $app = JFactory::getApplication();
+        $extension = $this->getState('category.extension');
+
+        $assoc = JLanguageAssociations::isEnabled();
+        $extension = explode('.', $extension);
+        $component = array_shift($extension);
+        $cname = str_replace('com_', '', $component);
+
+        if (!$assoc || !$component || !$cname)
+        {
+            $assoc = false;
+        }
+        else
+        {
+            $hname = $cname . 'HelperAssociation';
+            JLoader::register($hname, JPATH_SITE . '/components/' . $component . '/helpers/association.php');
+
+            $assoc = class_exists($hname) && !empty($hname::$category_association);
+        }
+
+        return $assoc;
+    }
 
     function getCatImage(){
         $where  = null;
@@ -835,11 +928,12 @@ class TZ_PortfolioModelCategory extends JModelAdmin
                     $value  = array();
 
                     foreach($groupid as $row){
-                        $value[]  = '('.$table -> id.','.$row.',"'.$image.'")';
+                        $value[]  = '('.$table -> id.','.$row.',"'.$image.'",'.$data['template_id'].')';
                     }
 
                     $value  = implode(',',$value);
-                    $query  = 'INSERT INTO #__tz_portfolio_categories(`catid`,`groupid`,`images`)'
+                    $query  = 'INSERT INTO #__tz_portfolio_categories(`catid`,`groupid`,`images`,'
+                        .$db -> quoteName('template_id').')'
                                   .' VALUES'.$value;
 
                     $db -> setQuery($query);
@@ -848,6 +942,71 @@ class TZ_PortfolioModelCategory extends JModelAdmin
                         return false;
                     }
                 //}
+            }
+        }
+
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $assoc = $this->getAssoc();
+            if ($assoc)
+            {
+
+                // Adding self to the association
+                $associations = $data['associations'];
+
+                foreach ($associations as $tag => $id)
+                {
+                    if (empty($id))
+                    {
+                        unset($associations[$tag]);
+                    }
+                }
+
+                // Detecting all item menus
+                $all_language = $table->language == '*';
+
+                if ($all_language && !empty($associations))
+                {
+                    JError::raiseNotice(403, JText::_('COM_CATEGORIES_ERROR_ALL_LANGUAGE_ASSOCIATED'));
+                }
+
+                $associations[$table->language] = $table->id;
+
+                // Deleting old association for these items
+                $db = JFactory::getDbo();
+                $query = $db->getQuery(true)
+                    ->delete('#__associations')
+                    ->where($db->quoteName('context') . ' = ' . $db->quote('com_categories.item'))
+                    ->where($db->quoteName('id') . ' IN (' . implode(',', $associations) . ')');
+                $db->setQuery($query);
+                $db->execute();
+
+                if ($error = $db->getErrorMsg())
+                {
+                    $this->setError($error);
+                    return false;
+                }
+
+                if (!$all_language && count($associations))
+                {
+                    // Adding new association for these items
+                    $key = md5(json_encode($associations));
+                    $query->clear()
+                        ->insert('#__associations');
+
+                    foreach ($associations as $id)
+                    {
+                        $query->values($id . ',' . $db->quote('com_categories.item') . ',' . $db->quote($key));
+                    }
+
+                    $db->setQuery($query);
+                    $db->execute();
+
+                    if ($error = $db->getErrorMsg())
+                    {
+                        $this->setError($error);
+                        return false;
+                    }
+                }
             }
         }
 

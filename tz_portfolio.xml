@@ -7,7 +7,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.2.1</version>
+	<version>3.2.4</version>
 	<description>TZ Portfolio native for Joomla! 2.5.x and 3.0.x</description>
     
     <scriptfile>script.php</scriptfile>
@@ -78,6 +78,7 @@
             <menu link="option=com_tz_portfolio&amp;view=articles">Articles</menu>
             <menu link="option=com_tz_portfolio&amp;view=tags">Tags</menu>
             <menu link="option=com_tz_portfolio&amp;view=users">Users</menu>
+            <menu link="option=com_tz_portfolio&amp;view=templates">com_tz_portfolio_templates</menu>
         </submenu>
         <languages folder="admin/languages">
             <language tag="en-GB">en-GB/en-GB.com_tz_portfolio.ini</language>
