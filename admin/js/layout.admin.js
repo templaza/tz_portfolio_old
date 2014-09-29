@@ -250,21 +250,21 @@ jQuery(function($){
                     var newSpan = $(this).val();
                     switch ($("button[class*='tz-admin-dv'].active").attr('data-device')) {
                         case 'xs':
-                            $(this).parents('.popover').parent().parent().find('>.widthinput-xs').val(newSpan);
+                            $(this).parents('.popover').eq(0).parent().parent().find('>.widthinput-xs').val(newSpan);
                             break;
                         case 'sm':
-                            $(this).parents('.popover').parent().parent().find('>.widthinput-sm').val(newSpan);
+                            $(this).parents('.popover').eq(0).parent().parent().find('>.widthinput-sm').val(newSpan);
                             break;
                         case 'md':
                         default :
-                            $(this).parents('.popover').parent().parent().find('>.widthinput-md').val(newSpan);
+                            $(this).parents('.popover').eq(0).parent().parent().find('>.widthinput-md').val(newSpan);
                             break;
                         case 'lg':
-                            $(this).parents('.popover').parent().parent().find('>.widthinput-lg').val(newSpan);
+                            $(this).parents('.popover').eq(0).parent().parent().find('>.widthinput-lg').val(newSpan);
                             break;
                     }
 
-                    $(this).parents('.popover').parent().parent().removeClass().addClass('column span'+newSpan);
+                    $(this).parents('.popover').eq(0).parent().parent().removeClass().addClass('column span'+newSpan);
                 });
 
 

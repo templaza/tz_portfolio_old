@@ -80,7 +80,6 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 
 		// Create a shortcut for $item.
 		$item = &$this->item;
-//        var_dump($item -> params);
 
 		// Add router helpers.
 		$item->slug			= $item->alias ? ($item->id.':'.$item->alias) : $item->id;
@@ -696,42 +695,43 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                     $rows[] = '<div class="tz-row">';
                     foreach($tplItems -> children as $children){
                         $html   = null;
+
+                        if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
+                            || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
+                            || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
+                            || !empty($children -> {"col-sm-offset"}) || !empty($children -> {"col-xs-offset"})
+                            || !empty($children -> {"customclass"}) || $children -> responsiveclass){
+                            $rows[] = '<div class="'
+                                .(!empty($children -> {"col-lg"})?'tz-col-lg-'.$children -> {"col-lg"}:'')
+                                .(!empty($children -> {"col-md"})?' tz-col-md-'.$children -> {"col-md"}:'')
+                                .(!empty($children -> {"col-sm"})?' tz-col-sm-'.$children -> {"col-sm"}:'')
+                                .(!empty($children -> {"col-xs"})?' tz-col-xs-'.$children -> {"col-xs"}:'')
+                                .(!empty($children -> {"col-lg-offset"})?' tz-col-lg-offset-'.$children -> {"col-lg-offset"}:'')
+                                .(!empty($children -> {"col-md-offset"})?' tz-col-md-offset-'.$children -> {"col-md-offset"}:'')
+                                .(!empty($children -> {"col-sm-offset"})?' tz-col-sm-offset-'.$children -> {"col-sm-offset"}:'')
+                                .(!empty($children -> {"col-xs-offset"})?' tz-col-xs-offset-'.$children -> {"col-xs-offset"}:'')
+                                .(!empty($children -> {"customclass"})?' '.$children -> {"customclass"}:'')
+                                .($children -> responsiveclass?' '.$children -> responsiveclass:'').'">';
+                        }
+
+                        if($children -> type == 'introtext' || $children -> type == 'fulltext'){
+                            $article -> text    = null;
+                            if ($params->get('show_intro', 1) && $children -> type == 'introtext') {
+                                $article -> text    = $article -> introtext;
+
+                            }
+                            if($children -> type == 'fulltext'){
+                                $article -> text    = $article -> fulltext;
+                            }
+                            $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
+                        }
+
                         if($children -> type && $children -> type !='none'){
                             $html   = $this -> loadTemplate($children -> type);
                             $html   = trim($html);
                         }
-//                        if($html && !empty($html)){
-                            if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
-                                || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
-                                || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
-                                || !empty($children -> {"col-sm-offset"}) || !empty($children -> {"col-xs-offset"})
-                                || !empty($children -> {"customclass"}) || $children -> responsiveclass){
-                                $rows[] = '<div class="'
-                                    .(!empty($children -> {"col-lg"})?'tz-col-lg-'.$children -> {"col-lg"}:'')
-                                    .(!empty($children -> {"col-md"})?' tz-col-md-'.$children -> {"col-md"}:'')
-                                    .(!empty($children -> {"col-sm"})?' tz-col-sm-'.$children -> {"col-sm"}:'')
-                                    .(!empty($children -> {"col-xs"})?' tz-col-xs-'.$children -> {"col-xs"}:'')
-                                    .(!empty($children -> {"col-lg-offset"})?' tz-col-lg-offset-'.$children -> {"col-lg-offset"}:'')
-                                    .(!empty($children -> {"col-md-offset"})?' tz-col-md-offset-'.$children -> {"col-md-offset"}:'')
-                                    .(!empty($children -> {"col-sm-offset"})?' tz-col-sm-offset-'.$children -> {"col-sm-offset"}:'')
-                                    .(!empty($children -> {"col-xs-offset"})?' tz-col-xs-offset-'.$children -> {"col-xs-offset"}:'')
-                                    .(!empty($children -> {"customclass"})?' '.$children -> {"customclass"}:'')
-                                    .($children -> responsiveclass?' '.$children -> responsiveclass:'').'">';
-                            }
 
-                            if($children -> type == 'introtext' || $children -> type == 'fulltext'){
-                                $article -> text    = null;
-                                if ($params->get('show_intro', 1) && $children -> type == 'introtext') {
-                                    $article -> text    = $article -> introtext;
-                                }
-                                if($children -> type == 'fulltext'){
-                                    $article -> text    = $article -> fulltext;
-                                }
-                                $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
-                            }
-
-                            $rows[] = $html;
-//                        }
+                        $rows[] = $html;
 
                         if( !empty($children -> children) and is_array($children -> children) ){
                             $this -> childrenLayout($rows,$children,$article,$params,$dispatcher);
@@ -800,55 +800,53 @@ class TZ_PortfolioViewArticle extends JViewLegacy
             $rows[] = '<div class="tz-row">';
             foreach($children -> children as $children){
                 $html   = null;
+
+                if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
+                || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
+                || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
+                || !empty($children -> {"col-sm-offset"}) || !empty($children -> {"col-xs-offset"})
+                || !empty($children -> {"customclass"}) || $children -> responsiveclass){
+                    $rows[] = '<div class="'
+                        .(!empty($children -> {"col-lg"})?'tz-col-lg-'.$children -> {"col-lg"}:'')
+                        .(!empty($children -> {"col-md"})?' tz-col-md-'.$children -> {"col-md"}:'')
+                        .(!empty($children -> {"col-sm"})?' tz-col-sm-'.$children -> {"col-sm"}:'')
+                        .(!empty($children -> {"col-xs"})?' tz-col-xs-'.$children -> {"col-xs"}:'')
+                        .(!empty($children -> {"col-lg-offset"})?' tz-col-lg-offset-'.$children -> {"col-lg-offset"}:'')
+                        .(!empty($children -> {"col-md-offset"})?' tz-col-md-offset-'.$children -> {"col-md-offset"}:'')
+                        .(!empty($children -> {"col-sm-offset"})?' tz-col-sm-offset-'.$children -> {"col-sm-offset"}:'')
+                        .(!empty($children -> {"col-xs-offset"})?' tz-col-xs-offset-'.$children -> {"col-xs-offset"}:'')
+                        .(!empty($children -> {"customclass"})?' '.$children -> {"customclass"}:'')
+                        .($children -> responsiveclass?' '.$children -> responsiveclass:'').'">';
+                }
+
+                if($children -> type == 'introtext' || $children -> type == 'fulltext'){
+                    $article -> text    = null;
+                    if ($params->get('show_intro', 1) && $children -> type == 'introtext') {
+                        $article -> text    = $article -> introtext;
+                    }
+                    if($children -> type == 'fulltext'){
+                        $article -> text    = $article -> fulltext;
+                    }
+                    $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
+                }
                 if($children -> type && $children -> type !='none'){
                     $html   = $this -> loadTemplate($children -> type);
                     $html   = trim($html);
                 }
-//                if($html && !empty($html)){
-                    if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
-                    || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
-                    || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
-                    || !empty($children -> {"col-sm-offset"}) || !empty($children -> {"col-xs-offset"})
-                    || !empty($children -> {"customclass"}) || $children -> responsiveclass){
-                        $rows[] = '<div class="'
-                            .(!empty($children -> {"col-lg"})?'tz-col-lg-'.$children -> {"col-lg"}:'')
-                            .(!empty($children -> {"col-md"})?' tz-col-md-'.$children -> {"col-md"}:'')
-                            .(!empty($children -> {"col-sm"})?' tz-col-sm-'.$children -> {"col-sm"}:'')
-                            .(!empty($children -> {"col-xs"})?' tz-col-xs-'.$children -> {"col-xs"}:'')
-                            .(!empty($children -> {"col-lg-offset"})?' tz-col-lg-offset-'.$children -> {"col-lg-offset"}:'')
-                            .(!empty($children -> {"col-md-offset"})?' tz-col-md-offset-'.$children -> {"col-md-offset"}:'')
-                            .(!empty($children -> {"col-sm-offset"})?' tz-col-sm-offset-'.$children -> {"col-sm-offset"}:'')
-                            .(!empty($children -> {"col-xs-offset"})?' tz-col-xs-offset-'.$children -> {"col-xs-offset"}:'')
-                            .(!empty($children -> {"customclass"})?' '.$children -> {"customclass"}:'')
-                            .($children -> responsiveclass?' '.$children -> responsiveclass:'').'">';
-                    }
-
-                    if($children -> type == 'introtext' || $children -> type == 'fulltext'){
-                        $article -> text    = null;
-                        if ($params->get('show_intro', 1) && $children -> type == 'introtext') {
-                            $article -> text    = $article -> introtext;
-                        }
-                        if($children -> type == 'fulltext'){
-                            $article -> text    = $article -> fulltext;
-                        }
-                        $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
-                    }
-                    $rows[] = $html;
-//                }
+                $rows[] = $html;
 
                 if( !empty($children -> children) and is_array($children -> children) ){
                     $this -> childrenLayout($rows,$children,$article,$params,$dispatcher);
                 }
 
-//                if($html && !empty($html)){
-                    if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
-                        || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
-                        || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
-                        || !empty($children -> {"col-sm-offset"}) || !empty($children -> {"col-xs-offset"})
-                        || !empty($children -> {"customclass"}) || $children -> responsiveclass){
-                        $rows[] = '</div>'; // Close col tag
-                    }
-//                }
+                if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
+                    || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
+                    || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
+                    || !empty($children -> {"col-sm-offset"}) || !empty($children -> {"col-xs-offset"})
+                    || !empty($children -> {"customclass"}) || $children -> responsiveclass){
+                    $rows[] = '</div>'; // Close col tag
+                }
+
             }
             $rows[] = '</div>';
             $rows[] = '</div>';

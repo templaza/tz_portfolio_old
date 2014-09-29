@@ -178,10 +178,10 @@ class TZ_PortfolioModelArticles extends JModelList
 	protected function getStoreId($id = '')
 	{
 		// Compile the store id.
-		$id .= ':'.$this->getState('filter.published');
+		$id .= ':'.serialize($this->getState('filter.published'));
 		$id .= ':'.$this->getState('filter.access');
 		$id .= ':'.$this->getState('filter.featured');
-		$id .= ':'.$this->getState('filter.article_id');
+		$id .= ':'.serialize($this->getState('filter.article_id'));
 		$id .= ':'.$this->getState('filter.article_id.include');
 		$id .= ':'.serialize($this->getState('filter.category_id'));
 		$id .= ':'.$this->getState('filter.category_id.include');
@@ -525,7 +525,6 @@ class TZ_PortfolioModelArticles extends JModelList
 
 		// Add the list ordering clause.
 		$query->order($this->getState('list.ordering', 'a.ordering').' '.$this->getState('list.direction', 'ASC'));
-		$query->group('a.id, a.title, a.alias, a.introtext, a.checked_out, a.checked_out_time, a.catid, a.created, a.created_by, a.created_by_alias, a.created, a.modified, a.modified_by, uam.name, a.publish_up, a.attribs, a.metadata, a.metakey, a.metadesc, a.access, a.hits, a.xreference, a.featured, a.fulltext, a.state, a.publish_down, badcats.id, c.title, c.path, c.access, c.alias, uam.id, ua.name, ua.email, contact.id, parent.title, parent.id, parent.path, parent.alias, v.rating_sum, v.rating_count, c.published, c.lft, a.ordering, parent.lft, c.id, a.images, a.urls');
 
         return $query;
 	}
