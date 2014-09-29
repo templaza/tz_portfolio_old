@@ -20,6 +20,12 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+09/29/2014 - 3.2.5
+
+	Fix error duplicate introtext.
+	Fix create article in front-end.
+	Fix error pagination in blog view.
+
 08/28/2014 - 3.2.4
 
 	Fix error with introtext in 2 detail view.

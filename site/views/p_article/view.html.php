@@ -703,11 +703,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                     $rows[] = '<div class="tz-row">';
                     foreach($tplItems -> children as $children){
                         $html   = null;
-                        if($children -> type && $children -> type !='none'){
-                            $html   = $this -> loadTemplate($children -> type);
-                            $html   = trim($html);
-                        }
-//                        if($html && !empty($html)){
+
                         if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
                             || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
                             || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
@@ -737,14 +733,17 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                             $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
                         }
 
+                        if($children -> type && $children -> type !='none'){
+                            $html   = $this -> loadTemplate($children -> type);
+                            $html   = trim($html);
+                        }
+
                         $rows[] = $html;
-//                        }
 
                         if( !empty($children -> children) and is_array($children -> children) ){
                             $this -> childrenLayout($rows,$children,$article,$params,$dispatcher);
                         }
 
-//                        if($html && !empty($html)){
                         if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
                             || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
                             || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
@@ -752,7 +751,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                             || !empty($children -> {"customclass"}) || $children -> responsiveclass){
                             $rows[] = '</div>'; // Close col tag
                         }
-//                        }
+
                     }
                     $rows[] = '</div>';
                     $rows[] = '</div>';
@@ -807,11 +806,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
             $rows[] = '<div class="tz-row">';
             foreach($children -> children as $children){
                 $html   = null;
-                if($children -> type && $children -> type !='none'){
-                    $html   = $this -> loadTemplate($children -> type);
-                    $html   = trim($html);
-                }
-//                if($html && !empty($html)){
+
                 if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
                     || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
                     || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
@@ -840,14 +835,18 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                     }
                     $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
                 }
+
+                if($children -> type && $children -> type !='none'){
+                    $html   = $this -> loadTemplate($children -> type);
+                    $html   = trim($html);
+                }
+
                 $rows[] = $html;
-//                }
 
                 if( !empty($children -> children) and is_array($children -> children) ){
                     $this -> childrenLayout($rows,$children,$article,$params,$dispatcher);
                 }
 
-//                if($html && !empty($html)){
                 if(!empty($children -> {"col-lg"}) || !empty($children -> {"col-md"})
                     || !empty($children -> {"col-sm"}) || !empty($children -> {"col-xs"})
                     || !empty($children -> {"col-lg-offset"}) || !empty($children -> {"col-md-offset"})
@@ -855,7 +854,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                     || !empty($children -> {"customclass"}) || $children -> responsiveclass){
                     $rows[] = '</div>'; // Close col tag
                 }
-//                }
+
             }
             $rows[] = '</div>';
             $rows[] = '</div>';

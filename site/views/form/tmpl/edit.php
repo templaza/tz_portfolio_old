@@ -1428,6 +1428,15 @@ $doc -> addScriptDeclaration('
                     <div class="controls"><?php echo $this->form->getInput('created_by_alias'); ?></div>
                 </div>
 
+                <div class="control-group">
+                    <div class="control-label">
+                        <?php echo $this->form->getLabel('template_id'); ?>
+                    </div>
+                    <div class="controls">
+                        <?php echo $this->form->getInput('template_id'); ?>
+                    </div>
+                </div>
+
             <?php if ($this->item->params->get('access-change')): ?>
                 <div class="control-group">
                     <div class="control-label"><?php echo $this->form->getLabel('state'); ?></div>

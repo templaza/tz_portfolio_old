@@ -92,6 +92,12 @@
 			class="inputbox"
 			required="true">
 		</field>
+
+        <field type="tztemplates" name="template_id"
+               label="COM_TZ_PORTFOLIO_TEMPLATE_LABEL">
+            <option value="0">JOPTION_USE_DEFAULT</option>
+        </field>
+
 		<field
 			id="created"
 			name="created"
