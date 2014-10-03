@@ -1020,15 +1020,15 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                     name:'tz_attachments_hidden_old[]',
                     value:'<?php echo $row -> attachold;?>'
                 }).inject(myTd);
-                var myTd = new Element('td',{
-                    html:'<?php echo !empty($row -> attachtitle)? $row -> attachtitle: $row -> attachold;?>'
+				var myTd = new Element('td',{
+                    html:'<?php echo !empty($row -> attachtitle)? htmlentities($row -> attachtitle,ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE | ENT_DISALLOWED,"UTF-8",false): htmlentities($row -> attachold, ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE | ENT_DISALLOWED, "UTF-8", false);?>'
                 }).inject(myTr);
                 var myHidden = new Element('input',{
                     type:'hidden',
                     name:'tz_attachments_hidden_title[]',
-                    value:'<?php if($row -> attachfiles != $row -> attachtitle) echo $row -> attachtitle;?>'
+                    value:'<?php if($row -> attachfiles != $row -> attachtitle) echo htmlentities($row -> attachtitle,ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE | ENT_DISALLOWED,"UTF-8",false) ;?>'
                 }).inject(myTd);
-                var myTd = new Element('td',{
+				var myTd = new Element('td',{
                 }).inject(myTr);
                 var myInput = new Element('button',{
                     type:'button',
