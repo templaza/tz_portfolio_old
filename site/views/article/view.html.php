@@ -692,6 +692,10 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                     $rows[] = '<div id="tz-portfolio-template-'.JApplication::stringURLSafe($tplItems -> name).'"'
                         .' class="tz-container-fluid'.($tplItems -> {"class"}?' '.$tplItems -> {"class"}:'')
                         .($tplItems -> responsive?' '.$tplItems -> responsive:'').'">';
+                    if($tplItems -> containertype){
+                        $rows[] = '<div class="'.$tplItems -> containertype.'">';
+                    }
+
                     $rows[] = '<div class="tz-row">';
                     foreach($tplItems -> children as $children){
                         $html   = null;
@@ -746,6 +750,10 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                                 $rows[] = '</div>'; // Close col tag
                             }
 //                        }
+                    }
+
+                    if($tplItems -> containertype){
+                        $rows[] = '</div>';
                     }
                     $rows[] = '</div>';
                     $rows[] = '</div>';

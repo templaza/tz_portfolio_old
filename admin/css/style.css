@@ -35,3 +35,15 @@
 .ui-helper-hidden-accessible{
     display: none;
 }
+.tz-state-highlight-row{
+    background: #fbfaf0;
+    border: 1px solid #fcefa1;
+}
+.tz-state-highlight{
+    float: left;
+    background: #fbfaf0;
+    border: 1px solid #fcefa1;
+}
+#articles_assignment .hidden{
+    display: none;
+}

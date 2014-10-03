@@ -25,6 +25,10 @@ require_once ( JPATH_BASE.'/includes/framework.php' );
 
 JFactory::getLanguage() -> load('com_tz_portfolio');
 
+
+$parentId   = uniqid();
+$id         = uniqid();
+
 ?>
 
 <div class="row-fluid layoutmainrow">
@@ -46,8 +50,18 @@ JFactory::getLanguage() -> load('com_tz_portfolio');
             </span>
         </div>
 
-        <div class="pull-right row-tools row-container">
+        <div id="<?php echo $parentId?>" class="pull-right row-tools row-container">
+            <select class="containertype" name="" aria-invalid="false">
+                <option selected="" value=""><?php echo JText::_('JNONE');?></option>
+                <option value="container"><?php echo JText::_('COM_TZ_PORTFOLIO_FIXED_WIDTH');?></option>
+                <option value="container-fluid"><?php echo JText::_('COM_TZ_PORTFOLIO_FULL_WIDTH');?></option>
+            </select>
             <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_MOVE_THIS_ROW');?>" class="fa fa-arrows rowmove"></a>
+            <a href="javascript:" class="accordion-toggle"
+               data-toggle="collapse" data-parent="#<?php echo $parentId;?>"
+               data-target="#<?php echo $id;?>">
+                <span class="fa fa-chevron-up"></span><span class="fa fa-chevron-down"></span>
+            </a>
             <a href="#rowsettingbox" title="<?php echo JText::_('COM_TZ_PORTFOLIO_ROW_SETTINGS');?>" class="fa fa-cog rowsetting" rel="rowpopover"></a>
             <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_ADD_NEW_ROW');?>" class="fa fa-bars add-row"></a>
             <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_ADD_NEW_COLUMN');?>" class="fa fa-columns add-column"></a>
@@ -55,7 +69,7 @@ JFactory::getLanguage() -> load('com_tz_portfolio');
         </div>
 
         <div class="hr clr"></div>
-        <div class="row-fluid show-grid">
+        <div id="<?php echo $id?>" class="row-fluid show-grid collapse in">
             <div class="span12 column">
                 <span class="position-name">(<?php echo JText::_('JNONE');?>)</span>
                 <div class="columntools">

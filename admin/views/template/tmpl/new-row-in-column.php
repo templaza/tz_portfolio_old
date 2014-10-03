@@ -25,6 +25,8 @@ require_once ( JPATH_BASE.'/includes/framework.php' );
 
 JFactory::getLanguage() -> load('com_tz_portfolio');
 
+$parentId   = uniqid();
+$id         = uniqid();
 ?>
 <div class="row-fluid child-row">
     <div class="span12">
@@ -45,15 +47,20 @@ JFactory::getLanguage() -> load('com_tz_portfolio');
             </span>
         </div>
 
-        <div class="pull-right row-tools">
+        <div id="<?php echo $parentId?>" class="pull-right row-tools">
             <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_MOVE_THIS_ROW');?>" class="fa fa-arrows row-move-in-column"></a>
+            <a href="javascript:" class="accordion-toggle"
+               data-toggle="collapse" data-parent="#<?php echo $parentId;?>"
+               data-target="#<?php echo $id;?>">
+                <span class="fa fa-chevron-up"></span><span class="fa fa-chevron-down"></span>
+            </a>
             <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_ADD_NEW_ROW');?>" class="fa fa-bars add-row"></a>
             <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_ADD_NEW_COLUMN');?>" class="fa fa-columns add-column"></a>
             <a href="#rowsettingbox" title="<?php echo JText::_('COM_TZ_PORTFOLIO_ROW_SETTINGS');?>" class="fa fa-cog rowsetting" rel="rowpopover"></a>
             <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_DELETE_ROW');?>" class="fa fa-times rowdelete"></a>
         </div>
         <div class="clearfix"> </div>
-        <div class="row-fluid show-grid">
+        <div id="<?php echo $id;?>" class="row-fluid show-grid collapse in">
             <div class="column span12">
 
                 <span class="position-name">(<?php echo JText::_('JNONE');?>)</span>

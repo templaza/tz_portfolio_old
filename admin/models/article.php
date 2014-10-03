@@ -242,7 +242,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             <option value=""<?php if(in_array(-1,$fieldsId)) echo ' selected="selected"';?>><?php echo JText::_('COM_TZ_PORTFOLIO_ALL_FIELDS');?></option>
             <?php if($list):?>
                 <?php foreach($list as $item):?>
-                    <option value="<?php echo $item -> id;?>"<?php if(in_array($item -> id,$fieldsId)) echo ' selected="selected"';?>><?php echo $item -> title;?></option>
+                    <option value="<?php echo addslashes($item -> id);?>"<?php if(in_array($item -> id,$fieldsId)) echo ' selected="selected"';?>><?php echo $item -> title;?></option>
                 <?php endforeach;?>
             <?php endif;?>
         </select>
@@ -1173,7 +1173,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $value  = null;
 
                 if($fieldEdits){
-                    foreach($fieldEdits as $item){
+                    foreach($fieldEdits as &$item){
+                        $item -> value  = htmlspecialchars($item -> value);
                         if(($row -> type == 'textfield') || ($row -> type == 'textarea')){
                             if($row -> id == $item -> fieldsid)
                                 $value  = $item -> value;

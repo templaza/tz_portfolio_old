@@ -40,6 +40,8 @@ input.readonly,input.required{background:none}
 #layout_params .layoutmainrow:hover{-webkit-box-shadow:0 0 3px rgba(0,0,0,.5);background:#f5f5f5;box-shadow:0 0 3px rgba(0,0,0,.5)}
 #layout_params .layoutmainrow .row-fluid.show-grid,
 #layout_params .layoutmainrow .row-fluid.show-grid{border-top:1px solid #ddd;margin:15px -15px 0;padding:15px 15px 0}
+#layout_params .layoutmainrow .row-fluid.show-grid.collapse, #layout_params .layoutmainrow .row-fluid.show-grid.collapse{border: none; margin-top: 0; padding: 0 15px;}
+#layout_params .layoutmainrow .row-fluid.show-grid.collapse.in, #layout_params .layoutmainrow .row-fluid.show-grid.collapse.in{border-top:1px solid #ddd;margin:15px -15px 0;padding:15px 15px 0}
 #layout_params .layoutmainrow .rowpropperties .rowname,
 #layout_params .layoutmainrow .position-name{color:#666;font-size:20px}
 #layout_params .layoutmainrow .position-name{font-size:14px;margin-left:15px}
@@ -54,6 +56,9 @@ input.readonly,input.required{background:none}
 #layout_params .row-tools{margin-top:3px}
 #layout_params .row-tools a{color:#a5a5a5;font-size:18px;margin:0 0 0 6px}
 #layout_params .row-tools a.icon-move{border-right:1px solid #ccc;cursor:move;padding-right:6px}
+#layout_params .row-tools a .fa-chevron-down{display: none;}
+#layout_params .row-tools a.collapsed .fa-chevron-up{display: none;}
+#layout_params .row-tools a.collapsed .fa-chevron-down{display: inline-block;}
 #layout_params .columntools{-webkit-transition:opacity 300ms;float:right;margin-right:15px;opacity:0}
 #layout_params .columntools a{color:#a5a5a5;font-size:14px;margin:0 0 0 3px}
 #layout_params .columntools a.icon-move{cursor:move}

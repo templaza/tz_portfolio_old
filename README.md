@@ -20,6 +20,13 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+10/03/2014 - 3.2.6
+
+	Fix error JHtml icon in view p_article.
+	Fix special characters of extrafield's option.
+	Fix error edit of article assignment when edit layout builder.
+	Add option row's width, toggle row for layout builder and support feature template for joomla 2.5
+
 09/29/2014 - 3.2.5
 
 	Fix error duplicate introtext.

@@ -52,7 +52,7 @@ class ArticleHTML
 
     // extra text field, date
     static function renderTextField($name,$value=null,$id=null,$javascript=null){
-        $html   = '<input type="text" name="'.$name.'" value="'.$value.'"'
+        $html   = '<input type="text" name="'.$name.'" value="'.htmlspecialchars($value).'"'
                   .(($id)?' id="'.$id.'"':'')
                   .(($javascript)?' '.$javascript:'')
                   .'>';
@@ -113,15 +113,17 @@ class ArticleHTML
                 }
                 else{
                     if($selected){
-                        if(($row -> name == $selected[0] -> value) && ($row -> fieldsid == $selected[0] -> fieldsid))
+
+                        if(($row -> name == $selected[0] -> value) && ($row -> fieldsid == $selected[0] -> fieldsid)){
                             $_selected  = ' selected="selected"';
-                        else
+                        }else{
                             $_selected  = '';
+                        }
                     }
                     else
                         $_selected  = '';
                 }
-                    $str .= '<option value="'.$row -> name.$prefix.$row -> value.'"'
+                    $str .= '<option value="'.addslashes($row -> name).$prefix.$row -> value.'"'
                             .($_selected).'>'
                             .$row -> name.'</option>';
             }
@@ -168,7 +170,7 @@ class ArticleHTML
                 $str      .= '</td>';
                 $str      .= '<td>';
                 $str      .='<input type="radio" name="'.$name.'"'
-                    .' value="'.$row -> name.$prefix.$row -> value.'"'
+                    .' value="'.addslashes($row -> name).$prefix.$row -> value.'"'
                     .$id
                     .$_checked
                     .$javascript.'/>';
@@ -221,7 +223,7 @@ class ArticleHTML
                 $str      .= '</td>';
                 $str      .= '<td>';
                 $str      .= '<input type="checkbox" name="'.$name.'"'
-                    .' value="'.$row -> name.$prefix.$row -> value.'"'
+                    .' value="'.addslashes($row -> name).$prefix.$row -> value.'"'
                     .$id
                     .$_checked.$javascript.'/>';
                 $str      .= '&nbsp;'.$row -> name.'</td>';
@@ -241,7 +243,7 @@ class ArticleHTML
         $html   = '<table>';
         $html   .= '<tr>'
             .'<td>'.JText::_('COM_TZ_PORTFOLIO_TEXT').'</td>'
-            .'<td><input type="text" name="'.$name.'" value="'.$text.'"></td>'
+            .'<td><input type="text" name="'.$name.'" value="'.htmlspecialchars($text).'"></td>'
             .'</tr>';
         $html   .='<tr>'
             .'<td>'.JText::_('COM_TZ_PORTFOLIO_URL').'</td>'
