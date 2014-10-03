@@ -22,6 +22,8 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
 /**
  * HTML Article View class for the Content component.
  */

@@ -95,9 +95,9 @@ class TZ_PortfolioViewTemplate extends JViewLegacy
         JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER',false,'http://wiki.templaza.com/TZ_Portfolio_v3:Administration#How_to_Add_or_Edit_3');
 
         // If the joomla is version 3.0
-        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+//        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
             $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-4.1.0/css/font-awesome.css');
-        }
+//        }
 
         $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.css');
 

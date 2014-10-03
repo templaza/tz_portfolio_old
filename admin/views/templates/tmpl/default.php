@@ -114,20 +114,12 @@ $user		= JFactory::getUser();
                     $canCreate = $user->authorise('core.create',     'com_tz_portfolio');
                     $canEdit   = $user->authorise('core.edit',       'com_tz_portfolio');
                     $canChange = $user->authorise('core.edit.state', 'com_tz_portfolio');
+
                 ?>
                     <tr class="<?php echo ($i%2==0)?'row0':'row1';?>">
-<!--                        <td>-->
-<!--                            --><?php //echo $i+1;?>
-<!--                            <input type="hidden" name="order[]">-->
-<!--                        </td>-->
                         <td class="center">
                             <?php echo JHtml::_('grid.id', $i, $item->id); ?>
                         </td>
-<!--                        <td class="center">-->
-<!--                            <div class="btn-group">-->
-<!--                                --><?php //echo JHtml::_('jgrid.published', $item->published, $i, 'tags.', true, 'cb'); ?>
-<!--                            </div>-->
-<!--                        </td>-->
                         <td class="nowrap has-context">
                             <div class="pull-left">
                                 <a href="index.php?option=com_tz_portfolio&task=template.edit&id=<?php echo $item -> id;?>">
@@ -151,7 +143,7 @@ $user		= JFactory::getUser();
                         <td align="center">
                             <?php if((isset($item -> category_assigned) AND $item -> category_assigned > 0)
                                 OR (isset($item -> content_assigned) AND $item -> content_assigned > 0)):?>
-                            <i class="icon-ok tip hasTooltip" title="<?php echo JHtml::tooltipText(JText::plural('COM_TZ_PORTFOLIO_ASSIGNED_MORE', $item->category_assigned,$item -> content_assigned), '', 0); ?>"></i>
+                            <i class="icon-ok tip hasTooltip" title="<?php echo JText::plural('COM_TZ_PORTFOLIO_ASSIGNED_MORE', $item->category_assigned,$item -> content_assigned); ?>"></i>
                             <?php endif;?>
                         </td>
                         <td align="center"><?php echo $item -> id;?></td>

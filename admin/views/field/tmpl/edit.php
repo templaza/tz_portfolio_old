@@ -185,7 +185,7 @@ window.addEvent('load', function() {
             var optionName  = '';
             var image       = '';
             if(type == $('type').value){
-                optionName  = '<?php echo $fields[$i] -> name;?>';
+                optionName  = '<?php echo addslashes(htmlspecialchars_decode($fields[$i] -> name));?>';
                 image       = '<?php echo $fields[$i] -> image;?>';
             }
 

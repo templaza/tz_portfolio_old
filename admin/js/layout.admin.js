@@ -208,7 +208,7 @@ jQuery(function($){
     };
 
 
-    $('#content').delegate('.columntools > a, .row-tools > a', 'click', function(){
+    $('#content').delegate('.columntools > a:not(.accordion-toggle), .row-tools > a:not(.accordion-toggle)', 'click', function(){
 
         return false;
     });
@@ -786,11 +786,16 @@ jQuery(function($){
 
         $('div.row-fluid').sortable({
             //placeholder: "highlight",
+            forcePlaceholderSize: true,
             axis: "x,y",
             items: ">div.column",
             tolerance: "pointer",
             handle: ".columnmove",
             containment: "parent",
+            placeholder: 'tz-state-highlight',
+            start: function(event,ui){
+                ui.placeholder.width(ui.item.width());
+            },
             'update' : function(event, ui){
                 setTimeout(function(){
 
@@ -808,6 +813,7 @@ jQuery(function($){
             forcePlaceholderSize: true,
             containment: "parent",
             handle: ".rowmove",
+            placeholder: 'tz-state-highlight-row',
             items:'>div.row-fluid'
         });
 
@@ -818,6 +824,7 @@ jQuery(function($){
             forcePlaceholderSize: true,
             containment: "parent",
             handle: ".row-move-in-column",
+            placeholder: 'tz-state-highlight',
             items:'>div'
         });
 

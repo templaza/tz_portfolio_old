@@ -30,6 +30,10 @@ class TZ_PortfolioViewTemplates extends JViewLegacy
     protected $pagination;
 
     public function display($tpl=null){
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            tzportfolioimport('helper/content');
+        }
+
         $this->items		= $this->get('Items');
         $this->state		= $this->get('State');
         $this->pagination	= $this->get('pagination');

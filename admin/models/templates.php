@@ -65,6 +65,7 @@ class TZ_PortfolioModelTemplates extends JModelList
                     }
                 }
             }
+
             return $items;
         }
         return false;

@@ -86,11 +86,11 @@ class JFormFieldModal_Articles_Assignment extends JFormFieldCheckboxes
                                 tbody[0].appendChild(tr);';
 
         $script[] = '           td = td.cloneNode(true);
-                                td.innerHTML = "<button type=\"button\" class=\"btn\" onclick=\"'.$this->id.'Remove(this);\"><i class=\"icon-remove\"></i> '.JText::_('JTOOLBAR_REMOVE').'</button>";';
+                                td.innerHTML = "<a href=\"javascript:\" class=\"btn\" onclick=\"'.$this->id.'Remove(this);\"><i class=\"icon-remove\"></i> '.JText::_('JTOOLBAR_REMOVE').'</a>";';
         // Edit article button
         if ($allowEdit)
         {
-            $script[]   =       'td.innerHTML = "<a class=\"btn\" target=\"_blank\" href=\"index.php?option=com_tz_portfolio&task=article.edit&id="+ids[i]+"\"><span class=\"icon-edit\"></span> ' . JText::_('JACTION_EDIT') . '</a> <button type=\"button\" class=\"btn\" onclick=\"'.$this->id.'Remove(this);\"><i class=\"icon-remove\"></i> '.JText::_('JTOOLBAR_REMOVE').'</button>"';
+            $script[]   =       'td.innerHTML = "<a class=\"btn\" target=\"_blank\" href=\"index.php?option=com_tz_portfolio&task=article.edit&id="+ids[i]+"\"><span class=\"icon-edit\"></span> ' . JText::_('JACTION_EDIT') . '</a> <a href=\"javascript:\" class=\"btn\" onclick=\"'.$this->id.'Remove(this);\"><i class=\"icon-remove\"></i> '.JText::_('JTOOLBAR_REMOVE').'</a>"';
         }
         $script[] =            'tr.appendChild(td);';
 
@@ -215,7 +215,11 @@ class JFormFieldModal_Articles_Assignment extends JFormFieldCheckboxes
         // Clear article button
         if ($allowClear)
         {
-            $html[] = '<button id="' . $this->id . '_clear" class="btn' . ($value ? '' : ' hidden') . '" onclick="return jClearArticle(\'' . $this->id . '\')"><span class="icon-remove"></span> ' . JText::_('JCLEAR') . '</button>';
+            $html[] = '<a href="javascript:" id="' . $this->id . '_clear" class="btn' . ($value ? '' : ' hidden') . '" onclick="return jClearArticle(\'' . $this->id . '\')"><span class="icon-remove"></span> ' . JText::_('JCLEAR') . '</a>';
+        }
+        // The user select button.
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){ // If the joomla's version is more than or equal to 3.0
+            $html[]     = '</div>';
         }
 
         $html[] = '</div>';
@@ -248,8 +252,8 @@ class JFormFieldModal_Articles_Assignment extends JFormFieldCheckboxes
                         <td><?php echo $item -> title;?></td>
                         <td><?php echo $item -> category_title;?></td>
                         <td>
-                            <a class="btn" target="_blank" href="index.php?option=com_tz_portfolio&task=article.edit&id="><span class="icon-edit"></span> <?php echo JText::_('JACTION_EDIT')?></a>
-                            <button type="button" class="btn" onclick="<?php echo $id;?>Remove(this);"><i class="icon-remove"></i> <?php echo JText::_('JTOOLBAR_REMOVE');?></button>
+                            <a class="btn" target="_blank" href="index.php?option=com_tz_portfolio&task=article.edit&id=<?php echo $item -> id;?>"><span class="icon-edit"></span> <?php echo JText::_('JACTION_EDIT')?></a>
+                            <a href="javascript:" class="btn" onclick="<?php echo $id;?>Remove(this);"><i class="icon-remove"></i> <?php echo JText::_('JTOOLBAR_REMOVE');?></a>
                         </td>
                         <td>
                             <?php echo $item -> id;?>

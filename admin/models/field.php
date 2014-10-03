@@ -166,16 +166,16 @@ class TZ_PortfolioModelField extends JModelAdmin
 
         switch ($_data['type']){
             case 'textfield':
-                $data['value']  = '[{"name":"'.addslashes(strip_tags($_data['option_value'][0])).'","value":"0"'
+                $data['value']  = '[{"name":"'.htmlspecialchars(strip_tags($_data['option_value'][0])).'","value":"0"'
                                   .',"target":"null","editor":"null","image":"'
                                   .$_data['option_icon'][0].'"}]';
-                $defautValue[]  = strip_tags($_data['option_value'][0]);
+                $defautValue[]  = htmlspecialchars(strip_tags($_data['option_value'][0]));
                 break;
             case 'textarea':
-                $data['value']  = '[{"name":"'.strip_tags($_data['option_value'][0])
+                $data['value']  = '[{"name":"'.htmlspecialchars(strip_tags($_data['option_value'][0]))
                                   .'","value":"0","target":"null","editor":"'
-                                  .strip_tags($_data['option_editor']).'","image":"'
-                                  .strip_tags($_data['option_icon'][0]).'"}]';
+                                  .htmlspecialchars(strip_tags($_data['option_editor'])).'","image":"'
+                                  .htmlspecialchars(strip_tags($_data['option_icon'][0])).'"}]';
                 $defautValue[]  = $_data['option_value'][0];
                 break;
             case 'select':
@@ -187,11 +187,11 @@ class TZ_PortfolioModelField extends JModelAdmin
                         $count  = 0;
                         for($i=0;$i<count($_data['option_name']);$i++){
                             if(isset($_data['option_name'][$i]) && !empty($_data['option_name'][$i])){
-                                $values[]   = '{"name":"'.strip_tags($_data['option_name'][$i])
+                                $values[]   = '{"name":"'.htmlspecialchars(strip_tags($_data['option_name'][$i]))
                                     .'","value":"'.$count.'","target":"null","editor":"null","image":"'
                                               .$_data['option_icon'][$i].'","ordering":"'.$_data['ordering'][$i].'"}';
                                 if(in_array($i,$data['default_value'])){
-                                    $defautValue[$i]   = strip_tags($_data['option_name'][$i]);
+                                    $defautValue[$i]   = htmlspecialchars(strip_tags($_data['option_name'][$i]));
                                 }
 
                                 $count++;
@@ -203,15 +203,15 @@ class TZ_PortfolioModelField extends JModelAdmin
             break;
             case 'link':
 
-                $data['value']  = '[{"name":"'.strip_tags($_data['option_name'][0])
-                                  .'","value":"'.strip_tags($_data['option_value'][0])
-                                  .'","target":"'.strip_tags($_data['option_target'][0]).'","editor":"null","image":"'
+                $data['value']  = '[{"name":"'.htmlspecialchars(strip_tags($_data['option_name'][0]))
+                                  .'","value":"'.htmlspecialchars(strip_tags($_data['option_value'][0]))
+                                  .'","target":"'.htmlspecialchars(strip_tags($_data['option_target'][0])).'","editor":"null","image":"'
                                   .$_data['option_icon'][0].'"}]';
 
                     if(empty($_data['option_name'][0]))
-                        $title  = strip_tags($_data['option_value'][0]);
+                        $title  = htmlspecialchars(strip_tags($_data['option_value'][0]));
                     else
-                         $title  = strip_tags($_data['option_name'][0]);
+                         $title  = htmlspecialchars(strip_tags($_data['option_name'][0]));
                 $defautValue[]  = htmlspecialchars('<a href="'.$_data['option_value'][0].'" target="'.$_data['option_target'][0].'">'.$title.'</a> ');
                 break;
             case 'file':
