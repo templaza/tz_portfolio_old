@@ -1018,7 +1018,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                 var myHidden = new Element('input',{
                     type:'hidden',
                     name:'tz_attachments_hidden_old[]',
-                    value:'<?php echo $row -> attachold;?>'
+                    value:'<?php echo htmlentities($row -> attachold,ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE | ENT_DISALLOWED,"UTF-8",false);?>'
                 }).inject(myTd);
 				var myTd = new Element('td',{
                     html:'<?php echo !empty($row -> attachtitle)? htmlentities($row -> attachtitle,ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE | ENT_DISALLOWED,"UTF-8",false): htmlentities($row -> attachold, ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE | ENT_DISALLOWED, "UTF-8", false);?>'
