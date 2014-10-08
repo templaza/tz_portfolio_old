@@ -30,7 +30,7 @@ class TZ_PortfolioModelTemplate extends JModelAdmin
 
         $this -> setState('template.id',JRequest::getInt('id'));
         $this -> setState('content.id',null);
-        $this -> setState('categorye.id',null);
+        $this -> setState('category.id',null);
     }
     public function getTable($type = 'Templates', $prefix = 'Table', $config = array())
     {

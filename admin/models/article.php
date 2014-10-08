@@ -3056,7 +3056,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
 								foreach($val as $i => $row){
 
-									if(preg_match('/(@\[\{\(\&\*\_)[0-9]$/',$row,$match2)){
+									if(preg_match('/(\@\[\{\(\&\*\_[0-9]+)|(\@\[\{\(\&amp\;\*\_[0-9]+)$/',$row,$match2)){
 										$stt = str_replace($match2[1],'',$match2[0]);
 										$optionField    = $this -> getOptionField($fieldsid,$stt);
 									}
@@ -3071,7 +3071,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
 									if(!empty($row)){
 
-										if(preg_match('/(@\[\{\(\&\*\_)[0-9]$/',$row,$match2)){
+										if(preg_match('/(\@\[\{\(\&\*\_[0-9]+)|(\@\[\{\(\&amp\;\*\_[0-9]+)$/',$row,$match2)){
 											$tzFields[] = '('.$this -> getState($this -> getName().'.id').','
                                                 .$fieldsid.',\''.str_replace($match2[0],'',$row).'\',\''
                                                 .$optionField -> image.'\','.$ordering.')';
@@ -3086,8 +3086,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 							}
 							else{
 								if(!empty($val)){
-									if(preg_match('/(@\[\{\(\&\*\_)[0-9]$/',$val,$match2)){
-										$stt    = str_replace('@[{(&*_','',$match2[0]);
+									if(preg_match('/(\@\[\{\(\&\*\_[0-9]+)|(\@\[\{\(\&amp\;\*\_[0-9]+)$/',$val,$match2)){
+										$stt    = str_replace(array('@[{(&*_','@[{(&amp;*_'),'',$match2[0]);
 										$optionField    = $this -> getOptionField($fieldsid,$stt);
 
 										$tzFields[] = '('.$this -> getState($this -> getName().'.id')

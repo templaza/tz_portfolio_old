@@ -26,8 +26,8 @@ require_once ( JPATH_BASE.'/includes/framework.php' );
 JFactory::getLanguage() -> load('com_tz_portfolio');
 
 
-$parentId   = uniqid();
-$id         = uniqid();
+$parentId   = uniqid(rand());
+$id         = uniqid(rand());
 
 ?>
 
@@ -58,6 +58,7 @@ $id         = uniqid();
             </select>
             <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_MOVE_THIS_ROW');?>" class="fa fa-arrows rowmove"></a>
             <a href="javascript:" class="accordion-toggle"
+               title="<?php echo JText::_('COM_TZ_PORTFOLIO_TOGGLE_THIS_ROW');?>"
                data-toggle="collapse" data-parent="#<?php echo $parentId;?>"
                data-target="#<?php echo $id;?>">
                 <span class="fa fa-chevron-up"></span><span class="fa fa-chevron-down"></span>
