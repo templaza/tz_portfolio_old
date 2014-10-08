@@ -1001,7 +1001,9 @@ jQuery(function($){
         });
 
         $("button[class*='tz-admin-dv']").hover(function() {
-            $(this).tooltip('show');
+            if(typeof tooltip != 'undefined'){
+                $(this).tooltip('show');
+            }
         });
     });
 });

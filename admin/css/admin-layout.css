@@ -4,8 +4,6 @@
  * @copyright Copyright (c) 2010 - 2013 JoomShaper
  * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 or Later
 */
-@import url('../bootstrap/css/bootstrap-responsive.min.css');
-
 a,a:hover {text-decoration:none}
 a.btn-primary,
 a.btn-success,
@@ -67,6 +65,7 @@ input.readonly,input.required{background:none}
 #layout_params .columntools.open,
 #layout_params .column:hover >.columntools,
 #layout_params .column:focus >.columntools{opacity:1}
+#layout_params .collapse.in{overflow: inherit;}
 
 #plazart_layout_builder select {
     width: auto;

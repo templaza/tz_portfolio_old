@@ -187,6 +187,9 @@ class TZ_PortfolioModelField extends JModelAdmin
                         $count  = 0;
                         for($i=0;$i<count($_data['option_name']);$i++){
                             if(isset($_data['option_name'][$i]) && !empty($_data['option_name'][$i])){
+                                if(!isset($_data['ordering'][$i])){
+                                    $_data['ordering'][$i]	= 0;
+                                }
                                 $values[]   = '{"name":"'.htmlspecialchars(strip_tags($_data['option_name'][$i]))
                                     .'","value":"'.$count.'","target":"null","editor":"null","image":"'
                                               .$_data['option_icon'][$i].'","ordering":"'.$_data['ordering'][$i].'"}';

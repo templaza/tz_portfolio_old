@@ -31,8 +31,8 @@ if($this -> tzlayout){
         if(isset($items -> containertype)){
             $containerType  = $items -> containertype;
         }
-        $parentId   = uniqid();
-        $id         = uniqid();
+        $parentId   = uniqid(rand());
+        $id         = uniqid(rand());
         ?>
         <!-- Main Rows -->
         <div class="row-fluid layoutmainrow">
@@ -59,8 +59,9 @@ if($this -> tzlayout){
                 <option<?php echo ($containerType == 'container')?' selected=""':''?> value="container"><?php echo JText::_('COM_TZ_PORTFOLIO_FIXED_WIDTH');?></option>
                 <option<?php echo ($containerType == 'container-fluid')?' selected=""':''?> value="container-fluid"><?php echo JText::_('COM_TZ_PORTFOLIO_FULL_WIDTH');?></option>
             </select>
-            <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_TOGGLE_THIS_ROW');?>" class="fa fa-arrows rowmove"></a>
+            <a href="" title="<?php echo JText::_('COM_TZ_PORTFOLIO_MOVE_THIS_ROW');?>" class="fa fa-arrows rowmove"></a>
             <a href="javascript:" class="accordion-toggle"
+               title="<?php echo JText::_('COM_TZ_PORTFOLIO_TOGGLE_THIS_ROW');?>"
                data-toggle="collapse" data-parent="#<?php echo $parentId;?>"
                data-target="#<?php echo $id;?>">
                 <span class="fa fa-chevron-up"></span><span class="fa fa-chevron-down"></span>
@@ -121,8 +122,8 @@ if($this -> tzlayout){
                                     {
                                         foreach( $item -> children as $children )
                                         {
-                                            $parentId2  = uniqid();
-                                            $id2        = uniqid();
+                                            $parentId2  = uniqid(rand());
+                                            $id2        = uniqid(rand());
                                             ?>
                                             <div class="row-fluid child-row">
                                             <div class="span12">

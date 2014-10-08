@@ -20,6 +20,10 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+10/08/2014 - 3.2.7
+
+	Fix toggle button and some css in layout builder for single article.
+
 10/03/2014 - 3.2.6
 
 	Fix error JHtml icon in view p_article.

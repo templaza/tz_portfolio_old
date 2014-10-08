@@ -25,8 +25,8 @@ require_once ( JPATH_BASE.'/includes/framework.php' );
 
 JFactory::getLanguage() -> load('com_tz_portfolio');
 
-$parentId   = uniqid();
-$id         = uniqid();
+$parentId   = uniqid(rand());
+$id         = uniqid(rand());
 ?>
 <div class="row-fluid child-row">
     <div class="span12">
