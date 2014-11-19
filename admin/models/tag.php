@@ -49,6 +49,19 @@ class TZ_PortfolioModelTag extends JModelAdmin
         }
         return $form;
     }
+    protected function loadFormData()
+    {
+        // Check the session for previously entered form data.
+        if (empty($data)) {
+            $data = $this->getItem();
+            if(isset($data -> attribs) && $data -> attribs){
+                $attribs    = new JRegistry($data -> attribs);
+                $data -> attribs    = $attribs -> toArray();
+            }
+        }
+
+        return $data;
+    }
 
     function getItem($pk = null){
         // Initialise variables.
@@ -89,6 +102,10 @@ class TZ_PortfolioModelTag extends JModelAdmin
             $table -> name  = trim($table -> name);
             $table -> name  = mb_strtolower($table -> name);
             $table -> published = ($table -> published == 'P')?1:0;
+        }
+        if(is_array($table -> attribs)){
+            $attribs    = new JRegistry($table -> attribs);
+            $table -> attribs   = $attribs -> toString();
         }
     }
 
@@ -154,6 +171,9 @@ class TZ_PortfolioModelTag extends JModelAdmin
         $olname['old_name'] = mb_strtolower($data['old_name']);
         $data   = array_diff_key($data,$olname);
         $table  = $this -> getTable();
+        if(!isset($data['attribs'])){
+            $data['attribs']    = '';
+        }
 
         $key = $table->getKeyName();
         $pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');

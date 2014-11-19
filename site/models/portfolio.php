@@ -466,6 +466,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
             foreach($rows as $row){
                 $row -> name    = trim($row -> name);
                 $row -> tagFilter   = JApplication::stringURLSafe($row -> name);
+                $row -> params      = null;
+                if($row -> attribs){
+                    $row -> params  = new JRegistry($row -> attribs);
+                }
             }
             return $rows;
         }
@@ -515,6 +519,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 foreach($rows as &$item){
                     $item -> name   = trim($item -> name);
                     $item -> tagFilter  = JApplication::stringURLSafe(trim($item -> name));
+                    $item -> params      = null;
+                    if($item -> attribs){
+                        $item -> params  = new JRegistry($item -> attribs);
+                    }
                 }
                 $this -> rowsTag    = $rows;
             }

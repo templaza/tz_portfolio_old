@@ -20,7 +20,12 @@
 // No direct access.
 defined('_JEXEC') or die;
 echo JHtml::_('bootstrap.startAccordion', 'categoryOptions', array('active' => 'collapse0'));
-	$fieldSets = $this->form->getFieldsets('params');
+    $form       = $this -> form;
+	$fieldSets  = $form->getFieldsets('params');
+
+    $attribsFieldSet = $form->getFieldsets('attribs');
+
+    $fieldSets = array_merge($fieldSets, $attribsFieldSet);
 	$i = 0;
 
 	foreach ($fieldSets as $name => $fieldSet) :
@@ -30,7 +35,7 @@ echo JHtml::_('bootstrap.startAccordion', 'categoryOptions', array('active' => '
 				echo '<p class="tip">'.$this->escape(JText::_($fieldSet->description)).'</p>';
 			endif;
 			?>
-				<?php foreach ($this->form->getFieldset($name) as $field) : ?>
+				<?php foreach ($form->getFieldset($name) as $field) : ?>
 					<div class="control-group">
                         <?php if($field -> name != 'jform[params][tz_fieldsid_content]'):?>
                             <div class="control-label">
@@ -53,10 +58,10 @@ echo JHtml::_('bootstrap.startAccordion', 'categoryOptions', array('active' => '
 				<?php if ($name == 'basic'):?>
 					<div class="control-group">
 						<div class="control-label">
-							<?php echo $this->form->getLabel('note'); ?>
+							<?php echo $form->getLabel('note'); ?>
 						</div>
 						<div class="controls">
-							<?php echo $this->form->getInput('note'); ?>
+							<?php echo $form->getInput('note'); ?>
 						</div>
 					</div>
 				<?php endif;

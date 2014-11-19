@@ -29,6 +29,8 @@ class TableTags extends JTable
     /** @var int */
     var $published  		= null;
     /** @var string*/
+    var $attribs		    = null;
+    /** @var string*/
     var $description		= null;
 
     function __construct(&$db) {
