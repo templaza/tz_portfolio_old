@@ -1154,6 +1154,10 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 foreach($rows as &$item){
                     $item -> name   = trim($item -> name);
                     $item -> tagFilter  = JApplication::stringURLSafe($item -> name);
+                    $item -> params      = null;
+                    if($item -> attribs){
+                        $item -> params  = new JRegistry($item -> attribs);
+                    }
                 }
                 $this -> rowsTag    = $rows;
             }
@@ -1181,6 +1185,10 @@ class TZ_PortfolioModelTimeLine extends JModelList
             foreach($rows as $row){
                 $row -> name    = trim($row -> name);
                 $row -> tagFilter   = JApplication::stringURLSafe($row -> name);
+                $row -> params      = null;
+                if($row -> attribs){
+                    $row -> params  = new JRegistry($row -> attribs);
+                }
             }
             return $rows;
         }

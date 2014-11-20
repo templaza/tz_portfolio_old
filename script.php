@@ -432,6 +432,34 @@ class com_tz_portfolioInstallerScript{
             }
         }
 
+        // tags
+        $arr    = null;
+        $fields = $db -> getTableColumns('#__tz_portfolio_tags');
+        if(!array_key_exists('attribs',$fields)){
+            $arr[]  = 'ADD `attribs` VARCHAR(5120) NOT NULL ';
+        }
+        if($arr && count($arr)>0){
+            $arr    = implode(',',$arr);
+            if($arr){
+                $query  = 'ALTER TABLE `#__tz_portfolio_tags` '.$arr;
+                $db -> setQuery($query);
+                $db -> query();
+            }
+        }
+
+        // Insert default template
+        $template_sql   = 'SELECT COUNT(*) FROM #__tz_portfolio_templates';
+        $db -> setQuery($template_sql);
+            if(!$db -> loadResult()){
+                $def_file   = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/views/template/tmpl/default.json';
+                if(JFile::exists($def_file)){
+                    $def_value      = JFile::read($def_file);
+                    $template_sql2  = 'INSERT INTO `#__tz_portfolio_templates`(`id`, `title`, `home`, `params`) VALUES(1, \'Default\', \'1\',\''.$def_value.'\')';
+                    $db -> setQuery($template_sql2);
+                    $db -> query();
+                }
+            }
+
         //Tz Portfolio Plugin table
 //        if(!in_array($db -> getPrefix().'tz_portfolio_plugin',$fields = $db ->getTableList())){
 //            $query  =  'CREATE TABLE IF NOT EXISTS `#__tz_portfolio_plugin` (';

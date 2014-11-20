@@ -20,6 +20,12 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+11/19/2014 - 3.2.8
+
+	Can add parameters options for tag (when add or edit tag) with trigger "onContentPrepareForm" of plugin's events content.
+	Fix error javascript in create article view in front-end.
+	Fix template error:  when using Default Template, your article does not show content.
+
 10/08/2014 - 3.2.7
 
 	Fix toggle button and some css in layout builder for single article.
