@@ -20,6 +20,10 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+11/24/2014 - 3.2.9
+
+	Fix template error:  when using Default Template, your article does not show content of version 3.2.8.
+	
 11/19/2014 - 3.2.8
 
 	Can add parameters options for tag (when add or edit tag) with trigger "onContentPrepareForm" of plugin's events content.
