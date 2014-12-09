@@ -28,5 +28,5 @@ $params = $this -> item -> params;
     echo $this->item->event->beforeDisplayContent;
     echo $this->item->event->TZbeforeDisplayContent;
 
-    echo $this -> item -> text;
+    echo $this -> item -> introtext;
 ?>

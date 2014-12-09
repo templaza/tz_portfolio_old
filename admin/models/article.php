@@ -48,10 +48,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     protected  $audioFolder = 'audio';
     private $contentid      = null;
     private $catParams      = null;
-    protected $tztask         = null;
+    protected $tztask       = null;
+    protected $input        = null;
 
     function __construct(){
+        $app    = JFactory::getApplication();
         $this -> contentid  = JRequest::getCmd('id');
+        $this -> input  = $app -> input;
 
         parent::__construct();
     }
@@ -1193,7 +1196,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         break;
                     case 'textarea':
                         $this -> fieldsid[]   = $row -> id;
-                        $html .= ArticleHTML::renderTextArea($name,$value,'',$param[0] -> editor,'200','100','','',false);
+                        $html .= ArticleHTML::renderTextArea($name,$value,'',$param[0] -> editor,'90%','200','','',array('image' => true));
                         $html .= '<input type="hidden" name="tz_textarea_hidden[]" value="'
                                  .(($param[0] -> editor == 1)?$row -> id:'').'" class="tzidhidden">';
                         break;
@@ -2829,9 +2832,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         if($data){
             $post   = $data;
         }else{
-            $post   = JRequest::get('post');
+            $input  = $this -> input;
+            $post   = $input->post;
+            $post   = $post -> getArray();
             $post   = array_merge(array_shift($post),$post);
         }
+
+        $db     = JFactory::getDbo();
 
         if($task != 'save2copy'){
 			// Clean the cache.
@@ -3073,12 +3080,12 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
 										if(preg_match('/(\@\[\{\(\&\*\_[0-9]+)|(\@\[\{\(\&amp\;\*\_[0-9]+)$/',$row,$match2)){
 											$tzFields[] = '('.$this -> getState($this -> getName().'.id').','
-                                                .$fieldsid.',\''.str_replace($match2[0],'',$row).'\',\''
+                                                .$fieldsid.','.$db -> quote(str_replace($match2[0],'',$row)).',\''
                                                 .$optionField -> image.'\','.$ordering.')';
 										}
 										else
 											$tzFields[] = '('.$this -> getState($this -> getName().'.id').','
-                                                .$fieldsid.',\''.(string) $row.'\',\''
+                                                .$fieldsid.','.$db -> quote((string) $row).',\''
                                                 .$optionField -> image.'\','.$ordering.')';
 
 									}
@@ -3091,18 +3098,18 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 										$optionField    = $this -> getOptionField($fieldsid,$stt);
 
 										$tzFields[] = '('.$this -> getState($this -> getName().'.id')
-												  .','.$fieldsid.',\''.str_replace($match2[0],'',$val).'\',\''.$optionField -> image.'\','.$ordering.')';
+												  .','.$fieldsid.','.$db -> quote(str_replace($match2[0],'',$val)).',\''.$optionField -> image.'\','.$ordering.')';
 									}
 									else{
 										$optionField    = $this -> getOptionField($fieldsid,0);
 										if($optionField){
 											$tzFields[] = '('.$this -> getState($this -> getName().'.id')
-                                                .','.$fieldsid.',\''.(string) $val.'\',\''
+                                                .','.$fieldsid.','.$db -> quote((string) $val).',\''
                                                 .$optionField -> image.'\','.$ordering.')';
 										}
 										else{
 											$tzFields[] = '('.$this -> getState($this -> getName().'.id')
-													  .','.$fieldsid.',\''.(string) $val.'\',\'\','.$ordering.')';
+													  .','.$fieldsid.','.$db -> quote((string) $val).',\'\','.$ordering.')';
 										}
 									}
 								}
@@ -3114,8 +3121,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                     $m++;
                 }
-
-                $db     = JFactory::getDbo();
 
                 // Store fields group
                 //// Get images
@@ -3274,7 +3279,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         }
         $table = $this->getTable();
 
-        $post   = JRequest::get('post');
+        $input  = $this -> input;
+
+
+        $post   = $input -> post;
+        $post   = $post -> getArray();
 
         if($data){
             $post   = array_merge($data,array_shift($post),$post);

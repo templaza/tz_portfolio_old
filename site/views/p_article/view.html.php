@@ -727,12 +727,15 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                         if($children -> type == 'introtext' || $children -> type == 'fulltext'){
                             $article -> text    = null;
                             if ($params->get('show_intro', 1) && $children -> type == 'introtext') {
-                                $article -> text    = $article -> introtext;
+                                $article -> text        = $article -> introtext;
+                                $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
+                                $article -> introtext        = $article -> text;
                             }
                             if($children -> type == 'fulltext'){
-                                $article -> text    = $article -> fulltext;
+                                $article -> text        = $article -> fulltext;
+                                $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
+                                $article -> fulltext    = $article -> text;
                             }
-                            $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
                         }
 
                         if($children -> type && $children -> type !='none'){
@@ -830,12 +833,15 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                 if($children -> type == 'introtext' || $children -> type == 'fulltext'){
                     $article -> text    = null;
                     if ($params->get('show_intro', 1) && $children -> type == 'introtext') {
-                        $article -> text    = $article -> introtext;
+                        $article -> text        = $article -> introtext;
+                        $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
+                        $article -> introtext        = $article -> text;
                     }
                     if($children -> type == 'fulltext'){
-                        $article -> text    = $article -> fulltext;
+                        $article -> text        = $article -> fulltext;
+                        $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
+                        $article -> fulltext    = $article -> text;
                     }
-                    $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
                 }
 
                 if($children -> type && $children -> type !='none'){

@@ -187,6 +187,19 @@ class com_tz_portfolioInstallerScript{
             $query  = 'UPDATE #__extensions SET `enabled`=0 WHERE `type`="plugin" AND `element`="example" AND `folder`="tz_portfolio"';
             $db -> setQuery($query);
             $db -> query();
+
+            // Insert default template
+            $template_sql   = 'SELECT COUNT(*) FROM #__tz_portfolio_templates';
+            $db -> setQuery($template_sql);
+            if(!$db -> loadResult()){
+                $def_file   = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/views/template/tmpl/default.json';
+                if(JFile::exists($def_file)){
+                    $def_value      = JFile::read($def_file);
+                    $template_sql2  = 'INSERT INTO `#__tz_portfolio_templates`(`id`, `title`, `home`, `params`) VALUES(1, \'Default\', \'1\',\''.$def_value.'\')';
+                    $db -> setQuery($template_sql2);
+                    $db -> query();
+                }
+            }
         }
 
         // Delete menu fields-group in back-end
@@ -450,15 +463,15 @@ class com_tz_portfolioInstallerScript{
         // Insert default template
         $template_sql   = 'SELECT COUNT(*) FROM #__tz_portfolio_templates';
         $db -> setQuery($template_sql);
-            if(!$db -> loadResult()){
-                $def_file   = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/views/template/tmpl/default.json';
-                if(JFile::exists($def_file)){
-                    $def_value      = JFile::read($def_file);
-                    $template_sql2  = 'INSERT INTO `#__tz_portfolio_templates`(`id`, `title`, `home`, `params`) VALUES(1, \'Default\', \'1\',\''.$def_value.'\')';
-                    $db -> setQuery($template_sql2);
-                    $db -> query();
-                }
+        if(!$db -> loadResult()){
+            $def_file   = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/views/template/tmpl/default.json';
+            if(JFile::exists($def_file)){
+                $def_value      = JFile::read($def_file);
+                $template_sql2  = 'INSERT INTO `#__tz_portfolio_templates`(`id`, `title`, `home`, `params`) VALUES(1, \'Default\', \'1\',\''.$def_value.'\')';
+                $db -> setQuery($template_sql2);
+                $db -> query();
             }
+        }
 
         //Tz Portfolio Plugin table
 //        if(!in_array($db -> getPrefix().'tz_portfolio_plugin',$fields = $db ->getTableList())){

@@ -20,6 +20,13 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+12/09/2014 - 3.2.9
+
+	Fix template error:  when using Default Template, your article does not show content of version 3.2.8.
+	Update some meta tags: description, keywords, robots or author for portfolio, timeline, tag, user views.
+	Update editor for extrafield.
+	Fix js of feature template.
+
 11/19/2014 - 3.2.8
 
 	Can add parameters options for tag (when add or edit tag) with trigger "onContentPrepareForm" of plugin's events content.

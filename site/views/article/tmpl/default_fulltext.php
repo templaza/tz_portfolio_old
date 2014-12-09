@@ -22,5 +22,5 @@ defined('_JEXEC') or die('Restricted access');
 
 $params = $this -> item -> params;
 
-echo $this -> item -> text;
+echo $this -> item -> fulltext;
 ?>

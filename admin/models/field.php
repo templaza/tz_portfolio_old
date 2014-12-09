@@ -172,6 +172,7 @@ class TZ_PortfolioModelField extends JModelAdmin
                 $defautValue[]  = htmlspecialchars(strip_tags($_data['option_value'][0]));
                 break;
             case 'textarea':
+//                var_dump(htmlspecialchars(strip_tags($_data['option_editor']))); die();
                 $data['value']  = '[{"name":"'.htmlspecialchars(strip_tags($_data['option_value'][0]))
                                   .'","value":"0","target":"null","editor":"'
                                   .htmlspecialchars(strip_tags($_data['option_editor'])).'","image":"'

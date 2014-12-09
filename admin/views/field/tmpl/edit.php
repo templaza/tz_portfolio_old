@@ -291,8 +291,8 @@ window.addEvent('load', function() {
                     value:'<?php echo ($fields[0] -> type == 'textarea')?$fields[0] -> name:'';?>'
                 });
                 myField.inject($('fieldvalue'));
-                /*var myDiv = new Element('div',{
-                html:<?php echo '\'<strong><i>'.JText::_('Use editor').'</i></strong>\'';?>,
+                var myDiv = new Element('div',{
+                html:<?php echo '\'<strong><i>'.JText::_('COM_TZ_PORTFOLIO_USE_EDITOR').'</i></strong>\'';?>,
                         styles:{
                             display:'block',
                             float:'left',
@@ -303,10 +303,10 @@ window.addEvent('load', function() {
                     var myField = new Element('input',{
                        type:'checkbox',
                        value : '1',
-                       'name':'option_editor',
+                       'name':'jform[option_editor]',
                         checked:'<?php echo ($fields[0]-> editor == '1')?'checked':'';?>'
                     });
-                    myField.inject(myDiv);*/
+                    myField.inject(myDiv);
                 createBox($('fieldvalue'),'jform[option_icon][]',0,'<?php echo ($fields[0] -> type == 'textarea')?$fields[0] -> image:'';?>');
                 break;
             case 'link':
