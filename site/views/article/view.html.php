@@ -313,27 +313,11 @@ class TZ_PortfolioViewArticle extends JViewLegacy
             }
         }
 
-		//
-		// Process the content plugins.
-		//
-		JPluginHelper::importPlugin('content');
-		$results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$item, &$this->params, $offset));
-
-		$item->event = new stdClass();
-		$results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
-		$item->event->afterDisplayTitle = trim(implode("\n", $results));
-
-		$results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
-		$item->event->beforeDisplayContent = trim(implode("\n", $results));
-
-		$results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
-		$item->event->afterDisplayContent = trim(implode("\n", $results));
-
-        $results = $dispatcher -> trigger('onTZPortfolioCommentDisplay',array('com_tz_portfolio.comment',&$item,&$item -> params,$offset));
-        $item -> event -> onTZPortfolioCommentDisplay  = trim(implode("\n",$results));
-
-        $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.article', &$item, &$item -> params, $offset));
-        $item->event->TZPortfolioVote = trim(implode("\n", $results));
+        //
+        // Process the content plugins.
+        //
+        JPluginHelper::importPlugin('content');
+        JPluginHelper::importPlugin('tz_portfolio');
 
         //Get Plugins Model
         $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
@@ -341,18 +325,79 @@ class TZ_PortfolioViewArticle extends JViewLegacy
         $pmodel -> setState('filter.contentid',$item -> id);
         $pluginItems    = $pmodel -> getItems();
         $pluginParams   = $pmodel -> getParams();
-        $item -> pluginparams    = clone($pluginParams);
 
-        JPluginHelper::importPlugin('tz_portfolio');
-        $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams,$offset));
+        $item -> pluginparams   = clone($pluginParams);
 
-        $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams, $offset));
+        if ($item->params->get('show_intro', '1')=='1') {
+            $text = $item->introtext.' '.$item->fulltext;
+        }
+        elseif ($item->fulltext) {
+            $text = $item->fulltext;
+        }
+        else  {
+            $text = $item->introtext;
+        }
+
+        if($item -> introtext && !empty($item -> introtext)) {
+            $item->text = $item->introtext;
+            $results = $dispatcher->trigger('onContentPrepare', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onTZPortfolioCommentDisplay', array('com_tz_portfolio.article', &$item, &$item->params, $offset));
+            $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.article', &$item, &$item->params, $offset));
+
+            $results = $dispatcher->trigger('onTZPluginPrepare', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $item->introtext = $item->text;
+        }
+        if($item -> fulltext && !empty($item -> fulltext)) {
+            $item->text = $item->fulltext;
+            $results = $dispatcher->trigger('onContentPrepare', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onTZPortfolioCommentDisplay', array('com_tz_portfolio.article', &$item, &$item->params, $offset));
+            $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.article', &$item, &$item->params, $offset));
+
+            $results = $dispatcher->trigger('onTZPluginPrepare', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $item->fulltext = $item->text;
+        }
+
+        $item -> text   = $text;
+        $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
+
+        $item->event = new stdClass();
+        $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
+        $item->event->afterDisplayTitle = trim(implode("\n", $results));
+
+        $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
+        $item->event->beforeDisplayContent = trim(implode("\n", $results));
+
+        $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
+        $item->event->afterDisplayContent = trim(implode("\n", $results));
+
+        $results = $dispatcher -> trigger('onTZPortfolioCommentDisplay',array('com_tz_portfolio.p_article',&$item,&$item -> params,$offset));
+        $item -> event -> onTZPortfolioCommentDisplay  = trim(implode("\n",$results));
+
+        $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.p_article', &$item, &$item -> params, $offset));
+        $item->event->TZPortfolioVote = trim(implode("\n", $results));
+
+
+        $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.p_article', &$item, &$item -> params,&$pluginParams,$offset));
+
+        $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.p_article', &$item, &$item -> params,&$pluginParams, $offset));
         $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
 
-        $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams, $offset));
+        $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.p_article', &$item, &$item -> params,&$pluginParams, $offset));
         $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
 
-        $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams, $offset));
+        $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.p_article', &$item, &$item -> params,&$pluginParams, $offset));
         $item->event->TZafterDisplayContent = trim(implode("\n", $results));
 
 
@@ -718,21 +763,6 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                                 .($children -> responsiveclass?' '.$children -> responsiveclass:'').'">';
                         }
 
-                        if($children -> type == 'introtext' || $children -> type == 'fulltext'){
-                            $article -> text    = null;
-                            if ($params->get('show_intro', 1) && $children -> type == 'introtext') {
-                                $article -> text        = $article -> introtext;
-                                $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
-                                $article -> introtext   = $article -> text;
-
-                            }
-                            if($children -> type == 'fulltext'){
-                                $article -> text        = $article -> fulltext;
-                                $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
-                                $article -> fulltext   = $article -> text;
-                            }
-                        }
-
                         if($children -> type && $children -> type !='none'){
                             $html   = $this -> loadTemplate($children -> type);
                             $html   = trim($html);
@@ -783,7 +813,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                 $margin = 'margin: '.$children -> margin.';';
             }
             if($children -> padding){
-                $padding = 'padding: '.$children -> margin.';';
+                $padding = 'padding: '.$children -> padding.';';
             }
             if($background || $color){
                 $this -> document -> addStyleDeclaration('
@@ -830,19 +860,6 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                         .($children -> responsiveclass?' '.$children -> responsiveclass:'').'">';
                 }
 
-                if($children -> type == 'introtext' || $children -> type == 'fulltext'){
-                    $article -> text    = null;
-                    if ($params->get('show_intro', 1) && $children -> type == 'introtext') {
-                        $article -> text        = $article -> introtext;
-                        $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
-                        $article -> introtext        = $article -> text;
-                    }
-                    if($children -> type == 'fulltext'){
-                        $article -> text        = $article -> fulltext;
-                        $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$article, &$params, $this->state->get('list.offset')));
-                        $article -> fulltext    = $article -> text;
-                    }
-                }
                 if($children -> type && $children -> type !='none'){
                     $html   = $this -> loadTemplate($children -> type);
                     $html   = trim($html);

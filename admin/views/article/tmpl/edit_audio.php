@@ -39,10 +39,10 @@ defined('_JEXEC') or die;
 
                     <div class="clearfix"></div>
                     <a class="modal" href="<?php echo JUri::root().str_replace('.'.JFile::getExt($hiddenImage),'_L.'.JFile::getExt($hiddenImage),
-                                                        $hiddenImage)?>"
+                                                        $hiddenImage).'?time='.str_replace('.','',microtime(true)); ?>"
                        rel="{handler: 'image', size: {x: 875, y: 550}, onClose: function() {}}">
                         <img style="max-width: 300px;" src="<?php echo JUri::root().str_replace('.'.JFile::getExt($hiddenImage),'_S.'.JFile::getExt($hiddenImage),
-                                    $hiddenImage)?>"/>
+                                    $hiddenImage).'?time='.str_replace('.','',microtime(true)); ?>"/>
                     </a>
                     <div class="clearfix"></div>
                     <?php echo $this -> form -> getInput('audio_soundcloud_delete_image');?>

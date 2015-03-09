@@ -527,6 +527,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $imageHoverName = '';
                 $galleryName    = '';
                 $videoThumb     = '';
+                $sizes['o']     = null;
                 //Copy Image
                 if(!empty($row -> images)){
                     $imageName  = ((!$table -> alias)?JApplication::stringURLSafe($table -> title):$table -> alias)
@@ -610,7 +611,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 //Copy video thumbnail
                 if(!empty($row -> videothumb)){
                     $videoThumb = ((!$table -> alias)?JApplication::stringURLSafe($table -> title):$table -> alias)
-                        .'-'.$newId.'.'.JFile::getExt($gallery);
+                        .'-'.$newId.'.'.JFile::getExt($row -> videothumb);
                     $subUrl     = substr($row -> videothumb,0,strrpos($row -> videothumb,'/'));
                     $videoThumb = $subUrl.'/'.$videoThumb;
 
@@ -1583,10 +1584,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
     function deleteImage($artId=null){
 
-        $sizes  = $this -> getState('size');
-        $query  ='SELECT * FROM #__tz_portfolio_xref_content'
+        $sizes      = $this -> getState('size');
+        $sizes['o'] = null;
+        $query      ='SELECT * FROM #__tz_portfolio_xref_content'
                  .' WHERE contentid IN('.implode(',',$artId).')';
-        $db     = JFactory::getDbo();
+        $db         = JFactory::getDbo();
         $db -> setQuery($query);
         if(!$db -> query()){
             echo $db -> getErrorMsg();
@@ -1596,6 +1598,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         if($rows = $db -> loadObjectList()){
             foreach($rows as $item){
                 $path   = null;
+
                 foreach($sizes as $key => $size){
                     //Delete Image
                     if(!empty($item -> images)){
@@ -1624,7 +1627,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     //Delete Image gallery
                     if(!empty($item -> gallery)){
                         $gallerys   = explode('///',$item -> gallery);
-                        foreach($gallerys as $gallery){
+                        foreach($gallerys as $i => $gallery){
                             $str2    = str_replace('.'.JFile::getExt($gallery),
                                               '_'.$key.'.'.JFile::getExt($gallery),$gallery);
                             $path2   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str2);
@@ -1864,8 +1867,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     }
 
     function getImageHover($fileClient,$fileServer = null,$data=null,$task=null){
-        $params = $this -> getState('params');
-        $sizes  = $this -> _getImageSizes($params);
+        $params     = $this -> getState('params');
+        $sizes      = $this -> _getImageSizes($params);
+        $sizes['o'] = null;
 
         if($data){
             if(isset($data['tz_imgHover_current'])){
@@ -1887,15 +1891,15 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     // Start check file size
                     if($fileClient['size'] <= TZ_IMAGE_SIZE ){
 
-                        $obj    = new JImage($fileClient['tmp_name']);
-                        $width  = $obj -> getWidth();
-                        $height = $obj -> getHeight();
-//                        $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-//                                  .JFile::getExt($fileClient['name']);
-                        $str    = $this -> imageUrl.'/cache/'.
-                            ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                        $obj        = new JImage($fileClient['tmp_name']);
+                        $width      = $obj -> getWidth();
+                        $height     = $obj -> getHeight();
+                        $sizes['o'] = $width;
+                        $str        = $this -> imageUrl.'/cache/'.
+                            ((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                             .'-'.$this -> getState($this -> getName().'.id').'-h.'
                                   .JFile::getExt($fileClient['name']);
+
                         foreach($sizes as $key => $newWidth){
                             // Delete current Image file
                             if(!$this -> tztask){
@@ -1916,10 +1920,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                             $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                            $newHeight  = ($height*(int) $newWidth)/$width;
-                            $newImage   = $obj -> resize($newWidth,$newHeight);
-                            $type       = $this -> _getImageType($str);
-                            $newImage -> toFile($destPath,$type);
+                            if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
+                                JFile::copy($fileClient['tmp_name'],$destPath);
+                            }else{
+                                $newHeight = ($height * (int)$newWidth) / $width;
+                                $newImage = $obj->resize($newWidth, $newHeight);
+                                $type = $this->_getImageType($str);
+                                $newImage->toFile($destPath, $type);
+                            }
 
                         }
                         return $str;
@@ -1940,15 +1948,16 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $originalFile   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$fileServer);
                 // Start Check File choose from server
                 if(JFile::exists($originalFile)){
-                    $obj    = new JImage($originalFile);
-                    $width  = $obj -> getWidth();
-                    $height = $obj -> getHeight();
-//                    $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-//                              .JFile::getExt($fileServer);
-                    $str    = $this -> imageUrl.'/cache/'.
-                        ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                    $obj        = new JImage($originalFile);
+                    $width      = $obj -> getWidth();
+                    $height     = $obj -> getHeight();
+                    $sizes['o'] = $width;
+
+                    $str        = $this -> imageUrl.'/cache/'.
+                        ((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                         .'-'.$this -> getState($this -> getName().'.id').'-h.'
                               .JFile::getExt($fileServer);
+
                     foreach($sizes as $key => $newWidth){
                         // Delete current Image file
                         if(!$this -> tztask){
@@ -1968,10 +1977,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                         $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                        $newHeight  = ($height*(int) $newWidth)/$width;
-                        $newImage   = $obj -> resize($newWidth,$newHeight,$originalFile);
-                        $type       = $this -> _getImageType($str);
-                        $newImage -> toFile($destPath,$type);
+                        if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
+                            JFile::copy($originalFile,$destPath);
+                        }else{
+                            $newHeight = ($height * (int)$newWidth) / $width;
+                            $newImage = $obj->resize($newWidth, $newHeight, $originalFile);
+                            $type = $this->_getImageType($str);
+                            $newImage->toFile($destPath, $type);
+                        }
 
                     }
                     return $str;
@@ -1992,6 +2005,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         }
 
                         $curName    = null;
+
                         foreach($sizes as $key => $val){
                             $curName    = str_replace('.'.JFile::getExt($curfile)
                                 ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
@@ -2008,12 +2022,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $curPath    = null;
                     $str2       = null;
                     if($this -> tztask){
-//                        $str2    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-//                          .JFile::getExt($curfile);
                         $str2    = $this -> imageUrl.'/cache/'.
-                            ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                            ((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                             .'-'.$this -> getState($this -> getName().'.id').'-h.'
                           .JFile::getExt($curfile);
+
                         foreach($sizes as $key => $val){
                             $curPath    =  str_replace('.'.JFile::getExt($curfile),'_'.$key.'.'.JFile::getExt($curfile),$curfile);
                             $curPath    = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$curPath);
@@ -2045,6 +2058,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         $imageGallery -> title   = '';
         $params = $this -> getState('params');
         if(!$sizes  = $this -> getState('sizeImage')){
+            $sizeImage  = array();
             if($params -> get('tz_image_xsmall',100)){
                 $sizeImage['XS'] = (int) $params -> get('tz_image_xsmall',100);
             }
@@ -2062,6 +2076,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             }
             $sizes  = $sizeImage;
         }
+
+        $sizes['o'] = null;
 
 
         $fileServer = $data['tz_img_gallery_server'];
@@ -2084,66 +2100,89 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         //Client
         if(!empty($file['name'])){
 
-            // Start check the image file type
-            if(in_array(strtolower($file['type']),$arr)){
+            // Is the PHP tmp directory missing?
+            if ($file['error'] && ($file['error'] == UPLOAD_ERR_NO_TMP_DIR))
+            {
+                JError::raiseWarning('', JText::_('COM_TZ_PORTFOLIO_MSG_INSTALL_WARNINSTALLUPLOADERROR')
+                    . '<br />' . JText::_('COM_TZ_PORTFOLIO_MSG_WARNINGS_PHPUPLOADNOTSET'));
+            }else{
+                // Start check the image file type
+                if(in_array(strtolower($file['type']),$arr)){
 
+                    // Start check file size
+                    if($file['size']<= TZ_IMAGE_SIZE){
+                        // Check and set chmod folder again
+                        $folder         = JPATH_SITE.DIRECTORY_SEPARATOR
+                            .str_replace('/',DIRECTORY_SEPARATOR,$this -> imageUrl).DIRECTORY_SEPARATOR.'cache';
+                        $chmodFolder    = JPath::getPermissions($folder);
 
-                // Start check file size
-                if($file['size']<= TZ_IMAGE_SIZE){
-                    // Check and set chmod folder again
-                    $folder         = JPATH_SITE.DIRECTORY_SEPARATOR
-                        .str_replace('/',DIRECTORY_SEPARATOR,$this -> imageUrl).DIRECTORY_SEPARATOR.'cache';
-                    $chmodFolder    = JPath::getPermissions($folder);
-
-                    if($chmodFolder != 'rwxrwxrwx' || $chmodFolder != 'rwxr-xr-x'){
-                        JPath::setPermissions($folder);
-                    }
-
-                    $obj    = new JImage($file['tmp_name']);
-                    $width  = $obj -> getWidth();
-                    $height = $obj -> getHeight();
-                    $str    = $this -> imageUrl.'/cache/'
-                        .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
-                        .'-'.$this -> getState($this -> getName().'.id').'.'.JFile::getExt($file['name']);
-
-                    foreach($sizes as $key => $newWidth){
-                        // Delete current Image file
-                        if(!$this -> tztask){
-                            if(isset($curfile) && !empty($curfile)){
-                                $curName    = null;
-                                $curName    = str_replace('.'.JFile::getExt($curfile)
-                                    ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
-                                $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
-
-                                if(JFile::exists($_curFile)){
-                                    JFile::delete($_curFile);
-                                }
-
-                            }
+                        if($chmodFolder != 'rwxrwxrwx' || $chmodFolder != 'rwxr-xr-x'){
+                            JPath::setPermissions($folder);
                         }
 
-                        //Upload Image
-                        $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
-                        $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
+                        $obj    = new JImage($file['tmp_name']);
+                        $width  = $obj -> getWidth();
+                        $height = $obj -> getHeight();
+                        $str    = $this -> imageUrl.'/cache/'
+                            .((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
+                            .'-'.$this -> getState($this -> getName().'.id').'.'.JFile::getExt($file['name']);
 
-                        $newHeight  = ($height*(int) $newWidth)/$width;
-                        $newImage   = $obj -> resize($newWidth,$newHeight,$file['tmp_name']);
-                        $type       = $this -> _getImageType($str);
-                        $newImage -> toFile($destPath,$type);
+                        $sizes['o']   =  $width;
+
+                        foreach($sizes as $key => $newWidth){
+                            // Delete current Image file
+                            if(!$this -> tztask){
+                                if(isset($curfile) && !empty($curfile)){
+                                    $curName    = null;
+                                    $curName    = str_replace('.'.JFile::getExt($curfile)
+                                        ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
+                                    $_curFile    = JPATH_SITE.DIRECTORY_SEPARATOR.$curName;
+
+                                    if(JFile::exists($_curFile)){
+                                        JFile::delete($_curFile);
+                                    }
+
+                                }
+                            }
+
+                            //Upload Image
+                            $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
+                            $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
+
+                            if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
+                                JFile::copy($file['tmp_name'],$destPath);
+                            }else{
+                                $newHeight = ($height * (int)$newWidth) / $width;
+                                $newImage = $obj->resize($newWidth, $newHeight, $file['tmp_name']);
+                                $type = $this->_getImageType($str);
+                                $newImage->toFile($destPath, $type);
+                            }
+
+                        }
+                        $imageGallery -> name   = $str;
 
                     }
-                    $imageGallery -> name   = $str;
-
+                    else{
+                        // Is the max upload size too small in php.ini?
+                        if ($file['error'] && ($file['error'] == UPLOAD_ERR_INI_SIZE))
+                        {
+                            JError::raiseNotice('', JText::_('COM_TZ_PORTFOLIO_MSG_INSTALL_WARNINSTALLUPLOADERROR')
+                                . '<br />' . JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_TOO_LARGE')
+                                . '<br />' . JText::_('COM_TZ_PORTFOLIO_MSG_WARNINGS_SMALLUPLOADSIZE'));
+                        }else {
+                            JError::raiseNotice('',JText::_('COM_TZ_PORTFOLIO_MSG_INSTALL_WARNINSTALLUPLOADERROR')
+                                . '<br />'. JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_TOO_LARGE'));
+                        }
+                    }
+                    // End check file size
                 }
                 else{
-                    JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_TOO_LARGE'));
+                    JError::raiseNotice('',JText::_('COM_TZ_PORTFOLIO_MSG_INSTALL_WARNINSTALLUPLOADERROR')
+                        . '<br />'.JText::_('COM_TZ_PORTFOLIO_IMAGE_FILE_NOT_SUPPORTED')
+                        . '<br />'. JText::_('COM_TZ_PORTFOLIO_MSG_WARNINGS_SMALLUPLOADSIZE'));
                 }
-                // End check file size
+                // End check the image file type
             }
-            else{
-                JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_IMAGE_FILE_NOT_SUPPORTED'));
-            }
-            // End check the image file type
         }//Image from Client
         elseif(!empty($fileServer[0])){
             // Check size
@@ -2154,11 +2193,12 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $obj    = new JImage($originalFile);
                 $width  = $obj -> getWidth();
                 $height = $obj -> getHeight();
-//                $str    = $this -> imageUrl.'/cache/'.uniqid() .'tz_portfolio_'.time().'.'
-//                          .JFile::getExt($fileServer[0]);
+
                 $str    = $this -> imageUrl.'/cache/'.
-                    ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                    ((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                     .'-'.$this -> getState($this -> getName().'.id').'.'.JFile::getExt($fileServer[0]);
+
+                $sizes['o']   =  $width;
 
                 foreach($sizes as $key => $newWidth){
                     // Delete current Image file
@@ -2179,10 +2219,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                     $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                    $newHeight  = ($height*(int) $newWidth)/$width;
-                    $newImage   = $obj -> resize((int) $newWidth,$newHeight,$originalFile);
-                    $type       = $this -> _getImageType($str);
-                    $newImage -> toFile($destPath,$str);
+                    if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
+                        JFile::copy($originalFile,$destPath);
+                    }else{
+                        $newHeight  = ($height*(int) $newWidth)/$width;
+                        $newImage   = $obj -> resize((int) $newWidth,$newHeight,$originalFile);
+                        $type       = $this -> _getImageType($str);
+                        $newImage -> toFile($destPath,$str);
+                    }
 
                 }
                 $imageGallery -> name   = $str;
@@ -2204,6 +2248,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                 if(isset($curfile) && !empty($curfile)){
                     $curName    = null;
+
                     foreach($sizes as $key => $val){
                         $curName    = str_replace('.'.JFile::getExt($curfile)
                             ,'_'.$key.'.'.JFile::getExt($curfile),$curfile);
@@ -2225,8 +2270,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 $str2       = null;
                 if($this -> tztask){
                     $str2    = $this -> imageUrl.'/cache/'
-                        .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'
+                        .((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias']).'-'
                         .$this -> getState($this -> getName().'.id').'.'.JFile::getExt($curfile);
+
                     foreach($sizes as $key => $val){
                         $curPath    =  str_replace('.'.JFile::getExt($curfile),'_'.$key.'.'.JFile::getExt($curfile),$curfile);
                         $curPath    = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$curPath);
@@ -2269,6 +2315,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
         $params = $this -> getState('params');
         if(!$size    = $this -> getState('size')){
+            $sizes  = array();
             if($params -> get('tz_image_gallery_xsmall')){
                 $sizes['XS'] = (int) $params -> get('tz_image_gallery_xsmall');
             }
@@ -2286,6 +2333,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             }
             $size   = $sizes;
         }
+
+        $size['o'] = null;
 
         $imageGallery   = new stdClass();
         $imageGallery -> name   = '';
@@ -2336,7 +2385,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             $_type      = strtolower(JFile::getExt($files['name'][$i]));
                             $_type  = '.'.$_type;
                             $str = $this -> imageUrl.'/cache/'
-                                .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                                .((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                                 .'-'.$this -> getState($this -> getName().'.id').'-'.$i.$_type;
                             $arr2[$i]   = $str;
 
@@ -2346,6 +2395,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                 $curName    = null;
                                 $destPath   = null;
                                 $obj        = new JImage($files['tmp_name'][$i]);
+                                $width      = $obj->getWidth();
+                                $height     = $obj->getHeight();
+                                $size['o']  = $width;
+
                                 foreach($size as $key => $newWidth){
 
                                     //Delete current file if have it
@@ -2363,15 +2416,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                     $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                                     $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                                    $width      = $obj -> getWidth();
-                                    $height     = $obj -> getHeight();
-                                    $newHeight  = ($height*(int) $newWidth)/$width;
-
-                                    $newImage   = $obj -> resize($newWidth,$newHeight,$files['tmp_name'][$i]);
-                                    $type       = $this -> _getImageType($files['name'][$i]);
-
-
-                                    $newImage -> toFile($destPath,$type);
+                                    if($key == 'o' && $params -> get('allow_upload_original_image',1)) { // Upload original image
+                                        JFile::copy($files['tmp_name'][$i],$destPath);
+                                    }else{
+                                        $newHeight = ($height * (int)$newWidth) / $width;
+                                        $newImage = $obj->resize($newWidth, $newHeight, $files['tmp_name'][$i]);
+                                        $type = $this->_getImageType($files['name'][$i]);
+                                        $newImage->toFile($destPath, $type);
+                                    }
 
                                 }
 
@@ -2400,12 +2452,16 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     }
 
                     $str = $this -> imageUrl.'/cache/'
-                        .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'
+                        .((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias']).'-'
                         .$this -> getState($this -> getName().'.id').'-'.$i.'.'.JFile::getExt($item);
                     $arr2[$i]   = $str;
 
                     $curName    = null;
                     $obj        = new JImage($original);
+                    $width      = $obj -> getWidth();
+                    $height     = $obj -> getHeight();
+                    $size['o']  = $width;
+
                     foreach($size as $key => $newWidth){
                         //Delete current file if have it
                         if(!$this -> tztask){
@@ -2423,13 +2479,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                         $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-
-                        $width      = $obj -> getWidth();
-                        $height     = $obj -> getHeight();
-                        $newHeight  = ($height*(int) $newWidth)/$width;
-                        $newImage   = $obj -> resize($newWidth,$newHeight,$original);
-                        $type       = $this -> _getImageType($str);
-                        $newImage -> toFile($destPath,$type);
+                        if($key == 'o' && $params -> get('allow_upload_original_image',1)) { // Upload original image
+                            JFile::copy($original,$destPath);
+                        }else{
+                            $newHeight  = ($height*(int) $newWidth)/$width;
+                            $newImage   = $obj -> resize($newWidth,$newHeight,$original);
+                            $type       = $this -> _getImageType($str);
+                            $newImage -> toFile($destPath,$type);
+                        }
                     }
                 }
 
@@ -2440,9 +2497,12 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $curName   = preg_replace('/'.addcslashes($pattern,'/:').'/','',$curfile[$i]);
                     $curName   = str_replace('_S.'.JFile::getExt($curName),'.'.JFile::getExt($curName),$curName);
                     if($this -> tztask){
+
                         $str2    = $this -> imageUrl.'/cache/'
-                            .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'
+                            .((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias']).'-'
                             .$this -> getState($this -> getName().'.id').'-'.$i.'.'.JFile::getExt($curName);
+
+
                         foreach($size as $key => $val){
                             $curPath    =  str_replace('.'.JFile::getExt($curName),'_'.$key.'.'.JFile::getExt($curName),$curName);
                             $curPath    = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$curPath);
@@ -2459,13 +2519,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $arr2[$i] = $curName;
                     }
                 }
-
                 // Delete current Image file
                 if(isset($imageDelete)){
                     if(in_array($i,$imageDelete)){
                         if(isset($curfile) && isset($curfile[$i]) && !empty($curfile[$i])){
                             $curName    = null;
                             if(!$this -> tztask){
+
                                 foreach($size as $key => $val){
                                     $curName    = str_replace('.'.JFile::getExt($curfile[$i])
                                         ,'_'.$key.'.'.JFile::getExt($curfile[$i]),$curfile[$i]);
@@ -2488,20 +2548,27 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         }// end foreach
 
         if($count = count($err)>0){
-            JError::raiseNotice(300,JText::sprintf('COM_TZ_PORTFOLIO_SINGLE_IMAGE_SLIDER_FILE_NOT_SUPPORTED',
+            JError::raiseNotice('',JText::_('COM_TZ_PORTFOLIO_MSG_INSTALL_WARNINSTALLUPLOADERROR')
+                . '<br />'.JText::sprintf('COM_TZ_PORTFOLIO_SINGLE_IMAGE_SLIDER_FILE_NOT_SUPPORTED',
                 implode(',',$err)));
             if($count > 1){
-                JError::raiseNotice(300,JText::sprintf('COM_TZ_PORTFOLIO_MULTI_IMAGE_SLIDER_FILE_NOT_SUPPORTED',
+                JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_MSG_INSTALL_WARNINSTALLUPLOADERROR')
+                    . '<br />'.JText::sprintf('COM_TZ_PORTFOLIO_MULTI_IMAGE_SLIDER_FILE_NOT_SUPPORTED',
                     $count,$err));
             }
         }
 
         if($count = count($err2)>0){
-            JError::raiseNotice(300,JText::sprintf('COM_TZ_PORTFOLIO_SINGLE_IMAGE_SLIDER_SIZE_TOO_LARGE',
-                implode(',',$err2)));
             if($count > 1){
-                JError::raiseNotice(300,JText::sprintf('COM_TZ_PORTFOLIO_MULTI_IMAGE_SLIDER_SIZE_TOO_LARGE',
-                    $count,$err2));
+                JError::raiseNotice('',JText::_('COM_TZ_PORTFOLIO_MSG_INSTALL_WARNINSTALLUPLOADERROR')
+                    . '<br />' .JText::sprintf('COM_TZ_PORTFOLIO_MULTI_IMAGE_SLIDER_SIZE_TOO_LARGE',
+                    $count,$err2)
+                    . '<br />' . JText::_('COM_TZ_PORTFOLIO_MSG_WARNINGS_SMALLUPLOADSIZE'));
+            }else{
+                JError::raiseNotice('',JText::_('COM_TZ_PORTFOLIO_MSG_INSTALL_WARNINSTALLUPLOADERROR')
+                    . '<br />' .JText::sprintf('COM_TZ_PORTFOLIO_SINGLE_IMAGE_SLIDER_SIZE_TOO_LARGE',
+                        implode(',',$err2))
+                    . '<br />' . JText::_('COM_TZ_PORTFOLIO_MSG_WARNINGS_SMALLUPLOADSIZE'));
             }
         }
 
@@ -2530,14 +2597,16 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     }
 
     function getVideo($data = null,$task = null){
-        $imageGallery   = new stdClass();
+        $imageGallery           = new stdClass();
         $imageGallery -> name   = '';
         $imageGallery -> title  = '';
         $imageGallery -> thumb  = '';
-        $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$this ->imageUrl).DIRECTORY_SEPARATOR.'cache';
+        $destPath               = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',
+                DIRECTORY_SEPARATOR,$this ->imageUrl).DIRECTORY_SEPARATOR.'cache';
 
-        $params = $this -> getState('params');
-        $size   = $this -> _getImageSizes($params);
+        $params                 = $this -> getState('params');
+        $size                   = $this -> _getImageSizes($params);
+        $size['o']              = null;
 
         if(!JFolder::exists($destPath)){
             JFolder::create($destPath);
@@ -2551,7 +2620,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         if(!JFile::exists($destPath.DIRECTORY_SEPARATOR.'thumbnail'.DIRECTORY_SEPARATOR.'index.html')){
             JFile::write($destPath.DIRECTORY_SEPARATOR.'thumbnail'.DIRECTORY_SEPARATOR.'index.html',htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
         }
-        $destPath   .= DIRECTORY_SEPARATOR.'thumbnail';
+
+        $destPath       .= DIRECTORY_SEPARATOR.'thumbnail';
 
         // Check and set chmod folder again
         $chmodFolder    = JPath::getPermissions($destPath);
@@ -2586,9 +2656,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             $media['thumb'] = '';
                         }
 
-                        if($task != 'save2copy' && !empty($media['thumb'])){
+                        if($this -> tztask && !empty($media['thumb'])){
                             $str2    = $this -> imageUrl.'/cache/thumbnail/'
-                                .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'.
+                                .((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias']).'-'.
                                 $this -> getState($this -> getName().'.id').'.'
                               .JFile::getExt($media['thumb']);
 
@@ -2610,30 +2680,45 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             if(JFile::exists(JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$data['tz_thumb']))){
 
                                 $fileName   = $this -> imageUrl.'/cache/thumbnail/'
-                                    .((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'.
+                                    .((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias']).'-'.
                                     $this -> getState($this -> getName().'.id').'.'
                                     .JFile::getExt($data['tz_thumb']);
 
-                                $url  = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$data['tz_thumb']);
-                                $obj    = new JImage($url);
-                                $width  = $obj -> getWidth();
-                                $height = $obj -> getHeight();
+                                if(!$this -> tztask){
+                                    $this -> deleteThumb($data['id']);
+                                }
+
+                                $url        = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$data['tz_thumb']);
+
+                                $obj        = new JImage($url);
+                                $width      = $obj -> getWidth();
+                                $height     = $obj -> getHeight();
+                                $size['o']  = $width;
+
                                 foreach($size as $key => $newWidth){
                                     $str        = str_replace('.'.JFile::getExt($fileName)
                                         ,'_'.$key.'.'.JFile::getExt($fileName),$fileName);
                                     $str        = str_replace('/',DIRECTORY_SEPARATOR,$str);
                                     $_destPath  = JPATH_SITE.DIRECTORY_SEPARATOR.$str;
-                                    $newHeight  = ($newWidth * $height)/$width;
-                                    $newImage   = $obj -> resize($newWidth,$newHeight,$url);
-                                    $type       = $this -> _getImageType($str);
-                                    $newImage -> toFile($_destPath,$type);
 
+                                    if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
+                                        JFile::copy($url,$_destPath);
+                                    }else{
+                                        $newHeight = ($newWidth * $height) / $width;
+                                        $newImage = $obj->resize($newWidth, $newHeight, $url);
+                                        $type = $this->_getImageType($str);
+                                        $newImage->toFile($_destPath, $type);
+                                    }
                                 }
                                 $media['thumb'] = $fileName;
                             }
                             else{
                                 JError::raiseNotice(300,JText::_('COM_TZ_PORTFOLIO_THUMBNAIL_FILE_DOES_NOT_EXIST'));
                             }
+                        }
+                    }else{
+                        if(!$this -> tztask){
+                            $this -> deleteThumb($data['id']);
                         }
                     }
                     $bool           = 3;
@@ -2646,11 +2731,17 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     if(!empty($data['tz_media_code_youtube'])){
                         $media['code']  = 'youtube:'.$data['tz_media_code_youtube'];
                         $media['title'] = $data['tz_media_title_youtube'];
-                        $thumbUrl   = 'http://img.youtube.com/vi/'.$data['tz_media_code_youtube'].'/hqdefault.jpg';
+                        $thumbUrl   = 'http://img.youtube.com/vi/'.$data['tz_media_code_youtube'].'/maxresdefault.jpg';
                         $file       = new Services_Yadis_PlainHTTPFetcher();
                         $thumb      = $file ->get($thumbUrl);
+
+                        if($thumb -> status == '404'){
+                            $thumbUrl   = 'http://img.youtube.com/vi/'.$data['tz_media_code_youtube'].'/mqdefault.jpg';
+                            $thumb      = $file ->get($thumbUrl);
+                        }
+
                         $fileName   = null;
-                        $_fileName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                        $_fileName   = ((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                             .'-'.$this -> getState($this -> getName().'.id')
                             .'.'. JFile::getExt($thumbUrl);
 
@@ -2660,6 +2751,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         if(!JFile::exists($destPath.DIRECTORY_SEPARATOR.'youtube'.DIRECTORY_SEPARATOR.'index.html')){
                             JFile::write($destPath.DIRECTORY_SEPARATOR.'youtube'.DIRECTORY_SEPARATOR.'index.html',htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
                         }
+
                         // Check and set chmod folder again
                         $folder         = $destPath.DIRECTORY_SEPARATOR.'youtube';
                         $chmodFolder    = JPath::getPermissions($folder);
@@ -2678,9 +2770,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         }
 
                         if(isset($url) && !empty($url)){
-                            $obj    = new JImage($url);
-                            $width  = $obj -> getWidth();
-                            $height = $obj -> getHeight();
+                            $obj        = new JImage($url);
+                            $width      = $obj -> getWidth();
+                            $height     = $obj -> getHeight();
+                            $size['o']  = $width;
+
                             foreach($size as $key => $newWidth){
                                 $newHeight  = ($newWidth * $height)/$width;
                                 $newImage   = $obj -> resize($newWidth,$newHeight);
@@ -2688,10 +2782,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                 $str   = $this -> imageUrl.'/cache/thumbnail/youtube/'.str_replace('.'.JFile::getExt($_fileName)
                                     ,'_'.$key.'.'.JFile::getExt($_fileName),$_fileName);
                                 $_destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
-                                $type       = $this -> _getImageType($str);
-                                $newImage -> crop($newImage -> getWidth(),$newHeight - (ceil($newHeight/$height * 45) * 2),
-                                    0,$newHeight/$height * 45,false);
-                                $newImage -> toFile($_destPath,$type);
+
+                                if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
+                                    JFile::copy($url,$_destPath);
+                                }else{
+                                    $type = $this->_getImageType($str);
+                                    $newImage->toFile($_destPath, $type);
+                                }
                             }
                             $fileName   = $this -> imageUrl.'/cache/thumbnail/youtube/'.$_fileName;
 
@@ -2717,10 +2814,18 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $vimeo      = $file ->get($thumbUrl);
                         $vimeo      = unserialize($vimeo -> body);
                         $thumbUrl   = $vimeo[0]['thumbnail_large'];
+
+                        if($ipos = stripos($thumbUrl,'_')){
+                            $img_w  = (int)substr($thumbUrl,$ipos+1,strlen($thumbUrl));
+                            if($img_w < $vimeo[0]['width']) {
+                                $thumbUrl = substr($thumbUrl, 0, $ipos).'_'.$vimeo[0]['width']
+                                    .'.'.JFile::getExt($thumbUrl);
+                            }
+                        }
+
                         $thumb      = $file -> get($thumbUrl);
                         $fileName   = null;
-//                        $_fileName  = uniqid().time().'tz_portfolio_'.$data['tz_media_code_vimeo'].'.'. JFile::getExt($thumbUrl);
-                        $_fileName  = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                        $_fileName  = ((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                             .'-'.$this -> getState($this -> getName().'.id').'.'. JFile::getExt($thumbUrl);
 
                         if(!JFolder::exists($destPath.DIRECTORY_SEPARATOR.'vimeo')){
@@ -2729,6 +2834,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         if(!JFile::exists($destPath.DIRECTORY_SEPARATOR.'vimeo'.DIRECTORY_SEPARATOR.'index.html')){
                             JFile::write($destPath.DIRECTORY_SEPARATOR.'vimeo'.DIRECTORY_SEPARATOR.'index.html',htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
                         }
+
                         // Check and set chmod folder again
                         $folder         = $destPath.DIRECTORY_SEPARATOR.'vimeo';
                         $chmodFolder    = JPath::getPermissions($folder);
@@ -2756,8 +2862,13 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                 $str   = $this -> imageUrl.'/cache/thumbnail/vimeo/'.str_replace('.'.JFile::getExt($_fileName)
                                     ,'_'.$key.'.'.JFile::getExt($_fileName),$_fileName);
                                 $_destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
-                                $type       = $this -> _getImageType($str);
-                                $newImage -> toFile($_destPath,$type);
+
+                                if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
+                                    JFile::copy($url,$_destPath);
+                                }else{
+                                    $type = $this->_getImageType($str);
+                                    $newImage->toFile($_destPath, $type);
+                                }
                             }
                             $fileName   = $this -> imageUrl.'/cache/thumbnail/vimeo/'.$_fileName;
                             JFile::delete($url);
@@ -2782,26 +2893,23 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     }
 
     function deleteThumb($articleId=null,$file=null){
-        $size   = $this -> getState('size');
+        $size       = $this -> getState('size');
+        $size['o']  = null;
         if($file){
             foreach($size as $key => $val){
-                $url    = str_replace('.'.JFile::getExt($file),'_'.$key.'.'.JFile::getExt($file),$file);
-                $url    = str_replace('/',DIRECTORY_SEPARATOR,$url);
-                $path   = JPATH_SITE.DIRECTORY_SEPARATOR.$url;
+                $url        = str_replace('.'.JFile::getExt($file),'_'.$key.'.'.JFile::getExt($file),$file);
+                $url        = str_replace('/',DIRECTORY_SEPARATOR,$url);
+                $path       = JPATH_SITE.DIRECTORY_SEPARATOR.$url;
                 if(JFile::exists($path)){
                     JFile::delete($path);
                 }
-            }
-
-            if(JFile::exists($path)){
-                JFile::delete($path);
             }
         }
         else{
             if($articleId){
                 $where  = ' WHERE contentid ='.(int) $articleId;
 
-                $query  = 'SELECT videothumb FROM #__tz_portfolio_xref_content'
+                $query  = 'SELECT * FROM #__tz_portfolio_xref_content'
                           .$where;
                 $db = JFactory::getDbo();
                 $db -> setQuery($query);
@@ -2812,6 +2920,21 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 if($row   = $db -> loadObject()){
                     if(!empty($row -> videothumb)){
                         $file   = JPATH_SITE.DIRECTORY_SEPARATOR.$row -> videothumb;
+
+//                        $video_type = null;
+//                        if($row -> video && $pos = strpos($row -> video,':')) {
+//                            $video_type = substr($row -> video,0,$pos);
+//                        }
+//                        $org_url = $this->imageUrl . '/src/thumbnail/';
+//                        if($video_type && $video_type != 'default') {
+//                            $org_url .= $video_type.'/';
+//                        }
+//                        $org_url    .= JFile::getName($row->videothumb);
+//                        $org_path   =  JPATH_SITE.DIRECTORY_SEPARATOR.$org_url;
+//                        if(JFile::exists($org_path)){
+//                            JFile::delete($org_path);
+//                        }
+                        $size['o']  = null;
 
                         foreach($size as $key => $val){
                             $url    = str_replace('.'.JFile::getExt($file),'_'.$key.'.'.JFile::getExt($file),$file);
@@ -3063,8 +3186,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
 								foreach($val as $i => $row){
 
-									if(preg_match('/(\@\[\{\(\&\*\_[0-9]+)|(\@\[\{\(\&amp\;\*\_[0-9]+)$/',$row,$match2)){
-										$stt = str_replace($match2[1],'',$match2[0]);
+									if(preg_match('/(\@\[\{\(\&\*\_([0-9]+))|(\@\[\{\(\&amp\;\*\_([0-9]+))$/m',$row,$match2)){
+//										$stt = str_replace($match2[1],'',$match2[0]);
+										$stt = $match2[2];
 										$optionField    = $this -> getOptionField($fieldsid,$stt);
 									}
 									else{
@@ -3179,6 +3303,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     .$this -> _db -> quoteName('audiothumb').','
                     .$this -> _db -> quoteName('audiotitle');
 
+            if($this -> tztask){
+                $post['audio_soundcloud_hidden_image']  = null;
+            }
                 $value['audio'] = $this -> prepareAudio($post,$audioFile);
                 // End get and prepare data for audio
 
@@ -3279,11 +3406,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         }
         $table = $this->getTable();
 
-        $input  = $this -> input;
-
-
-        $post   = $input -> post;
-        $post   = $post -> getArray();
+        $post   = JRequest::get('post');
 
         if($data){
             $post   = array_merge($data,array_shift($post),$post);
@@ -3589,6 +3712,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
     public function uploadImageClient($file,$destName,$base,$fileTypes,$size=array(),$oldThumb = null){
         if($file && $base){
+            $size['o']  = null;
+            $params     = $this -> getState('params');
             if(JFile::exists($file['tmp_name'])){
                 // Check file type
                 if(in_array($file['type'],$fileTypes)){
@@ -3601,20 +3726,19 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                         if(count($size)){
                             foreach($size as $key => $width){
-                                if($width){
-                                    $_dest    = str_replace('.'.JFile::getExt($file['name']),
-                                        '_'.strtoupper($key).'.'.JFile::getExt($file['name']),$dest);
+                                $_dest    = str_replace('.'.JFile::getExt($file['name']),
+                                    '_'.$key.'.'.JFile::getExt($file['name']),$dest);
 
-                                    $newHeight  = ($obj -> getHeight()*(int) $width)/$obj -> getWidth();
-                                    $newImage   = $obj -> resize($width,$newHeight);
-                                    $newImage -> toFile(JPATH_SITE.DIRECTORY_SEPARATOR.$_dest,$this -> _getImageType($dest));
+                                if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
+                                    JFile::copy($file['tmp_name'],JPATH_SITE . DIRECTORY_SEPARATOR . $_dest);
+                                }else{
+                                    if($width){
+                                        $newHeight = ($obj->getHeight() * (int)$width) / $obj->getWidth();
+                                        $newImage = $obj->resize($width, $newHeight);
+                                        $newImage->toFile(JPATH_SITE . DIRECTORY_SEPARATOR . $_dest, $this->_getImageType($dest));
+                                    }
                                 }
                             }
-
-                            // Delete old thumbnail
-//                            if($oldThumb){
-//                                $this -> deleteThumb(null,$oldThumb);
-//                            }
 
                             return str_replace(DIRECTORY_SEPARATOR,'/',$dest);
                         }
@@ -3631,9 +3755,12 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
     public function uploadImageServer($src,$destName,$base,$size=array(),$oldThumb = null,$copy = false){
         if($src){
+            $sizes      = $size;
+            $params     = $this -> getState('params');
+            $sizes['o'] = null;
             $dest    = $base.DIRECTORY_SEPARATOR.$destName;
             if($copy){ // If batch copy
-                foreach($size as $key => $width){
+                foreach($sizes as $key => $width){
                     $_dest    = str_replace('.'.JFile::getExt($src),
                         '_'.strtoupper($key).'.'.JFile::getExt($src),$dest);
                     $_src    = str_replace('.'.JFile::getExt($src),
@@ -3648,21 +3775,26 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 
                     $obj    = new JImage(JPATH_SITE.DIRECTORY_SEPARATOR.$src);
 
-                    if(filesize(JPATH_SITE.DIRECTORY_SEPARATOR.$src) <= TZ_IMAGE_SIZE){
-                        if(count($size)){
-                            foreach($size as $key => $width){
-                                if($width){
-                                    $_dest    = str_replace('.'.JFile::getExt($src),
-                                        '_'.strtoupper($key).'.'.JFile::getExt($src),$dest);
+                    // Delete old thumbnail
+                    if($oldThumb){
+                        $this -> deleteThumb(null,$oldThumb);
+                    }
 
-                                    $newHeight  = ($obj -> getHeight()*(int) $width)/$obj -> getWidth();
-                                    $newImage   = $obj -> resize($width,$newHeight);
-                                    $newImage -> toFile(JPATH_SITE.DIRECTORY_SEPARATOR.$_dest,$this -> _getImageType($dest));
+                    if(filesize(JPATH_SITE.DIRECTORY_SEPARATOR.$src) <= TZ_IMAGE_SIZE){
+                        if(count($sizes)){
+                            foreach($sizes as $key => $width){
+                                $_dest    = str_replace('.'.JFile::getExt($src),
+                                    '_'.$key.'.'.JFile::getExt($src),$dest);
+
+                                if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
+                                    JFile::copy(JPATH_SITE.DIRECTORY_SEPARATOR.$src,JPATH_SITE . DIRECTORY_SEPARATOR . $_dest);
+                                }else{
+                                    if($width){
+                                        $newHeight = ($obj->getHeight() * (int)$width) / $obj->getWidth();
+                                        $newImage = $obj->resize($width, $newHeight);
+                                        $newImage->toFile(JPATH_SITE . DIRECTORY_SEPARATOR . $_dest, $this->_getImageType($dest));
+                                    }
                                 }
-                            }
-                            // Delete old thumbnail
-                            if($oldThumb){
-                                $this -> deleteThumb(null,$oldThumb);
                             }
 
                             return str_replace(DIRECTORY_SEPARATOR,'/',$dest);
@@ -3677,7 +3809,11 @@ class TZ_PortfolioModelArticle extends JModelAdmin
     }
 
 
-    public function prepareAudio($data,$file = null,$copy = false){
+    public function prepareAudio($data,$file = null,$_copy = false){
+        $copy   = $_copy;
+        if($this -> tztask){
+            $copy   = true;
+        }
         if($data){
             if(isset($data['jform'])){
                 $data   = $data['jform'];
@@ -3708,6 +3844,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
                     }
                 }
+
                 // Check and set chmod folder again
                 $chmodFolder    = JPath::getPermissions($audioPath);
 
@@ -3719,19 +3856,28 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 //// Delete old thumbnail if delete checkbox input is checked
                 if($data['audio_soundcloud_delete_image'] && $hiddenImage = $data['audio_soundcloud_hidden_image']){
                     $this -> deleteThumb(null,$hiddenImage);
+
+//                    // Delete old original thumbnail
+//                    $org_path   = JPATH_SITE.DIRECTORY_SEPARATOR.$org_audioPath.DIRECTORY_SEPARATOR
+//                        .JFile::getName($data['audio_soundcloud_hidden_image']);
+//                    if(JFile::exists($org_path)){
+//                        JFile::delete($org_path);
+//                    }
                 }
 
                 if($file && !empty($file['name'])){ // If choose thumbnail from client
-                    $destName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias']).'-'.
+                    $destName   = ((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias']).'-'.
                         $id.'.'. JFile::getExt($file['name']);
                     $image = $this -> uploadImageClient($file,$destName,$audioPath,
                         $fileTypes,$this -> _getImageSizes($params),$data['audio_soundcloud_hidden_image']);
+
                 }elseif(!empty($data['audio_soundcloud_image_server'])){ // If choose thumbnail from server
-                    $destName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                    $destName   = ((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                         .'-'.$id.'.'
                         .JFile::getExt($data['audio_soundcloud_image_server']);
                     $image  = $this -> uploadImageServer($data['audio_soundcloud_image_server'],$destName,
                         $audioPath,$this -> _getImageSizes($params),$data['audio_soundcloud_hidden_image'],$copy);
+
                 }else{ // Get thumbnail from soundcloud page
                     if($data['audio_soundcloud_delete_image'] && $hiddenImage = $data['audio_soundcloud_hidden_image']){
                         $data['audio_soundcloud_hidden_image']  = '';
@@ -3778,7 +3924,8 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                     }
 
                                     // Save image from other server to this server (temp file)
-                                    $fetch2     = new Services_Yadis_PlainHTTPFetcher();
+                                    $fetch2         = new Services_Yadis_PlainHTTPFetcher();
+                                    $audioTempPath  = null;
                                     if($audioTemp  = $fetch2 -> get($thumbUrl)){
                                         if(in_array($audioTemp -> headers['Content-Type'],$fileTypes)){
                                             $audioType  = JFile::getExt($thumbUrl);
@@ -3795,7 +3942,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                     }
 
                                     if($audioTempPath){
-                                        $destName   = ((!$data['alias'])?JApplication::stringURLSafe($data['title']):$data['alias'])
+                                        $destName   = ((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                                             .'-'.$id.'.'
                                             .JFile::getExt($audioTempPath);
 
@@ -3832,6 +3979,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                 }
 
                 return $_data;
+            }
+
+            if($data['audio_soundcloud_hidden_image']) {
+                $this->deleteThumb(null,$data['audio_soundcloud_hidden_image']);
             }
             return $this -> _db -> quote('').','.$this -> _db -> quote('').','.$this -> _db -> quote('');
         }

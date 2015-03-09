@@ -299,7 +299,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                     value: '<?php echo $list -> video -> thumb;?>'
                 }).inject(tz_g);
                 var tz_img = new Element("img", {
-                    src: '<?php echo $src;?>',
+                    src: '<?php echo $src.'?time='.str_replace('.','',microtime(true));?>',
                     style: 'cursor:pointer; max-width: 200px;'
                 }).inject(tz_g);
                 tz_img.addEvent('click',function(){
@@ -394,7 +394,8 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                             <?php if(isset($list -> video->thumb)):?>
                                 <?php if($list -> video -> thumb):?>
                                 src: '<?php echo JUri::root().str_replace('.'.JFile::getExt($list -> video -> thumb),
-                                '_S.'.JFile::getExt($list -> video -> thumb),$list -> video -> thumb);?>'
+                                '_S.'.JFile::getExt($list -> video -> thumb),$list -> video -> thumb)
+                                .'?time='.str_replace('.','',microtime(true));?>'
                                 <?php endif;?>
                             <?php else:?>
                             src:'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
@@ -450,7 +451,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                     var video   = new Element('div',{id:'tz_thumb_preview_vimeo'}).inject(myLabel,'after');
                     var iframe  = new Element('img',{
                         style: 'margin-top:10px; max-width:200px; cursor:pointer;',
-                        src: '<?php echo $src;?>'
+                        src: '<?php echo $src.'?time='.str_replace('.','',microtime(true));?>'
                     }).inject(video);
                     iframe.addEvent('click',function(){
                        SqueezeBox.fromElement(this, {
@@ -705,8 +706,9 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
 
             tz_a.setProperty("id", tz_d);
             if(value){
+                var $date   = new Date();
                  var tz_h = (new Element("img", {
-                    src: value,
+                    src: value+'?time='+$date.getTime(),
                     style:'max-width:300px; cursor:pointer;',
                     title:title
                 })).inject(tz_g,'inside');

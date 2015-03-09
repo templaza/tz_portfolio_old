@@ -81,6 +81,11 @@ $this -> assign('listMedia',$listMedia);
         </span>
         <?php endif; ?>
 
+        <?php if($params -> get('show_tags',1)):
+            echo $this -> loadTemplate('tag');
+        endif;
+        ?>
+
         <?php if ($params->get('show_modify_date',1)) : ?>
         <span class="TzUserModified" itemprop="dateModified">
             <?php echo JText::sprintf('COM_CONTENT_LAST_UPDATED', JHtml::_('date', $row->modified, JText::_('DATE_FORMAT_LC2'))); ?>

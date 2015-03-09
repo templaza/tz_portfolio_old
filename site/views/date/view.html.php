@@ -257,10 +257,30 @@ class TZ_PortfolioViewDate extends JViewLegacy{
             }
         }
 
+        $content_ids    = array();
+        if($items) {
+            for ($i = 0, $n = count($items); $i < $n; $i++) {
+                $content_ids[]  = $items[$i] -> id;
+            }
+        }
+
+        $tags   = null;
+        if(count($content_ids) && $params -> get('show_tags',1)) {
+            $m_tag = JModelLegacy::getInstance('Tag', 'TZ_PortfolioModel', array('ignore_request' => true));
+            $m_tag->setState('params',$params);
+            $m_tag->setState('article.id', $content_ids);
+            $m_tag -> setState('list.ordering','x.contentid');
+            $tags   = $m_tag -> getArticleTags();
+        }
+
         $_params    = null;
         for ($i = 0, $n = count($items); $i < $n; $i++)
         {
             $item = &$items[$i];
+
+            if($tags && count($tags) && isset($tags[$item -> id])){
+                $item -> tags   = $tags[$item -> id];
+            }
 
             $item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
 

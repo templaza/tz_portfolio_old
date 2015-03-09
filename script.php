@@ -123,6 +123,7 @@ class com_tz_portfolioInstallerScript{
             foreach($modules as $module){
                 $result = null;
                 $mname = $module->attributes() -> module;
+                $mname = (string)$mname;
                 $client = $module->attributes() -> client;
                 if(is_null($client)) $client = 'site';
                 ($client=='administrator')? $path=$src.'/'.'administrator'.'/'.'modules'.'/'.$mname: $path = $src.'/'.'modules'.'/'.$mname;
@@ -136,6 +137,7 @@ class com_tz_portfolioInstallerScript{
                 $result = null;
                 $folder = null;
                 $pname  = $plugin->attributes() -> plugin;
+                $pname  = (string) $pname;
                 $group  = $plugin->attributes() -> group;
                 $folder = $plugin -> attributes() -> folder;
                 if(isset($folder)){
@@ -542,7 +544,7 @@ class com_tz_portfolioInstallerScript{
             <tbody>
             <tr class="row0">
                 <td class="key" colspan="2"><?php echo JText::_('COM_TZ_PORTFOLIO').' '.JText::_('COM_TZ_PORTFOLIO_COMPONENT'); ?></td>
-                <td><strong><?php echo JText::_('COM_TZ_PORTFOLIO_INSTALLED'); ?></strong></td>
+                <td><span style="color: green; font-weight: bold;"><?php echo JText::_('COM_TZ_PORTFOLIO_INSTALLED'); ?></span></td>
             </tr>
             <?php if (count($status->modules)): ?>
                 <tr>
@@ -552,14 +554,14 @@ class com_tz_portfolioInstallerScript{
                 </tr>
                 <?php foreach ($status->modules as $module): ?>
                     <?php
-                    if($lang -> exists($module['name'])):
-                        $lang -> load($module['name']);
+                    if(!$lang -> exists((string) $module['name'],JPATH_SITE)):
+                        $lang -> load((string)$module['name'],JPATH_SITE);
                     endif;
                     ?>
                     <tr class="row<?php echo (++ $rows % 2); ?>">
                         <td class="key"><?php echo JText::_($module['name']); ?></td>
                         <td class="key"><?php echo ucfirst($module['client']); ?></td>
-                        <td><strong><?php echo ($module['result'])?JText::_('COM_TZ_PORTFOLIO_INSTALLED'):JText::_('COM_TZ_PORTFOLIO_NOT_INSTALLED'); ?></strong></td>
+                        <td><span style="color: green; font-weight: bold;"><?php echo ($module['result'])?JText::_('COM_TZ_PORTFOLIO_INSTALLED'):JText::_('COM_TZ_PORTFOLIO_NOT_INSTALLED'); ?></span></td>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -572,14 +574,14 @@ class com_tz_portfolioInstallerScript{
                 </tr>
                 <?php foreach ($status->plugins as $plugin): ?>
                     <?php
-                    if($lang -> exists($module['name'])):
-                        $lang -> load($module['name']);
+                    if(!$lang -> exists((string)$plugin['name'],JPATH_ADMINISTRATOR, null, true)):
+                        $lang -> load((string)$plugin['name'],JPATH_ADMINISTRATOR, null, true);
                     endif;
                     ?>
                     <tr class="row<?php echo (++ $rows % 2); ?>">
                         <td class="key"><?php echo JText::_(ucfirst($plugin['name'])); ?></td>
                         <td class="key"><?php echo ucfirst($plugin['group']); ?></td>
-                        <td><strong><?php echo ($plugin['result'])?JText::_('COM_TZ_PORTFOLIO_INSTALLED'):JText::_('COM_TZ_PORTFOLIO_NOT_INSTALLED'); ?></strong></td>
+                        <td><span style="color: green; font-weight: bold;"><?php echo ($plugin['result'])?JText::_('COM_TZ_PORTFOLIO_INSTALLED'):JText::_('COM_TZ_PORTFOLIO_NOT_INSTALLED'); ?></span></td>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -594,7 +596,7 @@ class com_tz_portfolioInstallerScript{
                     <tr class="row<?php echo (++ $rows % 2); ?>">
                         <td class="key"><?php echo ucfirst($language['language']); ?></td>
                         <td class="key"><?php echo ucfirst($language['country']); ?></td>
-                        <td><strong><?php echo ($language['result'])?JText::_('COM_TZ_PORTFOLIO_INSTALLED'):JText::_('COM_TZ_PORTFOLIO_NOT_INSTALLED'); ?></strong></td>
+                        <td><span style="color: green; font-weight: bold;"><?php echo ($language['result'])?JText::_('COM_TZ_PORTFOLIO_INSTALLED'):JText::_('COM_TZ_PORTFOLIO_NOT_INSTALLED'); ?></span></td>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -624,7 +626,7 @@ class com_tz_portfolioInstallerScript{
             <tbody>
             <tr class="row0">
                 <td class="key" colspan="2"><?php echo JText::_('COM_TZ_PORTFOLIO').' '.JText::_('COM_TZ_PORTFOLIO_COMPONENT'); ?></td>
-                <td><strong><?php echo JText::_('COM_TZ_PORTFOLIO_REMOVED'); ?></strong></td>
+                <td><span style="color: green; font-weight: bold;"><?php echo JText::_('COM_TZ_PORTFOLIO_REMOVED'); ?></span></td>
             </tr>
             <?php if (count($status->modules)): ?>
                 <tr>
@@ -641,7 +643,7 @@ class com_tz_portfolioInstallerScript{
                     <tr class="row<?php echo (++ $rows % 2); ?>">
                         <td class="key"><?php echo JText::_($module['name']); ?></td>
                         <td class="key"><?php echo ucfirst($module['client']); ?></td>
-                        <td><strong><?php echo ($module['result'])?JText::_('COM_TZ_PORTFOLIO_REMOVED'):JText::_('COM_TZ_PORTFOLIO_NOT_REMOVED'); ?></strong></td>
+                        <td><span style="color: green; font-weight: bold;"><?php echo ($module['result'])?JText::_('COM_TZ_PORTFOLIO_REMOVED'):JText::_('COM_TZ_PORTFOLIO_NOT_REMOVED'); ?></span></td>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -654,14 +656,14 @@ class com_tz_portfolioInstallerScript{
                 </tr>
                 <?php foreach ($status->plugins as $plugin): ?>
                     <?php
-                    if($lang -> exists($module['name'])):
-                        $lang -> load($module['name']);
+                    if($lang -> exists($plugin['name'])):
+                        $lang -> load($plugin['name']);
                     endif;
                     ?>
                     <tr class="row<?php echo (++ $rows % 2); ?>">
                         <td class="key"><?php echo JText::_(ucfirst($plugin['name'])); ?></td>
                         <td class="key"><?php echo ucfirst($plugin['group']); ?></td>
-                        <td><strong><?php echo ($plugin['result'])?JText::_('COM_TZ_PORTFOLIO_REMOVED'):JText::_('COM_TZ_PORTFOLIO_NOT_REMOVED'); ?></strong></td>
+                        <td><span style="color: green; font-weight: bold;"><?php echo ($plugin['result'])?JText::_('COM_TZ_PORTFOLIO_REMOVED'):JText::_('COM_TZ_PORTFOLIO_NOT_REMOVED'); ?></span></td>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -676,7 +678,7 @@ class com_tz_portfolioInstallerScript{
                     <tr class="row<?php echo (++ $rows % 2); ?>">
                         <td class="key"><?php echo ucfirst($language['language']); ?></td>
                         <td class="key"><?php echo ucfirst($language['country']); ?></td>
-                        <td><strong><?php echo ($language['result'])?JText::_('COM_TZ_PORTFOLIO_REMOVED'):JText::_('COM_TZ_PORTFOLIO_NOT_REMOVED'); ?></strong></td>
+                        <td><span style="color: green; font-weight: bold;"><?php echo ($language['result'])?JText::_('COM_TZ_PORTFOLIO_REMOVED'):JText::_('COM_TZ_PORTFOLIO_NOT_REMOVED'); ?></span></td>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>

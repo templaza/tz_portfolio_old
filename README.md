@@ -20,6 +20,18 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+03/09/2015 - 3.3.0
+
+	Add option "No parent" for list category when create article in front-end.
+	Fix display category's image and subcategory's image in view blog.
+	Fix article's sort of portfolio view.(change "sortby" option of isotope script in portfolio/tmpl/default.php file).
+	Fix containertype (Fixed Width, Full Width) for p_article view.
+	Fix padding for p_article view.
+	Remove option show_introtext in views p_article and article (in file: view.html.php).
+	Add option upload original image.
+	Display tags for views: portfolio, category, featured, timeline, date, portfolio user.
+	Add hits column for articles view in back-end (like com_content).
+
 12/09/2014 - 3.2.9
 
 	Fix template error:  when using Default Template, your article does not show content of version 3.2.8.

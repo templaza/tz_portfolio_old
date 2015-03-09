@@ -158,6 +158,9 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                             <?php echo JHtml::_('grid.sort', 'JDATE', 'a.created', $listDirn, $listOrder); ?>
                         </th>
                         <th width="1%" class="nowrap hidden-phone">
+                            <?php echo JHtml::_('grid.sort', 'JGLOBAL_HITS', 'a.hits', $listDirn, $listOrder); ?>
+                        </th>
+                        <th width="1%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
                         </th>
                     </tr>
@@ -302,6 +305,9 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                             </td>
                             <td class="small nowrap hidden-phone">
                                 <?php echo JHtml::_('date', $item->created, JText::_('DATE_FORMAT_LC4')); ?>
+                            </td>
+                            <td class="center hidden-phone">
+                                <?php echo (int) $item->hits; ?>
                             </td>
                             <td class="center">
                                 <?php echo (int) $item->id; ?>

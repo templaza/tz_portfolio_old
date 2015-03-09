@@ -212,7 +212,28 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                 }
             }
 
+            $content_ids    = array();
+            if($list) {
+                for ($i = 0, $n = count($list); $i < $n; $i++) {
+                    $content_ids[]  = $list[$i] -> id;
+                }
+            }
+
+            $tags   = null;
+            if(count($content_ids) && $params -> get('show_tags',1)) {
+                $m_tag = JModelLegacy::getInstance('Tag', 'TZ_PortfolioModel', array('ignore_request' => true));
+                $m_tag->setState('params',$params);
+                $m_tag->setState('article.id', $content_ids);
+                $m_tag -> setState('list.ordering','x.contentid');
+                $tags   = $m_tag -> getArticleTags();
+            }
+
             foreach($list as &$row){
+
+                if($tags && count($tags) && isset($tags[$row -> id])){
+                    $row -> tags   = $tags[$row -> id];
+                }
+
                 if($params -> get('comment_function_type','default') != 'js'){
                     if($params -> get('tz_show_count_comment',1) == 1){
                         if($params -> get('tz_comment_type','disqus') == 'disqus' ||
