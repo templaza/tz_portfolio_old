@@ -159,6 +159,11 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
 
                     myFields.inject($('tz_fields'));
                     myFields.innerHTML = item.data;
+                    SqueezeBox.initialize({});
+                    SqueezeBox.assign(jQuery('a.modal-button').get(), {
+                        parse: 'rel'
+                    });
+
                     jQuery('select').chosen({
                         disable_search_threshold : 10,
                         allow_single_deselect : true
@@ -192,7 +197,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
 
 //        $$('#jform_catid_chzn .chzn-drop li').addEvent('click',function(e){
         jQuery('#jform_catid').bind('change',function(e){
-            e.stop();
+            e.preventDefault();
 
             ajax();
 
@@ -213,7 +218,6 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
         var tz_portfolio_groupChange = function(){
 //            $$('#groupid_chzn .chzn-drop li').addEvent('click',function(e){
             jQuery('#groupid').bind('change',function(e){
-//                e.stop();
                 e.preventDefault();
                 tz_portfolio_extraFields();
             });
@@ -295,7 +299,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                     value: '<?php echo $list -> video -> thumb;?>'
                 }).inject(tz_g);
                 var tz_img = new Element("img", {
-                    src: '<?php echo $src;?>',
+                    src: '<?php echo $src.'?time='.str_replace('.','',microtime(true));?>',
                     style: 'cursor:pointer; max-width: 200px;'
                 }).inject(tz_g);
                 tz_img.addEvent('click',function(){
@@ -390,7 +394,8 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                             <?php if(isset($list -> video->thumb)):?>
                                 <?php if($list -> video -> thumb):?>
                                 src: '<?php echo JUri::root().str_replace('.'.JFile::getExt($list -> video -> thumb),
-                                '_S.'.JFile::getExt($list -> video -> thumb),$list -> video -> thumb);?>'
+                                '_S.'.JFile::getExt($list -> video -> thumb),$list -> video -> thumb)
+                                .'?time='.str_replace('.','',microtime(true));?>'
                                 <?php endif;?>
                             <?php else:?>
                             src:'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
@@ -446,7 +451,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                     var video   = new Element('div',{id:'tz_thumb_preview_vimeo'}).inject(myLabel,'after');
                     var iframe  = new Element('img',{
                         style: 'margin-top:10px; max-width:200px; cursor:pointer;',
-                        src: '<?php echo $src;?>'
+                        src: '<?php echo $src.'?time='.str_replace('.','',microtime(true));?>'
                     }).inject(video);
                     iframe.addEvent('click',function(){
                        SqueezeBox.fromElement(this, {
@@ -701,8 +706,9 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
 
             tz_a.setProperty("id", tz_d);
             if(value){
+                var $date   = new Date();
                  var tz_h = (new Element("img", {
-                    src: value,
+                    src: value+'?time='+$date.getTime(),
                     style:'max-width:300px; cursor:pointer;',
                     title:title
                 })).inject(tz_g,'inside');
@@ -1330,147 +1336,144 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                     <li><a href="#tztabsAttachment" data-toggle="tab"><?php echo JText::_('COM_TZ_PORTFOLIO_TAB_ATTACHMENTS');?></a></li>
                     <?php echo $this -> loadTemplate('plugin_title_tab');?>
                 </ul>
-                <div class="span11">
-                    <!-- Begin Content -->
-                     <div class="tab-content">
-                         <!-- Begin Tabs -->
-                        <div class="tab-pane active" id="tz_content">
-                            <?php echo $this->form->getInput('articletext'); ?>
-                        </div>
-                        <div class="tab-pane" id="tztabsImage">
-                            <div id="tz_images">
-                                <table class="admintable" style="width: 100%">
-                                    <tr>
-                                        <td style="background: #F6F6F6; min-width:100px;" align="right" rowspan="2" valign="top">
-                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE');?></strong>
-                                        </td>
-                                        <td>
-                                            <input type="file" name="tz_img" id="tz_img" value="">
-                                        </td>
-                                    </tr>
-                                    <tr class="input-prepend input-append">
-                                        <td id="tz_img_server">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="background: #F6F6F6; min-width:100px;" align="right">
-                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE_TITLE');?></strong>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="tz_image_title" id="tz_image_title"
-                                                   value="<?php echo stripslashes($list -> imagetitle);?>"
-                                                   />
-                                            <input type="hidden" name="tz_img_image" value="image" style="margin-bottom: 10px;"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="background: #F6F6F6; min-width:100px;" align="right" rowspan="2" valign="top">
-                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FROM_IMAGE_HOVER');?></strong>
-                                        </td>
-                                        <td>
-                                            <input type="file" name="tz_img_hover" id="tz_img_hover" value=""/>
-                                        </td>
-                                    </tr>
-                                    <tr  class="input-prepend input-append">
-                                        <td id="tz_img_hover_server">
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane" id="tztabsGallery">
-                            <table  id="tz_image_gallery">
+                <!-- Begin Content -->
+                 <div class="tab-content">
+                     <!-- Begin Tabs -->
+                    <div class="tab-pane active" id="tz_content">
+                        <?php echo $this->form->getInput('articletext'); ?>
+                    </div>
+                    <div class="tab-pane" id="tztabsImage">
+                        <div id="tz_images">
+                            <table class="admintable" style="width: 100%">
                                 <tr>
-                                    <td id="tz_img_gallery"></td>
+                                    <td style="background: #F6F6F6; min-width:100px;" align="right" rowspan="2" valign="top">
+                                        <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE');?></strong>
+                                    </td>
+                                    <td>
+                                        <input type="file" name="tz_img" id="tz_img" value="">
+                                    </td>
+                                </tr>
+                                <tr class="input-prepend input-append">
+                                    <td id="tz_img_server">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="background: #F6F6F6; min-width:100px;" align="right">
+                                        <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_IMAGE_TITLE');?></strong>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="tz_image_title" id="tz_image_title"
+                                               value="<?php echo stripslashes($list -> imagetitle);?>"
+                                               />
+                                        <input type="hidden" name="tz_img_image" value="image" style="margin-bottom: 10px;"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="background: #F6F6F6; min-width:100px;" align="right" rowspan="2" valign="top">
+                                        <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FROM_IMAGE_HOVER');?></strong>
+                                    </td>
+                                    <td>
+                                        <input type="file" name="tz_img_hover" id="tz_img_hover" value=""/>
+                                    </td>
+                                </tr>
+                                <tr  class="input-prepend input-append">
+                                    <td id="tz_img_hover_server">
+                                    </td>
                                 </tr>
                             </table>
                         </div>
-                        <div class="tab-pane" id="tztabsMedia">
-                            <div id="tz_media">
-                                <table>
+                    </div>
+
+                    <div class="tab-pane" id="tztabsGallery">
+                        <table  id="tz_image_gallery">
+                            <tr>
+                                <td id="tz_img_gallery"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="tab-pane" id="tztabsMedia">
+                        <div id="tz_media">
+                            <table>
+                                <tr>
+                                    <td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">
+                                        <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_TYPE')?></strong>
+                                    </td>
+                                    <td>
+                                        <select name="tz_media_type" id="tz_media_type">
+                                            <option value="default"<?php echo ($list -> video -> type =='default')?' selected="selected"':''?>><?php echo JText::_('COM_TZ_PORTFOLIO_DEFAULT');?></option>
+                                            <option value="youtube"<?php echo ($list -> video -> type =='youtube')?' selected="selected"':''?>>Youtube</option>
+                                            <option value="vimeo"<?php echo ($list -> video -> type =='vimeo')?' selected="selected"':''?>>Vimeo</option>
+
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr id="tz_media_code_outer">
+                                    <td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">
+                                        <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_SOURCE')?></strong>
+                                    </td>
+                                    <td id="tz_media_code">
+                                        <?php echo JText::_('COM_TZ_PORTFOLIO_PASTE_HTML_CODE');?><br/>
+                                        <textarea rows="10" cols="20" name="tz_media_code">
+                                            <?php echo $list -> video -> code;?>
+                                        </textarea>
+                                    </td>
+                                </tr>
+                                <tr id="tz_thumb">
+                                    <td id="tz_thumb_inner" valign="top" align="right" style="background: #F6F6F6; min-width:100px;">
+                                    </td>
+                                    <td id="tz_thumb_preview">
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">
+                                        <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_TITLE');?></strong>
+                                    </td>
+                                    <td id="tz_media_title">
+                                        <input type="text"
+                                               name="tz_media_title"
+                                               value="<?php echo trim($list -> video -> title);?>">
+                                    </td>
+
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tztabsFields">
+                        <div id="tz_fields"></div>
+                    </div>
+                    <div class="tab-pane" id="tztabsAttachment">
+                        <div id="tz_attachments">
+                            <?php
+                            if($this -> listAttach):
+                            ?>
+                            <table class="table table-striped" id="tz_attachments_show">
+                                <thead style="font-weight: bold;">
                                     <tr>
-                                        <td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">
-                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_TYPE')?></strong>
-                                        </td>
-                                        <td>
-                                            <select name="tz_media_type" id="tz_media_type">
-                                                <option value="default"<?php echo ($list -> video -> type =='default')?' selected="selected"':''?>><?php echo JText::_('COM_TZ_PORTFOLIO_DEFAULT');?></option>
-                                                <option value="youtube"<?php echo ($list -> video -> type =='youtube')?' selected="selected"':''?>>Youtube</option>
-                                                <option value="vimeo"<?php echo ($list -> video -> type =='vimeo')?' selected="selected"':''?>>Vimeo</option>
-
-                                            </select>
-                                        </td>
+                                        <td><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_FILENAME');?></td>
+                                        <td><?php echo JText::_('COM_TZ_PORTFOLIO_ATTACH_TITLE');?></td>
+                                        <td width="15%"><?php echo JText::_('JSTATUS');?></td>
                                     </tr>
-                                    <tr id="tz_media_code_outer">
-                                        <td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">
-                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_SOURCE')?></strong>
-                                        </td>
-                                        <td id="tz_media_code">
-                                            <?php echo JText::_('COM_TZ_PORTFOLIO_PASTE_HTML_CODE');?><br/>
-                                            <textarea rows="10" cols="20" name="tz_media_code">
-                                                <?php echo $list -> video -> code;?>
-                                            </textarea>
-                                        </td>
-                                    </tr>
-                                    <tr id="tz_thumb">
-                                        <td id="tz_thumb_inner" valign="top" align="right" style="background: #F6F6F6; min-width:100px;">
-                                        </td>
-                                        <td id="tz_thumb_preview">
+                                </thead>
+                                <tbody id="tz_attachments_body"></tbody>
+                            </table>
+                            <?php endif; ?>
 
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="background: #F6F6F6; min-width:100px;" align="right" valign="top">
-                                            <strong><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_MEDIA_TITLE');?></strong>
-                                        </td>
-                                        <td id="tz_media_title">
-                                            <input type="text"
-                                                   name="tz_media_title"
-                                                   value="<?php echo trim($list -> video -> title);?>">
-                                        </td>
-
-                                    </tr>
-
-                                </table>
-                            </div>
+                            <table id="tz_attachments_table"></table>
                         </div>
-                        <div class="tab-pane" id="tztabsFields">
-                            <div id="tz_fields"></div>
-                        </div>
-                        <div class="tab-pane" id="tztabsAttachment">
-                            <div id="tz_attachments">
-                                <?php
-                                if($this -> listAttach):
-                                ?>
-                                <table class="table table-striped" id="tz_attachments_show">
-                                    <thead style="font-weight: bold;">
-                                        <tr>
-                                            <td><?php echo JText::_('COM_TZ_PORTFOLIO_FORM_FILENAME');?></td>
-                                            <td><?php echo JText::_('COM_TZ_PORTFOLIO_ATTACH_TITLE');?></td>
-                                            <td width="15%"><?php echo JText::_('JSTATUS');?></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tz_attachments_body"></tbody>
-                                </table>
-                                <?php endif; ?>
+                    </div>
 
-                                <table id="tz_attachments_table"></table>
-                            </div>
-                        </div>
+                     <?php echo $this -> loadTemplate('quote');?>
 
-                         <?php echo $this -> loadTemplate('quote');?>
+                     <?php echo $this -> loadTemplate('link');?>
 
-                         <?php echo $this -> loadTemplate('link');?>
+                     <?php echo $this -> loadTemplate('audio');?>
 
-                         <?php echo $this -> loadTemplate('audio');?>
-
-                         <?php echo $this -> loadTemplate('plugin_content_tab');?>
-                         <!-- End Tabs -->
-                     </div>
-                    <!-- End Content -->
-
-                </div>
+                     <?php echo $this -> loadTemplate('plugin_content_tab');?>
+                     <!-- End Tabs -->
+                 </div>
+                <!-- End Content -->
             </div>
             <?php if ($assoc) : ?>
             <div class="tab-pane" id="associations">

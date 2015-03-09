@@ -30,6 +30,12 @@ class TZ_PortfolioViewField extends JViewLegacy
     public function display($tpl = null){
         $this -> item   = $this -> get('Item');
 
+        $buttons_plugin = JPluginHelper::getPlugin('editors-xtd');
+
+        if($buttons_plugin){
+
+        }
+
         $groupModel = JModelLegacy::getInstance('Groups','TZ_PortfolioModel',array('ignore_request' => true));
         $groupModel -> setState('filter_order','name');
         $groupModel -> setState('filter_order_Dir','ASC');

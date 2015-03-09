@@ -439,6 +439,7 @@
                default="M"
                label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE"
                 description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -449,6 +450,7 @@
                default="L"
                 label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE"
                 description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -459,6 +461,7 @@
                default="L"
                label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE"
                description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -469,6 +472,7 @@
                default="L"
                label="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -479,6 +483,7 @@
                default="M"
                label="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -525,6 +530,7 @@
                default="L"
                label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE"
                description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -535,6 +541,7 @@
                default="L"
                label="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -546,6 +553,7 @@
                default="M"
                label="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -813,6 +821,7 @@
                default="XL"
                label="COM_TZ_PORTFOLIO_ARTICLE_IMAGE_ZOOM_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_IMAGE_ZOOM_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -1415,6 +1424,7 @@
         <field name="related_image_size" type="list"
                default="S"
                label="COM_TZ_PORTFOLIO_RELATED_IMAGE_SIZE">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -1424,6 +1434,7 @@
         <field name="related_orderby" type="list"
                default="rdate"
                label="COM_TZ_PORTFOLIO_RELATED_ORDERBY">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="rdate">COM_TZ_PORTFOLIO_MOST_RECENT</option>
             <option value="date">COM_TZ_PORTFOLIO_MOST_OLDEST</option>
             <option value="hits">JGLOBAL_MOST_HITS</option>
@@ -1857,6 +1868,7 @@
         <field name="feed_image_size" type="list"
                default="S"
                label="COM_TZ_PORTFOLIO_FEED_IMAGE_SIZE">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -1900,6 +1912,14 @@
         <field type="radio" name="enable_bootstrap"
                default="1" class="btn-group"
                label="COM_TZ_PORTFOLIO_ENABLE_BOOTSTRAP_LIBRARY_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="allow_upload_original_image"
+               type="radio" default="1"
+               class="btn-group"
+               label="COM_TZ_PORTFOLIO_ALLOW_UPLOAD_ORIGINAL_IMAGE_LABEL"
+               description="COM_TZ_PORTFOLIO_ALLOW_UPLOAD_ORIGINAL_IMAGE_DESC">
             <option value="0">JNO</option>
             <option value="1">JYES</option>
         </field>

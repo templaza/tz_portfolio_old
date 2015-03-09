@@ -147,7 +147,10 @@ JFactory::getLanguage()->load('com_tz_portfolio');
 
                         <div class="TzSeparator"></div>
 
-                        <?php if (($params->get('show_author',1)) or ($params->get('show_category',1)) or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1)) or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1)) or ($params->get('show_hits',1))) : ?>
+                        <?php if (($params->get('show_author',1)) or ($params->get('show_category',1))
+                        or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1))
+                        or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1))
+                        or ($params->get('show_hits',1)) or ($params->get('show_tags',1))) : ?>
                             <div class="muted TzArticle-info">
                         <?php endif; ?>
 
@@ -162,6 +165,11 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                             <?php endif; ?>
                         </div>
                         <?php endif; ?>
+
+                        <?php if ($params->get('show_tags',1)) :
+                            echo $this -> loadTemplate('tag');
+                        endif; ?>
+
                         <?php if ($params->get('show_create_date',1)) : ?>
                         <div class="TzPortfolioDate" itemprop="dateCreated">
                             <?php echo JText::sprintf('COM_CONTENT_CREATED_DATE_ON', JHtml::_('date', $row->created, JText::_('DATE_FORMAT_LC2'))); ?>

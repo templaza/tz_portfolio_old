@@ -85,6 +85,7 @@
 		<field
 			id="catid"
 			name="catid"
+            parent="true"
 			type="categoryedit"
 			extension="com_content"
 			label="JCATEGORY"

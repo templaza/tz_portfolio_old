@@ -51,11 +51,11 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
         <?php if ($this->params->get('show_description', 1) || $this->params->def('show_description_image', 1)) : ?>
             <div class="TzCategoryDesc">
-            <?php if ($this->params->get('show_description_image') AND isset($this->listImage->images) AND !empty($this -> listImage -> Images)) : ?>
+            <?php if ($this->params->get('show_description_image') AND isset($this -> category -> tz_image) AND !empty($this -> category -> tz_image)) : ?>
                 <?php
                     $catParams  = $this -> category -> getParams();
                 ?>
-                    <img src="<?php echo JURI::root().$this -> listImage -> images; ?>"
+                    <img src="<?php echo JURI::root().$this -> category -> tz_image; ?>"
                         alt="<?php echo isset($this -> category -> title)?$this->category->title:''; ?>"/>
             <?php endif; ?>
             <?php if ($this->params->get('show_description') && $this->category->description) : ?>

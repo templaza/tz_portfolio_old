@@ -773,7 +773,7 @@ jQuery(function($){
             $parent2 = $(this).parent().parent().parent();
             $(this).parent().parent().fadeOut('fast').remove();
             var totalSpan =  $parent2.find('>.column').length;
-            resetColumns($parent2);
+            //resetColumns($parent2);
         }
         return false;
     });
@@ -900,7 +900,7 @@ jQuery(function($){
     var addColumn = function($selector){
         $.get(pluginPath+'/new-column.php?time='+ $.now(), function($column){
             $($column).hide().appendTo($selector).fadeIn(1000);
-            resetColumns($selector);
+            //resetColumns($selector);
             rowColumnSortable();
             $('a[rel="popover"]').popover('destroy');
             $('a[rel="popover"]').show();

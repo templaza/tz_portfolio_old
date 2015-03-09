@@ -20,10 +20,9 @@
 // no direct access
 defined('_JEXEC') or die;
 $class = ' class="first"';
-
 ?>
 
-<?php if (count($this->children[$this->category->id]) > 0 && $this->maxLevel != 0) : ?>
+<?php if (count($this->children[$this->category->id]) > 0 && $this->maxLevel != 0) :?>
 	<ul>
 	<?php foreach($this->children[$this->category->id] as $id => $child) : ?>
 		<?php
@@ -34,8 +33,8 @@ $class = ' class="first"';
 		?>
 		<li<?php echo $class; ?>>
 			<?php $class = ''; ?>
-            <?php if (isset($this->listImage->images)) : ?>
-                <img src="<?php echo JURI::root().$this -> listImage -> images; ?>"
+            <?php if (isset($child -> tz_image) && !empty($child -> tz_image)) : ?>
+                <img src="<?php echo JURI::root().$child -> tz_image; ?>"
                     alt="<?php echo isset($child->title)?$child->title:''; ?>"/>
             <?php endif; ?>
 

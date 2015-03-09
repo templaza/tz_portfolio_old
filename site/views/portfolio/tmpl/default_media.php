@@ -34,14 +34,14 @@ if(isset($media[0] -> featured) && $media[0] -> featured == 1){
     }
 }
 if($imgSize){
-    if(!empty($media[0] -> images))
-        $src    = str_replace('.'.JFile::getExt($media[0] -> images),'_'.$imgSize
-                                                  .'.'.JFile::getExt($media[0] -> images),$media[0] -> images);
+    if (!empty($media[0]->images))
+        $src = str_replace('.' . JFile::getExt($media[0]->images), '_' . $imgSize
+            . '.' . JFile::getExt($media[0]->images), $media[0]->images);
 
-    if(!empty($media[0] -> images_hover))
-        $srcHover   = JURI::root().str_replace('.'.JFile::getExt($media[0] -> images_hover),'_'
-                                           .$imgSize
-                                          .'.'.JFile::getExt($media[0] -> images_hover),$media[0] -> images_hover);
+    if (!empty($media[0]->images_hover))
+        $srcHover = JURI::root() . str_replace('.' . JFile::getExt($media[0]->images_hover), '_'
+                . $imgSize
+                . '.' . JFile::getExt($media[0]->images_hover), $media[0]->images_hover);
 }
 $class  = null;
 if($params -> get('tz_use_lightbox',1) == 1){

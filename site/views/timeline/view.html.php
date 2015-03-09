@@ -283,6 +283,8 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
             $this->setLayout($layout);
         }
 
+        $this -> _prepareDocument();
+
         // Add feed links
 		if ($params->get('show_feed_link', 1)) {
 			$link = '&format=feed&limitstart=';
@@ -292,6 +294,39 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
 			$doc->addHeadLink(JRoute::_($link . '&type=atom'), 'alternate', 'rel', $attribs);
 		}
         parent::display($tpl);
+    }
+
+    protected function _prepareDocument()
+    {
+        $app    = JFactory::getApplication();
+        $title  = $this->params->get('page_title', '');
+
+        if (empty($title)) {
+            $title = $app->getCfg('sitename');
+        }
+        elseif ($app->getCfg('sitename_pagetitles', 0) == 1) {
+            $title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
+        }
+        elseif ($app->getCfg('sitename_pagetitles', 0) == 2) {
+            $title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
+        }
+
+        $this->document->setTitle($title);
+
+        if ($this->params->get('menu-meta_description'))
+        {
+            $this->document->setDescription($this->params->get('menu-meta_description'));
+        }
+
+        if ($this->params->get('menu-meta_keywords'))
+        {
+            $this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+        }
+
+        if ($this->params->get('robots'))
+        {
+            $this->document->setMetadata('robots', $this->params->get('robots'));
+        }
     }
 
     protected function FindUserItemId($_userid=null){

@@ -224,8 +224,7 @@ $doc -> addScript(JUri::base(true).'/components/com_tz_portfolio/js/base64.js');
         $container.isotope({
             itemSelector : '.element',
             layoutMode: '<?php echo $layout[0];?>',
-            sortBy: 'date',
-            sortAscending: false,
+            sortBy: 'original-order',
             getSortData: {
                 date: function($elem){
                    var number = ($elem.hasClass('element') && $elem.attr('data-date').length) ?

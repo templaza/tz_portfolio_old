@@ -101,6 +101,36 @@ class TZ_PortfolioModelCategory extends JModelList
 		parent::__construct($config);
 	}
 
+    function getChildrenImages(){
+        if($this -> _children && count($this -> _children)){
+            $child_ids  = array();
+            foreach($this -> _children as $i => $child){
+                $child_ids[]    = $child -> id;
+            }
+            if(count($child_ids)) {
+                $db     = JFactory::getDbo();
+                $query  = $db->getQuery(true);
+
+                $query -> select('*');
+                $query -> from('#__tz_portfolio_categories');
+                $query -> where('catid IN('.implode(',',$child_ids).')');
+                $db -> setQuery($query);
+                if($child_images = $db -> loadObjectList()){
+                    $childImages    = array();
+                    foreach($child_images as $item){
+                        $childImages[$item -> catid]    = $item;
+                    }
+                    foreach($this -> _children as $i => &$child){
+                        $child -> tz_image  = null;
+                        if(count($childImages) && isset($childImages[$child -> id])){
+                            $child -> tz_image  = $childImages[$child -> id] -> images;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     function getCatImages(){
         $query  = 'SELECT * FROM #__tz_portfolio_categories'
                   .' WHERE catid='.$this -> getState('category.id');
@@ -378,6 +408,13 @@ class TZ_PortfolioModelCategory extends JModelList
 				$this->_parent = false;
 			}
 		}
+        if($this -> _item) {
+            $this->_item -> tz_image = null;
+            if($image = $this -> getCatImages()){
+                $this -> _item -> tz_image  = $image -> images;
+            }
+            $this -> getChildrenImages();
+        }
 
 		return $this->_item;
 	}

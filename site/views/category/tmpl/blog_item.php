@@ -56,7 +56,7 @@ $this -> assign('listMedia',$listMedia);
         <?php if (($params->get('show_author',1)) or ($params->get('show_category',1))
             or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1))
             or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1))
-            or ($params->get('show_hits',1)) or ($params -> get('show_vote',1))) : ?>
+            or ($params->get('show_hits',1)) or ($params -> get('show_vote',1)) or ($params -> get('show_tags',1))) : ?>
         <div class="muted TzArticleBlogInfo">
 
             <?php if ($params->get('show_create_date')) : ?>
@@ -129,6 +129,10 @@ $this -> assign('listMedia',$listMedia);
                     <?php endif; ?>
                 </span>
             <?php endif; ?>
+
+            <?php if($params -> get('show_tags',1)): ?>
+                <?php echo $this -> loadTemplate('tag');?>
+            <?php endif;?>
 
             <?php if ($params->get('show_modify_date',1)) : ?>
             <span class="TzLine">|</span>

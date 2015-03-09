@@ -722,22 +722,24 @@ class TZ_PortfolioModelTimeLine extends JModelList
 
     public function getItems(){
         if($items = parent::getItems()){
-            $user	= JFactory::getUser();
-            $userId	= $user->get('id');
-            $guest	= $user->get('guest');
+            $user	        = JFactory::getUser();
+            $userId	        = $user->get('id');
+            $guest	        = $user->get('guest');
 
-            $params = $this -> getState('params');
+            $params         = $this -> getState('params');
 
-            $contentId  = array();
-            $tzDate     = array();
+            $contentId      = array();
+            $tzDate         = array();
+            $content_ids    = array();
 
-            $_params    = null;
-            $categories = JCategories::getInstance('Content');
+            $_params        = null;
+            $categories     = JCategories::getInstance('Content');
 
-            $threadLink = null;
-            $comments   = null;
+            $threadLink     = null;
+            $comments       = null;
 
             foreach($items as &$item){
+                $content_ids[]  = $item -> id;
                 $_params        = clone($params);
                 $temp           = clone($params);
 
@@ -890,10 +892,22 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 // End Get comment counts for all items(articles)
             }
 
+            $tags   = null;
+            if(count($content_ids) && $params -> get('show_tags',1)) {
+                $m_tag = JModelLegacy::getInstance('Tag', 'TZ_PortfolioModel', array('ignore_request' => true));
+                $m_tag->setState('params',$params);
+                $m_tag->setState('article.id', $content_ids);
+                $m_tag -> setState('list.ordering','x.contentid');
+                $tags   = $m_tag -> getArticleTags();
+            }
+
             //Get Plugins Model
             $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
 
             foreach($items as $i => &$item){
+                if($tags && count($tags) && isset($tags[$item -> id])){
+                    $item -> tags   = $tags[$item -> id];
+                }
 
                 /*** Start New Source ***/
                 $tmpl   = null;
