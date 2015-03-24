@@ -88,7 +88,7 @@ class TZ_PortfolioViewCategories extends JViewLegacy
 		$this->assignRef('parent',		$parent);
 		$this->assignRef('items',		$items);
 
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio.min.css');
 
 		$this->_prepareDocument();
 

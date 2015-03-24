@@ -19,7 +19,6 @@
 
 // no direct access
 defined('_JEXEC') or die;
-require_once(JPATH_BASE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'media.php');
 if($list):
 ?>
 <ul class="latestnews<?php echo $moduleclass_sfx; ?>">

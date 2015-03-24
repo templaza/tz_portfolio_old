@@ -11,7 +11,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.3.0</version>
+	<version>3.3.1</version>
 	<description>MOD_POPULAR_XML_DESCRIPTION
   <![CDATA[
     <link rel="stylesheet" type="text/css" href="../modules/mod_tz_portfolio_articles_popular/admin/stylemodule/tz-style-module.css" />
@@ -127,11 +127,12 @@
                  <field name="tz_image_size" type="list"
                         default="S"
                         label="MOD_TZ_PORTFOLIO_ARTICLES_POPULAR_TZ_IMAGE_SIZE">
-                    <option value="XS">XSmall</option>
-                    <option value="S">Small</option>
-                    <option value="M">Medium</option>
-                    <option value="L">Large</option>
-                    <option value="XL">XLarge</option>
+                    <option value="o">MOD_TZ_PORTFOLIO_ARTICLES_POPULAR_ORIGINAL</option>
+                    <option value="XS">MOD_TZ_PORTFOLIO_ARTICLES_POPULAR_XSMALL</option>
+                    <option value="S">MOD_TZ_PORTFOLIO_ARTICLES_POPULAR_SMALL</option>
+                    <option value="M">MOD_TZ_PORTFOLIO_ARTICLES_POPULAR_MEDIUM</option>
+                    <option value="L">MOD_TZ_PORTFOLIO_ARTICLES_POPULAR_LARGE</option>
+                    <option value="XL">MOD_TZ_PORTFOLIO_ARTICLES_POPULAR_XLARGE</option>
                 </field>
             </fieldset>
 

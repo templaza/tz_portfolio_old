@@ -22,7 +22,6 @@ defined('_JEXEC') or die();
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 $doc    = JFactory::getDocument();
-$doc -> addScript(JUri::base(true).'/components/com_tz_portfolio/js/base64.js');
 ?>
 
 <?php if($this -> listsArticle):?>
