@@ -148,9 +148,10 @@ class TZ_PortfolioModelMedia extends JModelLegacy
 
                                 if(isset($title[$i]) && !empty($title[$i])){
                                     $data[$i] -> imagetitle     = htmlspecialchars(trim($title[$i]));
-                                }elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
-                                    $data[0] -> imagetitle     = $rows -> c_title;
                                 }
+//                                elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
+//                                    $data[$i] -> imagetitle     = $rows -> c_title;
+//                                }
 
                                 $data[$i] -> articleId   = $articleId;
                             }

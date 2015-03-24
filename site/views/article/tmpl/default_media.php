@@ -116,10 +116,13 @@ endif;
                     $dirNav   = 'true';
                 else
                     $dirNav   = 'false';
-                if($params -> get('show_controlNav_image_gallery',1) == 1)
-                    $controlNav   = 'true';
-                else
-                    $controlNav   = 'false';
+                if($params -> get('show_controlNav_image_gallery',1) == 1) {
+                    $controlNav = 'true';
+                    if ($params->get('controlnav_type', 'none') == 'thumbnails' )
+                        $controlNav = $params->get('controlnav_type', 'none');
+                }else {
+                    $controlNav = 'false';
+                }
 
                 if($params -> get('image_gallery_pausePlay',1) == 1)
                     $pausePlay   = 'true';
@@ -205,7 +208,7 @@ endif;
                             slideshowSpeed: '.$params -> get('image_gallery_animSpeed').',
                             animationDuration: '.$params -> get('image_gallery_animation_duration').',
                             directionNav: '.$dirNav.',
-                            controlNav: '.$controlNav.',
+                            controlNav: '.(($controlNav=='thumbnails')?'"'.$controlNav.'"':$controlNav).',
                             prevText: "'.JText::_('Previous').'",
                             nextText: "'.JText::_('Next').'",
                             pausePlay: '.$pausePlay.',
@@ -234,11 +237,13 @@ endif;
                         <ul class="slides">
                             <?php foreach($media as $rowMedia):?>
                                 <?php
-                                    $src    = JURI::root().str_replace('.'.JFile::getExt($rowMedia -> images),
+                                    $src        = JURI::root().str_replace('.'.JFile::getExt($rowMedia -> images),
                                                 '_'.$params -> get('detail_article_image_gallery_size','L')
                                               .'.'.JFile::getExt($rowMedia -> images),$rowMedia -> images);
+                                    $thumb_src  = JURI::root().str_replace('.'.JFile::getExt($rowMedia -> images),
+                                                '_S.'.JFile::getExt($rowMedia -> images),$rowMedia -> images);
                                 ?>
-                                <li>
+                                <li<?php echo ($controlNav=='thumbnails')?' data-thumb="'.$thumb_src.'"':''?>>
                                     <img src="<?php echo $src;?>"
                                          alt="<?php echo ($rowMedia -> imagetitle)?($rowMedia -> imagetitle):($this -> item -> title);?>"
                                         <?php if(!empty($rowMedia -> imagetitle)):?>

@@ -62,12 +62,12 @@ class TZ_PortfolioController extends JControllerLegacy
             $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery.ui.core.min.js');
             $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery.ui.sortable.min.js');
             $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/sortablelist.js');
-            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/template.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/template.min.js');
 
-            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/css/chosen.css');
+            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/css/chosen.min.css');
 //                    $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/css/bootstrap.min.css');
             //        $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/css/template.css');
-            $doc -> addCustomTag('<link href="'.COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/css/template.css'.
+            $doc -> addCustomTag('<link href="'.COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/css/template.min.css'.
                 '" rel="stylesheet" type="text/css"/>');
         }
 	}
@@ -86,6 +86,7 @@ class TZ_PortfolioController extends JControllerLegacy
 
         // Get the document object.
         $document = JFactory::getDocument();
+        $app    = JFactory::getApplication();
 
         // Set the default view name and format from the Request.
         $vName		= $this -> input -> get('view', 'articles');
