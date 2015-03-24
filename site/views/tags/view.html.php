@@ -351,8 +351,8 @@ class TZ_PortfolioViewTags extends JViewLegacy
 
         if($params -> get('tz_use_lightbox',1) == 1){
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
-                $jscompress -> folder.'/jquery.fancybox.pack'.$jscompress -> extfile.'.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox'.$csscompress.'.css');
+                $jscompress -> folder.'/jquery.fancybox.pack.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox.min.css');
 
             $width      = null;
             $height     = null;
@@ -401,7 +401,7 @@ class TZ_PortfolioViewTags extends JViewLegacy
             ');
         }
 
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio.min.css');
 
         $this -> _prepareDocument();
 

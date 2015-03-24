@@ -7,7 +7,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.3.0</version>
+	<version>3.3.1</version>
 	<description>TZ Portfolio native for Joomla! 2.5.x and 3.0.x</description>
     
     <scriptfile>script.php</scriptfile>
@@ -27,6 +27,7 @@
         <folder>assets</folder>
         <folder>bootstrap</folder>
         <folder>controllers</folder>
+        <folder>fonts</folder>
         <folder>css</folder>
         <folder>helpers</folder>
         <folder>js</folder>
@@ -286,10 +287,6 @@
             <field name="tz_letters" default="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z"/>
             <field name="filter_tags_categories_order" default="auto"/>
 
-            <field name="devmode" default="0"/>
-            <field name="css_compression" default="0"/>
-            <field name="js_compression" default="1"/>
-
             <field name="menu_active" default="auto"/>
             <field name="show_all_filter" default="0"/>
 
@@ -333,6 +330,8 @@
 
             <field name="enable_jquery" default="1"/>
             <field name="enable_bootstrap" default="1"/>
+
+            <field name="controlnav_type" default=""/>
 
         </fields>
     </config>

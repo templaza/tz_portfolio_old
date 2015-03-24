@@ -121,6 +121,24 @@ class TZ_PortfolioViewArticles extends JViewLegacy
 			JToolBarHelper::trash('articles.trash');
 			JToolBarHelper::divider();
 		}
+
+
+
+        //// If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $resizeTitle      = JText::_('COM_TZ_PORTFOLIO_RESIZE_ALL_IMAGES');
+            $resizeIcon  = '<span class="tz-icon-expand" title="'.$resizeTitle.'"></span>';
+
+            $rdhtml = '<a class="toolbar" href="#"'
+                .' onclick="if (document.adminForm.boxchecked.value==0){'
+                .'alert(\'Please first make a selection from the list\');}'
+                .'else{ Joomla.submitbutton(\'articles.resizeimage\')}">';
+            $rdhtml .= $resizeIcon.$resizeTitle.'</a>';
+
+            $bar->appendButton('Custom', $rdhtml, JText::_('COM_TZ_PORTFOLIO_RESIZE_ALL_IMAGES'),'articles.resizeimage',true);
+        }else{
+            JToolbarHelper::custom('articles.resizeimage','expand-2','',JText::_('COM_TZ_PORTFOLIO_RESIZE_ALL_IMAGES'),true);
+        }
         
          //Add a batch button
 		if ($user->authorise('core.edit'))
@@ -152,43 +170,43 @@ class TZ_PortfolioViewArticles extends JViewLegacy
         $doc    = JFactory::getDocument();
         // If the joomla is version 3.0
         if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
-            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-v3.0.2/css/font-awesome.css');
+            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-v3.0.2/css/font-awesome.min.css');
         }
 
-        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.css');
+        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.min.css');
 
 
-        // Complie button
-        $compileTitle   = JText::_('COM_TZ_PORTFOLIO_COMPILE_LESS_TO_CSS');
-        $compileIcon    = '<i class="icon-check"></i>&nbsp;';
-        $compileClass   = ' class="btn btn-small"';
-
-        //// If the joomla's version is more than or equal to 3.0
-        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
-            $compileIcon    = '<span class="tz-icon-compile"></span>';
-            $compileClass   = null;
-        }
-
-        $compileButton   = '<a'.$compileClass.' onclick="Joomla.submitbutton(\'action.lesscall\')" href="#">'
-                           .$compileIcon.$compileTitle.'</a> ';
-
-        //  JS Compress button
-        $compressTitle  = JText::_('COM_TZ_PORTFOLIO_COMPRESSION_JS');
-        $compressIcon   = '<i class="icon-check"></i>&nbsp;';
-        $compressClass  = ' class="btn btn-small"';
-
-        //// If the joomla's version is more than or equal to 3.0
-        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
-            $compressIcon    = '<span class="tz-icon-compress"></span>';
-            $compressClass   = null;
-        }
-
-        $compressButton   = '<a'.$compressClass.' onclick="Joomla.submitbutton(\'action.jscompress\')" href="#">'
-                            .$compressIcon.$compressTitle.'</a> ';
-
-        $bar -> appendButton('Custom',$compileButton,'compile');
-        $bar -> appendButton('Custom',$compressButton,'compress');
-        JToolBarHelper::divider();
+//        // Complie button
+//        $compileTitle   = JText::_('COM_TZ_PORTFOLIO_COMPILE_LESS_TO_CSS');
+//        $compileIcon    = '<i class="icon-check"></i>&nbsp;';
+//        $compileClass   = ' class="btn btn-small"';
+//
+//        //// If the joomla's version is more than or equal to 3.0
+//        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+//            $compileIcon    = '<span class="tz-icon-compile"></span>';
+//            $compileClass   = null;
+//        }
+//
+//        $compileButton   = '<a'.$compileClass.' onclick="Joomla.submitbutton(\'action.lesscall\')" href="#">'
+//                           .$compileIcon.$compileTitle.'</a> ';
+//
+//        //  JS Compress button
+//        $compressTitle  = JText::_('COM_TZ_PORTFOLIO_COMPRESSION_JS');
+//        $compressIcon   = '<i class="icon-check"></i>&nbsp;';
+//        $compressClass  = ' class="btn btn-small"';
+//
+//        //// If the joomla's version is more than or equal to 3.0
+//        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+//            $compressIcon    = '<span class="tz-icon-compress"></span>';
+//            $compressClass   = null;
+//        }
+//
+//        $compressButton   = '<a'.$compressClass.' onclick="Joomla.submitbutton(\'action.jscompress\')" href="#">'
+//                            .$compressIcon.$compressTitle.'</a> ';
+//
+//        $bar -> appendButton('Custom',$compileButton,'compile');
+//        $bar -> appendButton('Custom',$compressButton,'compress');
+//        JToolBarHelper::divider();
 
 		JToolBarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
 

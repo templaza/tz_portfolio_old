@@ -49,7 +49,7 @@ abstract class modTZ_PortfolioArticlesFeaturesHelper
 		$model->setState('filter.access', $access);
 
 		// Category filter
-		$model->setState('filter.category_id', implode($params->get('catid', '')));
+		$model->setState('filter.category_id', $params->get('catid', ''));
 
 		// Filter by language
 		$model->setState('filter.language', $app->getLanguageFilter());
@@ -60,112 +60,114 @@ abstract class modTZ_PortfolioArticlesFeaturesHelper
 
 		$model->setState('filter.featured', 'only');
 
-		$items = $model->getItems();
+		if($items = $model->getItems()){
 
-        $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel',array('ignore_request' => true));
-		foreach ($items as &$item) {
-			$item->slug = $item->id.':'.$item->alias;
-			$item->catslug = $item->catid.':'.$item->category_alias;
+            $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel',array('ignore_request' => true));
+            foreach ($items as &$item) {
+                $item->slug = $item->id.':'.$item->alias;
+                $item->catslug = $item->catid.':'.$item->category_alias;
 
-			if ($access || in_array($item->access, $authorised)) {
-				// We know that user has the privilege to view the article
-				$item->link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item->slug, $item->catslug));
-			} else {
-				$item->link = JRoute::_('index.php?option=com_users&view=login');
-			}
-
-            if($params -> get('tz_show_title') == '0')
-                $item -> title  = '';
-
-            if($params -> get('tz_show_introtext') == '1'){
-                if($params -> get('tz_counter')){
-                    $text   = strip_tags($item -> introtext);
-                    $text   = explode(' ',$text);
-                    $text   = array_splice($text,0,$params -> get('tz_counter'));
-                    $text   = implode(' ',$text);
+                if ($access || in_array($item->access, $authorised)) {
+                    // We know that user has the privilege to view the article
+                    $item->link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item->slug, $item->catslug));
+                } else {
+                    $item->link = JRoute::_('index.php?option=com_users&view=login');
                 }
-                else
-                    $text   = $item -> introtext;
 
-                    $item -> text   = $text;
-            }
+                if($params -> get('tz_show_title') == '0')
+                    $item -> title  = '';
 
-            $item -> media  = null;
-            $model2 -> setState('article.id',$item -> id);
-            if($media  = $model2 -> getMedia()){
-                $item -> media  = $media[0];
-                if($media[0] -> type != 'video' && $media[0] -> type != 'audio'){
-                    if(!empty($media[0] -> images)){
-                        if($params -> get('tz_image_size','S')){
-                            $imageName  = $media[0] -> images;
-                            $item -> media -> images   = JURI::root().str_replace('.'.JFile::getExt($imageName)
-                                ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
-                        }
+                if($params -> get('tz_show_introtext') == '1'){
+                    if($params -> get('tz_counter')){
+                        $text   = strip_tags($item -> introtext);
+                        $text   = explode(' ',$text);
+                        $text   = array_splice($text,0,$params -> get('tz_counter'));
+                        $text   = implode(' ',$text);
                     }
-                }
-                else{
-                    if(!empty($media[0] -> thumb)){
-                        if($params -> get('tz_image_size','S')){
-                            $imageName  = $media[0] -> thumb;
-                            $item -> media -> images   = JURI::root().str_replace('.'.JFile::getExt($imageName)
-                                ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
-                        }
-                    }
-                }
-                if( ($media[0] -> type == 'quote' AND !$params -> get('show_quote',1))
-                    OR ($media[0] -> type == 'link' AND !$params -> get('show_link',1)) ){
-                    $item -> media  = null;
-                }
-            }
+                    else
+                        $text   = $item -> introtext;
 
-            if($model2 && $params -> get('show_tz_image') == '1'){
-                if($image  = $model2 -> getMedia($item -> id)){
-                    if($image[0] -> type != 'quote' && $image[0] -> type != 'link'){
-                        if($image[0] -> type != 'video' && $image[0] -> type != 'audio'){
-                            if(!empty($image[0] -> images)){
-                                if($params -> get('tz_image_size','S')){
-                                    $imageName  = $image[0] -> images;
-                                    $item -> tz_image   = JURI::root().str_replace('.'.JFile::getExt($imageName)
-                                        ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
-                                }
-                                $item -> tz_image_title = $image[0] -> imagetitle;
+                        $item -> text   = $text;
+                }
+
+                $item -> media  = null;
+                $model2 -> setState('article.id',$item -> id);
+                if($media  = $model2 -> getMedia()){
+                    $item -> media  = $media[0];
+                    if($media[0] -> type != 'video' && $media[0] -> type != 'audio'){
+                        if(!empty($media[0] -> images)){
+                            if($params -> get('tz_image_size','S')){
+                                $imageName  = $media[0] -> images;
+                                $item -> media -> images   = JURI::root().str_replace('.'.JFile::getExt($imageName)
+                                    ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
                             }
                         }
-                        else{
-                            if(!empty($image[0] -> thumb)){
-                                if($params -> get('tz_image_size','S')){
-                                    $imageName  = $image[0] -> thumb;
-                                    $item -> tz_image   = JURI::root().str_replace('.'.JFile::getExt($imageName)
-                                        ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
-                                }
-                                $item -> tz_image_title = $image[0] -> imagetitle;
+                    }
+                    else{
+                        if(!empty($media[0] -> thumb)){
+                            if($params -> get('tz_image_size','S')){
+                                $imageName  = $media[0] -> thumb;
+                                $item -> media -> images   = JURI::root().str_replace('.'.JFile::getExt($imageName)
+                                    ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
                             }
                         }
-                    }else{
-                        $item -> quote_author   = null;
-                        if(isset($image[0] -> quote_author)){
-                            $item -> quote_author   = $image[0] -> quote_author;
-                        }
-                        if(isset($image[0] -> quote_text)){
-                            $item -> quote_text = $image[0] -> quote_text;
-                        }
-                        if(isset($image[0] -> link_title)){
-                            $item -> link_title = $image[0] -> link_title;
-                        }
-                        if(isset($image[0] -> link_url)){
-                            $item -> link_url   = $image[0] -> link_url;
-                        }
-                        if(isset($image[0] -> link_target)){
-                            $item -> link_target    = $image[0] -> link_target;
-                        }
-                        if(isset($image[0] -> link_follow)){
-                            $item -> link_follow    = $image[0] -> link_follow;
+                    }
+                    if( ($media[0] -> type == 'quote' AND !$params -> get('show_quote',1))
+                        OR ($media[0] -> type == 'link' AND !$params -> get('show_link',1)) ){
+                        $item -> media  = null;
+                    }
+                }
+
+                if($model2 && $params -> get('show_tz_image') == '1'){
+                    if($image  = $model2 -> getMedia($item -> id)){
+                        if($image[0] -> type != 'quote' && $image[0] -> type != 'link'){
+                            if($image[0] -> type != 'video' && $image[0] -> type != 'audio'){
+                                if(!empty($image[0] -> images)){
+                                    if($params -> get('tz_image_size','S')){
+                                        $imageName  = $image[0] -> images;
+                                        $item -> tz_image   = JURI::root().str_replace('.'.JFile::getExt($imageName)
+                                            ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
+                                    }
+                                    $item -> tz_image_title = $image[0] -> imagetitle;
+                                }
+                            }
+                            else{
+                                if(!empty($image[0] -> thumb)){
+                                    if($params -> get('tz_image_size','S')){
+                                        $imageName  = $image[0] -> thumb;
+                                        $item -> tz_image   = JURI::root().str_replace('.'.JFile::getExt($imageName)
+                                            ,'_'.$params -> get('tz_image_size','S').'.'.JFile::getExt($imageName),$imageName);
+                                    }
+                                    $item -> tz_image_title = $image[0] -> imagetitle;
+                                }
+                            }
+                        }else{
+                            $item -> quote_author   = null;
+                            if(isset($image[0] -> quote_author)){
+                                $item -> quote_author   = $image[0] -> quote_author;
+                            }
+                            if(isset($image[0] -> quote_text)){
+                                $item -> quote_text = $image[0] -> quote_text;
+                            }
+                            if(isset($image[0] -> link_title)){
+                                $item -> link_title = $image[0] -> link_title;
+                            }
+                            if(isset($image[0] -> link_url)){
+                                $item -> link_url   = $image[0] -> link_url;
+                            }
+                            if(isset($image[0] -> link_target)){
+                                $item -> link_target    = $image[0] -> link_target;
+                            }
+                            if(isset($image[0] -> link_follow)){
+                                $item -> link_follow    = $image[0] -> link_follow;
+                            }
                         }
                     }
                 }
             }
+
+            return $items;
 		}
-
-		return $items;
+        return false;
 	}
 }

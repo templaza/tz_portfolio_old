@@ -560,6 +560,13 @@
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
+            <field name="controlnav_type"
+                   type="list" class="btn-group"
+                   label="COM_TZ_PORTFOLIO_CONTROLNAV_IMAGE_GALLERY_TYPE_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">COM_TZ_PORTFOLIO_DEFAULT</option>
+                <option value="thumbnails">COM_TZ_PORTFOLIO_THUMBNAILS</option>
+            </field>
             <field name="image_gallery_pausePlay"
                    type="list"
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_PAUSEPLAY"

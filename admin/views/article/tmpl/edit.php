@@ -29,7 +29,7 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 JHtml::_('formbehavior.chosen', 'select');
 $doc    = JFactory::getDocument();
-$doc -> addscript(JUri::base(true).'/components/com_tz_portfolio/js/tz-chosen.js');
+$doc -> addscript(JUri::base(true).'/components/com_tz_portfolio/js/tz-chosen.min.js');
 if(!$this -> tagsSuggest){
     $this -> tagsSuggest    = 'null';
 }
@@ -305,7 +305,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                 tz_img.addEvent('click',function(){
                     SqueezeBox.fromElement(this, {
                         handler: "image",
-                        url: '<?php echo $src2;?>'
+                        url: '<?php echo $src2.'?time='.str_replace('.','',microtime(true));?>'
                     });
                 });
                 var tz_checkbox = new Element('input',{
@@ -398,7 +398,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                                 .'?time='.str_replace('.','',microtime(true));?>'
                                 <?php endif;?>
                             <?php else:?>
-                            src:'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
+                            src:'http://img.youtube.com/vi/'+ myCode.value+'/mqdefault.jpg'
                             <?php endif;?>
                         }).inject(video);
                         iframe.addEvent('click',function(){
@@ -407,10 +407,11 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                                <?php if(isset($list -> video->thumb)):?>
                                     <?php if($list -> video -> thumb):?>
                                     url: '<?php echo JUri::root().str_replace('.'.JFile::getExt($list -> video -> thumb),
-                                            '_L.'.JFile::getExt($list -> video -> thumb),$list -> video -> thumb);?>'
+                                            '_L.'.JFile::getExt($list -> video -> thumb),$list -> video -> thumb)
+                                            .'?time='.str_replace('.','',microtime(true));?>'
                                     <?php endif;?>
                                 <?php else:?>
-                                url: 'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
+                                url: 'http://img.youtube.com/vi/'+ myCode.value+'/mqdefault.jpg'
                                 <?php endif;?>
                            });
                         });
@@ -456,7 +457,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                     iframe.addEvent('click',function(){
                        SqueezeBox.fromElement(this, {
                             handler: "image",
-                            url: '<?php echo $src2;?>'
+                            url: '<?php echo $src2.'?time='.str_replace('.','',microtime(true));?>'
                        });
                     });
                 <?php endif;?>
@@ -525,12 +526,12 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                             var video   = new Element('div',{id:'tz_thumb_preview_youtube'}).inject(myLabel,'after');
                             var iframe  = new Element('img',{
                                 style: 'margin-top:10px; cursor:pointer; max-width: 200px;',
-                                src:'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
+                                src:'http://img.youtube.com/vi/'+ myCode.value+'/mqdefault.jpg'
                             }).inject(video);
                             iframe.addEvent('click',function(){
                                SqueezeBox.fromElement(this, {
                                     handler: "image",
-                                    url: 'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
+                                    url: 'http://img.youtube.com/vi/'+ myCode.value+'/mqdefault.jpg'
                                });
                             });
                         }
@@ -545,12 +546,12 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                                 var video   = new Element('div',{id:'tz_thumb_preview_youtube'}).inject(myLabel,'after');
                                 var iframe  = new Element('img',{
                                     style: 'margin-top:10px; cursor:pointer; max-width: 200px;',
-                                    src:'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
+                                    src:'http://img.youtube.com/vi/'+ myCode.value+'/mqdefault.jpg'
                                 }).inject(video);
                                 iframe.addEvent('click',function(){
                                    SqueezeBox.fromElement(this, {
                                         handler: "image",
-                                        url: 'http://img.youtube.com/vi/'+ myCode.value+'/hqdefault.jpg'
+                                        url: 'http://img.youtube.com/vi/'+ myCode.value+'/mqdefault.jpg'
                                    });
                                 });
                             }
@@ -602,7 +603,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                         iframe.addEvent('click',function(){
                            SqueezeBox.fromElement(this, {
                                 handler: "image",
-                                url: '<?php echo $src2;?>'
+                                url: '<?php echo $src2.'?time='.str_replace('.','',microtime(true));?>'
                            });
                         });
                     <?php endif;?>
@@ -715,7 +716,7 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                 tz_h.addEvent('click',function(){
                    SqueezeBox.fromElement(this, {
                         handler: "image",
-                        url: String.from(value.replace(/_S/,'_L'))
+                        url: String.from(value.replace(/_S/,'_L')) + '?time='+$date.getTime()
                     });
                 });
             }
@@ -1343,6 +1344,14 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                         <?php echo $this->form->getInput('articletext'); ?>
                     </div>
                     <div class="tab-pane" id="tztabsImage">
+                        <div class="control-group">
+                            <a class="modal btn hasTooltip" href="index.php?option=com_tz_portfolio&view=config&layout=image&tmpl=component"
+                               rel="{handler: 'iframe', size: {x: 500, y: 350}, onClose: function() {}}"
+                                title="<?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG_DESC');?>">
+                                <span class="icon-options"></span><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG');?>
+                                <small style="display: block; font-style: italic; color: #777;"><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG_DESC');?></small>
+                            </a>
+                        </div>
                         <div id="tz_images">
                             <table class="admintable" style="width: 100%">
                                 <tr>
@@ -1385,6 +1394,14 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                     </div>
 
                     <div class="tab-pane" id="tztabsGallery">
+                        <div class="control-group">
+                            <a class="modal btn hasTooltip" href="index.php?option=com_tz_portfolio&view=config&layout=slider&tmpl=component"
+                               rel="{handler: 'iframe', size: {x: 500, y: 350}, onClose: function() {}}"
+                               title="<?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SLIDER_SIZE_GLOBAL_CONFIG_DESC');?>">
+                                <span class="icon-options"></span><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SLIDER_SIZE_GLOBAL_CONFIG');?>
+                                <small style="display: block; font-style: italic; color: #777;"><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SLIDER_SIZE_GLOBAL_CONFIG_DESC');?></small>
+                            </a>
+                        </div>
                         <table  id="tz_image_gallery">
                             <tr>
                                 <td id="tz_img_gallery"></td>
@@ -1392,6 +1409,14 @@ if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
                         </table>
                     </div>
                     <div class="tab-pane" id="tztabsMedia">
+                        <div class="control-group">
+                            <a class="modal btn hasTooltip" href="index.php?option=com_tz_portfolio&view=config&layout=image&tmpl=component"
+                               rel="{handler: 'iframe', size: {x: 500, y: 350}, onClose: function() {}}"
+                               title="<?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG_DESC');?>">
+                                <span class="icon-options"></span><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG');?>
+                                <small style="display: block; font-style: italic; color: #777;"><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG_DESC');?></small>
+                            </a>
+                        </div>
                         <div id="tz_media">
                             <table>
                                 <tr>

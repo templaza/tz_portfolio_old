@@ -587,6 +587,13 @@
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
         </field>
+        <field name="controlnav_type"
+               type="list" class="btn-group"
+               default="none"
+               label="COM_TZ_PORTFOLIO_CONTROLNAV_IMAGE_GALLERY_TYPE_LABEL">
+            <option value="none">COM_TZ_PORTFOLIO_DEFAULT</option>
+            <option value="thumbnails">COM_TZ_PORTFOLIO_THUMBNAILS</option>
+        </field>
         <field name="image_gallery_pausePlay"
                type="radio" class="btn-group"
                default="0"
@@ -1880,28 +1887,6 @@
 
     <!-- START ADVANCED'S PARAMTERS -->
     <fieldset name="advanced" label="COM_TZ_PORTFOLIO_FIELDSET_ADVANCED">
-        <field name="devmode" type="radio" class="btn-group"
-               default="0"
-               label="COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE"
-               description="COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_DESC">
-            <option value="0">JNO</option>
-            <option value="1">JYES</option>
-        </field>
-        <field name="css_compression" type="radio" class="btn-group"
-               default="0"
-               label="COM_TZ_PORTFOLIO_CSS_COMPRESSION"
-               description="COM_TZ_PORTFOLIO_CSS_COMPRESSION_DESC">
-            <option value="0">JNO</option>
-            <option value="1">JYES</option>
-        </field>
-        <field name="js_compression" type="radio" class="btn-group"
-               default="1"
-               label="COM_TZ_PORTFOLIO_JAVASCRIPT_COMPRESSION"
-               description="COM_TZ_PORTFOLIO_JAVASCRIPT_COMPRESSION_DESC">
-            <option value="0">JNO</option>
-            <option value="1">JYES</option>
-        </field>
-
         <field type="radio" name="enable_jquery"
                default="1" class="btn-group"
                label="COM_TZ_PORTFOLIO_ENABLE_JQUERY_LIBRARY_LABEL">
