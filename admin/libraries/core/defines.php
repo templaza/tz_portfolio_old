@@ -25,9 +25,6 @@ define ('COM_TZ_PORTFOLIO_ADMIN_HOST_PATH', JURI::base(true).'/components/'.COM_
 define ('COM_TZ_PORTFOLIO_LIBRARIES', dirname(dirname(dirname(__FILE__.'/libraries'))));
 define ('COM_TZ_PORTFOLIO_ADMIN_PATH', dirname(dirname(dirname(__FILE__))));
 define ('COM_TZ_PORTFOLIO_JVERSION_COMPARE', version_compare(JVERSION,'3.0','ge'));
-define ('COM_TZ_PORTFOLIO_MEDIA_BASE', JPATH_ROOT . '/media/tz_portfolio');
-define ('COM_TZ_PORTFOLIO_MEDIA_ARTICLE_BASE', JPATH_ROOT . '/media/tz_portfolio/article/cache');
-define('COM_TZ_PORTFOLIO_MEDIA_BASEURL', JURI::root() . 'media/tz_portfolio/article/cache');
 
 if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE && !DIRECTORY_SEPARATOR){
     define('DIRECTORY_SEPARATOR','\\');

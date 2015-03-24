@@ -115,7 +115,7 @@ class TZ_PortfolioViewForm extends JViewLegacy
             $jscompress -> folder   = '/packed';
         }
 
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio.min.css');
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
         
 		parent::display($tpl);
 	}

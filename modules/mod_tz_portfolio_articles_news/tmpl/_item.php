@@ -23,18 +23,17 @@ defined('_JEXEC') or die;
 $media = $item -> media;
 if(!$media OR ($media AND $media -> type != 'quote' AND $media -> type != 'link')):
 ?>
+    <?php if ($params->get('item_title')) : ?>
 
-    <?php if($params -> get('show_image',0)):?>
-        <?php if(isset($media -> images) AND !empty($media -> images)):?>
+        <?php if($params -> get('show_image',0)):?>
+            <?php if(isset($media -> images) AND !empty($media -> images)):?>
             <a href="<?php echo $item->link;?>">
                 <img src="<?php echo $media -> images?>"
                      title="<?php echo $media -> imagetitle;?>"
-                     alt="<?php echo $media -> imagetitle;?>">
+                     alt="<?php echo $media -> images;?>">
             </a>
+            <?php endif;?>
         <?php endif;?>
-    <?php endif;?>
-
-    <?php if ($params->get('item_title')) : ?>
         <<?php echo $params->get('item_heading'); ?> class="newsflash-title<?php echo $params->get('moduleclass_sfx'); ?>">
         <?php if ($params->get('link_titles') && $item->link != '') : ?>
             <a href="<?php echo $item->link;?>">

@@ -1,0 +1,519 @@
+/* Start: Recommended Isotope styles */
+
+/**** Isotope Filtering ****/
+
+.isotope-item {
+  z-index: 2;
+}
+
+.isotope-hidden.isotope-item {
+  pointer-events: none;
+  z-index: 1;
+}
+
+/**** Isotope CSS3 transitions ****/
+
+.isotope,
+.isotope .isotope-item {
+  -webkit-transition-duration: 0.8s;
+     -moz-transition-duration: 0.8s;
+      -ms-transition-duration: 0.8s;
+       -o-transition-duration: 0.8s;
+          transition-duration: 0.8s;
+}
+
+.isotope {
+  -webkit-transition-property: height, width;
+     -moz-transition-property: height, width;
+      -ms-transition-property: height, width;
+       -o-transition-property: height, width;
+          transition-property: height, width;
+}
+
+.isotope .isotope-item {
+  -webkit-transition-property: -webkit-transform, opacity;
+     -moz-transition-property:    -moz-transform, opacity;
+      -ms-transition-property:     -ms-transform, opacity;
+       -o-transition-property:         top, left, opacity;
+          transition-property:         transform, opacity;
+}
+
+/**** disabling Isotope CSS3 transitions ****/
+
+.isotope.no-transition,
+.isotope.no-transition .isotope-item,
+.isotope .isotope-item.no-transition {
+  -webkit-transition-duration: 0s;
+     -moz-transition-duration: 0s;
+      -ms-transition-duration: 0s;
+       -o-transition-duration: 0s;
+          transition-duration: 0s;
+}
+
+/* End: Recommended Isotope styles */
+
+
+
+/* disable CSS transitions for containers with infinite scrolling*/
+.isotope.infinite-scrolling {
+  -webkit-transition: none;
+     -moz-transition: none;
+      -ms-transition: none;
+       -o-transition: none;
+          transition: none;
+}
+
+
+.element {
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+  color: #222;
+}
+
+.element.alkali          { background: #F00; background: hsl(   0, 100%, 50%); }
+.element.alkaline-earth  { background: #F80; background: hsl(  36, 100%, 50%); }
+.element.lanthanoid      { background: #FF0; background: hsl(  72, 100%, 50%); }
+.element.actinoid        { background: #0F0; background: hsl( 108, 100%, 50%); }
+.element.transition      { background: #0F8; background: hsl( 144, 100%, 50%); }
+.element.post-transition { background: #0FF; background: hsl( 180, 100%, 50%); }
+.element.metalloid       { background: #08F; background: hsl( 216, 100%, 50%); }
+.element.other.nonmetal  { background: #00F; background: hsl( 252, 100%, 50%); }
+.element.halogen         { background: #F0F; background: hsl( 288, 100%, 50%); }
+.element.noble-gas       { background: #F08; background: hsl( 324, 100%, 50%); }
+
+
+.element  {
+  position: absolute;
+  margin: 0;
+}
+
+.element .symbol {
+  left: 0.2em;
+  top: 0.4em;
+  font-size: 3.8em;
+  line-height: 1.0em;
+  color: #FFF;
+}
+.element.large .symbol {
+  font-size: 4.5em;
+}
+
+.element.fake .symbol {
+  color: #000;
+}
+.element img{
+    margin: 0 auto;
+    display: block;
+}
+
+
+.variable-sizes .element.width2 { width: 230px; }
+
+.variable-sizes .element.height2 { height: 230px; }
+
+.variable-sizes .element.width2.height2 {
+  font-size: 2.0em;
+}
+
+.element.large,
+.variable-sizes .element.large,
+.variable-sizes .element.large.width2.height2 {
+  font-size: 3.0em;
+  width: 350px;
+  height: 350px;
+  z-index: 100;
+}
+
+.clickable .element:hover {
+  cursor: pointer;
+}
+
+.clickable .element:hover h3 {
+  text-shadow:
+    0 0 10px white,
+    0 0 10px white
+  ;
+}
+
+.clickable .element:hover h2 {
+  color: white;
+}
+
+.item{
+    width: 120px;
+}
+
+/* Color shapes */
+
+.color-shape {
+  width: 70px;
+  height: 70px;
+  margin: 5px;
+  float: left;
+}
+
+.color-shape.round {
+  -webkit-border-radius: 35px;
+     -moz-border-radius: 35px;
+          border-radius: 35px;
+}
+
+.color-shape.big.round {
+  -webkit-border-radius: 75px;
+     -moz-border-radius: 75px;
+          border-radius: 75px;
+}
+
+.color-shape.red { background: red; }
+.color-shape.blue { background: blue; }
+.color-shape.yellow { background: yellow; }
+
+.color-shape.wide, .color-shape.big { width: 150px; }
+.color-shape.tall, .color-shape.big { height: 150px; }
+
+.color-shape a {
+  display: block;
+  height: 100%;
+}
+
+.color-shape a:hover {
+  background: white;
+  background: hsla( 0, 0%, 100%, 0.5 );
+}
+
+/**** Horizontal ****/
+
+.horizontal #portfolio {
+  height: 80%;
+}
+
+#copy {
+  max-width: 640px;
+}
+
+/**** Photo demo ****/
+
+.photos .photo {
+  width: 320px;
+  margin: 5px;
+  float: left;
+}
+
+.photos .photo img {
+  display: block;
+  width: 100%;
+}
+
+#TzContent {
+  /*margin-left: 210px;*/
+    width: 100%;
+}
+
+
+.demos #content {
+  height: 100%;
+}
+
+/**** Docs ****/
+
+.docs #content {
+  max-width: 640px;
+}
+
+.docs #content a:hover {
+  border-bottom: 1px dotted;
+}
+
+/**** Doc page nav ****/
+
+
+
+#site-nav {
+  width: 200px;
+  position: absolute;
+  left: 10px;
+  top: 0px;
+  padding-top: 20px;
+  font-size: 12px;
+}
+
+#site-nav h1 {
+  font-size: 24px;
+  margin-bottom: 0.5em;
+  margin-top: 0;
+  font-weight: bold;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+#site-nav h2 {
+  font-size: 17px;
+  font-weight: normal;
+  margin: 0 0 0.3em;
+  border-top: none;
+}
+
+#site-nav h1 a { color: #4FB; }
+#site-nav h1 a:hover { color: #4BF; }
+
+#site-nav ul {
+  list-style: none;
+  margin: 0 0 1.0em;
+  font-weight: bold;
+}
+
+#site-nav ul ul { margin-bottom: 0; }
+
+#site-nav ul a {
+  display: block;
+  border: none;
+  padding: 1px 5px;
+}
+
+#site-nav ul .current a {
+  background: hsla( 0, 0%, 0%, 0.3 );
+  color: #1BF;
+}
+#site-nav ul a:hover,
+#site-nav ul .current a:hover { color: white; }
+
+#site-nav ul .current .toc a {
+  font-size: 12px;
+  padding-left: 1.2em;
+  font-weight: normal;
+}
+
+/**** Doc content ****/
+
+.docs #content h2 {
+  border-top: 1px solid #333;
+  padding-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+
+.docs #content h2:target {
+  padding: 10px;
+  background: white;
+  color: #222;
+}
+
+.docs #content h3 {
+  color: #FEC;
+  background: hsla( 0, 0%, 75%, 0.05 );
+  padding: 2px 0.5em;
+  margin-bottom: 0.5em;
+  font-size: 1.15em;
+}
+
+.docs #content h4 {
+  margin-bottom: 0.5em;
+  font-size: 14px;
+}
+
+#content code {
+  font-size: 12px;
+}
+
+#content pre {
+  line-height: 1.6em;
+}
+
+h3#tz_options {
+  padding-bottom: 0;
+}
+
+.option-def dl dt,
+.option-def dl dd {
+  float: left;
+  padding: 0 1.2em;;
+  background: #161616;
+  line-height: 36px;
+  height: 36px;
+}
+
+.option-def dl.header dt,
+.option-def dl.header dd {
+  background: #444;
+}
+
+.option-def dl .option-type {
+  font-size: 13px;
+  color: #AAA;
+  font-style: italic;
+}
+
+.option-def dl dd {
+  border-left: 1px solid #222;
+}
+
+/* Tagline */
+
+.docs .tagline {
+  font-size: 22px;
+  font-weight: 300;
+}
+
+/* as-is from MIT */
+
+.docs .as-is {
+  font-size: 95%;
+}
+
+/* Commercial license blurb */
+
+.docs #commercial {
+  background: white;
+  padding: 10px;
+  font-size: 14px;
+  color: #1F1F1D;
+}
+
+.docs #commercial a { font-weight: bold;}
+
+/**** Pygments ****/
+
+code .s1,
+code .s { color: #78BD55; } /* string */
+code .mi, /* integer */
+code .cp, /* doctype */
+code .kc { color: #5298D4; } /*boolean*/
+code .k { color: #E39B79; } /* keyword */
+code .kd, /* storage */
+code .na { color: #A9D866; } /* markup attribute */
+code .p  { color: #EDB; } /* punctuation */
+code .o  { color: #F63; }   /* operator */
+code .nb { color: #AA97AC;} /* support */
+
+/* comment */
+code .c,
+code .c1 { color: #666; font-style: italic; }
+
+code .nt { color: #A0C8FC; } /* Markup open tag */
+
+code .nf { color: #9EA8B8; } /* css id */
+code .nc { color: #A78352; }  /* CSS class */
+code .m  { color: #DE8E50; } /* CSS value */
+code .nd { color: #9FAD7E; } /* CSS pseudo selector */
+
+
+
+/**** Super list ****/
+
+
+/**** Sites using Isotope ****/
+
+#sites h2 {
+  display: none;
+  padding: 0.4em;
+  line-height: 32px;
+  margin-bottom: 0.4em;
+  -webkit-transition: background-color 0.8s;
+     -moz-transition: background-color 0.8s;
+       -o-transition: background-color 0.8s;
+          transition: background-color 0.8s;
+}
+
+#sites h2 img {
+  display: inline-block;
+  margin-right: 0.4em;
+  vertical-align: bottom;
+}
+
+#sites h2.loading {
+  background: white;
+  color: #222;
+}
+#sites h2.error {
+  background: red;
+  color: #222;
+}
+
+
+#sites ul {
+  margin: 0;
+}
+
+/**** BIG Graph ****/
+
+.big-graph {
+  background: white;
+  height: 600px;
+  margin: 20px auto;
+}
+
+.big-graph .project {
+  width: 45px;
+  height: 45px;
+  float: left;
+}
+
+.big-graph .project .icon {
+  pointer-events: none;
+  width: 31px;
+  height: 31px;
+  background: white;
+  margin-left: 7px;
+  -webkit-transition: -webkit-transform 0.25s;
+     -moz-transition: -moz-transform    0.25s;
+      -ms-transition: -ms-transform     0.25s;
+       -o-transition: -o-transform      0.25s;
+          transition: transform         0.25s;
+}
+
+.big-graph .project:hover {
+  z-index: 5;
+
+}
+
+.big-graph .project:hover .icon {
+  -webkit-transform: scale(3);
+     -moz-transform: scale(3);
+      -ms-transform: scale(3);
+       -o-transform: scale(3);
+          transform: scale(3);
+}
+
+.big-graph .project.commercial .icon { background: #6B6B6B; }
+.big-graph .project.urbanism .icon { background: #00CF00; }
+.big-graph .project.public-space .icon { background: #FF8D00; }
+.big-graph .project.culture .icon { background: #D61919; }
+.big-graph .project.body-culture .icon { background: #00ECFF; }
+.big-graph .project.health .icon { background: #FF2251; }
+.big-graph .project.education .icon { background: #00A700; }
+.big-graph .project.housing .icon { background: #FF02FF; }
+.big-graph .project.hotel .icon { background: #0000C3; }
+.big-graph .project.media .icon { background: #292929; }
+
+.big-graph .project p {
+  line-height: 14px;
+  font-size: 10.5px;
+  color: black;
+  margin-left: 7px;
+}
+
+/**** Infinite Scroll ****/
+
+#infscr-loading {
+  position: fixed;
+  text-align: center;
+  bottom: 30px;
+  left: 42%;
+  z-index: 100;
+  background: white;
+  background: hsla( 0, 0%, 100%, 0.9 );
+  padding: 20px;
+  color: #222;
+  font-size: 15px;
+  font-weight: bold;
+  -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+          border-radius: 10px;
+}
+
+
+
+/* The Magnificent Clearfix: nicolasgallagher.com/micro-clearfix-hack/ */
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { zoom: 1; }
+

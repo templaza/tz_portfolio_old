@@ -4056,68 +4056,6 @@ class TZ_PortfolioModelArticle extends JModelAdmin
         return null;
     }
 
-    public function getArticles($pk=null){
-        if($pk){
-            $db     = $this -> getDbo();
-            $query  = $db -> getQuery(true);
-            $query -> select('x.*,c.alias,c.title');
-            $query -> from($db -> quoteName('#__tz_portfolio_xref_content').' AS x');
-            $query -> join('LEFT',$db -> quoteName('#__content').' AS c ON c.id=x.contentid');
-            if(is_array($pk)) {
-                $query->where('x.contentid IN(' . implode(',', $pk) . ')');
-            }else{
-                $query -> where('x.contentid='.$pk);
-            }
-            $db -> setQuery($query);
-
-            return $db -> loadObjectList();
-        }
-        return false;
-    }
-
-    public function resizeImage($src,$gallery=null,$dest=null){
-        if($src){
-
-            $type       = JFile::getExt($src);
-            $org_file   = str_replace('.'.$type,'_o.'.$type,$src);
-            $params     = $this -> getState('params');
-            $sizes      = $this -> getState('sizeImage');
-
-            if($gallery){
-                $sizes  = $this -> getState('size');
-            }
-
-            if(!JFile::exists($org_file)){
-                $this -> setError(JText::_('COM_TZ_PORTFOLIO_IMAGE_FILE_DOES_NOT_EXIST'));
-                return false;
-            }
-
-            $dest_path  = $dest;
-
-            if($sizes){
-                $image  = new JImage($org_file);
-                $width  = $image -> getWidth();
-                $height = $image -> getHeight();
-
-                // Resize images
-                foreach($sizes as $key => $newWidth){
-                    $newHeight  = $height * $newWidth / $width;
-                    $newImage   = $image -> resize($newWidth,$newHeight);
-                    if(!$dest) {
-                        $dest_path = str_replace('.' . $type, '_' . $key . '.' . $type, $src);
-                    }
-                    if(JFile::exists($dest_path)){
-                        JFile::delete($dest_path);
-                    }
-                    $newImage -> toFile($dest_path,$this->_getImageType($src));
-                }
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
-
 	/**
 	 * Custom clean the cache of com_content and content modules
 	 *

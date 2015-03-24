@@ -20,17 +20,6 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
-03/24/2015 - 3.3.1
-
-	Fix can't display comment for views article and p_article in front-end.
-	Add image size and image slider global config to article view (add or edit article) in back-end.
-	Add feature resize all images in back-end.
-	Add option original image for all module of TZ Portfolio.
-	Remove less, Compile less to css and Compress JS feature. Remove Options: "CSS Compression" and "Jvascript Compression" in "Advanced Options".
-	Update Flexslider script.
-	Update Fluidvids script.
-
-
 03/09/2015 - 3.3.0
 
 	Add option "No parent" for list category when create article in front-end.

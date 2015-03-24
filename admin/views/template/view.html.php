@@ -38,8 +38,8 @@ class TZ_PortfolioViewTemplate extends JViewLegacy
         var pluginPath = "'.JURI::root(true).'/administrator/components/com_tz_portfolio/views/template/tmpl";
         var fieldName = \'jform[attrib]\';
         </script>');
-        $this -> document -> addCustomTag('<script type="text/javascript" src="'.JUri::base(true).'/components/com_tz_portfolio/js/layout-admin.min.js"></script>');
-        $this -> document -> addCustomTag('<script type="text/javascript" src="'.JUri::base(true).'/components/com_tz_portfolio/js/spectrum.min.js"></script>');
+        $this -> document -> addCustomTag('<script type="text/javascript" src="'.JUri::base(true).'/components/com_tz_portfolio/js/layout.admin.js"></script>');
+        $this -> document -> addCustomTag('<script type="text/javascript" src="'.JUri::base(true).'/components/com_tz_portfolio/js/spectrum.js"></script>');
         $this -> document -> addCustomTag('<script type="text/javascript">
         Joomla.submitbutton = function(task) {
             if (task == \'template.cancel\' || document.formvalidator.isValid(document.id(\'template-form\'))) {
@@ -51,8 +51,8 @@ class TZ_PortfolioViewTemplate extends JViewLegacy
         };
         </script>');
         $this -> document -> addCustomTag('<link rel="stylesheet" href="'.JUri::root(true).'/components/com_tz_portfolio/bootstrap/css/bootstrap-responsive.min.css" type="text/css"/>');
-        $this -> document -> addCustomTag('<link rel="stylesheet" href="'.JUri::base(true).'/components/com_tz_portfolio/css/admin-layout.min.css" type="text/css"/>');
-        $this -> document -> addCustomTag('<link rel="stylesheet" href="'.JUri::base(true).'/components/com_tz_portfolio/css/spectrum.min.css" type="text/css"/>');
+        $this -> document -> addCustomTag('<link rel="stylesheet" href="'.JUri::base(true).'/components/com_tz_portfolio/css/admin-layout.css" type="text/css"/>');
+        $this -> document -> addCustomTag('<link rel="stylesheet" href="'.JUri::base(true).'/components/com_tz_portfolio/css/spectrum.css" type="text/css"/>');
 //        $doc    = JFactory::getDocument();
 //        $doc -> addScript(JUri::base(true).'/components/com_tz_portfolio/js/jquery-ui.min.js');
 //        $doc -> addStyleSheet()
@@ -96,10 +96,10 @@ class TZ_PortfolioViewTemplate extends JViewLegacy
 
         // If the joomla is version 3.0
 //        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
-            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-4.1.0/css/font-awesome.min.css');
+            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-4.1.0/css/font-awesome.css');
 //        }
 
-        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.min.css');
+        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.css');
 
         // Special HTML workaround to get send popup working
         $docClass       = ' class="btn btn-small"';

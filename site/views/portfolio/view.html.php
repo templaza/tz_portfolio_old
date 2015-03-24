@@ -70,17 +70,19 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
             $csscompress    = '.min';
         }
 
-//        $jscompress         = new stdClass();
-//        $jscompress -> extfile  = null;
-//        $jscompress -> folder   = null;
-//        if($params -> get('js_compression',1)){
-//            $jscompress -> extfile  = '.min';
-//            $jscompress -> folder   = '/packed';
-//        }
+        $jscompress         = new stdClass();
+        $jscompress -> extfile  = null;
+        $jscompress -> folder   = null;
+        if($params -> get('js_compression',1)){
+            $jscompress -> extfile  = '.min';
+            $jscompress -> folder   = '/packed';
+        }
 
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/isotope.min.css');
-        $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.isotope.min.js"></script>');
-        $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/html5.js"></script>');
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/isotope'.$csscompress.'.css');
+        $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.$jscompress -> folder
+            .'/jquery.isotope'.$jscompress -> extfile.'.js"></script>');
+        $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.$jscompress -> folder
+            .'/html5'.$jscompress -> extfile.'.js"></script>');
 
         if($params -> get('tz_use_image_hover',1) == 1):
             $doc -> addStyleDeclaration('
@@ -100,7 +102,9 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         endif;
 
         if($params -> get('tz_portfolio_layout') == 'ajaxButton' || $params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'){
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.infinitescroll.min.js"></script>');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.infinitescroll.min'.
+                $jscompress -> extfile.'.js"></script>');
             if($params -> get('tz_portfolio_layout') == 'ajaxButton'){
                 $doc->addStyleDeclaration('
                     #infscr-loading {
@@ -139,8 +143,9 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         }
 
         if($params -> get('tz_use_lightbox',1) == 1){
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.fancybox.pack.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox.min.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.fancybox.pack'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox'.$csscompress.'.css');
 
             $width      = null;
             $height     = null;
@@ -226,14 +231,14 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         $this -> assign('char',$state -> get('char'));
         $this -> assign('availLetter',$this -> get('AvailableLetter'));
 
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio.min.css');
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
 
         if($params -> get('comment_function_type','default') == 'js'){
             if($params -> get('tz_show_count_comment',1)){
                 if($params -> get('tz_comment_type') == 'facebook' ||
                         $params -> get('tz_comment_type') == 'disqus'){
                     $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
-                    '/base64.js" type="text/javascript"></script>');
+                    $jscompress -> folder.'/base64'.$jscompress -> extfile.'.js" type="text/javascript"></script>');
                 }
             }
         }
@@ -242,7 +247,7 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
                 ($params -> get('tz_comment_type') == 'facebook' ||
                     $params -> get('tz_comment_type') == 'disqus')) ){
             $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
-                '/tz_portfolio.min.js" type="text/javascript"></script>');
+                $jscompress -> folder.'/tz_portfolio'.$jscompress -> extfile.'.js" type="text/javascript"></script>');
         }
 
         $this -> _prepareDocument();

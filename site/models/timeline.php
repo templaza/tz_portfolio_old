@@ -1169,7 +1169,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
                     $item -> name   = trim($item -> name);
                     $item -> tagFilter  = JApplication::stringURLSafe($item -> name);
                     $item -> params      = null;
-                    if(isset($item -> attribs) && !empty($item -> attribs)){
+                    if($item -> attribs){
                         $item -> params  = new JRegistry($item -> attribs);
                     }
                 }
@@ -1200,7 +1200,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 $row -> name    = trim($row -> name);
                 $row -> tagFilter   = JApplication::stringURLSafe($row -> name);
                 $row -> params      = null;
-                if(isset($row -> attribs) && !empty($row -> attribs)){
+                if($row -> attribs){
                     $row -> params  = new JRegistry($row -> attribs);
                 }
             }

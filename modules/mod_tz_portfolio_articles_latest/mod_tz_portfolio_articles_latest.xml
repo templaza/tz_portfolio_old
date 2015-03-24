@@ -11,7 +11,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.3.1</version>
+	<version>3.3.0</version>
 	<description>MOD_LATEST_NEWS_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_tz_portfolio_articles_latest">mod_tz_portfolio_articles_latest.php</filename>
@@ -152,7 +152,6 @@
                 </field>
                 <field name="image_size" type="list"
                        label="MOD_TZ_PORTFOLIO_ARTICLES_LATEST_IMAGE_SIZE">
-                    <option value="o">MOD_TZ_PORTFOLIO_ARTICLES_LATEST_ORIGINAL</option>
                     <option value="XS">MOD_TZ_PORTFOLIO_ARTICLES_LATEST_XSMALL</option>
                     <option value="S">MOD_TZ_PORTFOLIO_ARTICLES_LATEST_SMALL</option>
                     <option value="M">MOD_TZ_PORTFOLIO_ARTICLES_LATEST_MEDIUM</option>

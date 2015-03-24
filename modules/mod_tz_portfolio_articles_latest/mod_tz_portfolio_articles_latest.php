@@ -25,6 +25,5 @@ require_once dirname(__FILE__).'/helper.php';
 
 $list = modTZ_PortfolioArticlesLatestHelper::getList($params);
 $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
-require_once(JPATH_BASE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_tz_portfolio'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'media.php');
 
 require JModuleHelper::getLayoutPath('mod_tz_portfolio_articles_latest', $params->get('layout', 'default'));

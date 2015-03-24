@@ -128,10 +128,10 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
         $doc    = JFactory::getDocument();
         // If the joomla is version 3.0
         if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
-            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-v3.0.2/css/font-awesome.min.css');
+            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-v3.0.2/css/font-awesome.css');
         }
 
-        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.min.css');
+        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.css');
 
 
         // Complie button

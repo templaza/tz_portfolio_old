@@ -58,8 +58,8 @@ class TZ_PortfolioController extends JControllerLegacy
             }
             if($params -> get('enable_bootstrap',1)){
                 $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/js/bootstrap.min.js');
-                $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap.min.css');
-                $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap-responsive.min.css');
+                $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap.css');
+                $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/bootstrap/css/bootstrap-responsive.css');
             }
 //            $doc -> addStyleSheet(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/css/tz-portfolio.css');
 //            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/chosen.jquery.min.js');

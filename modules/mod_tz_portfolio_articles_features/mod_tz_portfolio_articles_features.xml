@@ -114,12 +114,11 @@
                  <field name="tz_image_size" type="list"
                         default="S"
                         label="MOD_TZ_PORTFOLIO_ARTICLES_POPULAR_TZ_IMAGE_SIZE">
-                    <option value="o">MOD_TZ_PORTFOLIO_ARTICLES_FEATURES_ORIGINAL</option>
-                    <option value="XS">MOD_TZ_PORTFOLIO_ARTICLES_FEATURES_XSMALL</option>
-                    <option value="S">MOD_TZ_PORTFOLIO_ARTICLES_FEATURES_SMALL</option>
-                    <option value="M">MOD_TZ_PORTFOLIO_ARTICLES_FEATURES_MEDIUM</option>
-                    <option value="L">MOD_TZ_PORTFOLIO_ARTICLES_FEATURES_LARGE</option>
-                    <option value="XL">MOD_TZ_PORTFOLIO_ARTICLES_FEATURES_XLARGE</option>
+                    <option value="XS">XSmall</option>
+                    <option value="S">Small</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Large</option>
+                    <option value="XL">XLarge</option>
                 </field>
                <field name="readmore"  type="radio" class="btn-group" default="1" label="Show readmore">
                      <option value="1">JYES</option>

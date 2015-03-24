@@ -333,6 +333,8 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
             $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
             $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
             $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onTZPortfolioCommentDisplay', array('com_tz_portfolio.p_article', &$item, &$item->params, $offset));
+            $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.p_article', &$item, &$item->params, $offset));
 
             $results = $dispatcher->trigger('onTZPluginPrepare', array('com_tz_portfolio.p_article', &$item, &$item->params, &$pluginParams, $offset));
             $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.p_article', &$item, &$item->params, &$pluginParams, $offset));
@@ -346,6 +348,8 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
             $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
             $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
             $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.p_article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onTZPortfolioCommentDisplay', array('com_tz_portfolio.p_article', &$item, &$item->params, $offset));
+            $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.p_article', &$item, &$item->params, $offset));
 
             $results = $dispatcher->trigger('onTZPluginPrepare', array('com_tz_portfolio.p_article', &$item, &$item->params, &$pluginParams, $offset));
             $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.p_article', &$item, &$item->params, &$pluginParams, $offset));
@@ -451,9 +455,9 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
                     $params -> set('article_image_resize',strtolower($params -> get('detail_article_image_size')));
             }
             if($listMedia[0] -> type == 'imagegallery'){
-                $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'
-                    .'/jquery.flexslider-min.js"></script>');
-                $doc -> addStyleSheet('components/com_tz_portfolio/css/flexslider.min.css');
+                $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                    $jscompress -> folder.'/jquery.flexslider-min'.$jscompress -> extfile.'.js"></script>');
+                $doc -> addStyleSheet('components/com_tz_portfolio/css/flexslider'.$csscompress.'.css');
 
                 if($params -> get('detail_article_image_gallery_size'))
                     $params -> set('article_image_gallery_resize',strtolower($params -> get('detail_article_image_gallery_size')));
@@ -463,15 +467,15 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         }
 
         if($item -> params -> get('useCloudZoom',1) == 1){
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/cloud-zoom.min.css');
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'
-                .'/cloud-zoom.1.0.3.min.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/cloud-zoom'.$csscompress.'.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/cloud-zoom.1.0.3.min'.$jscompress -> extfile.'.js"></script>');
         }
 
         if($item -> params -> get('tz_use_lightbox',1) == 1 AND !$tmpl){
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'
-                .'/jquery.fancybox.pack.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox.min.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
+                $jscompress -> folder.'/jquery.fancybox.pack'.$jscompress -> extfile.'.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox'.$csscompress.'.css');
 
             $width      = null;
             $height     = null;
@@ -514,9 +518,10 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 
         /* Add scrollbar script */
         if($item -> params -> get('use_custom_scrollbar',1) && JRequest::getString('tmpl') == 'component' && !$this ->print){
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/jquery.mCustomScrollbar.min.css');
-            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'
-                .'/jquery.mCustomScrollbar.min.js"  type="text/javascript"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/jquery.mCustomScrollbar'.$csscompress.'.css');
+            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+                            $jscompress -> folder.'/jquery.mCustomScrollbar'
+                .$jscompress -> extfile.'.js"  type="text/javascript"></script>');
 
             if($item -> params -> get('horizontalScroll',0)){
                 $horizontalScroll   = 'true';
@@ -620,12 +625,13 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
         /* End add scrollbar script */
 
         if($item -> params -> get('show_video',1)){
-            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'
-                .'/fluidvids.min.js" type="text/javascript"></script>');
+            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+                                        $jscompress -> folder.'/fluidvids.v2.0.0'
+                            .$jscompress -> extfile.'.js" type="text/javascript"></script>');
             $doc -> addCustomTag('<script type="text/javascript">
                 jQuery(document).ready(function(){
-                fluidvids.init({
-                    selector: [\'.TzArticleMedia iframe\'],
+                Fluidvids.init({
+                    selector: \'.TzArticleMedia iframe\',
                     players: [\'www.youtube.com\', \'player.vimeo.com\']
                 });
               });
@@ -644,7 +650,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 //        $extraFields -> setState('fieldsId',$params -> get('tz_fieldsid'));
         $this -> assign('listFields',$extraFields -> getExtraFields());
 
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio.min.css');
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
 
 		//Escape strings for HTML output
 		$this->pageclass_sfx = htmlspecialchars($this->item->params->get('pageclass_sfx'));
@@ -675,7 +681,7 @@ class TZ_PortfolioViewP_Article extends JViewLegacy
 
         if($theme){
             if($tplParams  = $theme ->params){
-                $this -> document -> addStyleSheet('components/com_tz_portfolio/css/tz.bootstrap.min.css');
+                $this -> document -> addStyleSheet('components/com_tz_portfolio/css/tz.bootstrap'.$csscompress.'.css');
                 foreach($tplParams as $tplItems){
                     $rows   = null;
 

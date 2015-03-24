@@ -11,7 +11,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.3.1</version>
+	<version>3.3.0</version>
 	<description>MOD_ARTICLES_NEWS_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_tz_portfolio_articles_news">mod_tz_portfolio_articles_news.php</filename>
@@ -63,12 +63,11 @@
                 <field name="tz_image_size" type="list"
                         default="S"
                         label="MOD_TZ_PORTFOLIO_ARTICLES_NEWS_TZ_IMAGE_SIZE">
-                    <option value="o">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_ORIGINAL</option>
-                    <option value="XS">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_XSMALL</option>
-                    <option value="S">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_SMALL</option>
-                    <option value="M">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_MEDIUM</option>
-                    <option value="L">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_LARGE</option>
-                    <option value="XL">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_XLARGE</option>
+                    <option value="XS">XSmall</option>
+                    <option value="S">Small</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Large</option>
+                    <option value="XL">XLarge</option>
                 </field>
 
 				<field

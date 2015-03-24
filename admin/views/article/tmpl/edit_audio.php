@@ -23,14 +23,6 @@ defined('_JEXEC') or die;
 <div class="tab-pane" id="tztabsAudio">
     <fieldset>
         <div class="control-group">
-            <a class="modal btn hasTooltip" href="index.php?option=com_tz_portfolio&view=config&layout=image&tmpl=component"
-               rel="{handler: 'iframe', size: {x: 500, y: 300}, onClose: function() {}}"
-               title="<?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG_DESC');?>">
-                <span class="icon-options"></span><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG');?>
-                <small style="display: block; font-style: italic; color: #777;"><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG_DESC');?></small>
-            </a>
-        </div>
-        <div class="control-group">
             <div class="control-label"><?php echo $this -> form -> getLabel('audio_soundcloud_id');?></div>
             <div class="controls"><?php echo $this -> form -> getInput('audio_soundcloud_id');?></div>
         </div>
