@@ -22,6 +22,13 @@ defined('_JEXEC') or die();
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 $doc    = JFactory::getDocument();
+$doc -> addScriptDeclaration('
+jQuery(document).ready(function(){
+    jQuery("#portfolio").tzPortfolioIsotope({
+        "params": '.$this -> params .'
+    });
+});
+');
 ?>
 
 <?php if($this -> listsArticle):?>
@@ -45,52 +52,19 @@ $doc    = JFactory::getDocument();
             endif;
         endif;
     endif;
-    ?>
 
-    <script type="text/javascript">
-        function tz_init(defaultwidth){
-            var contentWidth    = jQuery('#TzContent').width();
-            var columnWidth     = defaultwidth;
-            var curColCount     = 0;
-
-            var maxColCount     = 0;
-            var newColCount     = 0;
-            var newColWidth     = 0;
-            var featureColWidth = 0;
-
-            curColCount = Math.floor(contentWidth / columnWidth);
-
-            maxColCount = curColCount + 1;
-            if((maxColCount - (contentWidth / columnWidth)) > ((contentWidth / columnWidth) - curColCount)){
-                newColCount     = curColCount;
+    $device = '4;2-768;3-980;5-1280';
+    $device = explode(';',$device);
+    if(count($device)){
+        foreach($device as $i => $value){
+            if(strpos($value,'-')){
+                $col_w    = explode('-',$value);
+                $device[$col_w[1]]  = $col_w[0];
+                unset($device[$i]);
             }
-            else{
-                newColCount = maxColCount;
-            }
-
-            newColWidth = contentWidth;
-            featureColWidth = contentWidth;
-
-
-            if(newColCount > 1){
-                newColWidth = Math.floor(contentWidth / newColCount);
-                featureColWidth = newColWidth * 2;
-            }
-
-            jQuery('.element').width(newColWidth);
-
-            jQuery('.tz_feature_item').width(featureColWidth);
-            var $container = jQuery('#portfolio');
-            $container.imagesLoaded(function(){
-                $container.isotope({
-                    masonry:{
-                        columnWidth: newColWidth
-                    }
-                });
-
-            });
         }
-    </script>
+    }
+    ?>
 
     <div id="TzContent" class="<?php echo $this->pageclass_sfx;?>">
         <?php if ($params->get('show_page_heading', 1)) : ?>
@@ -124,7 +98,9 @@ $doc    = JFactory::getDocument();
             </div>
             <?php endif;?>
 
-            <?php if($params -> get('show_sort',1) AND $sortfields = $params -> get('sort_fields',array('date','hits','title'))):?>
+            <?php if($params -> get('show_sort',1) AND $sortfields = $params -> get('sort_fields',array('date','hits','title'))):
+                $sort   = $params -> get('orderby_sec','rdate');
+            ?>
             <div class="option-combo">
                 <div class="filter-title"><?php echo JText::_('COM_TZ_PORTFOLIO_SORT')?></div>
 
@@ -134,17 +110,20 @@ $doc    = JFactory::getDocument();
                     switch($sortfield):
                         case 'title':
                 ?>
-                    <a class="btn btn-small" href="#title" data-option-value="name"><?php echo JText::_('COM_TZ_PORTFOLIO_TITLE');?></a>
+                    <a class="btn btn-small<?php echo ($sort == 'alpha' || $sort == 'ralpha')?' selected':''?>"
+                       href="#title" data-option-value="name"><?php echo JText::_('COM_TZ_PORTFOLIO_TITLE');?></a>
                     <?php
                             break;
                         case 'date':
                     ?>
-                    <a class="btn btn-small selected" href="#date" data-option-value="date"><?php echo JText::_('COM_TZ_PORTFOLIO_DATE');?></a>
+                    <a class="btn btn-small<?php echo ($sort == 'date' || $sort == 'rdate')?' selected':''?>"
+                       href="#date" data-option-value="date"><?php echo JText::_('COM_TZ_PORTFOLIO_DATE');?></a>
                     <?php
                             break;
                         case 'hits':
                     ?>
-                    <a class="btn btn-small" href="#hits" data-option-value="hits"><?php echo JText::_('JGLOBAL_HITS');?></a>
+                    <a class="btn btn-small<?php echo ($sort == 'hits' || $sort == 'rhits')?' selected':''?>"
+                       href="#hits" data-option-value="hits"><?php echo JText::_('JGLOBAL_HITS');?></a>
                 <?php
                             break;
                     endswitch;
@@ -207,116 +186,5 @@ $doc    = JFactory::getDocument();
         <?php if($params -> get('tz_portfolio_layout') == 'ajaxButton' || $params -> get('tz_portfolio_layout') == 'ajaxInfiScroll'):?>
             <?php echo $this -> loadTemplate('infinite_scroll');?>
         <?php endif;?>
-
-<?php $layout = $params -> get('layout_type',array('masonry'));?>
-<script type="text/javascript">
-     var tz_resizeTimer = null;
-    jQuery(window).bind('load resize', function() {
-        if (tz_resizeTimer) clearTimeout(tz_resizeTimer);
-        tz_resizeTimer = setTimeout("tz_init("+"<?php echo $params -> get('tz_column_width',233);?>)", 100);
-    });
-
-    var $container = jQuery('#portfolio');
-     $container.find('.element').css({opacity: 0});
-    $container.imagesLoaded( function(){
-        $container.find('.element').css({opacity: 1});
-        $container.isotope({
-            itemSelector : '.element',
-            layoutMode: '<?php echo $layout[0];?>',
-            sortBy: 'original-order',
-            getSortData: {
-                date: function($elem){
-                   var number = ($elem.hasClass('element') && $elem.attr('data-date').length) ?
-                       $elem.attr('data-date'):$elem.find('.create').text();
-                   return parseInt(number);
-                }
-                <?php
-                 if($params -> get('show_sort',1) AND $params -> get('sort_fields',array('date','hits','title'))):
-                    if(in_array('hits',$params -> get('sort_fields',array('date','hits','title')))):
-                ?>
-                ,hits: function($elem){
-                   var number = ($elem.hasClass('element') && $elem.attr('data-hits').length) ?
-                       $elem.attr('data-hits'):$elem.find('.hits').text();
-                   return parseInt(number);
-                }
-                <?php
-                    endif;
-                    if(in_array('title',$params -> get('sort_fields',array('date','hits','title')))):
-                ?>
-                ,name: function( $elem ) {
-                   var name = $elem.find('.name'),
-                       itemText = name.length ? name : $elem;
-                   return itemText.text();
-                }
-                <?php
-                    endif;
-                endif;
-                ?>
-            }
-        },function(){
-            <?php if($params -> get('tz_show_filter',1) AND $filter = $params -> get('filter_tags_categories_order',null)):?>
-                //Sort tags or categories filter
-                tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
-            <?php endif;?>
-        });
-        tz_init('<?php echo $params -> get('tz_column_width',233);?>');
-    });
-
-    function loadPortfolio(){
-
-        var $optionSets = jQuery('#tz_options .option-set'),
-         $optionLinks = $optionSets.find('a');
-        var $r_options    = null;
-        $optionLinks.click(function(event){
-            event.preventDefault();
-            var $this = jQuery(this);
-            // don't proceed if already selected
-            if ( $this.hasClass('selected') ) {
-                return false;
-            }
-            var $optionSet = $this.parents('.option-set');
-            $optionSet.find('.selected').removeClass('selected');
-            $this.addClass('selected');
-
-            // make option object dynamically, i.e. { filter: '.my-filter-class' }
-            var options = {},
-                key = $optionSet.attr('data-option-key'),
-                value = $this.attr('data-option-value');
-
-            // parse 'false' as false boolean
-            value = value === 'false' ? false : value;
-            options[ key ] = value;
-
-            if ( key === 'layoutMode' && typeof changeLayoutMode === 'function' ) {
-                // changes in layout modes need extra logic
-                changeLayoutMode( $this, options );
-            } else {
-                // otherwise, apply new options
-                if(value == 'name'){
-                    options['sortAscending']    = true;
-                }
-                else{
-                    options['sortAscending']    = false;
-                    if( key != 'sortBy'){
-                        if($r_options){
-                            if($r_options['sortBy'] == 'name'){
-                                options['sortAscending']    = true;
-                            }
-                        }
-                    }
-                }
-                options = jQuery.extend($r_options,options);
-                $container.isotope( options );
-                $r_options  = options;
-            }
-            return false;
-        });
-    }
-//    isotopeinit();
-    loadPortfolio();
-
-
-
-      </script>
-      </div> <!-- #content -->
+    </div> <!-- #content -->
 <?php endif;?>

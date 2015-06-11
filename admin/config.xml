@@ -55,13 +55,6 @@
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
         </field>
-        <field name="comment_function_type" type="list"
-               default="default"
-               label="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_LABEL"
-                description="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_DESC">
-            <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
-            <option value="js">COM_TZ_PORTFOLIO_JAVASCRIPT</option>
-        </field>
         <field name="spacer2" type="spacer" hr="true"/>
 
         <field name="tz_portfolio_custom" type="spacer"
@@ -190,6 +183,15 @@
             <option value="fitRows">COM_TZ_PORTFOLIO_PORTFOLIO_FITROWS</option>
             <option value="straightDown">COM_TZ_PORTFOLIO_PORTFOLIO_STRAIGHTDOWN</option>
         </field>
+        <field name="col_w_switch" type="list"
+               default="tz_column_width"
+               label="COM_TZ_PORTFOLIO_COLUMN_WIDTH_SWITCH_LABEL">
+            <option value="p_column_count">COM_TZ_PORTFOLIO_COLUMN_COUNT_LABEL</option>
+            <option value="tz_column_width">COM_TZ_PORTFOLIO_TZ_COLUMN_WIDTH</option>
+        </field>
+        <field name="p_column_count" type="text"
+               default="3;2-768"
+                label="COM_TZ_PORTFOLIO_COLUMN_COUNT_LABEL"/>
         <field name="tz_column_width"
                 type="text"
                 default="233"
@@ -923,6 +925,13 @@
                description="COM_TZ_PORTFOLIO_SHOW_COUNT_COMMENT_DESC">
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
+        </field>
+        <field name="comment_function_type" type="list"
+               default="default"
+               label="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_LABEL"
+               description="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_DESC">
+            <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
+            <option value="js">COM_TZ_PORTFOLIO_JAVASCRIPT</option>
         </field>
         <field name="disqusSubDomain" type="text"
                default="templazatoturials"
@@ -1910,6 +1919,13 @@
         </field>
 
         <field name="tz_portfolio_router" type="spacer" label="COM_TZ_PORTFOLIO_ROUTER"/>
+        <field name="tzSef" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_ADVANCED_SEF_LABEL"
+                description="COM_TZ_PORTFOLIO_ADVANCED_SEF_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
         <field name="view_router_switch" type="radio"
                class="btn-group" default="1"
                 label="COM_TZ_PORTFOLIO_ROUTER_SWITCH_LABEL"
@@ -1921,6 +1937,77 @@
                 default="item"
                 label="COM_TZ_PORTFOLIO_SINGLE_PORTFOLIO_ROUTER_NAME_LABEL"
                 description="COM_TZ_PORTFOLIO_SINGLE_PORTFOLIO_ROUTER_NAME_DESC"/>
+        <field name="sef_users_prefix" type="text"
+               default="users"
+               label="COM_TZ_PORTFOLIO_SEF_USERS_PREFIX_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_USERS_PREFIX_DESC"/>
+        <field name="sef_tags_prefix" type="text"
+               default="tags"
+               label="COM_TZ_PORTFOLIO_SEF_TAGS_PREFIX_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_TAGS_PREFIX_DESC"/>
+        <field name="sef_date_prefix" type="text"
+               default="date"
+               label="COM_TZ_PORTFOLIO_SEF_DATE_PREFIX_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_DATE_PREFIX_DESC"/>
+        <field name="sef_article_separator" type="list"
+               default="slash_revert_id"
+                label="COM_TZ_PORTFOLIO_SEF_ARTICLE_SEPARATOR_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_ARTICLE_SEPARATOR_DESC">
+            <option value="dash">COM_TZ_PORTFOLIO_USE_DASH</option>
+            <option value="slash">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH</option>
+            <option value="slash_revert_id">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH_AND_REVERT_ID</option>
+        </field>
+        <field name="sef_use_article_id" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_ARTICLE_ID_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_USE_ARTICLE_ID_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="sef_use_article_alias" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_ARTICLE_ALIAS_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_USE_ARTICLE_ALIAS_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="sef_use_parent_category" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_PARENT_CATEGORY_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_USE_PARENT_CATEGORY_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="sef_user_separator" type="list"
+               default="slash_revert_id"
+               label="COM_TZ_PORTFOLIO_SEF_USER_SEPARATOR_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_USER_SEPARATOR_DESC">
+            <option value="dash">COM_TZ_PORTFOLIO_USE_DASH</option>
+            <option value="slash">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH</option>
+            <option value="slash_revert_id">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH_AND_REVERT_ID</option>
+        </field>
+        <field name="sef_use_user_alias" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_USER_ALIAS_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_USE_USER_ALIAS_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="sef_tag_separator" type="list"
+               default="slash_revert_id"
+               label="COM_TZ_PORTFOLIO_SEF_TAG_SEPARATOR_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_TAG_SEPARATOR_DESC">
+            <option value="dash">COM_TZ_PORTFOLIO_USE_DASH</option>
+            <option value="slash">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH</option>
+            <option value="slash_revert_id">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH_AND_REVERT_ID</option>
+        </field>
+        <field name="sef_use_tag_alias" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_TAG_ALIAS_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_USE_TAG_ALIAS_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
     </fieldset>
     <!-- END ADVANCED'S PARAMETERS -->
 

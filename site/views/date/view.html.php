@@ -640,6 +640,8 @@ class TZ_PortfolioViewDate extends JViewLegacy{
         $app		= JFactory::getApplication();
         $menus		= $app->getMenu('site');
         $active     = $menus->getActive();
+        $homeId     = null;
+        $userid     = null;
         if($_userid){
             $userid    = intval($_userid);
         }
@@ -669,10 +671,12 @@ class TZ_PortfolioViewDate extends JViewLegacy{
             }
         }
 
-        if(!isset($active -> id)){
+        if(!isset($active -> id) && $homeId){
             return $homeId;
         }
 
-        return $active -> id;
+        if($active && isset($active -> id))
+            return $active -> id;
+        return null;
     }
 }

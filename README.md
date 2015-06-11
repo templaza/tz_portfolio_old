@@ -20,6 +20,24 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+06/11/2015 - 3.3.2
+
+	- Fix error:	+ Option Show introtext in module TZ Articles Popular
+		+ Display image in module TZ Categories Menu
+		+ Sort in view portfolio and timeline.
+		+ Grouping option in module TZ Articles Category.
+		+ Filter character with unicode font (not done).
+		+ Extrafield with type is link (when edit article if this extrafield was assigned this article).
+	- Featured:	
+		+ Insert some options for SEF Url in tab advanced options:
+			+) Prefix Users (Author) URLs
+			+) Article ID And Alias Separator
+			+) Use Article ID
+			+) .....
+		+ Call content joomla trigger for modules: TZ Latest News, TZ Most Popular, TZ Portfolio Feature Article
+	- Update languages : Japan, Portuguese and Russian from https://www.transifex.com/projects/p/tzportfolio/ page
+	
+
 03/24/2015 - 3.3.1
 
 	Fix can't display comment for views article and p_article in front-end.
@@ -29,7 +47,6 @@ Demo: http://demo.tzportfolio.com/
 	Remove less, Compile less to css and Compress JS feature. Remove Options: "CSS Compression" and "Jvascript Compression" in "Advanced Options".
 	Update Flexslider script.
 	Update Fluidvids script.
-
 
 03/09/2015 - 3.3.0
 

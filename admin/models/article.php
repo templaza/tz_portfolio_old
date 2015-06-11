@@ -1217,11 +1217,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     case 'link':
                         $url    = null;
                         $target = null;
+                        $text   = '';
                         if($fieldEdits){
                             $linkValue  = htmlspecialchars_decode($fieldEdits[0]->value);
+                            $linkValue  = html_entity_decode($linkValue);
 
-                            if(preg_match('/>.*</i',$linkValue,$a))
-                                $text   = $a[0];
+                            if(preg_match('/>.*</i',$linkValue,$a)) {
+                                $text = $a[0];
+                            }
 
                             $text   = str_replace('>','',$text);
                             $text   = str_replace('<','',$text);

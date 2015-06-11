@@ -48,6 +48,20 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         $state          =  $this -> get('State');
         $params         = $state -> get('params');
 
+        if($colCount = $params -> get('p_column_count','3;2-768')){
+            $colCount = explode(';',$colCount);
+            if(count($colCount)){
+                foreach($colCount as $i => $value){
+                    if(strpos($value,'-')){
+                        $col_w    = explode('-',$value);
+                        $colCount[$col_w[1]]  = $col_w[0];
+                        unset($colCount[$i]);
+                    }
+                }
+            }
+            $params -> set ('p_column_count',$colCount);
+        }
+
         if($params -> get('fields_option_order')){
             switch($params -> get('fields_option_order')){
                 case 'alpha':
@@ -238,12 +252,14 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
             }
         }
 
-        if($params -> get('tz_show_filter',1) || ($params -> get('tz_show_count_comment',1) &&
-                ($params -> get('tz_comment_type') == 'facebook' ||
-                    $params -> get('tz_comment_type') == 'disqus')) ){
+//        if($params -> get('tz_show_filter',1) || ($params -> get('tz_show_count_comment',1) &&
+//                ($params -> get('tz_comment_type') == 'facebook' ||
+//                    $params -> get('tz_comment_type') == 'disqus')) ){
+//            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+//                '/tz_portfolio.min.js" type="text/javascript"></script>');
+//        }
             $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
                 '/tz_portfolio.min.js" type="text/javascript"></script>');
-        }
 
         $this -> _prepareDocument();
 

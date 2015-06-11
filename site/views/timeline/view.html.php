@@ -272,12 +272,8 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
                     }
                 }
 
-                if($params -> get('tz_show_filter',1) || ($params -> get('tz_show_count_comment',1) &&
-                        ($params -> get('tz_comment_type') == 'facebook' ||
-                            $params -> get('tz_comment_type') == 'disqus')) ){
-                    $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'
-                        .'/tz_portfolio.min.js" type="text/javascript"></script>');
-                }
+                $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+                    '/tz_portfolio.min.js" type="text/javascript"></script>');
             }
 
             $this->setLayout($layout);

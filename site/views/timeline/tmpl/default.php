@@ -23,6 +23,14 @@ defined('_JEXEC') or die();
 $doc    = JFactory::getDocument();
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
+$doc -> addScriptDeclaration('
+jQuery(document).ready(function(){
+    jQuery("#timeline").tzPortfolioIsotope({
+        "params": '.$this -> params .',
+        timeline: true
+    });
+});
+');
 ?>
 
 <?php if($this -> listsArticle):?>
@@ -48,51 +56,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
         endif;
     endif;
     ?>
-
-    <script type="text/javascript">
-        function tz_init(defaultwidth){
-
-            var contentWidth    = jQuery('#TzContent').width();
-            var columnWidth     = defaultwidth;
-            var curColCount     = 0;
-            var maxColCount     = 0;
-            var newColCount     = 0;
-            var newColWidth     = 0;
-            var featureColWidth = 0;
-
-            curColCount = Math.floor(contentWidth / columnWidth);
-            maxColCount = curColCount + 1;
-            if((maxColCount - (contentWidth / columnWidth)) > ((contentWidth / columnWidth) - curColCount)){
-                newColCount     = curColCount;
-            }
-            else{
-                newColCount = maxColCount;
-            }
-
-            newColWidth = contentWidth;
-            featureColWidth = contentWidth;
-
-
-            if(newColCount > 1){
-                newColWidth = Math.floor(contentWidth / newColCount);
-                featureColWidth = newColWidth * 2;
-            }
-
-            jQuery('.element').width(newColWidth);
-
-            jQuery('.tz_feature_item').width(featureColWidth);
-            jQuery('.TzDate').width(contentWidth);
-
-            var $container = jQuery('#timeline');
-            $container.imagesLoaded(function(){
-                $container.isotope({
-                    masonry:{
-                        columnWidth: newColWidth
-                    }
-                });
-            });
-        }
-    </script>
 
     <div id="TzContent" class="<?php echo $this->pageclass_sfx;?>">
         <?php if ($params->get('show_page_heading', 1)) : ?>
@@ -215,120 +178,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
         <?php endif;?>
 
         <?php $layout = $params -> get('layout_type',array('masonry'));?>
-        <script type="text/javascript">
-             var resizeTimer = null;
-            jQuery(window).bind('load resize', function() {
-                if (resizeTimer) clearTimeout(resizeTimer);
-                resizeTimer = setTimeout("tz_init("+"<?php echo $params -> get('tz_column_width',233);?>)", 100);
-            });
-
-            var $container = jQuery('#timeline');
-            $container.find('.element').css({opacity: 0});
-            $container.imagesLoaded( function(){
-                $container.find('.element').css({opacity: 1});
-                $container.isotope({
-                    itemSelector    : '.element',
-                    layoutMode      : '<?php echo $layout[0];?>',
-                    sortBy          : 'date',
-                    sortAscending   : false,
-                    getSortData     : {
-                        date: function($elem){
-                            var number = ($elem.hasClass('element') && $elem.attr('data-date').length) ?
-                                $elem.attr('data-date'):$elem.find('.create').text();
-                            return parseInt(number);
-                        }
-                        <?php
-                         if($params -> get('show_sort',1) AND $params -> get('sort_fields',array('date','hits','title'))):
-                            if(in_array('hits',$params -> get('sort_fields',array('date','hits','title')))):
-                        ?>
-                        ,hits: function($elem){
-                           var number = ($elem.hasClass('element') && $elem.attr('data-hits').length) ?
-                               $elem.attr('data-hits'):$elem.find('.hits').text();
-                           return parseInt(number);
-                        }
-                        <?php
-                            endif;
-                            if(in_array('title',$params -> get('sort_fields',array('date','hits','title')))):
-                        ?>
-                        ,name: function( $elem ) {
-                            var name = ($elem.hasClass('element') && $elem.find('.name').length)?$elem.find('.name').text().trim():
-                                    (($elem.attr('data-title').length)?$elem.attr('data-title'):''),
-                                _date   = ($elem.hasClass('element') && $elem.attr('data-category').length)?
-                                    $elem.attr('data-category'):'',
-                                itemText = name.length ? name : $elem.text();
-                            if(_date.length){
-                                itemText = _date + itemText;
-                            }
-                            return itemText.toString();
-                        }
-                        <?php
-                            endif;
-                        endif;
-                        ?>
-                    }
-                },function(){
-    
-                   <?php if($params -> get('tz_show_filter',1) AND $filter = $params -> get('filter_tags_categories_order',null)):?>
-                        //Sort tags or categories filter
-                        tzSortFilter(jQuery('#filter').find('a'),jQuery('#filter'),'<?php echo $filter?>');
-                    <?php endif;?>
-                });
-                tz_init(<?php echo $params -> get('tz_column_width',233);?>);
-            });
-
-            function loadTimeline(){
-                  var $optionSets = jQuery('#tz_options .option-set'),
-                     $optionLinks = $optionSets.find('a');
-                    var $r_options    = null;
-                  $optionLinks.click(function(event){
-                      event.preventDefault();
-                    var $this = jQuery(this);
-                    // don't proceed if already selected
-                    if ( $this.hasClass('selected') ) {
-                      return false;
-                    }
-                    var $optionSet = $this.parents('.option-set');
-                    $optionSet.find('.selected').removeClass('selected');
-                    $this.addClass('selected');
-
-                    // make option object dynamically, i.e. { filter: '.my-filter-class' }
-                    var options = {},
-                        key = $optionSet.attr('data-option-key'),
-                        value = $this.attr('data-option-value');
-                    // parse 'false' as false boolean
-
-                    value = value === 'false' ? false : value;
-                    options[ key ] = value;
-                    if ( key === 'layoutMode' && typeof changeLayoutMode === 'function' ) {
-
-                      // changes in layout modes need extra logic
-                      changeLayoutMode( $this, options )
-                    } else {
-                      // otherwise, apply new options
-                      if(value == 'name'){
-                          options['sortAscending']    = true;
-                      }
-                      else{
-                          options['sortAscending']    = false;
-                          if( key != 'sortBy'){
-                              if($r_options){
-                                  if($r_options['sortBy'] == 'name'){
-                                      options['sortAscending']    = true;
-                                  }
-                              }
-                          }
-                      }
-                      options = jQuery.extend($r_options,options);
-                      $container.isotope( options );
-                      $r_options  = options;
-                    }
-
-                    return false;
-                  });
-            }
-            loadTimeline();
-
-          </script>
 
     </div>
 <?php endif;?>

@@ -44,7 +44,7 @@ foreach ($list as $item) :
         <?php endif;?>
         
         <?php
-        if(isset($item -> introtext)):
+        if(isset($item -> introtext) && $params -> get('tz_show_introtext',1)):
         ?>
         <div class="introtext"><?php echo $item -> introtext;?></div>
         <?php endif;?>
@@ -71,7 +71,7 @@ foreach ($list as $item) :
                 <a class="title" href="<?php echo $media -> link_url;?>"
                     target="<?php echo $media -> link_target;?>"
                     rel="<?php echo $media -> link_follow;?>"><?php echo $media -> link_title?></a>
-                <?php if($params -> get('show_introtext',1)):?>
+                <?php if($params -> get('tz_show_introtext',1)):?>
                 <div class="introtext"><?php echo $item -> introtext; ?></div>
                 <?php endif;?>
             </div>

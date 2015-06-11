@@ -45,7 +45,7 @@ foreach ($list as $item) :
         <?php endif;?>
 
         <?php
-            if(isset($item -> introtext)):
+            if(isset($item -> introtext) && !empty($item -> introtext)):
         ?>
             <p><?php echo $item -> introtext;?></p>
         <?php endif;?>

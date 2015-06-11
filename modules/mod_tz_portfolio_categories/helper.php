@@ -31,68 +31,101 @@ abstract class modTZ_PortfolioCategoriesHelper
     protected static $sCatIds    = array();
 
     public static function getList(&$params){
+        $db     = JFactory::getDbo();
         $crop = $params->get('crop');
         $width = $params->get('width');
         $height = $params->get('height');
         $categoryName   = null;
         $total          = null;
         $catIds         = null;
-        if($params -> get('catid'))
-            $catIds         = implode(',',$params -> get('catid'));
-        if($catIds){
-            $categoryName   = strtolower(self::getCategoryName($catIds));
+        if($catIds  = $params -> get('catid')) {
+            if(count($catIds)){
+                $catIds = array_filter($catIds);
+            }
+            $catIds = implode(',', $params->get('catid'));
         }
+//        if($catIds){
+//            $categoryName   = strtolower(self::getCategoryName($catIds));
+//        }
         if($params -> get('show_total',1))
             $total  = ',(SELECT COUNT(*) FROM #__content AS c WHERE c.catid = a.id) AS total';
 
-        if($categoryName == strtolower('Uncategorised'))
-            $query  = 'SELECT a.id, a.title, a.alias, a.note, a.published, a.access,'
-                .' a.checked_out, a.checked_out_time, a.created_user_id, a.path,'
-                .' a.parent_id, a.description, a.params, a.level, a.lft, a.rgt, a.language,'
-                .'l.title AS language_title,ag.title AS access_level,'
-                .'ua.name AS author_name'
-                .$total
-                .' FROM #__categories AS a'
-                .' LEFT JOIN `#__languages` AS l ON l.lang_code = a.language'
-                .' LEFT JOIN #__users AS uc ON uc.id=a.checked_out'
-                .' LEFT JOIN #__viewlevels AS ag ON ag.id = a.access'
-                .' LEFT JOIN #__users AS ua ON ua.id = a.created_user_id'
-                .' WHERE a.extension = \'com_content\' AND (a.published = 1)'
-                .' AND NOT a.title="Uncategorised"'
-                .' GROUP BY a.id'
-                .' ORDER BY a.lft asc';
-        else
-            $query  = 'SELECT a.id, a.description, a.params, a.title, a.alias, a.note, a.published, a.access,'
-                .' a.checked_out, a.checked_out_time, a.created_user_id, a.path,'
-                .' a.parent_id, a.level, a.lft, a.rgt, a.language,'
-                .'l.title AS language_title,ag.title AS access_level,'
-                .'ua.name AS author_name'
-                .$total
-                .' FROM #__categories AS a'
-                .' LEFT JOIN `#__languages` AS l ON l.lang_code = a.language'
-                .' LEFT JOIN #__users AS uc ON uc.id=a.checked_out'
-                .' LEFT JOIN #__viewlevels AS ag ON ag.id = a.access'
-                .' LEFT JOIN #__users AS ua ON ua.id = a.created_user_id'
-                .' WHERE a.extension = \'com_content\' AND (a.published = 1)'
-                .' AND a.id IN('.$catIds.')'
-                .' GROUP BY a.id'
-                .' ORDER BY a.lft asc';
+//        if($categoryName == strtolower('Uncategorised'))
+//            $query  = 'SELECT a.id, a.title, a.alias, a.note, a.published, a.access,'
+//                .' a.checked_out, a.checked_out_time, a.created_user_id, a.path,'
+//                .' a.parent_id, a.description, a.params, a.level, a.lft, a.rgt, a.language,'
+//                .'l.title AS language_title,ag.title AS access_level,'
+//                .'ua.name AS author_name'
+//                .$total
+//                .' FROM #__categories AS a'
+//                .' LEFT JOIN `#__languages` AS l ON l.lang_code = a.language'
+//                .' LEFT JOIN #__users AS uc ON uc.id=a.checked_out'
+//                .' LEFT JOIN #__viewlevels AS ag ON ag.id = a.access'
+//                .' LEFT JOIN #__users AS ua ON ua.id = a.created_user_id'
+//                .' WHERE a.extension = \'com_content\' AND (a.published = 1)'
+//                .' AND NOT a.title="Uncategorised"'
+//                .' GROUP BY a.id'
+//                .' ORDER BY a.lft asc';
+//        else
 
-        $db     = JFactory::getDbo();
+//        $query  = 'SELECT a.id, a.description, a.params, a.title, a.alias, a.note, a.published, a.access,'
+//            .' a.checked_out, a.checked_out_time, a.created_user_id, a.path,'
+//            .' a.parent_id, a.level, a.lft, a.rgt, a.language,'
+//            .'l.title AS language_title,ag.title AS access_level,'
+//            .'ua.name AS author_name'
+//            .$total
+//            .' FROM #__categories AS a'
+//            .' LEFT JOIN '.$db -> quoteName('#__tz_portfolio_categories').' AS l ON l.lang_code = a.language'
+//            .' LEFT JOIN `#__languages` AS l ON l.lang_code = a.language'
+//            .' LEFT JOIN #__users AS uc ON uc.id=a.checked_out'
+//            .' LEFT JOIN #__viewlevels AS ag ON ag.id = a.access'
+//            .' LEFT JOIN #__users AS ua ON ua.id = a.created_user_id'
+//            .' WHERE a.extension = \'com_content\' AND (a.published = 1)'
+//            .($catIds?' AND a.id IN('.$catIds.')':'')
+//            .' GROUP BY a.id'
+//            .' ORDER BY a.lft asc';
+        $query  = $db -> getQuery(true);
+        $query -> select('a.*,tz.images');
+//        $query -> select('a.checked_out, a.checked_out_time, a.created_user_id, a.path');
+//        $query -> select(' a.parent_id, a.level, a.lft, a.rgt, a.language');
+        $query -> select('l.title AS language_title,ag.title AS access_level');
+        $query -> select('ua.name AS author_name'.$total);
+        $query -> from($db -> quoteName('#__categories').' AS a');
+        $query -> join('LEFT',$db -> quoteName('#__tz_portfolio_categories').' AS tz ON tz.catid = a.id');
+        $query -> join('LEFT',$db -> quoteName('#__languages').' AS l ON l.lang_code = a.language');
+        $query -> join('LEFT',$db -> quoteName('#__users').' AS uc ON uc.id=a.checked_out');
+        $query -> join('LEFT',$db -> quoteName('#__viewlevels').' AS ag ON ag.id = a.access');
+        $query -> join('LEFT',$db -> quoteName('#__users').' AS ua ON ua.id = a.created_user_id');
+        $query -> where('a.extension = '.$db -> quote('com_content'));
+        $query -> where('a.published = 1');
+        if($catIds){
+            $query -> where('a.id IN('.$catIds.')');
+        }
+        $query -> group('a.id');
+        $query -> order('a.lft ASC');
+
         $db -> setQuery($query);
         if($items   = $db -> loadObjectList()){
+            jimport('joomla.filesystem.file');
             $i=0;
             foreach($items as $item){
                 $items[$i] ->link   = JRoute::_(self::getCategoryRoute($item->id));
                 $registry = new JRegistry;
                 $registry->loadString($item->params);
                 $images = $registry->toArray();
-                if(isset($images['image']))
-                    $imglink = $images['image'];
-                if($crop){
-                    $items[$i]->images = self::tz_resizeImgcrop($imglink, $width, $height,$crop);
-                } else{
-                    $items[$i]->images = self::tz_resizeImg($imglink, $width, $height);
+                $imglink    = null;
+                if(!$item  -> images) {
+                    if (isset($images['image']))
+                        $imglink = $images['image'];
+                }else{
+                    $imglink    = $item -> images;
+                }
+                if($imglink) {
+                    if ($crop) {
+                        $items[$i]->images = self::tz_resizeImgcrop($imglink, $width, $height, $crop);
+                    } else {
+                        $items[$i]->images = self::tz_resizeImg($imglink, $width, $height);
+                    }
                 }
                 $i++;
             }
