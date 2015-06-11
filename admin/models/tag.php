@@ -100,7 +100,7 @@ class TZ_PortfolioModelTag extends JModelAdmin
             $table -> name   = str_replace(array(',',';','\'','"','.','?'
             ,'/','\\','<','>','(',')','*','&','^','%','$','#','@','!','-','+','|','`','~'),' ',$table -> name);
             $table -> name  = trim($table -> name);
-            $table -> name  = mb_strtolower($table -> name);
+            $table -> name  = mb_strtolower($table -> name,'UTF-8');
             $table -> published = ($table -> published == 'P')?1:0;
         }
         if(is_array($table -> attribs)){

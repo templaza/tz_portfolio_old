@@ -45,7 +45,7 @@ if($list):
   <?php foreach($list as $item) : ?>
 
       <li>
-        <img src="<?php echo $item->images; ?>"  alt="" />
+        <img src="<?php echo $item->images; ?>"  alt="<?php echo $item -> title;?>" />
         <?php if($title == 1){ ?>
             <a class="catslidetitle" href="<?php echo $item->link; ?>"><?php echo $item->title; ?>
                 <?php if(isset($item -> total)):?>

@@ -595,6 +595,8 @@ class TZ_PortfolioModelPortfolio extends JModelList
         }
 
         if($char   = $this -> getState('char')){
+//            $query -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
+            $query -> where('c.title LIKE '.$db -> quote(urldecode(mb_strtolower($char)).'%'));
             $query -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
         }
 
@@ -633,10 +635,10 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 $orderby    = 'title DESC';
                 break;
             case 'author':
-                $orderby    = 'create_by ASC';
+                $orderby    = 'u.name ASC';
                 break;
             case 'rauthor':
-                $orderby    = 'create_by DESC';
+                $orderby    = 'u.name DESC';
                 break;
             case 'hits':
                 $orderby    = 'hits DESC';

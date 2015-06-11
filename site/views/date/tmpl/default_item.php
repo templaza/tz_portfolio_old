@@ -82,9 +82,10 @@ $this -> assign('listMedia',$listMedia);
                 <?php $author = ($this->item->created_by_alias ? $this->item->created_by_alias : $author);?>
                 <?php $author = '<span itemprop="name">' . $author . '</span>'; ?>
                 <?php
-                    if(!$userItemid = '&Itemid='.$this -> FindUserItemId($this->item->created_by)){
-                        $userItemid = null;
-                    }
+                $userItemid = null;
+                if($this -> FindUserItemId($this->item->created_by)){
+                    $userItemid = '&Itemid='.$this -> FindUserItemId($this->item->created_by);
+                }
                 ?>
 
                     <?php if ($params->get('link_author') == true):?>

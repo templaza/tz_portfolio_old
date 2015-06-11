@@ -11,7 +11,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.3.1</version>
+	<version>3.3.2</version>
 	<description>MOD_CATEGORIES_XML_DESCRIPTION
      <![CDATA[
     <link rel="stylesheet" type="text/css" href="../modules/mod_tz_portfolio_categories/admin/stylemodule/tz-style-module.css" />
@@ -42,15 +42,17 @@
     <config>
         <fields name="params">
           <fieldset name="basic">
-            <field name="views" type="list" defautl="menu" description="Views categories">
+            <field name="views" type="list" default="menu" description="Views categories">
               <option value="menu">Menu</option>
               <option value="slider">Slider</option>
             </field>
             <field type="category" extension="com_content"
                    multiple="true" name="catid"
-                   size="10"
-                   label="MOD_TZ_PORTFOLIO_CATEGORIES_CATEGORY"></field>
-            <field type="list" name="show_total" defautl="1"
+                   size="10" default=""
+                   label="MOD_TZ_PORTFOLIO_CATEGORIES_CATEGORY">
+                <option value="">MOD_TZ_PORTFOLIO_CATEGORIES_ALL_CATEGORY</option>
+            </field>
+            <field type="list" name="show_total" default="1"
                    label="MOD_TZ_PORTFOLIO_CATEGORIES_SHOW_TOTAL">
                 <option value="1">True</option>
                 <option value="0">False</option>
@@ -63,32 +65,32 @@
             </field>
           </fieldset>
           <fieldset name="slide">
-            <field  type="radio" class="btn-group" name="library" defautl="1" label="Load jQuery Library">
+            <field  type="radio" class="btn-group" name="library" default="1" label="Load jQuery Library">
               <option value="1">Yes</option>
               <option value="0">No</option>
             </field>
-            <field name="slide_width" type="text" defautl="500" description="Slider width (px)" label="Slider Width"/>
-            <field name="slide_height" type="text" defautl="250" description="Slider height (px)" label="Slider Height"/>
-            <field name="image" defautl="1" description="Show Image" label="Show Image"  type="radio" class="btn-group">
+            <field name="slide_width" type="text" description="Slider width (px)" label="Slider Width"/>
+            <field name="slide_height" type="text" description="Slider height (px)" label="Slider Height"/>
+            <field name="image" default="1" description="Show Image" label="Show Image"  type="radio" class="btn-group">
               <option value="1">Yes</option>
               <option value="0">No</option>
             </field>
-            <field name="width" type="text" defautl="" description="Width Image (px)" label="Image Width"/>
-            <field name="height" type="text" defautl="" description="Height Image (px)" label="Image Height"/>
-            <field name="crop" type ="text" defautl="2:1" description="Scale and crop image" label="Crop"/>
-            <field name="title" defautl="1" description="Show Category name" label="Show title"  type="radio" class="btn-group">
+            <field name="width" type="text" default="" description="Width Image (px)" label="Image Width"/>
+            <field name="height" type="text" default="" description="Height Image (px)" label="Image Height"/>
+            <field name="crop" type ="text" default="1:1" description="Scale and crop image" label="Crop"/>
+            <field name="title" default="1" description="Show Category name" label="Show title"  type="radio" class="btn-group">
               <option value="1">Yes</option>
               <option value="0">No</option>
             </field>
-            <field name="des" defautl="0" description="Show description" label="Show description"  type="radio" class="btn-group">
+            <field name="des" default="0" description="Show description" label="Show description"  type="radio" class="btn-group">
               <option value="1">Yes</option>
               <option value="0">No</option>
             </field>
-            <field name="readmore" defautl="0" description="Show Read more" label="Show Read more"  type="radio" class="btn-group">
+            <field name="readmore" default="0" description="Show Read more" label="Show Read more"  type="radio" class="btn-group">
               <option value="1">Yes</option>
               <option value="0">No</option>
             </field>
-            <field name="readtext" type ="text" defautl="Read more" description="Text Read more" label="Text Read more"/>
+            <field name="readtext" type ="text" default="Read more" description="Text Read more" label="Text Read more"/>
           </fieldset>
         </fields>
     </config>

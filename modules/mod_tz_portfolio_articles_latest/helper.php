@@ -109,7 +109,47 @@ abstract class modTZ_PortfolioArticlesLatestHelper
         $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel',array('ignore_request' => true));
 
         if($items){
+
+            $dispatcher = JDispatcher::getInstance();
             foreach ($items as $i => &$item) {
+                $item -> text   = $item -> introtext;
+
+                JPluginHelper::importPlugin('content');
+                $results = $dispatcher->trigger('onContentPrepare', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, 0));
+                $item->introtext = $item->text;
+                $item->event = new stdClass();
+
+                $results = $dispatcher->trigger('onContentAfterTitle', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, 0));
+                $item->event->afterDisplayTitle = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onContentBeforeDisplay', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, 0));
+                $item->event->beforeDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onContentAfterDisplay', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, 0));
+                $item->event->afterDisplayContent = trim(implode("\n", $results));
+
+                //Get Plugins Model
+                $pmodel = JModelLegacy::getInstance('Plugins', 'TZ_PortfolioModel', array('ignore_request' => true));
+                //Get plugin Params for this article
+                $pmodel->setState('filter.contentid', $item->id);
+                $pluginItems = $pmodel->getItems();
+                $pluginParams = $pmodel->getParams();
+
+                $item->pluginparams = clone($pluginParams);
+
+                JPluginHelper::importPlugin('tz_portfolio');
+                $results = $dispatcher->trigger('onTZPluginPrepare', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, &$pluginParams, 0));
+
+                $results = $dispatcher->trigger('onTZPluginAfterTitle', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, &$pluginParams, 0));
+                $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, &$pluginParams, 0));
+                $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, &$pluginParams, 0));
+                $item->event->TZafterDisplayContent = trim(implode("\n", $results));
+
+
                 $item -> media  = null;
 
                 $item->slug = $item->id.':'.$item->alias;

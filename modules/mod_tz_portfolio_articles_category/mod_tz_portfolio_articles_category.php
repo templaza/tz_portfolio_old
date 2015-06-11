@@ -81,11 +81,11 @@ if (!empty($list)) {
 		{
 			case 'year':
 			case 'month_year':
-				$list = modArticlesCategoryHelper::groupByDate($list, $article_grouping, $article_grouping_direction, $params->get('month_year_format', 'F Y'));
+				$list = modTZ_PortfolioArticlesCategoryHelper::groupByDate($list, $article_grouping, $article_grouping_direction, $params->get('month_year_format', 'F Y'));
 				break;
 			case 'author':
 			case 'category_title':
-				$list = modArticlesCategoryHelper::groupBy($list, $article_grouping, $article_grouping_direction);
+				$list = modTZ_PortfolioArticlesCategoryHelper::groupBy($list, $article_grouping, $article_grouping_direction);
 				break;
 			default:
 				break;

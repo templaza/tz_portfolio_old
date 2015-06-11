@@ -23,32 +23,36 @@ jimport('joomla.application.categories');
 abstract class TZ_PortfolioHelperRoute
 {
     protected static $lookup = array();
+    protected static $catid_bool    = array();
+    protected static $views         = array();
 
     protected static $lang_lookup = array();
 
-	/**
-	 * @param	int	The route of the content item
-	 */
-	public static function getArticleRoute($id, $catid = 0, $language = 0)
-	{
+    /**
+     * @param	int	The route of the content item
+     */
+    public static function getArticleRoute($id, $catid = 0, $language = 0)
+    {
         $needles = array(
             'article'  => array((int) $id)
         );
-        
-		//Create the link
-		$link = 'index.php?option=com_tz_portfolio&amp;view=article&amp;id='. $id;
-		if ((int)$catid > 1)
-		{
-			$categories = JCategories::getInstance('TZ_Portfolio');
-			$category = $categories->get((int)$catid);
-			if($category)
-			{
-				$needles['category'] = array_reverse($category->getPath());
-				$needles['categories'] = $needles['category'];
-				$needles['portfolio'] = $needles['category'];
-				$link .= '&amp;catid='.$catid;
-			}
-		}
+
+        //Create the link
+        $link = 'index.php?option=com_tz_portfolio&amp;view=article&amp;id='. $id;
+        if ((int)$catid > 1)
+        {
+            $categories = JCategories::getInstance('TZ_Portfolio');
+            $category = $categories->get((int)$catid);
+            if($category)
+            {
+                $needles['category']    = array_reverse($category->getPath());
+                $needles['categories']  = $needles['category'];
+                $needles['portfolio']   = $needles['category'];
+                $needles['timeline']    = $needles['category'];
+                $needles['date']        = $needles['category'];
+                $link .= '&amp;catid='.$catid;
+            }
+        }
 
         if ($language && $language != "*" && JLanguageMultilang::isEnabled())
         {
@@ -61,39 +65,41 @@ abstract class TZ_PortfolioHelperRoute
             }
         }
 
-		if ($item = self::_findItem($needles)) {
-			$link .= '&amp;Itemid='.$item;
-		}
-		elseif ($item = self::_findItem()) {
-			$link .= '&amp;Itemid='.$item;
-		}
+        if ($item = self::_findItem($needles)) {
+            $link .= '&amp;Itemid='.$item;
+        }
+        elseif ($item = self::_findItem()) {
+            $link .= '&amp;Itemid='.$item;
+        }
 
-		return $link;
-	}
+        return $link;
+    }
 
     /**
-	 * @param	int	The route of the content item
-	 */
-	public static function getPortfolioArticleRoute($id, $catid = 0,$language = 0)
-	{
+     * @param	int	The route of the content item
+     */
+    public static function getPortfolioArticleRoute($id, $catid = 0,$language = 0)
+    {
         $needles = array(
             'p_article'  => array((int) $id)
         );
 
-		//Create the link
-		$link = 'index.php?option=com_tz_portfolio&amp;view=p_article&amp;id='. $id;
-		if ((int)$catid > 1)
-		{
-			$categories = JCategories::getInstance('TZ_Portfolio');
-			$category = $categories->get((int)$catid);
-			if($category)
-			{
-				$needles['category'] = array_reverse($category->getPath());
-				$needles['categories'] = $needles['category'];
-				$needles['portfolio'] = $needles['category'];
-				$link .= '&amp;catid='.$catid;
-			}
-		}
+        //Create the link
+        $link = 'index.php?option=com_tz_portfolio&amp;view=p_article&amp;id='. $id;
+        if ((int)$catid > 1)
+        {
+            $categories = JCategories::getInstance('TZ_Portfolio');
+            $category = $categories->get((int)$catid);
+            if($category)
+            {
+                $needles['category']    = array_reverse($category->getPath());
+                $needles['categories']  = $needles['category'];
+                $needles['portfolio']   = $needles['category'];
+                $needles['timeline']    = $needles['category'];
+                $needles['date']        = $needles['category'];
+                $link .= '&amp;catid='.$catid;
+            }
+        }
 
         if ($language && $language != "*" && JLanguageMultilang::isEnabled())
         {
@@ -106,18 +112,18 @@ abstract class TZ_PortfolioHelperRoute
             }
         }
 
-		if ($item = self::_findItem($needles)) {
-			$link .= '&amp;Itemid='.$item;
-		}
-		elseif ($item = self::_findItem()) {
-			$link .= '&amp;Itemid='.$item;
-		}
+        if ($item = self::_findItem($needles)) {
+            $link .= '&amp;Itemid='.$item;
+        }
+        elseif ($item = self::_findItem()) {
+            $link .= '&amp;Itemid='.$item;
+        }
 
-		return $link;
-	}
+        return $link;
+    }
 
-	public static function getCategoryRoute($catid, $language = 0)
-	{
+    public static function getCategoryRoute($catid, $language = 0)
+    {
         if ($catid instanceof JCategoryNode)
         {
             $id       = $catid->id;
@@ -163,17 +169,17 @@ abstract class TZ_PortfolioHelperRoute
         return $link;
     }
 
-	public static function getFormRoute($id)
-	{
-		//Create the link
-		if ($id) {
-			$link = 'index.php?option=com_tz_portfolio&amp;task=article.edit&amp;a_id='. $id;
-		} else {
-			$link = 'index.php?option=com_tz_portfolio&amp;task=article.edit&amp;a_id=0';
-		}
+    public static function getFormRoute($id)
+    {
+        //Create the link
+        if ($id) {
+            $link = 'index.php?option=com_tz_portfolio&amp;task=article.edit&amp;a_id='. $id;
+        } else {
+            $link = 'index.php?option=com_tz_portfolio&amp;task=article.edit&amp;a_id=0';
+        }
 
-		return $link;
-	}
+        return $link;
+    }
 
     protected static function buildLanguageLookup()
     {
@@ -195,23 +201,20 @@ abstract class TZ_PortfolioHelperRoute
         }
     }
 
-	protected static function _findItem($needles = null)
-	{
-		$app		= JFactory::getApplication();
-		$menus		= $app->getMenu('site');
+    protected static function _findItem($needles = null)
+    {
+        $app		= JFactory::getApplication();
+        $menus		= $app->getMenu('site');
         $active     = $menus->getActive();
         $language = isset($needles['language']) ? $needles['language'] : '*';
 
         // Prepare the reverse lookup array.
         if (!isset(self::$lookup[$language]))
         {
-//		// Prepare the reverse lookup array.
-//		if (self::$lookup === null)
-//		{
-//			self::$lookup = array();
+
             self::$lookup[$language] = array();
 
-			$component	= JComponentHelper::getComponent('com_tz_portfolio');
+            $component	= JComponentHelper::getComponent('com_tz_portfolio');
 
             $attributes = array('component_id');
             $values     = array($component->id);
@@ -224,49 +227,109 @@ abstract class TZ_PortfolioHelperRoute
 
             $items = $menus->getItems($attributes, $values);
 
-//			$items		= $menus->getItems('component_id', $component->id);
+            $tzCatids   = null;
+            // Find menus have choose some category
+            foreach($items as $i => $sItem){
+                if (isset($sItem->query) && isset($sItem->query['view']))
+                {
+                    $sView = $sItem->query['view'];
 
-			foreach ($items as $item)
-			{
-				if (isset($item->query) && isset($item->query['view']))
-				{
-					$view = $item->query['view'];
+                    if (!isset(self::$lookup[$language][$sView])) {
+                        self::$lookup[$language][$sView] = array();
+                    }
 
-					if (!isset(self::$lookup[$language][$view])) {
-						self::$lookup[$language][$view] = array();
-					}
-					if (isset($item->query['id'])) {
+                    if (!isset($sItem->query['id'])) {
+                        if($needles){
+                            $sCatids		=	$sItem->params->get('tz_catid');
+                            if($sItem -> params -> get('catid')){
+                                $sCatids  = $sItem -> params -> get('catid');
+                            }
+                            if ($sCatids) {
+                                if (is_array($sCatids)) {
+                                    $sCatids = array_filter($sCatids);
+                                    if(count($sCatids)){
+                                        foreach($sCatids as $sc){
+                                            if(!isset(self::$lookup[$language][$sView][$sc])){
+                                                $tzCatids[] = $sc;
+                                                self::$lookup[$language][$sView][$sc] = $sItem -> id;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach ($items as $i => $item)
+            {
+                if (isset($item->query) && isset($item->query['view']))
+                {
+                    $view = $item->query['view'];
+
+                    if (isset($item->query['id'])) {
                         if (!isset(self::$lookup[$language][$view][$item->query['id']]) || $item->language != '*')
                         {
                             self::$lookup[$language][$view][$item->query['id']] = $item->id;
                         }
-					} else {
-						$catids		=	$item->params->get('tz_catid');
-						if ($catids) {
-							if (is_array($catids)) {
-								for ($i =0; $i<count($catids); $i++){
-									self::$lookup[$language][$view][$catids[$i]] = $item->id;
-								}
-							} else {
-								self::$lookup[$language][$view][$catids] = $item->id;
-							}
-						}
-					}
+                    } else {
+                        $catids = null;
+                        if($item->params->get('tz_catid')){
+                            $catids		=	$item->params->get('tz_catid');
+                        }
+                        if($item -> params -> get('catid')){
+                            $catids  = $item -> params -> get('catid');
+                        }
+                        if ($catids) {
+                            if (is_array($catids)) {
+                                $catids = array_filter($catids);
+                                if(!count($catids)){
+                                    if($needles){
+                                        // Find menus choose all category
+                                        if($_catids = self::getCatIds()){
+                                            if($tzCatids){
+                                                // Filter category with menus chose some category
+                                                $_catids    = array_diff($_catids,$tzCatids);
+                                                $_catids    = array_reverse($_catids);
+                                            }
+                                            // Set Itemid for category
+                                            foreach($_catids as $c){
+                                                if(!isset(self::$lookup[$language][$view][$c])){
+                                                    self::$lookup[$language][$view][$c] = $item->id;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }else {
+                                if(!isset(self::$lookup[$language][$view][$catids])){
+                                    self::$lookup[$language][$view][$catids] = $item->id;
+                                }
+                            }
+                        }
+                    }
 
                     if ($active && $active->component == 'com_tz_portfolio') {
                         if (isset($active->query) && isset($active->query['view'])){
 
                             if (isset($active->query['id'])) {
-                                self::$lookup[$language][$active->query['view']][$active->query['id']] = $active->id;
+                                if(!isset(self::$lookup[$language][$active->query['view']][$active->query['id']])){
+                                    self::$lookup[$language][$active->query['view']][$active->query['id']] = $active->id;
+                                }
                             }
                         }
                     }
-				}
-			} // End for
-		}
 
+                }
+
+            } // End for
+        }
+
+        // Return menu's ids were found in above
         if ($needles)
         {
+
             foreach ($needles as $view => $ids)
             {
                 if (isset(self::$lookup[$language][$view]))
@@ -275,6 +338,8 @@ abstract class TZ_PortfolioHelperRoute
                     {
                         if (isset(self::$lookup[$language][$view][(int) $id]))
                         {
+                            self::$catid_bool[(int) $id]  = false;
+                            self::$views[(int) $id]       = $view;
                             return self::$lookup[$language][$view][(int) $id];
                         }
                     }
@@ -287,12 +352,22 @@ abstract class TZ_PortfolioHelperRoute
             return $active->id;
         }
 
-//        if ($active && $active->component == 'com_tz_portfolio') {
-//            return $active->id;
-//        }
-        // If not found, return language specific home link
+//         If not found, return language specific home link
         $default = $menus->getDefault($language);
 
         return !empty($default->id) ? $default->id : null;
-	}
+    }
+    protected static function getCatIds(){
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true)
+            ->select('id')
+            ->from('#__categories')
+            -> where('published = 1');
+
+        $db->setQuery($query);
+        if($catids = $db->loadColumn()){
+            return $catids;
+        }
+        return false;
+    }
 }

@@ -705,10 +705,10 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                     if($tplItems -> textcolor && !preg_match('/^rgba\([0-9]+\,\s+?[0-9]+\,\s+?[0-9]+\,\s+?0\)$/i',trim($tplItems -> textcolor))){
                         $color      =  'color: '.$tplItems -> textcolor.';';
                     }
-                    if($tplItems -> margin){
+                    if(isset($tplItems -> margin) && !empty($tplItems -> margin)){
                         $margin = 'margin: '.$tplItems -> margin.';';
                     }
-                    if($tplItems -> padding){
+                    if(isset($tplItems -> padding) && !empty($tplItems -> padding)){
                         $padding = 'padding: '.$tplItems -> padding.';';
                     }
                     if($background || $color || $margin || $padding){
@@ -807,10 +807,10 @@ class TZ_PortfolioViewArticle extends JViewLegacy
             if($children -> textcolor && !preg_match('/^rgba\([0-9]+\,\s+?[0-9]+\,\s+?[0-9]+\,\s+?0\)$/i',trim($children -> textcolor))){
                 $color      =  'color: '.$children -> textcolor.';';
             }
-            if($children -> margin){
+            if(isset($children -> margin) && !empty($children -> margin)){
                 $margin = 'margin: '.$children -> margin.';';
             }
-            if($children -> padding){
+            if(isset($children -> padding) && !empty($children -> padding)){
                 $padding = 'padding: '.$children -> padding.';';
             }
             if($background || $color){

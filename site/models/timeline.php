@@ -16,7 +16,7 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
+
 //no direct access
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.modellist');
@@ -105,7 +105,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
         $this -> setState('list.limit',$limit);
         $this -> setState('params',$this -> params);
         $this -> setState('char',JRequest::getString('char',null));
-        
+
     }
 
     function ajax(){
@@ -168,7 +168,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 $view -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
             }
         }
-        
+
         JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
         $list   = $this -> getItems();
@@ -440,7 +440,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
 
     //Get first letter of title
     function getFirstLetter(){
-        
+
     }
 
 
@@ -642,8 +642,13 @@ class TZ_PortfolioModelTimeLine extends JModelList
         }
 
         if($char   = $this -> getState('char')){
+            $query -> where('c.title LIKE '.$db -> quote(urldecode(mb_strtolower($char)).'%'));
             $query -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
+            $subQuery -> where('c.title LIKE'.$db -> quote(urldecode(mb_strtolower($char)).'%'));
             $subQuery -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
+
+//            $query -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
+//            $subQuery -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
         }
 
         $query -> group('c.id');
@@ -653,15 +658,15 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 $cateOrder  = null;
                 break;
             case 'alpha' :
-                $cateOrder = 'cc.path, ';
+                $cateOrder = ',cc.path ';
                 break;
 
             case 'ralpha' :
-                $cateOrder = 'cc.path DESC, ';
+                $cateOrder = ',cc.path DESC ';
                 break;
 
             case 'order' :
-                $cateOrder = 'cc.lft, ';
+                $cateOrder = ',cc.lft ';
                 break;
         }
 
@@ -670,10 +675,10 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 $orderby    = 'id DESC';
                 break;
             case 'rdate':
-                $orderby    = 'created DESC';
+                $orderby    = 'c.created DESC';
                 break;
             case 'date':
-                $orderby    = 'created ASC';
+                $orderby    = '';
                 break;
             case 'alpha':
                 $orderby    = 'title ASC';
@@ -682,10 +687,10 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 $orderby    = 'title DESC';
                 break;
             case 'author':
-                $orderby    = 'create_by ASC';
+                $orderby    = 'u.name ASC';
                 break;
             case 'rauthor':
-                $orderby    = 'create_by DESC';
+                $orderby    = 'u.name DESC';
                 break;
             case 'hits':
                 $orderby    = 'hits DESC';
@@ -697,7 +702,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 $orderby    = 'ordering ASC';
                 break;
         }
-        $query -> order($cateOrder.'c.created DESC,'.$orderby);
+        $query -> order('c.created DESC'.$cateOrder.(($orderby && !empty($orderby))?','.$orderby:''));
 
         /** Query get max hits for sort filter **/
         $subQuery -> select('MAX(c.hits)');
@@ -716,6 +721,8 @@ class TZ_PortfolioModelTimeLine extends JModelList
             $query->where('c.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
 //            $query->where('(contact.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').') OR contact.language IS NULL)');
         }
+
+//        var_dump($query -> dump()); die();
 
         return $query;
     }

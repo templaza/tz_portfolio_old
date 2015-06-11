@@ -248,6 +248,7 @@ JFactory::getLanguage()->load('com_tz_portfolio');
                         ?>
                         <?php echo $this -> loadTemplate('extrafields');?>
 
+                        
                         <?php if (($params->get('show_author',1)) or ($params->get('show_category',1))
                         or ($params->get('show_create_date',1)) or ($params->get('show_modify_date',1))
                         or ($params->get('show_publish_date',1)) or ($params->get('show_parent_category',1))
