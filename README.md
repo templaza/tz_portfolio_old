@@ -26,7 +26,7 @@ Demo: http://demo.tzportfolio.com/
 		+ Display image in module TZ Categories Menu
 		+ Sort in view portfolio and timeline.
 		+ Grouping option in module TZ Articles Category.
-		+ Filter character with unicode font (not done).
+		+ Filter character with unicode font.
 		+ Extrafield with type is link (when edit article if this extrafield was assigned this article).
 	- Featured:	
 		+ Insert some options for SEF Url in tab advanced options:
