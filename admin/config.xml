@@ -183,15 +183,6 @@
             <option value="fitRows">COM_TZ_PORTFOLIO_PORTFOLIO_FITROWS</option>
             <option value="straightDown">COM_TZ_PORTFOLIO_PORTFOLIO_STRAIGHTDOWN</option>
         </field>
-        <field name="col_w_switch" type="list"
-               default="tz_column_width"
-               label="COM_TZ_PORTFOLIO_COLUMN_WIDTH_SWITCH_LABEL">
-            <option value="p_column_count">COM_TZ_PORTFOLIO_COLUMN_COUNT_LABEL</option>
-            <option value="tz_column_width">COM_TZ_PORTFOLIO_TZ_COLUMN_WIDTH</option>
-        </field>
-        <field name="p_column_count" type="text"
-               default="3;2-768"
-                label="COM_TZ_PORTFOLIO_COLUMN_COUNT_LABEL"/>
         <field name="tz_column_width"
                 type="text"
                 default="233"
