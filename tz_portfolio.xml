@@ -358,4 +358,7 @@
 		<plugin plugin="example" group="tz_portfolio" folder="example" />
     </plugins>
 
+    <updateservers>
+        <server type="extension" priority="1" name="TZ Portfolio Core"><![CDATA[http://joomla.templaza.net/extensions/updates/components/tz_portfolio_update.xml]]></server>
+    </updateservers>
 </extension>
