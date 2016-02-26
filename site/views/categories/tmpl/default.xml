@@ -25,7 +25,15 @@
 
 	<!-- Add fields to the parameters object for the layout. -->
 <fields name="params">
-<fieldset name="basic" label="JGLOBAL_CATEGORIES_OPTIONS">
+	<fieldset name="request" addfieldpath="administrator/components/com_tz_portfolio/models/fields">
+		<field type="tztemplates" name="tz_template_style_id"
+			   default="0"
+			   label="COM_TZ_PORTFOLIO_TEMPLATE_STYLE_LABEL"
+			   description="COM_TZ_PORTFOLIO_TEMPLATE_STYLE_DESC">
+			<option value="0">JOPTION_USE_DEFAULT</option>
+		</field>
+	</fieldset>
+	<fieldset name="basic" label="JGLOBAL_CATEGORIES_OPTIONS">
 
 			<field name="show_base_description" type="list"
 				label="JGLOBAL_FIELD_SHOW_BASE_DESCRIPTION_LABEL"

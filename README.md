@@ -20,13 +20,24 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+02/26/2016 - 3.3.3
+
+	- Fix error:	
+		+ If set "No" for option "Upload original image", the image alway uploaded.
+		+ Module TZ Categories Menu: Not work with the view: slider, Not show images.
+		+ SEF URL with Portfolio submenu Item.
+		+ Layout type doesn't work with view portfolio and timeline.
+		+ IcoMoon font files  missing with some server.
+	- Featured:	
+		+ Multiple Templates and template style (like Joomla's Template).	
+
 06/11/2015 - 3.3.2
 
 	- Fix error:	+ Option Show introtext in module TZ Articles Popular
 		+ Display image in module TZ Categories Menu
 		+ Sort in view portfolio and timeline.
 		+ Grouping option in module TZ Articles Category.
-		+ Filter character with unicode font.
+		+ Filter character with unicode font (not done).
 		+ Extrafield with type is link (when edit article if this extrafield was assigned this article).
 	- Featured:	
 		+ Insert some options for SEF Url in tab advanced options:

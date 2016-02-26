@@ -47,7 +47,7 @@ class JFormFieldCategoriesAssignment extends JFormFieldCheckboxes
                 $curTemplateId  = null;
 
                 if(!isset($this -> element['template_id'])){
-                    if($input -> get('option') == 'com_tz_portfolio' && $input -> get('view') == 'template'){
+                    if($input -> get('option') == 'com_tz_portfolio' && $input -> get('view') == 'template_style'){
                         $curTemplateId  = $input -> get('id');
                     }
                 }else{
@@ -96,25 +96,28 @@ class JFormFieldCategoriesAssignment extends JFormFieldCheckboxes
         $options = $this->getOptions();
 
         // Build the checkbox field output.
-//        $html[] = '<ul class="row-fluid">';
-//        $html[] = '<div class="row-fluid">';
+        $html[] = '<div class="btn-toolbar">
+                <button class="btn" type="button" class="jform-rightbtn" onclick="jQuery(\'.chk-category\').attr(\'checked\', !jQuery(\'.chk-category\').attr(\'checked\'));">
+                    <i class="icon-checkbox-partial"></i> '.JText::_('JGLOBAL_SELECTION_INVERT').'
+                </button>
+            </div>';
 
         foreach ($options as $i => $option)
         {
             // Initialize some option attributes.
             if (!isset($this->value) || empty($this->value))
             {
-                $checked = (in_array((string) $option->value, (array) $checkedOptions) ? ' checked' : '');
+                $checked = (in_array((string) $option->value, (array) $checkedOptions) ? ' checked="checked"' : '');
             }
             else
             {
                 $value = !is_array($this->value) ? explode(',', $this->value) : $this->value;
-                $checked = (in_array((string) $option->value, $value) ? ' checked' : '');
+                $checked = (in_array((string) $option->value, $value) ? ' checked="checked"' : '');
             }
 
-            $checked = empty($checked) && $option->checked ? ' checked' : $checked;
+            $checked = empty($checked) && $option->checked ? ' checked="checked"' : $checked;
 
-            $class = !empty($option->class) ? ' class="' . $option->class . '"' : '';
+            $class = !empty($option->class) ? ' class="chk-category ' . $option->class . '"' : 'class="chk-category"';
             $disabled = !empty($option->disable) || $this->disabled ? ' disabled' : '';
 
             // Initialize some JavaScript option attributes.
@@ -125,23 +128,15 @@ class JFormFieldCategoriesAssignment extends JFormFieldCheckboxes
                 $html[] = '<ul class="row-fluid">';
             }
             $html[] = '<li class="span3">';
-//            $html[] = '<li class="span3">';
             $html[] = '<input type="checkbox" id="' . $this->id . $i . '" name="' . $this->name . '" value="'
                 . htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8') . '"' . $checked . $class . $onclick . $onchange . $disabled . '/>';
 
             $html[] = '<label for="' . $this->id . $i . '"' . $class . '>' . JText::_($option->text) . '</label>';
-            if($checked){
-                $html[] = '<input type="hidden" name="jform['.$this -> fieldname.'_old][]" value="'.$option -> value.'">';
-            }
                 $html[] = '</li>';
             if($i % 4 == 3 || $i == (count($options) - 1)){
                 $html[] = '</ul>';
             }
-//            $html[] = '</li>';
         }
-
-//        $html[] = '</ul>';
-//        $html[] = '</div>';
 
         // End the checkbox field output.
         $html[] = '</fieldset>';

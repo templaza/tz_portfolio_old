@@ -109,14 +109,14 @@ endif;
             <?php endif;?>
         <?php endif;?>
 
-        <?php if($params -> get('show_image_gallery',1) == 1):?>
+        <?php if($params -> get('show_image_gallery',1)):?>
             <?php
                 if($media[0] -> type == 'imagegallery'):
                     if($params -> get('show_arrows_image_gallery',1) == 1)
                     $dirNav   = 'true';
                 else
                     $dirNav   = 'false';
-                if($params -> get('show_controlNav_image_gallery',1) == 1) {
+                if($params -> get('show_controlNav_image_gallery',1)) {
                     $controlNav = 'true';
                     if ($params->get('controlnav_type', 'none') == 'thumbnails' )
                         $controlNav = $params->get('controlnav_type', 'none');
@@ -200,67 +200,67 @@ endif;
 
                 $doc    = JFactory::getDocument();
                 $doc -> addScriptDeclaration('
-                    jQuery(document).ready(function(){
-                        jQuery(\'.flexslider\').flexslider({
-                            animation: '.$animation.',
-                            slideDirection: "'.$params -> get('image_gallery_slide_direction').'",
-                            slideshow: '.$slideshow.',
-                            slideshowSpeed: '.$params -> get('image_gallery_animSpeed').',
-                            animationDuration: '.$params -> get('image_gallery_animation_duration').',
-                            directionNav: '.$dirNav.',
-                            controlNav: '.(($controlNav=='thumbnails')?'"'.$controlNav.'"':$controlNav).',
-                            prevText: "'.JText::_('Previous').'",
-                            nextText: "'.JText::_('Next').'",
-                            pausePlay: '.$pausePlay.',
-                            pauseText: "'.JText::_('Pause').'",
-                            playText: "'.JText::_('Play').'",
-                            pauseOnAction: '.$pauseOnAction.',
-                            pauseOnHover: '.$pauseOnHover.',
-                            useCSS: '.$useCSS.',
-                            startAt: '.$params -> get('image_gallery_startAt',0).',
-                            animationLoop: '.$animationLoop.',
-                            smoothHeight: '.$smoothHeight.',
-                            randomize: '.$randomize.',
-                            itemWidth:'.$params -> get('image_gallery_itemWidth',0).',
-                            itemMargin:'.$params -> get('image_gallery_itemMargin',0).',
-                            minItems:'.$params -> get('image_gallery_minItems',0).',
-                            maxItems:'.$params -> get('image_gallery_maxItems',0).',
-                            start: function(){
-                                jQuery(".flexslider").css("width","'.$params -> get('tz_image_gallery_'.$name).'px")
-                            }
-                        });
+                jQuery(document).ready(function(){
+                    jQuery(\'.flexslider\').flexslider({
+                        animation: '.$animation.',
+                        direction: "'.$params -> get('image_gallery_slide_direction','horizontal').'",
+                        slideshow: '.$slideshow.',
+                        slideshowSpeed: '.$params -> get('image_gallery_animSpeed').',
+                        animationSpeed: '.$params -> get('image_gallery_animation_duration').',
+                        directionNav: '.$dirNav.',
+                        controlNav: '.(($controlNav=='thumbnails')?'"'.$controlNav.'"':$controlNav).',
+                        prevText: "'.JText::_('Previous').'",
+                        nextText: "'.JText::_('Next').'",
+                        pausePlay: '.$pausePlay.',
+                        pauseText: "'.JText::_('Pause').'",
+                        playText: "'.JText::_('Play').'",
+                        pauseOnAction: '.$pauseOnAction.',
+                        pauseOnHover: '.$pauseOnHover.',
+                        useCSS: '.$useCSS.',
+                        startAt: '.$params -> get('image_gallery_startAt',0).',
+                        animationLoop: '.$animationLoop.',
+                        smoothHeight: '.$smoothHeight.',
+                        randomize: '.$randomize.',
+                        itemWidth:'.$params -> get('image_gallery_itemWidth',0).',
+                        itemMargin:'.$params -> get('image_gallery_itemMargin',0).',
+                        minItems:'.$params -> get('image_gallery_minItems',0).',
+                        maxItems:'.$params -> get('image_gallery_maxItems',0).',
+                        start: function(){
+                            jQuery(".flexslider").css("width","'.$params -> get('tz_image_gallery_'.$name).'px")
+                        }
                     });
-                ');
+                });
+            ');
             ?>
-                <div class="tz_portfolio_image_gallery">
-                    <div class="flexslider">
-                        <ul class="slides">
-                            <?php foreach($media as $rowMedia):?>
-                                <?php
-                                    $src        = JURI::root().str_replace('.'.JFile::getExt($rowMedia -> images),
-                                                '_'.$params -> get('detail_article_image_gallery_size','L')
-                                              .'.'.JFile::getExt($rowMedia -> images),$rowMedia -> images);
-                                    $thumb_src  = JURI::root().str_replace('.'.JFile::getExt($rowMedia -> images),
-                                                '_S.'.JFile::getExt($rowMedia -> images),$rowMedia -> images);
-                                ?>
-                                <li<?php echo ($controlNav=='thumbnails')?' data-thumb="'.$thumb_src.'"':''?>>
-                                    <img src="<?php echo $src;?>"
-                                         alt="<?php echo ($rowMedia -> imagetitle)?($rowMedia -> imagetitle):($this -> item -> title);?>"
-                                        <?php if(!empty($rowMedia -> imagetitle)):?>
-                                            title="<?php echo $rowMedia -> imagetitle;?>"
-                                        <?php endif; ?>
-                                    />
-
+                    <div class="tz_portfolio_image_gallery">
+                        <div class="flexslider">
+                            <ul class="slides">
+                                <?php foreach($media as $rowMedia):?>
                                     <?php
-                                        if($rowMedia -> imagetitle):
+                                    $src    = JURI::root().str_replace('.'.JFile::getExt($rowMedia -> images),
+                                            '_'.$params -> get('detail_article_image_gallery_size','L')
+                                            .'.'.JFile::getExt($rowMedia -> images),$rowMedia -> images);
+                                    $thumb_src  = JURI::root().str_replace('.'.JFile::getExt($rowMedia -> images),
+                                            '_S.'.JFile::getExt($rowMedia -> images),$rowMedia -> images);
                                     ?>
-                                    <p class="flex-caption"><?php echo $rowMedia -> imagetitle?></p>
-                                    <?php endif; ?>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+                                    <li<?php echo ($controlNav=='thumbnails')?' data-thumb="'.$thumb_src.'"':''?>>
+                                        <img src="<?php echo $src;?>"
+                                             alt="<?php echo ($rowMedia -> imagetitle)?($rowMedia -> imagetitle):($this -> item -> title);?>"
+                                            <?php if(!empty($rowMedia -> imagetitle)):?>
+                                                title="<?php echo $rowMedia -> imagetitle;?>"
+                                            <?php endif; ?>
+                                            />
+
+                                        <?php
+                                        if($rowMedia -> imagetitle):
+                                            ?>
+                                            <p class="flex-caption"><?php echo $rowMedia -> imagetitle?></p>
+                                        <?php endif; ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
                     </div>
-                </div>
             <?php endif;?>
         <?php endif;?>
 

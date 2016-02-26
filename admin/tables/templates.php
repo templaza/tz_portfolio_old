@@ -20,7 +20,7 @@
 //no direct access
 defined('_JEXEC') or die('Restricted access');
 
-class TableTemplates extends JTable
+class TZ_PortfolioTableTemplates extends JTable
 {
     /** @var int Primary key */
     var $id 				= null;
@@ -29,9 +29,13 @@ class TableTemplates extends JTable
     /** @var string */
     var $title 				= null;
     /** @var int */
-    var $home  		= null;
+    var $home  		        = null;
+    /** @var int */
+    var $protected	        = null;
     /** @var string*/
-    var $params		= null;
+    var $layout     		= null;
+    /** @var string*/
+    var $params		        = null;
 
     function __construct(&$db) {
         parent::__construct('#__tz_portfolio_templates','id',$db);

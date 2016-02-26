@@ -25,7 +25,7 @@ jimport('joomla.application.component.controller');
 /**
  * Content Component Controller.
  */
-class TZ_PortfolioController extends JControllerLegacy
+class TZ_PortfolioController extends TZ_PortfolioControllerLegacy
 {
     protected $input;
 	function __construct($config = array())

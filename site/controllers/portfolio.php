@@ -20,28 +20,10 @@
 // no direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.controller');
+//jimport('joomla.application.component.controller');
 
-class TZ_PortfolioControllerPortfolio extends JControllerLegacy
+class TZ_PortfolioControllerPortfolio extends TZ_PortfolioControllerLegacy
 {
-    function display($cachable = false, $urlparams = array()){
-        switch ($this -> getTask()){
-            case 'portfolio.ajax':
-            case 'ajax':
-                $this -> ajax();
-                break;
-            case 'portfolio.ajaxcategories':
-            case 'ajaxcategories':
-                $this -> ajaxcategories();
-                break;
-            case 'portfolio.ajaxtags':
-            case 'ajaxtags':
-                $this -> ajaxtags();
-                break;
-        }
-        parent::display($cachable,$urlparams);
-    }
-
     public function getModel($name = 'Portfolio', $prefix = 'TZ_PortfolioModel', $config = array('ignore_request' => true))
     {
         $model = parent::getModel($name, $prefix, $config);
@@ -51,25 +33,92 @@ class TZ_PortfolioControllerPortfolio extends JControllerLegacy
 
     function ajax(){
 
-        $model  = $this -> getModel();
-        $list       = $model -> ajax();
-        echo $list;
+        $document   = JFactory::getDocument();
+        $viewType   = $document->getType();
+        $vName      = $this->input->get('view', $this->default_view);
+        $viewLayout = $this->input->get('layout', 'default', 'string');
+
+        if($view = $this->getView($vName, $viewType)) {
+
+            // Get/Create the model
+            if ($model = $this->getModel($vName)) {
+                if (!$model->ajax()) {
+                    die();
+                }
+
+                // Push the model into the view (as default)
+                $view->setModel($model, true);
+            }
+
+            $view->document = $document;
+
+            JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
+            // Display the view
+            ob_start();
+            $view->display($viewLayout);
+            $content    = ob_get_contents();
+            ob_end_clean();
+            echo str_replace('</script>','<\\/script>',$content);
+        }
         die();
     }
 
     function ajaxtags(){
-         $model      = $this -> getModel();
-        $list       = $model -> ajaxtags();
 
-        echo $list;
+        $document   = JFactory::getDocument();
+        $viewType   = $document->getType();
+
+        if($view = $this->getView('portfolio', $viewType)) {
+
+            // Get/Create the model
+            if ($model = $this->getModel('portfolio')) {
+                if (!$tags = $model -> ajaxtags()) {
+                    die();
+                }
+
+                // Push the model into the view (as default)
+                $view->setModel($model, true);
+
+                $view -> assign('listsTags',$tags);
+            }
+
+            $view->document = $document;
+
+            JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
+            // Display the view
+            echo $view->loadTemplate('tags');
+        }
         die();
     }
 
     function ajaxcategories(){
-        $model      = $this -> getModel();
-        $list       = $model -> ajaxCategories();
 
-        echo $list;
+        $document   = JFactory::getDocument();
+        $viewType   = $document->getType();
+
+        if($view = $this->getView('portfolio', $viewType)) {
+
+            // Get/Create the model
+            if ($model = $this->getModel('portfolio')) {
+                if (!$catids = $model -> ajaxCategories()) {
+                    die();
+                }
+
+                // Push the model into the view (as default)
+                $view->setModel($model, true);
+
+                $view -> assign('listsCategories',$catids);
+            }
+
+            $view->document = $document;
+
+            JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
+            // Display the view
+            echo $view->loadTemplate('categories');
+        }
         die();
     }
 

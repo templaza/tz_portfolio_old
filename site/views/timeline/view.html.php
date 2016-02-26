@@ -25,9 +25,11 @@ require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIREC
 
 class TZ_PortfolioViewTimeLine extends JViewLegacy
 {
-    protected $item = null;
+    protected $item         = null;
     protected $media        = null;
-    public $extraFields  = null;
+    public $extraFields     = null;
+    protected $ajaxLink     = null;
+    protected $lang_sef     = '';
 
     function __construct($config = array()){
         $this -> item           = new stdClass();
@@ -38,14 +40,26 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
 
     
     function display($tpl=null){
+        $app        = JFactory::getApplication('site');
+        $input      = $app -> input;
+        $language   = JLanguageHelper::getLanguages('lang_code');
+
         JHtml::_('behavior.framework');
         $menus		= JMenu::getInstance('site');
         $active     = $menus->getActive();
         $state      = $this -> get('State');
 
-        $_params    = $state -> get('params');
+        // Create ajax link
+        $this -> ajaxLink   = JURI::root().'index.php?option=com_tz_portfolio&amp;view=portfolio&amp;task=portfolio.ajax'
+            .'&amp;layout=item'.(($state -> get('char'))?'&amp;char='.$state -> get('char'):'');
+        // If your site has used multilanguage
+        if($lang = $input -> get('lang')){
+            $this -> lang_sef   = $language[$lang] -> sef;
+            $this -> ajaxLink   .= '&amp;lang='.$language[$lang] -> sef;
+        }
+        $this -> ajaxLink   .= '&amp;Itemid='.$active -> id.'&amp;page=2';
 
-        $params = $this -> get('Params');
+        $params    = $state -> get('params');
 
         if($params -> get('fields_option_order')){
             switch($params -> get('fields_option_order')){
@@ -78,8 +92,8 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
         }
 
         // Set value again for option tz_portfolio_redirect
-        if($_params -> get('tz_portfolio_redirect') == 'default'){
-            $_params -> set('tz_portfolio_redirect','article');
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
         }
 
         //Escape strings for HTML output
@@ -95,7 +109,7 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
         }
         
         $this -> assign('listsCatDate',$this -> get('DateCategories'));
-        $this -> assign('params',$_params);
+        $this -> assign('params',$params);
         $this -> assign('pagination',$this -> get('Pagination'));
         $this -> assign('Itemid',$active -> id);
         $this -> assign('limitstart',$state -> get('list.start'));
@@ -104,8 +118,6 @@ class TZ_PortfolioViewTimeLine extends JViewLegacy
         $model -> setState('params',$params);
         $this -> assign('char',$state -> get('char'));
         $this -> assign('availLetter',$model -> getAvailableLetter());
-
-        $params = $this -> get('Params');
 
         $csscompress    = null;
         if($params -> get('css_compression',0)){

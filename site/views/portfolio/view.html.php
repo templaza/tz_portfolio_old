@@ -28,7 +28,10 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
 {
     protected $item         = null;
     protected $media        = null;
-    public $extraFields  = null;
+    public $extraFields     = null;
+    protected $ajaxLink     = null;
+    protected $lang_sef     = '';
+
 
     function __construct($config = array()){
         $this -> item           = new stdClass();
@@ -38,6 +41,10 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
     }
 
     function display($tpl=null){
+        $app        = JFactory::getApplication('site');
+        $input      = $app -> input;
+        $language   = JLanguageHelper::getLanguages('lang_code');
+
         JHtml::_('behavior.framework');
         $menus		= JMenu::getInstance('site');
         $active     = $menus->getActive();
@@ -45,22 +52,18 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         $doc            = JFactory::getDocument();
 
         $params         = null;
-        $state          =  $this -> get('State');
+        $state          = $this -> get('State');
         $params         = $state -> get('params');
 
-        if($colCount = $params -> get('p_column_count','3;2-768')){
-            $colCount = explode(';',$colCount);
-            if(count($colCount)){
-                foreach($colCount as $i => $value){
-                    if(strpos($value,'-')){
-                        $col_w    = explode('-',$value);
-                        $colCount[$col_w[1]]  = $col_w[0];
-                        unset($colCount[$i]);
-                    }
-                }
-            }
-            $params -> set ('p_column_count',$colCount);
+        // Create ajax link
+        $this -> ajaxLink   = JURI::root().'index.php?option=com_tz_portfolio&amp;view=portfolio&amp;task=portfolio.ajax'
+            .'&amp;layout=item'.(($state -> get('char'))?'&amp;char='.$state -> get('char'):'');
+        // If your site has used multilanguage
+        if($lang = $input -> get('lang')){
+            $this -> lang_sef   = $language[$lang] -> sef;
+            $this -> ajaxLink   .= '&amp;lang='.$language[$lang] -> sef;
         }
+        $this -> ajaxLink   .= '&amp;Itemid='.$active -> id.'&amp;page=2';
 
         if($params -> get('fields_option_order')){
             switch($params -> get('fields_option_order')){
@@ -83,14 +86,6 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
         if($params -> get('css_compression',0)){
             $csscompress    = '.min';
         }
-
-//        $jscompress         = new stdClass();
-//        $jscompress -> extfile  = null;
-//        $jscompress -> folder   = null;
-//        if($params -> get('js_compression',1)){
-//            $jscompress -> extfile  = '.min';
-//            $jscompress -> folder   = '/packed';
-//        }
 
         $doc -> addStyleSheet('components/com_tz_portfolio/css/isotope.min.css');
         $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js/jquery.isotope.min.js"></script>');
@@ -247,19 +242,13 @@ class TZ_PortfolioViewPortfolio extends JViewLegacy
                 if($params -> get('tz_comment_type') == 'facebook' ||
                         $params -> get('tz_comment_type') == 'disqus'){
                     $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
-                    '/base64.js" type="text/javascript"></script>');
+                    '/base64.min.js" type="text/javascript"></script>');
                 }
             }
         }
 
-//        if($params -> get('tz_show_filter',1) || ($params -> get('tz_show_count_comment',1) &&
-//                ($params -> get('tz_comment_type') == 'facebook' ||
-//                    $params -> get('tz_comment_type') == 'disqus')) ){
-//            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
-//                '/tz_portfolio.min.js" type="text/javascript"></script>');
-//        }
-            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
-                '/tz_portfolio.min.js" type="text/javascript"></script>');
+        $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+            '/tz_portfolio.min.js" type="text/javascript"></script>');
 
         $this -> _prepareDocument();
 

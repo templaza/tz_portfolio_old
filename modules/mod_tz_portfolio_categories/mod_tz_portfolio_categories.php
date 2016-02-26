@@ -36,11 +36,9 @@ $sl_height = $params->get('slide_height');
 $library    = $params -> get('library');
 
 if($view == "menu"){
-    require_once JModuleHelper::getLayoutPath('mod_tz_portfolio_categories','default');
+    require JModuleHelper::getLayoutPath('mod_tz_portfolio_categories','default');
 } else{
-
-    require_once JModuleHelper::getLayoutPath('mod_tz_portfolio_categories','slider');
-
+    require JModuleHelper::getLayoutPath('mod_tz_portfolio_categories','slider');
 }
 
  ?>

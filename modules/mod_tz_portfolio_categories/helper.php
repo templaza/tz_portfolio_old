@@ -42,7 +42,7 @@ abstract class modTZ_PortfolioCategoriesHelper
             if(count($catIds)){
                 $catIds = array_filter($catIds);
             }
-            $catIds = implode(',', $params->get('catid'));
+            $catIds = implode(',', $catIds);
         }
 //        if($catIds){
 //            $categoryName   = strtolower(self::getCategoryName($catIds));
@@ -107,6 +107,12 @@ abstract class modTZ_PortfolioCategoriesHelper
         $db -> setQuery($query);
         if($items   = $db -> loadObjectList()){
             jimport('joomla.filesystem.file');
+            // Remove files in folder imagecache (if it has)
+            $path   = dirname(__FILE__).'/imagecache';
+            if(JFolder::exists($path)){
+                JFolder::delete($path);
+            }
+
             $i=0;
             foreach($items as $item){
                 $items[$i] ->link   = JRoute::_(self::getCategoryRoute($item->id));

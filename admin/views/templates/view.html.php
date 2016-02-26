@@ -26,6 +26,8 @@ class TZ_PortfolioViewTemplates extends JViewLegacy
 {
     protected $state;
     protected $items;
+    protected $templates;
+    protected $form;
     protected $sidebar;
     protected $pagination;
 
@@ -34,15 +36,20 @@ class TZ_PortfolioViewTemplates extends JViewLegacy
             tzportfolioimport('helper/content');
         }
 
-        $this->items		= $this->get('Items');
-        $this->state		= $this->get('State');
-        $this->pagination	= $this->get('pagination');
+        if($this -> getLayout() == 'upload') {
+            $this->form = $this->get('Form');
+        }
+        $this->state        = $this->get('State');
+        $this->items        = $this->get('Items');
+        $this -> templates  = $this -> get('Templates');
+        $this->pagination   = $this->get('pagination');
 
         JFactory::getLanguage() -> load('com_templates');
 
         TZ_PortfolioHelper::addSubmenu('templates');
+
         // We don't need toolbar in the modal window.
-        if ($this->getLayout() !== 'modal') {
+        if ($this->getLayout() !== 'modal' && $this->getLayout() !== 'upload') {
             $this -> addToolbar();
         }
 
@@ -60,24 +67,23 @@ class TZ_PortfolioViewTemplates extends JViewLegacy
         $bar    = JToolBar::getInstance();
 
         JToolBarHelper::title(JText::_('COM_TZ_PORTFOLIO_TEMPLATES_MANAGER'));
-        if ($canDo->get('core.edit.state'))
-        {
-            JToolbarHelper::makeDefault('templates.setDefault', 'COM_TEMPLATES_TOOLBAR_SET_HOME');
-            JToolbarHelper::divider();
-        }
-        JToolBarHelper::addNew('template.add');
-        JToolBarHelper::editList('template.edit');
+
+//        JToolBarHelper::custom('template.add','new','new','Upload',false);
+        JToolbarHelper::addNew('template.upload','JTOOLBAR_UPLOAD');
+//        JToolBarHelper::editList('template.edit');
         JToolBarHelper::divider();
-//        JToolBarHelper::publish('templates.publish');
-//        JToolBarHelper::unpublish('templates.unpublish');
-        if ($canDo->get('core.create'))
-        {
-            JToolbarHelper::custom('templates.duplicate', 'copy.png', 'copy_f2.png', 'JTOOLBAR_DUPLICATE', true);
-        }
 
         if ($canDo->get('core.delete')){
-            JToolBarHelper::deleteList(JText::_('COM_TZ_PORTFOLIO_QUESTION_DELETE'),'templates.delete');
+            JToolBarHelper::deleteList(JText::_('COM_TZ_PORTFOLIO_QUESTION_DELETE'),'template.uninstall','JTOOLBAR_UNINSTALL');
             JToolBarHelper::divider();
+        }
+
+        if ($canDo->get('core.edit.state')) {
+            JToolBarHelper::publish('templates.publish','JENABLED');
+        }
+
+        if ($canDo->get('core.edit.state')) {
+            JToolBarHelper::unpublish('templates.unpublish','JDISABLED');
         }
 
         if ($canDo->get('core.admin')) {

@@ -55,6 +55,7 @@ class JHtmlIcon
         }else{
             $link   = TZ_PortfolioHelperRoute::getArticleRoute($article -> slug,$article -> catid);
         }
+		$link	= $base . JRoute::_($link,false);
 
 		$url	= 'index.php?option=com_mailto&amp;tmpl=component&amp;template='.$template.'&amp;link='.MailToHelper::addLink($link);
 

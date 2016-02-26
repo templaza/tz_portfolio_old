@@ -73,8 +73,19 @@ class TZ_PortfolioModelPortfolio extends JModelList
     function populateState($ordering = null, $direction = null){
         parent::populateState($ordering,$direction);
 
-        $app    = JFactory::getApplication();
+        $app    = JFactory::getApplication('site');
         $params = $app -> getParams();
+
+        $global_params    = JComponentHelper::getParams('com_tz_portfolio');
+
+        if($layout_type = $params -> get('layout_type',array())){
+
+            if(!count($layout_type)){
+                $params -> set('layout_type',$global_params -> get('layout_type',array()));
+            }
+        }else{
+            $params -> set('layout_type',$global_params -> get('layout_type',array()));
+        }
 
         if($params -> get('tz_portfolio_redirect') == 'default'){
             $params -> set('tz_portfolio_redirect','article');
@@ -162,9 +173,6 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $newTags    = null;
         $tags       = null;
 
-        require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'portfolio'.DIRECTORY_SEPARATOR.'view.html.php';
-        $view   = new TZ_PortfolioViewPortfolio();
-
         if($this -> getTags())
             $newTags    = $this ->getTags();
 
@@ -184,14 +192,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
                 }
             }
         }
-
-        $view -> assign('params',$this -> getState('params'));
-        $view -> assign('listsTags',$tags);
-        $data    = $view -> loadTemplate('tags');
-        if(empty($data))
-            return '';
-
-        return $data;
+        return $tags;
     }
 
     public function ajax(){
@@ -238,45 +239,11 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $this -> setState('params',$params);
         $this -> setState('char',$char);
 
-        require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'portfolio'.DIRECTORY_SEPARATOR.'view.html.php';
-        $view   = new TZ_PortfolioViewPortfolio();
-
-        if($params -> get('fields_option_order')){
-            switch($params -> get('fields_option_order')){
-                case 'alpha':
-                    $fieldsOptionOrder  = 't.value ASC';
-                    break;
-                case 'ralpha':
-                    $fieldsOptionOrder  = 't.value DESC';
-                    break;
-                case 'ordering':
-                    $fieldsOptionOrder  = 't.ordering ASC';
-                    break;
-            }
-            if(isset($fieldsOptionOrder)){
-                $view -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
-            }
-        }
-
-        JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
-
         if($offset >= $this -> getTotal()){
-            return null;
+            return false;
         }
 
-        $list   = $this -> getItems();
-
-        $view -> assign('listsArticle',$list);
-        $view -> assign('params',$params);
-        $view -> assign('mediaParams',$params);
-        $view -> assign('Itemid',$Itemid);
-
-        if($layout)
-            $data        = $view -> loadTemplate('\''.$layout.'\'');
-        else
-            $data        = $view -> loadTemplate('item');
-
-        return $data;
+        return true;
     }
 
     function ajaxCategories(){
@@ -315,14 +282,11 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $newCatids    = null;
         $catIds       = null;
 
-        require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'portfolio'.DIRECTORY_SEPARATOR.'view.html.php';
-        $view   = new TZ_PortfolioViewPortfolio();
-
         if($this -> getCategories())
             $newCatids    = $this -> getCategories();
 
+        // Filter new tags
         if(isset($newCatids) && count($newCatids) > 0){
-
             foreach($newCatids as $key => $newCatid){
                 if(isset($curCatids) && count($curCatids) > 0){
                     if(!in_array($newCatid -> id,$curCatids)){
@@ -332,13 +296,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
             }
         }
 
-        $view -> assign('params',$this -> getState('params'));
-        $view -> assign('listsCategories',$catIds);
-        $data    = $view -> loadTemplate('Categories');
-        if(empty($data))
-            return '';
-
-        return $data;
+        return $catIds;
     }
 
     function getCategories(){
@@ -417,6 +375,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
 
         if($catid = $params -> get('tz_catid')){
             $catid  = array_unique($catid);
+            $catid  = array_filter($catid);
             $catid  = implode(',',$catid);
             if(!empty($catid)){
                 $query -> where('id IN('.$catid.')');
@@ -550,8 +509,7 @@ class TZ_PortfolioModelPortfolio extends JModelList
         $query -> join('LEFT',$db -> quoteName('#__tz_portfolio_tags').' AS t ON t.id=x.tagsid');
         $query -> join('LEFT',$db -> quoteName('#__users').' AS u ON u.id=c.created_by');
 
-        // Condition for sql
-//        $query -> where('c.state=1');
+        $query -> where('cc.published = 1');
 
         // Filter by published state
         $published = $this->getState('filter.published');
