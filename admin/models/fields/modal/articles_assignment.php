@@ -246,7 +246,7 @@ class JFormFieldModal_Articles_Assignment extends JFormFieldCheckboxes
             if($items = $this -> _getItems($values)){
                 ob_start();
                 foreach($items as $item){
-                    $old    .= '<input type="hidden" name="jform['.$this -> fieldname.'_old][]" value="'.$item -> id.'">';
+//                    $old    .= '<input type="hidden" name="jform['.$this -> fieldname.'_old][]" value="'.$item -> id.'">';
                     ?>
                     <tr>
                         <td><?php echo $item -> title;?></td>
@@ -287,7 +287,7 @@ class JFormFieldModal_Articles_Assignment extends JFormFieldCheckboxes
         </table>
 
         <?php
-        echo $old;
+//        echo $old;
         $html = ob_get_contents();
         ob_end_clean();
         return $html;

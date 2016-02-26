@@ -46,10 +46,10 @@ abstract class TZ_PortfolioHelperRoute
             if($category)
             {
                 $needles['category']    = array_reverse($category->getPath());
-                $needles['categories']  = $needles['category'];
                 $needles['portfolio']   = $needles['category'];
                 $needles['timeline']    = $needles['category'];
                 $needles['date']        = $needles['category'];
+                $needles['categories']  = $needles['category'];
                 $link .= '&amp;catid='.$catid;
             }
         }

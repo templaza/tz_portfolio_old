@@ -325,7 +325,8 @@ class com_tz_portfolioInstallerScript{
             $db -> replacePrefix('#__tz_portfolio_xref_content'),
             $db -> replacePrefix('#__tz_portfolio_tags'),
             $db -> replacePrefix('#__tz_portfolio_plugin'),
-            $db -> replacePrefix('#__tz_portfolio_templates')
+            $db -> replacePrefix('#__tz_portfolio_templates'),
+            $db -> replacePrefix('#__tz_portfolio_extensions')
         );
         $disableTables  = array_diff($listTable,$db -> getTableList());
 
@@ -462,17 +463,50 @@ class com_tz_portfolioInstallerScript{
             }
         }
 
+
+        $fields = $db -> getTableColumns('#__tz_portfolio_templates');
+        if(!array_key_exists('layout',$fields)){
+            $query  = 'ALTER TABLE `#__tz_portfolio_templates` CHANGE `params` `layout` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL';
+            $db -> setQuery($query);
+            $db -> query();
+        }
+        $fields = $db -> getTableColumns('#__tz_portfolio_templates');
+        $arr    = null;
+        if(!array_key_exists('template',$fields)) {
+            $arr[]  = 'ADD `template` VARCHAR(100) NOT NULL ';
+        }
+        if(!array_key_exists('protected',$fields)) {
+            $arr[]  = 'ADD `protected` TINYINT(3) NOT NULL ';
+        }
+        if(!array_key_exists('params',$fields)){
+            $arr[]  = 'ADD `params` TEXT NOT NULL ';
+        }
+        if($arr && count($arr)>0){
+            $arr    = implode(',',$arr);
+            if($arr){
+                $query  = 'ALTER TABLE `#__tz_portfolio_templates` '.$arr;
+                $db -> setQuery($query);
+                $db -> query();
+            }
+        }
+
         // Insert default template
         $template_sql   = 'SELECT COUNT(*) FROM #__tz_portfolio_templates';
         $db -> setQuery($template_sql);
         if(!$db -> loadResult()){
-            $def_file   = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/views/template/tmpl/default.json';
+            $def_file   = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/views/template_style/tmpl/default.json';
             if(JFile::exists($def_file)){
                 $def_value      = JFile::read($def_file);
-                $template_sql2  = 'INSERT INTO `#__tz_portfolio_templates`(`id`, `title`, `home`, `params`) VALUES(1, \'Default\', \'1\',\''.$def_value.'\')';
+                $template_sql2  = 'INSERT INTO `#__tz_portfolio_templates`(`id`,`template`, `title`, `home`,'
+                    .' `protected`, `layout`) VALUES(1,\'system\', \'Default\', \'1\',1,\''.$def_value.'\')';
                 $db -> setQuery($template_sql2);
                 $db -> query();
             }
+        }else{
+            $template_sql   = 'UPDATE #__tz_portfolio_templates SET `template`="system", `protected` = 1'
+                .' WHERE `template`=""';
+            $db -> setQuery($template_sql);
+            $db -> execute();
         }
 
         //Tz Portfolio Plugin table

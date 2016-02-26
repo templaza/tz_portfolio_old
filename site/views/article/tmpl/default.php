@@ -37,6 +37,7 @@ $tmpl    = JRequest::getString('tmpl',null);
 if($tmpl){
     $tmpl   = '&tmpl=component';
 }
+//echo $this->generateLayout;
 ?>
 
 <div class="TzItemPage item-page<?php echo $this->pageclass_sfx?>"  itemscope itemtype="http://schema.org/Article">
@@ -48,7 +49,15 @@ if($tmpl){
             </h1>
         <?php endif; ?>
 
-        <?php echo $this -> generateLayout;?>
+        <?php
+        if($this -> generateLayout && !empty($this -> generateLayout)) {
+            echo $this->generateLayout;
+        }else{
+//            echo $this -> loadTemplate();
+//            echo $this -> loadTemplate();
+        }
+
+        ?>
 
         <?php
         //Call event onContentAfterDisplay and onTZPluginAfterDisplay on plugin

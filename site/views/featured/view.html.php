@@ -90,19 +90,6 @@ class TZ_PortfolioViewFeatured extends JViewLegacy
             }
         }
 
-        $csscompress    = null;
-        if($params -> get('css_compression',0)){
-            $csscompress    = '.min';
-        }
-
-        $jscompress         = new stdClass();
-        $jscompress -> extfile  = null;
-        $jscompress -> folder   = null;
-        if($params -> get('js_compression',1)){
-            $jscompress -> extfile  = '.min';
-            $jscompress -> folder   = '/packed';
-        }
-
 		// PREPARE THE DATA
 
 		// Get the metrics for the structural page layout.

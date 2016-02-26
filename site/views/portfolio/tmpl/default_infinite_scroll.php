@@ -19,7 +19,9 @@
 
 defined('_JEXEC') or die();
 
-$params = $this -> params;
+$params     = $this -> params;
+$lang       = JRequest::getCmd('lang');
+$language   = JLanguageHelper::getLanguages('lang_code');
 
 $doc    = JFactory::getDocument();
 $doc -> addScriptDeclaration('
@@ -30,7 +32,8 @@ jQuery(document).ready(function(){
         itemID      : '.$this -> Itemid.',
          msgText    : "<i class=\"tz-icon-spinner tz-spin\"><\/i>'.JText::_('COM_TZ_PORTFOLIO_LOADING_TEXT').'",
         loadedText  : "'.JText::_('COM_TZ_PORTFOLIO_NO_MORE_PAGES').'"
-        '.(isset($this -> commentText)?(',commentText : "'.$this -> commentText.'"'):'').'
+        '.(isset($this -> commentText)?(',commentText : "'.$this -> commentText.'"'):'').',
+        lang        : "'.$this -> lang_sef.'"
     });
 });');
 ?>
@@ -42,8 +45,5 @@ jQuery(document).ready(function(){
 
 
 <div id="loadaj" style="display: none;">
-    <a href="<?php echo JURI::root().'index.php?option=com_tz_portfolio&amp;view=portfolio&amp;task=portfolio.ajax'
-        .'&amp;layout=item'.(($this -> char)?'&amp;char='.$this -> char:'').'&amp;Itemid='
-        .$this -> Itemid.'&amp;page=2'; ?>">
-    </a>
+    <a href="<?php echo $this -> ajaxLink; ?>"></a>
 </div>

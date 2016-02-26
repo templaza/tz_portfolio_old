@@ -22,5 +22,9 @@ defined('_JEXEC') or die('Restricted access');
 
 $params = $this -> item -> params;
 
+if (isset ($this->item->toc)) :
+    echo $this->item->toc;
+endif;
+
 echo $this -> item -> fulltext;
 ?>

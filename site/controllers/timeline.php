@@ -21,24 +21,24 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
-class TZ_PortfolioControllerTimeLine extends JControllerLegacy
+class TZ_PortfolioControllerTimeLine extends TZ_PortfolioControllerLegacy
 {
-    function display($cachable = false, $urlparams = array()){
-        switch ($this -> getTask()){
-            case 'timeline.ajax':
-            case 'ajax':
-                $this -> ajax();
-                break;
-            case 'timeline.ajaxcategories':
-            case 'ajaxcategories':
-                $this -> ajaxcategories();
-                break;
-            case 'timeline.ajaxtags':
-            case 'ajaxtags':
-                $this -> ajaxtags();
-                break;
-        }
-    }
+//    function display($cachable = false, $urlparams = array()){
+//        switch ($this -> getTask()){
+//            case 'timeline.ajax':
+//            case 'ajax':
+//                $this -> ajax();
+//                break;
+//            case 'timeline.ajaxcategories':
+//            case 'ajaxcategories':
+//                $this -> ajaxcategories();
+//                break;
+//            case 'timeline.ajaxtags':
+//            case 'ajaxtags':
+//                $this -> ajaxtags();
+//                break;
+//        }
+//    }
 
     public function getModel($name = 'TimeLine', $prefix = 'TZ_PortfolioModel', $config = array('ignore_request' => true))
     {
@@ -49,26 +49,88 @@ class TZ_PortfolioControllerTimeLine extends JControllerLegacy
 
     function ajax(){
 
-        $model      = $this -> getModel();
-        $list       = $model -> ajax();
+        $document   = JFactory::getDocument();
+        $viewType   = $document->getType();
+        $vName      = $this->input->get('view', $this->default_view);
+        $viewLayout = $this->input->get('layout', 'default', 'string');
 
-        echo $list;
+        if($view = $this->getView($vName, $viewType)) {
+
+            // Get/Create the model
+            if ($model = $this->getModel($vName)) {
+                if (!$model->ajax()) {
+                    die();
+                }
+
+                // Push the model into the view (as default)
+                $view->setModel($model, true);
+            }
+
+            $view->document = $document;
+
+            JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
+            // Display the view
+            $view->display($viewLayout);
+        }
         die();
     }
+
     function ajaxtags(){
 
-        $model      = $this -> getModel();
-        $list       = $model -> ajaxtags();
+        $document   = JFactory::getDocument();
+        $viewType   = $document->getType();
 
-        echo $list;
+        if($view = $this->getView('timeline', $viewType)) {
+
+            // Get/Create the model
+            if ($model = $this->getModel('timeline')) {
+                if (!$tags = $model -> ajaxtags()) {
+                    die();
+                }
+
+                // Push the model into the view (as default)
+                $view->setModel($model, true);
+
+                $view -> assign('listsTags',$tags);
+            }
+
+            $view->document = $document;
+
+            JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
+            // Display the view
+            echo $view->loadTemplate('tags');
+        }
         die();
     }
 
     function ajaxcategories(){
-        $model      = $this -> getModel();
-        $list       = $model -> ajaxCategories();
 
-        echo $list;
+        $document   = JFactory::getDocument();
+        $viewType   = $document->getType();
+
+        if($view = $this->getView('portfolio', $viewType)) {
+
+            // Get/Create the model
+            if ($model = $this->getModel('portfolio')) {
+                if (!$catids = $model -> ajaxCategories()) {
+                    die();
+                }
+
+                // Push the model into the view (as default)
+                $view->setModel($model, true);
+
+                $view -> assign('listsCategories',$catids);
+            }
+
+            $view->document = $document;
+
+            JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
+            // Display the view
+            echo $view->loadTemplate('categories');
+        }
         die();
     }
 

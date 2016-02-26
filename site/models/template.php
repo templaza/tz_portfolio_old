@@ -30,7 +30,7 @@ class TZ_PortfolioModelTemplate extends JModelLegacy
         $this -> setState('content.id',null);
         $this -> setState('category.id',null);
     }
-    public function getTable($type = 'Templates', $prefix = 'Table', $config = array())
+    public function getTable($type = 'Templates', $prefix = 'TZ_PortfolioTable', $config = array())
     {
         return JTable::getInstance($type, $prefix, $config);
     }

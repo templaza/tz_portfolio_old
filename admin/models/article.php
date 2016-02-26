@@ -454,7 +454,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
             $val    = array();
             $rows   = $db -> loadObjectList();
             foreach($rows as $row){
-                $val[]  = '('.$newId.','.$row -> fieldsid.',"'.$row -> value.'","'.$row -> images.'","'
+                $val[]  = '('.$newId.','.$row -> fieldsid.','.$db -> quote($row -> value).',"'.$row -> images.'","'
                     .$row -> imagetitle.'",'.$row -> ordering.')';
             }
             if(count($val)>0){
@@ -1563,7 +1563,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 				$app = JFactory::getApplication();
 				$data->set('catid', JRequest::getInt('catid', $app->getUserState('com_tz_portfolio.articles.filter.category_id')));
 			}
-            $template   = JModelLegacy::getInstance('Template','TZ_PortfolioModel');
+            $template   = JModelLegacy::getInstance('Template_Style','TZ_PortfolioModel');
             $data -> set('template_id',$template -> getItemTemplate($this -> getState('article.id')));
 		}
 
@@ -1923,8 +1923,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                             $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                            if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
-                                JFile::copy($fileClient['tmp_name'],$destPath);
+                            if($key == 'o') {
+                                if($params -> get('allow_upload_original_image',1)) {
+                                    JFile::copy($fileClient['tmp_name'], $destPath);
+                                }
                             }else{
                                 $newHeight = ($height * (int)$newWidth) / $width;
                                 $newImage = $obj->resize($newWidth, $newHeight);
@@ -1980,8 +1982,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                         $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                        if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
-                            JFile::copy($originalFile,$destPath);
+                        if($key == 'o') {
+                            if($params -> get('allow_upload_original_image',1)) {
+                                JFile::copy($originalFile, $destPath);
+                            }
                         }else{
                             $newHeight = ($height * (int)$newWidth) / $width;
                             $newImage = $obj->resize($newWidth, $newHeight, $originalFile);
@@ -2130,7 +2134,7 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             .((!$data['alias'])?uniqid() .'tz_portfolio_'.time():$data['alias'])
                             .'-'.$this -> getState($this -> getName().'.id').'.'.JFile::getExt($file['name']);
 
-                        $sizes['o']   =  $width;
+                        $sizes['o'] = $width;
 
                         foreach($sizes as $key => $newWidth){
                             // Delete current Image file
@@ -2152,9 +2156,14 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                             $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                             $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                            if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
-                                JFile::copy($file['tmp_name'],$destPath);
+                            if($key == 'o') {
+                                if($params -> get('allow_upload_original_image',1)) {
+                                    JFile::copy($file['tmp_name'], $destPath);
+                                }
                             }else{
+                                if($key == 'o'){
+                                    die('4324');
+                                }
                                 $newHeight = ($height * (int)$newWidth) / $width;
                                 $newImage = $obj->resize($newWidth, $newHeight, $file['tmp_name']);
                                 $type = $this->_getImageType($str);
@@ -2222,8 +2231,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                     $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                     $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                    if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
-                        JFile::copy($originalFile,$destPath);
+                    if($key == 'o') {
+                        if($params -> get('allow_upload_original_image',1)) {
+                            JFile::copy($originalFile,$destPath);
+                        }
                     }else{
                         $newHeight  = ($height*(int) $newWidth)/$width;
                         $newImage   = $obj -> resize((int) $newWidth,$newHeight,$originalFile);
@@ -2419,8 +2430,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                     $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                                     $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                                    if($key == 'o' && $params -> get('allow_upload_original_image',1)) { // Upload original image
-                                        JFile::copy($files['tmp_name'][$i],$destPath);
+                                    if($key == 'o') { // Upload original image
+                                        if($params -> get('allow_upload_original_image',1)) {
+                                            JFile::copy($files['tmp_name'][$i], $destPath);
+                                        }
                                     }else{
                                         $newHeight = ($height * (int)$newWidth) / $width;
                                         $newImage = $obj->resize($newWidth, $newHeight, $files['tmp_name'][$i]);
@@ -2482,8 +2495,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                         $destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
                         $destPath   = str_replace('.'.JFile::getExt($destPath),'_'.$key.'.'.JFile::getExt($destPath),$destPath);
 
-                        if($key == 'o' && $params -> get('allow_upload_original_image',1)) { // Upload original image
-                            JFile::copy($original,$destPath);
+                        if($key == 'o') { // Upload original image
+                            if($params -> get('allow_upload_original_image',1)) {
+                                JFile::copy($original, $destPath);
+                            }
                         }else{
                             $newHeight  = ($height*(int) $newWidth)/$width;
                             $newImage   = $obj -> resize($newWidth,$newHeight,$original);
@@ -2704,8 +2719,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                     $str        = str_replace('/',DIRECTORY_SEPARATOR,$str);
                                     $_destPath  = JPATH_SITE.DIRECTORY_SEPARATOR.$str;
 
-                                    if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
-                                        JFile::copy($url,$_destPath);
+                                    if($key == 'o') {
+                                        if($params -> get('allow_upload_original_image',1)) {
+                                            JFile::copy($url, $_destPath);
+                                        }
                                     }else{
                                         $newHeight = ($newWidth * $height) / $width;
                                         $newImage = $obj->resize($newWidth, $newHeight, $url);
@@ -2786,8 +2803,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                     ,'_'.$key.'.'.JFile::getExt($_fileName),$_fileName);
                                 $_destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
 
-                                if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
-                                    JFile::copy($url,$_destPath);
+                                if($key == 'o') {
+                                    if($params -> get('allow_upload_original_image',1)) {
+                                        JFile::copy($url, $_destPath);
+                                    }
                                 }else{
                                     $type = $this->_getImageType($str);
                                     $newImage->toFile($_destPath, $type);
@@ -2866,8 +2885,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                     ,'_'.$key.'.'.JFile::getExt($_fileName),$_fileName);
                                 $_destPath   = JPATH_SITE.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$str);
 
-                                if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
-                                    JFile::copy($url,$_destPath);
+                                if($key == 'o') {
+                                    if($params -> get('allow_upload_original_image',1)) {
+                                        JFile::copy($url, $_destPath);
+                                    }
                                 }else{
                                     $type = $this->_getImageType($str);
                                     $newImage->toFile($_destPath, $type);
@@ -3732,8 +3753,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                 $_dest    = str_replace('.'.JFile::getExt($file['name']),
                                     '_'.$key.'.'.JFile::getExt($file['name']),$dest);
 
-                                if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
-                                    JFile::copy($file['tmp_name'],JPATH_SITE . DIRECTORY_SEPARATOR . $_dest);
+                                if($key == 'o') {
+                                    if($params -> get('allow_upload_original_image',1)) {
+                                        JFile::copy($file['tmp_name'], JPATH_SITE . DIRECTORY_SEPARATOR . $_dest);
+                                    }
                                 }else{
                                     if($width){
                                         $newHeight = ($obj->getHeight() * (int)$width) / $obj->getWidth();
@@ -3789,8 +3812,10 @@ class TZ_PortfolioModelArticle extends JModelAdmin
                                 $_dest    = str_replace('.'.JFile::getExt($src),
                                     '_'.$key.'.'.JFile::getExt($src),$dest);
 
-                                if($key == 'o' && $params -> get('allow_upload_original_image',1)) {
-                                    JFile::copy(JPATH_SITE.DIRECTORY_SEPARATOR.$src,JPATH_SITE . DIRECTORY_SEPARATOR . $_dest);
+                                if($key == 'o') {
+                                    if($params -> get('allow_upload_original_image',1)) {
+                                        JFile::copy(JPATH_SITE . DIRECTORY_SEPARATOR . $src, JPATH_SITE . DIRECTORY_SEPARATOR . $_dest);
+                                    }
                                 }else{
                                     if($width){
                                         $newHeight = ($obj->getHeight() * (int)$width) / $obj->getWidth();

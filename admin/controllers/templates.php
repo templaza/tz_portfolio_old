@@ -31,96 +31,62 @@ class TZ_PortfolioControllerTemplates extends JControllerAdmin
         return parent::getModel($name, $prefix, $config);
     }
 
-    public function duplicate()
+    public function upload()
     {
-        // Check for request forgeries
-        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-        JFactory::getLanguage() -> load('com_templates');
+        $app = JFactory::getApplication();
+        $context = "$this->option.edit.$this->context";
 
-        $pks = $this->input->post->get('cid', array(), 'array');
+        // Redirect to the edit screen.
+        $this->setRedirect(
+            JRoute::_(
+                'index.php?option=' . $this->option . '&view=templates'
+                . '&layout=upload', false
+            )
+        );
 
-        try
-        {
-            if (empty($pks))
-            {
-                throw new Exception(JText::_('COM_TEMPLATES_NO_TEMPLATE_SELECTED'));
-            }
-
-            JArrayHelper::toInteger($pks);
-
-            $model = $this->getModel();
-            $model->duplicate($pks);
-            $this->setMessage(JText::_('COM_TEMPLATES_SUCCESS_DUPLICATED'));
-        }
-        catch (Exception $e)
-        {
-            JError::raiseWarning(500, $e->getMessage());
-        }
-
-        $this->setRedirect('index.php?option=com_tz_portfolio&view=templates');
+        return true;
     }
 
-    public function setDefault()
+    public function publish()
     {
-        // Check for request forgeries
+        // Check for request forgeries.
         JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-        JFactory::getLanguage() -> load('com_templates');
+        $ids    = $this->input->get('cid', array(), 'array');
+        $values = array('publish' => 1, 'unpublish' => 0);
+        $task   = $this->getTask();
+        $value  = JArrayHelper::getValue($values, $task, 0, 'int');
+        $mtype  = 'message';
 
-        $pks = $this->input->post->get('cid', array(), 'array');
-
-        try
+        if (empty($ids))
         {
-            if (empty($pks))
+            JError::raiseError(500, JText::_('COM_INSTALLER_ERROR_NO_EXTENSIONS_SELECTED'));
+        }
+        else
+        {
+            // Get the model.
+            $model	= $this->getModel();
+
+            // Change the state of the records.
+            if (!$model->publish($ids, $value))
             {
-                throw new Exception(JText::_('COM_TEMPLATES_NO_TEMPLATE_SELECTED'));
+                JError::raiseError(500, implode('<br />', $model->getErrors()));
             }
-
-            JArrayHelper::toInteger($pks);
-
-            // Pop off the first element.
-            $id = array_shift($pks);
-            $model = $this->getModel();
-            $model->setHome($id);
-            $this->setMessage(JText::_('COM_TEMPLATES_SUCCESS_HOME_SET'));
-        }
-        catch (Exception $e)
-        {
-            JError::raiseWarning(500, $e->getMessage());
-        }
-
-        $this->setRedirect('index.php?option=com_tz_portfolio&view=templates');
-    }
-
-    public function unsetDefault()
-    {
-        // Check for request forgeries
-        JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
-
-        JFactory::getLanguage() -> load('com_templates');
-
-        $pks = $this->input->get->get('cid', array(), 'array');
-        JArrayHelper::toInteger($pks);
-
-        try
-        {
-            if (empty($pks))
+            else
             {
-                throw new Exception(JText::_('COM_TEMPLATES_NO_TEMPLATE_SELECTED'));
+                if ($value == 1)
+                {
+                    $ntext = 'COM_INSTALLER_N_EXTENSIONS_PUBLISHED';
+                }
+                elseif ($value == 0)
+                {
+                    $ntext = 'COM_INSTALLER_N_EXTENSIONS_UNPUBLISHED';
+                }
+
+                $this->setMessage(JText::plural($ntext, count($ids)));
             }
-
-            // Pop off the first element.
-            $id = array_shift($pks);
-            $model = $this->getModel();
-            $model->unsetHome($id);
-            $this->setMessage(JText::_('COM_TEMPLATES_SUCCESS_HOME_UNSET'));
-        }
-        catch (Exception $e)
-        {
-            JError::raiseWarning(500, $e->getMessage());
         }
 
-        $this->setRedirect('index.php?option=com_tz_portfolio&view=templates');
+        $this->setRedirect(JRoute::_('index.php?option=com_tz_portfolio&view=templates', false));
     }
-
 }

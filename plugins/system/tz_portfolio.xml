@@ -7,7 +7,7 @@
     <license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
     <authorEmail>support@templaza.com</authorEmail>
     <authorUrl>www.templaza.com/</authorUrl>
-    <version>3.3.2</version>
+    <version>3.3.3</version>
 
     <files>
         <filename plugin="tz_portfolio">tz_portfolio.php</filename>

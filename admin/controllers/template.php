@@ -31,4 +31,39 @@ class TZ_PortfolioControllerTemplate extends JControllerForm
         parent::display($cachable,$urlparams);
     }
 
+    public function upload()
+    {
+        // Redirect to the edit screen.
+        $this->setRedirect(
+            JRoute::_(
+                'index.php?option=' . $this->option . '&view=' . $this->view_item.'&layout=upload', false
+            )
+        );
+
+        return true;
+    }
+
+    public function install(){
+        // Check for request forgeries.
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+        $model  = $this -> getModel();
+        $model -> install();
+
+        $this -> setRedirect('index.php?option=com_tz_portfolio&view=template&layout=upload');
+    }
+
+    public function uninstall(){
+
+        // Check for request forgeries.
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+        $eid   = $this->input->get('cid', array(), 'array');
+        $model = $this->getModel('Template');
+
+        JArrayHelper::toInteger($eid, array());
+        $model->uninstall($eid);
+        $this->setRedirect(JRoute::_('index.php?option=com_tz_portfolio&view=templates', false));
+    }
+
 }

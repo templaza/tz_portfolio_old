@@ -435,7 +435,7 @@ class TZ_PortfolioModelCategory extends JModelAdmin
 			$data = $this->getItem();
 		}
 
-        $template   = JModelLegacy::getInstance('Template','TZ_PortfolioModel');
+        $template   = JModelLegacy::getInstance('Template_Style','TZ_PortfolioModel');
         $data -> set('template_id',$template -> getItemTemplate(null,$this -> getState($this->getName() . '.id')));
 
 		return $data;

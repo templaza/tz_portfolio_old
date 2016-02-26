@@ -29,7 +29,8 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 JHtml::_('formbehavior.chosen', 'select');
 $doc    = JFactory::getDocument();
-$doc -> addscript(JUri::base(true).'/components/com_tz_portfolio/js/tz-chosen.min.js');
+$doc -> addScript(JUri::base(true).'/components/com_tz_portfolio/js/tz-chosen.min.js');
+$doc -> addStyleSheet(JUri::base(true).'/components/com_tz_portfolio/css/tz_portfolio.min.css');
 if(!$this -> tagsSuggest){
     $this -> tagsSuggest    = 'null';
 }

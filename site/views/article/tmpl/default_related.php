@@ -24,6 +24,7 @@ if (!$this->print) :
     $doc    = JFactory::getDocument();
 
     $lists  = $this -> itemMore;
+//    var_dump($this -> itemMore);
     // Create shortcuts to some parameters.
     $params		= $this->item->params;
     $tmpl       = null;

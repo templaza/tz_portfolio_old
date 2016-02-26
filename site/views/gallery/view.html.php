@@ -28,25 +28,12 @@ class TZ_PortfolioViewGallery extends JViewLegacy
         $doc    = JFactory::getDocument();
         $params = $this -> get('State') -> get('params');
 
-        $csscompress    = null;
-        if($params -> get('css_compression',0)){
-            $csscompress    = '.min';
-        }
-
-        $jscompress         = new stdClass();
-        $jscompress -> extfile  = null;
-        $jscompress -> folder   = null;
-        if($params -> get('js_compression',1)){
-            $jscompress -> extfile  = '.min';
-            $jscompress -> folder   = '/packed';
-        }
-
         $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'
             .'/jquery.tmpl.min.js"></script>');
         $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
             '/jquery.kinetic.min.js"></script>');
         $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
-            $jscompress -> folder.'/jquery.easing.1.3.min.js"></script>');
+            '/jquery.easing.1.3.min.js"></script>');
 
         $doc -> addStyleSheet('components/com_tz_portfolio/css/portfolio_gallery.min.css');
 

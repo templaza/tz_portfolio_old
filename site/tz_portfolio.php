@@ -27,6 +27,10 @@ require_once JPATH_COMPONENT.'/helpers/query.php';
 
 include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/defines.php';
 include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/tzportfolio.php';
+include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/uri.php';
+include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/template.php';
+include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/controller.php';
+include_once JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/libraries/core/view.php';
 
 $controller = JControllerLegacy::getInstance('TZ_Portfolio');
 $controller->execute(JFactory::getApplication()->input->get('task'));

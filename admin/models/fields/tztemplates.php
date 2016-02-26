@@ -43,6 +43,7 @@ class JFormFieldTZTemplates extends JFormFieldList
         $query  = $db -> getQuery(true);
         $query -> select('*');
         $query -> from('#__tz_portfolio_templates');
+        $query -> where('NOT template =""');
         $db -> setQuery($query);
         if($items = $db -> loadObjectList()){
             foreach($items as $i => $item){

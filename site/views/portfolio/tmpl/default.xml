@@ -13,7 +13,7 @@
     <fields name="params">
 
         <!-- Add fields to the request variables for the layout. -->
-        <fieldset name="request">
+        <fieldset name="request" addfieldpath="/administrator/components/com_tz_portfolio/models/fields">
 
             <field name="tz_catid" type="category"
                 description="JGLOBAL_CHOOSE_CATEGORY_DESC"
@@ -23,6 +23,12 @@
                 label="JGLOBAL_CHOOSE_CATEGORY_LABEL"
             >
                 <option value="">JOPTION_ALL_CATEGORIES</option>
+            </field>
+            <field type="tztemplates" name="tz_template_style_id"
+                   default="0"
+                   label="COM_TZ_PORTFOLIO_TEMPLATE_STYLE_LABEL"
+                   description="COM_TZ_PORTFOLIO_TEMPLATE_STYLE_DESC">
+                <option value="0">JOPTION_USE_DEFAULT</option>
             </field>
         </fieldset>
         <fieldset name="basic"

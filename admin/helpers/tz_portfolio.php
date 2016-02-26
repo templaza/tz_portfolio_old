@@ -61,9 +61,12 @@ class TZ_PortfolioHelper
         call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_USERS'),
                     'index.php?option=com_tz_portfolio&view=users',
                     $vName == 'users'));
-        call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_TEMPLATES'),
-                    'index.php?option=com_tz_portfolio&view=templates',
-                    $vName == 'templates'));
+		call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_TEMPLATE_STYLES'),
+			'index.php?option=com_tz_portfolio&view=template_styles',
+			$vName == 'template_styles'));
+		call_user_func_array($class.'::addEntry',array(JText::_('COM_TZ_PORTFOLIO_SUBMENU_TEMPLATES'),
+			'index.php?option=com_tz_portfolio&view=templates',
+			$vName == 'templates'));
 	}
 
 	/**
@@ -257,5 +260,131 @@ class TZ_PortfolioHelper
 		}
 
 		return $text;
+	}
+
+	public static function getMenuLinks($menuType = null, $parentId = 0, $mode = 0, $published = array(), $languages = array())
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->select('a.id AS value, a.title AS text, a.alias, a.level, a.component_id,'
+				.' a.menutype, a.type, a.template_style_id, a.checked_out, a.params')
+			->from('#__menu AS a')
+			->join('LEFT', $db->quoteName('#__menu') . ' AS b ON a.lft > b.lft AND a.rgt < b.rgt')
+			-> join('LEFT', $db -> quoteName('#__extensions').' AS e ON e.extension_id = a.component_id')
+			-> where('e.name='.$db -> quote('com_tz_portfolio'));
+
+		// Filter by the type
+		if ($menuType)
+		{
+			$query->where('(a.menutype = ' . $db->quote($menuType) . ' OR a.parent_id = 0)');
+		}
+
+		if ($parentId)
+		{
+			if ($mode == 2)
+			{
+				// Prevent the parent and children from showing.
+				$query->join('LEFT', '#__menu AS p ON p.id = ' . (int) $parentId)
+					->where('(a.lft <= p.lft OR a.rgt >= p.rgt)');
+			}
+		}
+
+		if (!empty($languages))
+		{
+			if (is_array($languages))
+			{
+				$languages = '(' . implode(',', array_map(array($db, 'quote'), $languages)) . ')';
+			}
+
+			$query->where('a.language IN ' . $languages);
+		}
+
+		if (!empty($published))
+		{
+			if (is_array($published))
+			{
+				$published = '(' . implode(',', $published) . ')';
+			}
+
+			$query->where('a.published IN ' . $published);
+		}
+
+		$query->where('a.published != -2')
+			->group('a.id, a.title, a.alias, a.level, a.menutype, a.type, a.template_style_id, a.checked_out, a.lft')
+			->order('a.lft ASC');
+
+		// Get the options.
+		$db->setQuery($query);
+
+		try
+		{
+			$links = $db->loadObjectList();
+		}
+		catch (RuntimeException $e)
+		{
+			JError::raiseWarning(500, $e->getMessage());
+
+			return false;
+		}
+
+		if (empty($menuType))
+		{
+			// If the menutype is empty, group the items by menutype.
+			$query->clear()
+				->select('*')
+				->from('#__menu_types')
+				->where('menutype <> ' . $db->quote(''))
+				->order('title, menutype');
+			$db->setQuery($query);
+
+			try
+			{
+				$menuTypes = $db->loadObjectList();
+			}
+			catch (RuntimeException $e)
+			{
+				JError::raiseWarning(500, $e->getMessage());
+
+				return false;
+			}
+
+			// Create a reverse lookup and aggregate the links.
+			$rlu = array();
+
+			foreach ($menuTypes as &$type)
+			{
+				$rlu[$type->menutype] = & $type;
+				$type->links = array();
+			}
+
+			// Loop through the list of menu links.
+			foreach ($links as $i => &$link)
+			{
+				$registry       = new JRegistry($link -> params);
+				$link -> params = $registry;
+				if (isset($rlu[$link->menutype]))
+				{
+					$rlu[$link->menutype]->links[] = &$link;
+
+					// Cleanup garbage.
+					unset($link->menutype);
+				}
+			}
+
+			// Remove all menus group don't have menu items
+			if(count($menuTypes)){
+				foreach($menuTypes as $i => $item){
+					if(!$item -> links || ($item -> links && !count($item -> links))){
+						unset($menuTypes[$i]);
+					}
+				}
+			}
+
+			return $menuTypes;
+		}
+		else
+		{
+			return $links;
+		}
 	}
 }

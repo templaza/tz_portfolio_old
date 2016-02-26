@@ -7,7 +7,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.3.2</version>
+	<version>3.3.3</version>
 	<description>TZ Portfolio native for Joomla! 2.5.x and 3.0.x</description>
     
     <scriptfile>script.php</scriptfile>
@@ -32,6 +32,7 @@
         <folder>helpers</folder>
         <folder>js</folder>
         <folder>models</folder>
+        <folder>templates</folder>
         <folder>views</folder>
 
         <filename>tz_portfolio.php</filename>
@@ -78,6 +79,7 @@
             <menu link="option=com_tz_portfolio&amp;view=articles">Articles</menu>
             <menu link="option=com_tz_portfolio&amp;view=tags">Tags</menu>
             <menu link="option=com_tz_portfolio&amp;view=users">Users</menu>
+            <menu link="option=com_tz_portfolio&amp;view=template_styles">com_tz_portfolio_template_styles</menu>
             <menu link="option=com_tz_portfolio&amp;view=templates">com_tz_portfolio_templates</menu>
         </submenu>
         <languages folder="admin/languages">
@@ -359,6 +361,8 @@
     </plugins>
 
     <updateservers>
-        <server type="extension" priority="1" name="TZ Portfolio Core"><![CDATA[http://joomla.templaza.net/extensions/updates/components/tz_portfolio_update.xml]]></server>
+        <server type="extension" pirority="1" name="TZ Portfolio Updates">
+            <![CDATA[http://joomla.templaza.net/extensions/updates/components/tz_portfolio_update.xml]]>
+        </server>
     </updateservers>
 </extension>

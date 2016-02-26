@@ -20,6 +20,7 @@
 //no direct access
 defined('_JEXEC') or die('Restricted access');
 
+jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.modeladmin');
 
@@ -29,621 +30,463 @@ class TZ_PortfolioModelTemplate extends JModelAdmin
         parent::populateState();
 
         $this -> setState('template.id',JRequest::getInt('id'));
-        $this -> setState('content.id',null);
-        $this -> setState('category.id',null);
     }
-    public function getTable($type = 'Templates', $prefix = 'Table', $config = array())
+    public function getTable($type = 'Extensions', $prefix = 'TZ_PortfolioTable', $config = array())
     {
         return JTable::getInstance($type, $prefix, $config);
     }
 
     function getForm($data = array(), $loadData = true){
-        $form = $this->loadForm('com_tz_portfolio.template', 'template', array('control' => 'jform', 'load_data' => $loadData));
+        $form = $this->loadForm('com_tz_portfolio.template', 'template', array('control' => ''));
         if (empty($form)) {
             return false;
         }
         return $form;
     }
 
-    protected function loadFormData()
+    public function publish(&$pks, $value = 1)
     {
-        // Check the session for previously entered form data.
-//        $data = JFactory::getApplication()->getUserState('com_tz_portfolio.edit.template.data', array());
-
-        if (empty($data)) {
-            $data = $this->getItem();
-            $data -> categories_assignment = $this -> getCategoriesAssignment();
-            $data -> articles_assignment = $this -> getArticlesAssignment();
-        }
-
-        return $data;
-    }
-
-    public function getCategoriesAssignment($pk = null){
-        $pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
-        if($pk > 0){
-            $db     = $this -> getDbo();
-            $query  = $db -> getQuery(true);
-            $query -> select('catid');
-            $query -> from('#__tz_portfolio_categories');
-            $query -> where('template_id = '.$pk);
-            $db -> setQuery($query);
-            if($rows = $db -> loadColumn()){
-                return implode(',',$rows);
-            }
-        }
-        return null;
-    }
-
-    public function getArticlesAssignment($pk = null){
-        $pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
-        if($pk > 0){
-            $db     = $this -> getDbo();
-            $query  = $db -> getQuery(true);
-            $query -> select('contentid');
-            $query -> from('#__tz_portfolio_xref_content');
-            $query -> where('template_id = '.$pk);
-            $db -> setQuery($query);
-            if($rows = $db -> loadColumn()){
-                return implode(',',$rows);
-            }
-        }
-        return null;
-    }
-
-    function getItem($pk = null){
-        // Initialise variables.
-        $pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
-        $table  = $this -> getTable();
-
-        if ($pk > 0)
-        {
-            // Attempt to load the row.
-            $return = $table->load($pk);
-
-            // Check for a table object error.
-            if ($return === false && $table->getError())
-            {
-                $this->setError($table->getError());
-                return false;
-            }
-        }
-
-        // Convert to the JObject before adding other data.
-        $properties = $table->getProperties(1);
-        $item = JArrayHelper::toObject($properties, 'JObject');
-
-        if (property_exists($item, 'params'))
-        {
-//            $registry = new JRegistry;
-//            $registry->loadString($item->params);
-//            $item->params = $registry->toObject();
-            $item->params = json_decode($item -> params);
-        }
-
-        return $item;
-    }
-
-    protected function generateNewTitle($category_id, $alias, $title)
-    {
-        // Alter the title
+        $dispatcher = JEventDispatcher::getInstance();
+        $user = JFactory::getUser();
         $table = $this->getTable();
 
-        while ($table->load(array('title' => $title)))
-        {
-            $title = JString::increment($title);
+        $pks = (array) $pks;
+        JFactory::getLanguage() -> load('com_installer');
+
+        if ($user->authorise('core.edit.state', 'com_tz_portfolio')) {
+            $result = true;
+            // Include the plugins for the change of state event.
+            JPluginHelper::importPlugin($this->events_map['change_state']);
+
+            // Access checks.
+            foreach ($pks as $i => $pk) {
+                $table->reset();
+
+                if ($table->load($pk)) {
+                    if (!$this->canEditState($table)) {
+
+                        $result = false;
+                        // Prune items that you can't change.
+                        unset($pks[$i]);
+                        JLog::add(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'), JLog::WARNING, 'jerror');
+
+                        return false;
+                    }
+                    if($table ->protected ){
+                        $result = false;
+                        JError::raiseError(403, JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
+                        unset($pks[$i]);
+                        continue;
+                    }else{
+                        if ($template = $this->getTemplateStyle($table->name)) {
+                            if ($template->home || $template->protected) {
+                                $result = false;
+                                JError::raiseError(403, JText::_('COM_INSTALLER_ERROR_DISABLE_DEFAULT_TEMPLATE_NOT_PERMITTED'));
+                                unset($pks[$i]);
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(!$result){
+                if (count($pks)) {
+                    // Attempt to change the state of the records.
+                    if (!$table->publish($pks, $value, $user->get('id'))) {
+                        $this->setError($table->getError());
+
+                        return false;
+                    }
+
+                    $context = $this->option . '.' . $this->name;
+
+                    // Trigger the change state event.
+                    $result = $dispatcher->trigger($this->event_change_state, array($context, $pks, $value));
+
+                    if (in_array(false, $result, true)) {
+                        $this->setError($table->getError());
+
+                        return false;
+                    }
+                }
+            }
+
+            // Clear the component's cache
+            $this->cleanCache();
+        }else{
+            $result = false;
+            JError::raiseError(403, JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
         }
 
-        return $title;
+        return $result;
     }
 
-    public function save($data)
+    function getTemplate($name){
+        $db     = $this -> getDbo();
+        $query  = $db -> getQuery(true);
+        $query -> select('*');
+        $query -> from($db -> quoteName('#__tz_portfolio_extensions'));
+        $query -> where($db -> quoteName('type').'='.$db -> quote('tz_portfolio-template'));
+        $query -> where($db -> quoteName('name').'='.$db -> quote($name));
+        $db -> setQuery($query);
+        if($data = $db -> loadObject()){
+            return $data;
+        }
+        return false;
+    }
+
+    function getTemplateStyle($template){
+        $db     = $this -> getDbo();
+        $query  = $db -> getQuery(true);
+        $query -> select('*');
+        $query -> from($db -> quoteName('#__tz_portfolio_templates'));
+        $query -> where($db -> quoteName('template').'='.$db -> quote($template));
+        $query -> group($db -> quoteName('template'));
+        $db -> setQuery($query);
+        if($data = $db -> loadObject()){
+            return $data;
+        }
+        return false;
+    }
+
+    public function install()
     {
         $app        = JFactory::getApplication();
+        JFactory::getLanguage() -> load('com_installer');
 
-        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
-            $dispatcher = JEventDispatcher::getInstance();
-        }else{
-            $dispatcher = JDispatcher::getInstance();
-        }
-        $table = $this->getTable();
+        $package    = $this -> _getPackageFromUpload();
+        $tpl_path   = COM_TZ_PORTFOLIO_PATH_SITE.'/templates';
+        $result     = true;
+        $msg        = JText::sprintf('COM_INSTALLER_INSTALL_SUCCESS', JText::_('COM_INSTALLER_TYPE_TYPE_TEMPLATE'));
 
-        $post   = JRequest::get();
-        $articlesAssignment         = null;
-        $articlesAssignmentOld      = null;
-        $categoriesAssignment       = null;
-        $categoriesAssignmentOld    = null;
-
-        $data['params'] = '';
-        if(isset($post['jform']['attrib']) && $attrib = $post['jform']['attrib']){
-            $data['params'] = json_encode($attrib);
-        }else{
-            $pathfile   = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/views/template/tmpl/default.json';
-            if(JFile::exists($pathfile)){
-                $data['params'] = file_get_contents($pathfile);
-            }
-        }
-        if(!$data['id'] || $data['id'] == 0){
-            $data['title']  = $this ->generateNewTitle(null,null,$data['title']);
-        }
-
-        if(!$table -> hasHome()){
-            $data['home']   = '1';
-        }
-
-        if ($app->input->get('task') == 'save2copy')
+        // Was the package unpacked?
+        if (!$package || !$package['type'])
         {
-            unset($data['articles_assignment']);
-            unset($data['categories_assignment']);
-            unset($post['jform']['articles_assignment_old']);
-            unset($post['jform']['categories_assignment_old']);
+            JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
-        }
-
-        if(isset($data['articles_assignment'])){
-            $articlesAssignment  = $data['articles_assignment'];
-            unset($data['article_assignment']);
-        }
-
-        if(isset($post['jform']['articles_assignment_old'])){
-            $articlesAssignmentOld  = $post['jform']['articles_assignment_old'];
-        }
-
-        if(isset($post['jform']['categories_assignment_old'])){
-            $categoriesAssignmentOld    = $post['jform']['categories_assignment_old'];
-        }
-
-        if(isset($data['categories_assignment']) && count($data['categories_assignment'])){
-            $categoriesAssignment  = $data['categories_assignment'];
-            unset($data['categories_assignment']);
-        }
-
-        $key = $table->getKeyName();
-        $pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
-        $isNew = true;
-
-        // Include the content plugins for the on save events.
-        JPluginHelper::importPlugin('content');
-
-        // Allow an exception to be thrown.
-        try
-        {
-            // Load the row if saving an existing record.
-            if ($pk > 0)
-            {
-                $table->load($pk);
-                $isNew = false;
-            }
-
-            // Bind the data.
-            if (!$table->bind($data))
-            {
-                $this->setError($table->getError());
-
-                return false;
-            }
-
-            // Prepare the row for saving
-            $this->prepareTable($table);
-
-            // Check the data.
-            if (!$table->check())
-            {
-                $this->setError($table->getError());
-                return false;
-            }
-
-            // Trigger the onContentBeforeSave event.
-            $result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $this->name, $table, $isNew));
-
-            if (in_array(false, $result, true))
-            {
-                $this->setError($table->getError());
-                return false;
-            }
-
-            // Store the data.
-            if (!$table->store())
-            {
-                $this->setError($table->getError());
-                return false;
-            }
-
-            if($data['home'] == '1'){
-                $this -> setHome($table -> id);
-            }
-
-            $db     = $this -> getDbo();
-            // Assign article with this template;
-            if(!empty($articlesAssignmentOld) && count($articlesAssignmentOld)){
-                $query  = $db -> getQuery(true);
-                $query -> update($db -> quoteName('#__tz_portfolio_xref_content'));
-                $query -> set($db -> quoteName('template_id').'= 0');
-                $query -> where($db -> quoteName('contentid').' IN('.implode(',',$articlesAssignmentOld).')');
-                $db -> setQuery($query);
-                $db -> execute();
-            }
-
-            if(!empty($articlesAssignment) && count($articlesAssignment)){
-                $articlesAssignment = array_unique($articlesAssignment);
-                $query  = $db -> getQuery(true);
-                $query -> select('contentid');
-                $query -> from($db -> quoteName('#__tz_portfolio_xref_content'));
-                $query -> where($db -> quoteName('contentid').' IN('
-                    .implode(',',$articlesAssignment).')');
-                $db -> setQuery($query);
-
-                if(!$updateIds = $db -> loadColumn()){
-                    $updateIds  = null;
-                }
-
-                if($updateIds){
-                    // Insert article with this template
-                    if($insertIds  = array_diff($articlesAssignment,$updateIds)){
-
-                        $query  = $db -> getQuery(true);
-                        $query -> insert($db -> quoteName('#__tz_portfolio_xref_content'));
-                        $query ->columns('contentid,type,link_attribs,template_id');
-                        foreach($insertIds as $cid){
-                            $query -> values($cid.','.$db -> quote('none').','
-                                .$db -> quote('{"link_target":"_blank","link_follow":"nofollow"}')
-                                .','.$table -> id);
-                        }
-                        $db -> setQuery($query);
-                        $db -> execute();
-                    }
-
-                    $query  = $db -> getQuery(true);
-                    $query -> update($db -> quoteName('#__tz_portfolio_xref_content'));
-                    $query -> set($db -> quoteName('template_id').'='.$table -> id);
-                    $query -> where($db -> quoteName('contentid').' IN('.implode(',',$updateIds).')');
-                    $db -> setQuery($query);
-                    $db -> execute();
-                }else{
-                    $query  = $db -> getQuery(true);
-                    $query -> insert($db -> quoteName('#__tz_portfolio_xref_content'));
-                    $query ->columns('contentid,type,link_attribs,template_id');
-                    foreach($articlesAssignment as $cid){
-                        $query -> values($cid.','.$db -> quote('none').','
-                            .$db -> quote('{"link_target":"_blank","link_follow":"nofollow"}')
-                            .','.$table -> id);
-                    }
-                    $db -> setQuery($query);
-                    $db -> execute();
-                }
-            }
-
-
-            // Assign categories with this template;
-            if(!empty($categoriesAssignmentOld) && count($categoriesAssignmentOld)){
-                $query  = $db -> getQuery(true);
-                $query -> update($db -> quoteName('#__tz_portfolio_categories'));
-                $query -> set($db -> quoteName('template_id').'= 0');
-                $query -> where($db -> quoteName('catid').' IN('.implode(',',$categoriesAssignmentOld).')');
-                $db -> setQuery($query);
-                $db -> execute();
-            }
-
-            if(!empty($categoriesAssignment) && count($categoriesAssignment)){
-                $categoriesAssignment   = array_unique($categoriesAssignment);
-                $query  = $db -> getQuery(true);
-                $query -> select('catid');
-                $query -> from($db -> quoteName('#__tz_portfolio_categories'));
-                $query -> where($db -> quoteName('catid').' IN('.implode(',',$categoriesAssignment).')');
-                $db -> setQuery($query);
-
-                if(!$updateCatIds = $db -> loadColumn()){
-                    $updateCatIds  = null;
-                }
-
-                if($updateCatIds){
-                    // Insert article with this template
-                    if($insertIds  = array_diff($categoriesAssignment,$updateCatIds)){
-                        $query  = $db -> getQuery(true);
-                        $query -> insert($db -> quoteName('#__tz_portfolio_categories'));
-                        $query ->columns('catid,groupid,template_id');
-                        foreach($insertIds as $cid){
-                            $query -> values($cid.',0,'.$table -> id);
-                        }
-                        $db -> setQuery($query);
-                        $db -> execute();
-                    }
-
-                    $query  = $db -> getQuery(true);
-                    $query -> update($db -> quoteName('#__tz_portfolio_categories'));
-                    $query -> set($db -> quoteName('template_id').'='.$table -> id);
-                    $query -> where($db -> quoteName('catid').' IN('.implode(',',$categoriesAssignment).')');
-                    $db -> setQuery($query);
-                    $db -> execute();
-                }else{
-                    $query  = $db -> getQuery(true);
-                    $query -> insert($db -> quoteName('#__tz_portfolio_categories'));
-                    $query ->columns('catid,groupid,template_id');
-                    foreach($categoriesAssignment as $cid){
-                        $query -> values($cid.',0,'.$table -> id);
-                    }
-                    $db -> setQuery($query);
-                    $db -> execute();
-                }
-            }
-
-
-            // Clean the cache.
-            $this->cleanCache();
-
-            // Trigger the onContentAfterSave event.
-            $dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, $table, $isNew));
-        }
-        catch (Exception $e)
-        {
-            $this->setError($e->getMessage());
+            $app->enqueueMessage(JText::_('COM_INSTALLER_UNABLE_TO_FIND_INSTALL_PACKAGE'), 'error');
 
             return false;
         }
 
-        $pkName = $table->getKeyName();
+        // Get an installer instance.
+        $installer  = JInstaller::getInstance($package['dir']);
+        $installer -> setPath('source',$package['dir']);
 
-        if (isset($table->$pkName))
-        {
-            $this->setState($this->getName() . '.id', $table->$pkName);
-        }
-        $this->setState($this->getName() . '.new', $isNew);
+        if($manifest = $installer ->getManifest()){
+            $attrib = $manifest -> attributes();
 
-        return true;
-    }
+            $name   = (string) $manifest -> name;
+            $type   = (string) $attrib -> type;
 
-//    function save($data=array()){
-//        $post   = JRequest::get();
-//        unset($data['tags']);
-//        $data['params'] = '';
-//        if($attrib = $post['jform']['attrib']){
-//            $data['params'] = json_encode($attrib);
-//        }
-//        if(!$data['id'] || $data['id'] == 0){
-//            $data['title']  = $this ->generateNewTitle(null,null,$data['title']);
-//        }
-//
-//        $home   = false;
-//        if($data['home'] == '1'){
-//            $home   = true;
-//        }
-//        $table  = $this -> getTable();
-//        if(!$table -> hasHome()){
-//            $data['home']   = '1';
-//        }
-//
-//        if(parent::save($data)){
-//            if($data['id'] && $data['home'] == '1'){
-//                $this -> setHome($data['id']);
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
-
-    public function getTZLayout(){
-        $item   = $this -> getItem();
-        $params = $item -> params;
-        if(empty($params)){
-            $pathfile   = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/views/template/tmpl/default.json';
-            if(JFile::exists($pathfile)){
-                $string     = file_get_contents($pathfile);
-                return json_decode($string);
-            }
-        }
-        return $params;
-    }
-
-    public function setHome($id = 0)
-    {
-        $user = JFactory::getUser();
-        $db   = $this->getDbo();
-
-        // Access checks.
-        if (!$user->authorise('core.edit.state', 'com_content'))
-        {
-            throw new Exception(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
-        }
-
-        $style = JTable::getInstance('Templates', 'Table');
-
-        if (!$style->load((int) $id))
-        {
-            throw new Exception(JText::_('COM_TEMPLATES_ERROR_STYLE_NOT_FOUND'));
-        }
-
-        // Detect disabled extension
-//        $extension = JTable::getInstance('Extension');
-
-//        if ($extension->load(array('enabled' => 0, 'type' => 'template', 'element' => $style->template, 'client_id' => $style->client_id)))
-//        {
-//            throw new Exception(JText::_('COM_TEMPLATES_ERROR_SAVE_DISABLED_TEMPLATE'));
-//        }
-
-        // Reset the home fields for the client_id.
-        $db->setQuery(
-            'UPDATE #__tz_portfolio_templates' .
-            ' SET home = \'0\'' .
-            ' WHERE home = \'1\''
-        );
-        $db->execute();
-
-        // Set the new home style.
-        $db->setQuery(
-            'UPDATE #__tz_portfolio_templates' .
-            ' SET home = \'1\'' .
-            ' WHERE id = ' . (int) $id
-        );
-        $db->execute();
-
-        // Clean the cache.
-        $this->cleanCache();
-
-        return true;
-    }
-
-    public function unsetHome($id = 0)
-    {
-        $user = JFactory::getUser();
-        $db   = $this->getDbo();
-
-        // Access checks.
-        if (!$user->authorise('core.edit.state', 'com_content'))
-        {
-            throw new Exception(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
-        }
-
-        // Lookup the client_id.
-        $db->setQuery(
-            'SELECT home' .
-            ' FROM #__tz_portfolio_templates' .
-            ' WHERE id = ' . (int) $id
-        );
-        $style = $db->loadObject();
-
-        if ($style->home == '1')
-        {
-            throw new Exception(JText::_('COM_TEMPLATES_ERROR_CANNOT_UNSET_DEFAULT_STYLE'));
-        }
-
-        // Set the new home style.
-        $db->setQuery(
-            'UPDATE #__tz_portfolio_templates' .
-            ' SET home = \'0\'' .
-            ' WHERE id = ' . (int) $id
-        );
-        $db->execute();
-
-        // Clean the cache.
-        $this->cleanCache();
-
-        return true;
-    }
-
-    public function delete(&$pks)
-    {
-        $pks	= (array) $pks;
-        $user	= JFactory::getUser();
-        $table	= $this->getTable();
-
-        // Iterate the items to delete each one.
-        foreach ($pks as $pk)
-        {
-            if ($table->load($pk))
-            {
-                // Access checks.
-                if (!$user->authorise('core.delete', 'com_tz_portfolio'))
-                {
-                    throw new Exception(JText::_('JERROR_CORE_DELETE_NOT_PERMITTED'));
-                }
-
-                // You should not delete a default style
-//                if ($table->home != '0')
-//                {
-//                    JError::raiseWarning(SOME_ERROR_NUMBER, Jtext::_('COM_TEMPLATES_STYLE_CANNOT_DELETE_DEFAULT_STYLE'));
-//
-//                    return false;
-//                }
-
-                if (!$table->delete($pk))
-                {
-                    $this->setError($table->getError());
-
-                    return false;
-                }
-            }
-            else
-            {
-                $this->setError($table->getError());
-
+            if($type != 'tz_portfolio-template'){
+                $app->enqueueMessage(JText::_('COM_INSTALLER_UNABLE_TO_FIND_INSTALL_PACKAGE'), 'error');
                 return false;
             }
+
+            $folder_name    = $name;
+            if($folder_name && is_numeric(strpos($folder_name,'tz_portfolio_tpl_'))){
+                $folder_name    = preg_replace('/^tz_portfolio_tpl_/','',$folder_name);
+            }
+
+            $files_folders  = $manifest -> xPath('files');
+            $replace    = false;
+            if($attrib -> method == 'upgrade'){
+                $replace    = true;
+            }
+
+            // Upload folder to templates folder
+            if(isset($files_folders[0] -> folder)){
+                $folders    = (array)$files_folders[0] -> folder;
+                if(count($folders)){
+                    foreach($folders as $folder){
+                        if(JFolder::exists($package['dir'].DIRECTORY_SEPARATOR.$folder)) {
+                            if(JFolder::exists($tpl_path . DIRECTORY_SEPARATOR . $folder_name . DIRECTORY_SEPARATOR . $folder)){
+                                if(!$replace){
+                                    $msg    = JText::_('COM_TZ_PORTFOLIO_FOLDER_EXIST');
+                                    $result = false;
+                                }else{
+                                    JFolder::copy($package['dir'] . DIRECTORY_SEPARATOR . $folder,
+                                        $tpl_path . DIRECTORY_SEPARATOR . $folder_name . DIRECTORY_SEPARATOR . $folder,
+                                        '', $replace);
+                                    $result = true;
+                                }
+                            }else {
+                                JFolder::copy($package['dir'] . DIRECTORY_SEPARATOR . $folder,
+                                    $tpl_path . DIRECTORY_SEPARATOR . $folder_name . DIRECTORY_SEPARATOR . $folder,
+                                    '', $replace);
+                                $result = true;
+                            }
+                        }else{
+                            $msg    = JText::sprintf('JLIB_INSTALLER_ERROR_NO_FILE',$package['dir'] . DIRECTORY_SEPARATOR . $folder);
+                            $result = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if($result) {
+                // Upload files to templates folder
+                if (isset($files_folders[0]->filename)) {
+                    $files = (array)$files_folders[0]->filename;
+                    if (count($files)) {
+                        foreach ($files as $file) {
+                            if (JFile::exists($package['dir'] . DIRECTORY_SEPARATOR . $file)) {
+                                JFile::copy($package['dir'] . DIRECTORY_SEPARATOR . $file,
+                                    $tpl_path . DIRECTORY_SEPARATOR . $folder_name . DIRECTORY_SEPARATOR . $file,
+                                    null, $replace);
+                                $result = true;
+                            } else {
+                                $msg    = JText::sprintf('JLIB_INSTALLER_ERROR_NO_FILE',$package['dir']
+                                    . DIRECTORY_SEPARATOR . $file);
+                                $result = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            if($result){
+                // Add template's information to table tz_portfolio_extensions
+                $data   = null;
+                $data ['id']    = 0;
+                $data ['name']  = $name;
+                $data ['type']  = $type;
+                $manifest_cache = $installer -> generateManifestCache();
+
+                $data['protected']      = 0;
+                $data['manifest_cache'] = $manifest_cache;
+                $data['published']      = 1;
+                $data['access']         = 1;
+                $data['params']         = $installer -> getParams();
+
+                if($template = $this -> getTemplate($name)){
+                    if(isset($template ->protected) && $template ->protected){
+                        $app -> enqueueMessage(JText::_('COM_TZ_PORTFOLIO_TEMPLATE_ERROR_INSTALL_PROTECTED'),'error');
+                        return false;
+                    }
+                    $data['id'] = $template -> id;
+                }
+                $this -> save($data);
+
+                // Add template's information to table tz_portfolio_templates
+                $data   = null;
+                if(!$this -> getTemplateStyle($name)){
+                    $lang   = JFactory::getLanguage();
+                    $data['title']  = $name;
+                    if($lang -> load('tpl_'.$name,$tpl_path.DIRECTORY_SEPARATOR.$folder_name)){
+                        if($lang ->hasKey('TZ_PORTFOLIO_TPL_'.$name)){
+                            // ALTER TABLE `jos_tz_portfolio_templates` ADD `template` VARCHAR(100) NOT NULL AFTER `id`;
+                            // ALTER TABLE `jos_tz_portfolio_templates` ADD `attribs` TEXT NOT NULL ;
+                            $data['title']      = JText::_('TZ_PORTFOLIO_TPL_'.$name);
+                        }
+                    }
+                    $data['id']         = 0;
+                    $data['template']   = $name;
+                    $data['title']      = JText::sprintf('COM_TZ_PORTFOLIO_TEMPLATE_STYLE_NAME',$data['title']);
+                    $data['home']       = 0;
+                    $data['params']     = '';
+
+                    $model  = JModelAdmin::getInstance('Template_Style','TZ_PortfolioModel');
+                    if($model){
+                        $model -> save($data);
+                    }
+                }
+            }
+
+            if(!$result) {
+                $app->enqueueMessage($msg, 'warning');
+                $app->enqueueMessage(JText::sprintf('JLIB_INSTALLER_ABORT_TPL_INSTALL_COPY_FILES', 'files'),'warning');
+                $app->enqueueMessage(JText::sprintf('COM_INSTALLER_INSTALL_ERROR', 'template'), 'error');
+            }else {
+                $app->enqueueMessage($msg, 'message');
+            }
         }
 
-        // Clean cache
-        $this->cleanCache();
+        JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
-        return true;
+        return $result;
     }
 
-
-
-    public function duplicate(&$pks)
+    public function uninstall($eid = array())
     {
-        $user	= JFactory::getUser();
+        $user   = JFactory::getUser();
+        $lang   = JFactory::getLanguage();
+        $app    = JFactory::getApplication();
 
-        // Access checks.
-        if (!$user->authorise('core.create', 'com_tz_portfolio'))
+        $lang -> load('com_installer');
+
+        if ($user->authorise('core.delete', 'com_tz_portfolio'))
         {
-            throw new Exception(JText::_('JERROR_CORE_CREATE_NOT_PERMITTED'));
-        }
+            $failed = array();
 
-        $table = $this->getTable();
-
-        foreach ($pks as $pk)
-        {
-            if ($table->load($pk, true))
+            /*
+             * Ensure eid is an array of extension ids in the form id => client_id
+             * TODO: If it isn't an array do we want to set an error and fail?
+             */
+            if (!is_array($eid))
             {
-                // Reset the id to create a new record.
-                $table->id = 0;
+                $eid = array($eid => 0);
+            }
 
-                // Reset the home (don't want dupes of that field).
-                $table->home = 0;
+            // Get an installer object for the extension type
+            $row = $this -> getTable();
 
-//                // Alter the title.
-                $m = null;
-                $table->title = $this -> generateNewTitle(null,null,$table -> title);
+            $template_table     = $this -> getTable('Templates');
+            $template_default   = $template_table -> getHome();
+            $template_style     = JModelAdmin::getInstance('Template_Style','TZ_PortfolioModel',array('ignore_request' => true));
 
-                if (!$table->check() || !$table->store())
+            // Uninstall the chosen extensions
+            $msgs = array();
+            $result = false;
+
+            foreach ($eid as $id)
+            {
+                $id = trim($id);
+                $row->load($id);
+
+                $langstring = 'COM_INSTALLER_TYPE_TYPE_' . strtoupper($row->type);
+                $rowtype = JText::_($langstring);
+
+                if (strpos($rowtype, $langstring) !== false)
                 {
-                    throw new Exception($table->getError());
+                    $rowtype = $row->type;
+                }
+
+                if ($row->type && $row->type == 'tz_portfolio-template')
+                {
+
+                    // Is the template we are trying to uninstall a core one?
+                    // Because that is not a good idea...
+                    if ($row->protected)
+                    {
+                        JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_TPL_UNINSTALL_WARNCORETEMPLATE', JText::_('COM_TZ_PORTFOLIO_TEMPLATE_LABEL')), JLog::WARNING, 'jerror');
+
+                        return false;
+                    }
+
+                    if($template_default -> template == $row -> name){
+                        $msg    = JText::_('JLIB_INSTALLER_ERROR_TPL_UNINSTALL_TEMPLATE_DEFAULT');
+                        $app->enqueueMessage($msg,'warning');
+                        return false;
+                    }
+
+                    $tpl_path   = COM_TZ_PORTFOLIO_PATH_SITE.DIRECTORY_SEPARATOR.'templates'
+                        .DIRECTORY_SEPARATOR.$row -> name;
+
+                    if(JFolder::exists($tpl_path)){
+                        if(!$template_style -> deleteTemplate($row -> name)){
+                            $app -> enqueueMessage($template_style -> getError(),'warning');
+                            return false;
+                        }
+                        if(JFolder::delete($tpl_path)){
+                            $result = $this->delete($id);
+                        }
+                    }
+
+                    // Build an array of extensions that failed to uninstall
+                    if ($result === false)
+                    {
+                        // There was an error in uninstalling the package
+                        $msgs[] = JText::sprintf('COM_INSTALLER_UNINSTALL_ERROR', JText::_('COM_TZ_PORTFOLIO_TEMPLATE_LABEL'));
+                        $result = false;
+                    }
+                    else
+                    {
+                        // Package uninstalled sucessfully
+                        $msgs[] = JText::sprintf('COM_INSTALLER_UNINSTALL_SUCCESS', JText::_('COM_TZ_PORTFOLIO_TEMPLATE_LABEL'));
+                        $result = true;
+                    }
                 }
             }
-            else
-            {
-                throw new Exception($table->getError());
-            }
+
+            $msg = implode("<br />", $msgs);
+            $app->enqueueMessage($msg);
+
+            return $result;
         }
-
-        // Clean cache
-        $this->cleanCache();
-
-        return true;
+        else
+        {
+            JError::raiseWarning(403, JText::_('JERROR_CORE_DELETE_NOT_PERMITTED'));
+        }
     }
 
+    protected function _getPackageFromUpload()
+    {
+        // Get the uploaded file information.
+        $input    = JFactory::getApplication()->input;
+        // Do not change the filter type 'raw'. We need this to let files containing PHP code to upload. See JInputFiles::get.
+        $userfile = $input->files->get('install_package', null, 'raw');
 
+        // Make sure that file uploads are enabled in php.
+        if (!(bool) ini_get('file_uploads'))
+        {
+            JError::raiseWarning('', JText::_('COM_INSTALLER_MSG_INSTALL_WARNINSTALLFILE'));
 
-    public function getItemTemplate($artId = null,$catId = null){
-        $_artId = !empty($artId)?$artId:$this -> getState('content.id');
-        $_catId = !empty($catId)?$catId:$this -> getState('category.id');
-
-        $db         = JFactory::getDbo();
-        $templateId = null;
-
-        if($_catId){
-            $query  = $db -> getQuery(true);
-            $query -> select($db -> quoteName('template_id'));
-            $query -> from($db -> quoteName('#__tz_portfolio_categories'));
-            $query -> where($db -> quoteName('catid').'='.$_catId);
-            $db -> setQuery($query);
-            if($crow = $db -> loadObject()){
-                if($crow -> template_id){
-                    $templateId = $crow -> template_id;
-                }
-            }
+            return false;
         }
-        if($_artId){
-            $query  = $db -> getQuery(true);
-            $query -> select($db -> quoteName('template_id'));
-            $query -> from($db -> quoteName('#__tz_portfolio_xref_content'));
-            $query -> where($db -> quoteName('contentid').'='.$_artId);
-            $db -> setQuery($query);
-            if($row = $db -> loadObject()){
-                if($row -> template_id){
-                    $templateId = $row -> template_id;
-                }
-            }
+
+        // Make sure that zlib is loaded so that the package can be unpacked.
+        if (!extension_loaded('zlib'))
+        {
+            JError::raiseWarning('', JText::_('COM_INSTALLER_MSG_INSTALL_WARNINSTALLZLIB'));
+
+            return false;
         }
-        return (int) $templateId;
+
+        // If there is no uploaded file, we have a problem...
+        if (!is_array($userfile))
+        {
+            JError::raiseWarning('', JText::_('COM_INSTALLER_MSG_INSTALL_NO_FILE_SELECTED'));
+
+            return false;
+        }
+
+        // Is the PHP tmp directory missing?
+        if ($userfile['error'] && ($userfile['error'] == UPLOAD_ERR_NO_TMP_DIR))
+        {
+            JError::raiseWarning('', JText::_('COM_INSTALLER_MSG_INSTALL_WARNINSTALLUPLOADERROR') . '<br />' . JText::_('COM_INSTALLER_MSG_WARNINGS_PHPUPLOADNOTSET'));
+
+            return false;
+        }
+
+        // Is the max upload size too small in php.ini?
+        if ($userfile['error'] && ($userfile['error'] == UPLOAD_ERR_INI_SIZE))
+        {
+            JError::raiseWarning('', JText::_('COM_INSTALLER_MSG_INSTALL_WARNINSTALLUPLOADERROR') . '<br />' . JText::_('COM_INSTALLER_MSG_WARNINGS_SMALLUPLOADSIZE'));
+
+            return false;
+        }
+
+        // Check if there was a different problem uploading the file.
+        if ($userfile['error'] || $userfile['size'] < 1)
+        {
+            JError::raiseWarning('', JText::_('COM_INSTALLER_MSG_INSTALL_WARNINSTALLUPLOADERROR'));
+
+            return false;
+        }
+
+        // Build the appropriate paths.
+        $tmp_dest	= JPATH_ROOT . '/tmp/tz_portfolio_install/' . $userfile['name'];
+        $tmp_src	= $userfile['tmp_name'];
+
+        if(!JFile::exists(JPATH_ROOT . '/tmp/tz_portfolio_install/index.html')){
+            JFile::write(JPATH_ROOT . '/tmp/tz_portfolio_install/index.html',
+                htmlspecialchars_decode('<!DOCTYPE html><title></title>'));
+        }
+
+        // Move uploaded file.
+        jimport('joomla.filesystem.file');
+        JFile::upload($tmp_src, $tmp_dest, false, true);
+
+        // Unpack the downloaded package file.
+        $package = JInstallerHelper::unpack($tmp_dest, true);
+
+        return $package;
     }
+
 }

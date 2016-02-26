@@ -157,7 +157,7 @@ var TzVote_text=Array('".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_NO_AJAX')."','".JTEXT::
               <div class=\"rating\">
                 <a href=\"javascript:void(null)\"
                  onclick=\"javascript:JVXVote(this,".$id.",5,".$rating_sum.",".$rating_count.",'".$xid."',".$counter.",".$this -> params -> get('style',1).");\"
-                 title=\"".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_VERY_POOR')."\"
+                 title=\"".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_VERY_GOOD')."\"
                  class=\"rating-item muted icon-star".(($count > 4)?' voted':'')."\">";
             if( $count > 4 && $count < 5){
                 $html .='<span class="icon-star" style="width: '.round(100 - ($count - 4)*100).'%"></span>';
@@ -165,7 +165,7 @@ var TzVote_text=Array('".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_NO_AJAX')."','".JTEXT::
             $html .="</a>
                 <a href=\"javascript:void(null)\"
                  onclick=\"javascript:JVXVote(this,".$id.",4,".$rating_sum.",".$rating_count.",'".$xid."',".$counter.",".$this -> params -> get('style',1).");\"
-                  title=\"".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_POOR')."\"
+                  title=\"".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_GOOD')."\"
                   class=\"rating-item muted icon-star".(($count > 3)?' voted':'')."\">";
             if( $count > 3 && $count < 4){
                 $html .='<span class="icon-star" style="width: '.round(100 - ($count - 3)*100).'%"></span>';
@@ -182,7 +182,7 @@ var TzVote_text=Array('".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_NO_AJAX')."','".JTEXT::
             $html .="</a>
                 <a href=\"javascript:void(null)\"
                  onclick=\"javascript:JVXVote(this,".$id.",2,".$rating_sum.",".$rating_count.",'".$xid."',".$counter.",".$this -> params -> get('style',1).");\"
-                 title=\"".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_GOOD')."\"
+                 title=\"".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_POOR')."\"
                  class=\"rating-item muted icon-star".(($count > 1)?' voted':'')."\">";
             if( $count > 1 && $count < 2){
             $html .='<span class="icon-star" style="width: '.round(100 - ($count - 1)*100).'%"></span>';
@@ -190,7 +190,7 @@ var TzVote_text=Array('".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_NO_AJAX')."','".JTEXT::
             $html .="</a>
                 <a href=\"javascript:void(null)\"
                  onclick=\"javascript:JVXVote(this,".$id.",1,".$rating_sum.",".$rating_count.",'".$xid."',".$counter.",".$this -> params -> get('style',1).");\"
-                  title=\"".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_VERY_GOOD')."\"
+                  title=\"".JTEXT::_('PLG_TZ_PORTFOLIO_VOTE_VERY_POOR')."\"
                    class=\"rating-item muted icon-star".(($count > 0)?' voted':'')."\">";
             if( $count > 0 && $count < 1){
                 $html .='<span class="icon-star" style="width: '.round(100 - $count*100).'%"></span>';

@@ -22,9 +22,21 @@ defined('_JEXEC') or die('Restricted access');
 
 JHtml::_('formbehavior.chosen', 'select');
 
+// Include the component HTML helpers.
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+
 $user		= JFactory::getUser();
+$lang       = JFactory::getLanguage();
+$lang -> load('com_installer');
 ?>
-<form action="index.php?option=com_tz_portfolio&view=templates" method="post" name="adminForm" id="adminForm">
+<style>
+    .tz_portfolio-templates .thumbnail > img{
+        max-width: 80px;
+    }
+</style>
+<form action="index.php?option=com_tz_portfolio&view=templates" method="post" name="adminForm"
+      class="tz_portfolio-templates"
+      id="adminForm">
     <?php if(!empty($this -> sidebar) AND COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
     <div id="j-sidebar-container" class="span2">
         <?php echo $this -> sidebar; ?>
@@ -83,25 +95,32 @@ $user		= JFactory::getUser();
         <table class="table table-striped" id="templatesList">
             <thead>
             <tr>
-<!--                <th width="1%">--><?php //echo JText::_('#');?><!--</th>-->
                 <th width="1%">
-<!--                    <input type="checkbox" name="checkall-toggle" value=""-->
-<!--                           title="--><?php //echo JText::_('JGLOBAL_CHECK_ALL'); ?><!--"-->
-<!--                           onclick="Joomla.checkAll(this)"/>-->
+
                 </th>
-<!--                <th width="1%" style="min-width:55px" class="nowrap center">-->
-<!--                    --><?php //echo JHtml::_('grid.sort', 'COM_TEMPLATES_HEADING_TEMPLATE', 'title', $this -> state -> filter_order_Dir, $this -> state -> filter_order); ?>
-<!--                </th>-->
+                <th class="col1template hidden-phone">
+                    <?php echo JText::_('COM_TZ_PORTFOLIO_THUMBNAIL');?>
+                </th>
                 <th class="title">
-                    <?php echo JHtml::_('grid.sort','COM_TZ_PORTFOLIO_HEADING_NAME','name',$this -> state -> filter_order_Dir,$this -> state -> filter_order);?>
+                    <?php echo JHtml::_('grid.sort','COM_TZ_PORTFOLIO_TEMPLATE_LABEL','name',$this -> state -> filter_order_Dir,$this -> state -> filter_order);?>
                 </th>
-                <th width="1%" style="min-width:55px" class="nowrap center">
-                    <?php echo JHtml::_('grid.sort', 'COM_TEMPLATES_HEADING_DEFAULT', 'home', $this -> state -> filter_order_Dir, $this -> state -> filter_order); ?>
+                <th width="10%" class="nowrap center">
+                    <?php echo JHtml::_('grid.sort', 'JSTATUS', 'published', $this -> state -> filter_order_Dir, $this -> state -> filter_order); ?>
                 </th>
-                <th nowrap="nowrap" width="1%">
-                    <?php echo JText::_('COM_TZ_PORTFOLIO_HEADING_ASSIGNED'); ?>
+                <th width="10%" class="nowrap center">
+                    <?php echo JText::_('COM_TZ_PORTFOLIO_HEADING_TYPE');?>
+<!--                    --><?php //echo JHtml::_('grid.sort', 'COM_TZ_PORTFOLIO_HEADING_TYPE', 'type', $this -> state -> filter_order_Dir, $this -> state -> filter_order); ?>
                 </th>
-                <th nowrap="nowrap" width="1%">
+                <th class="nowrap center" width="10%">
+                    <?php echo JText::_('JVERSION'); ?>
+                </th>
+                <th class="nowrap center" width="15%">
+                    <?php echo JText::_('JDATE'); ?>
+                </th>
+                <th class="nowrap" width="25%">
+                    <?php echo JText::_('JAUTHOR'); ?>
+                </th>
+                <th class="nowrap" width="1%">
                     <?php echo JHtml::_('grid.sort','JGRID_HEADING_ID','id',$this -> state -> filter_order_Dir,$this -> state -> filter_order);?>
                 </th>
             </tr>
@@ -120,33 +139,81 @@ $user		= JFactory::getUser();
                         <td class="center">
                             <?php echo JHtml::_('grid.id', $i, $item->id); ?>
                         </td>
+                        <td class="center hidden-phone">
+                            <?php echo JHtml::_('templates.thumb', $item->name); ?>
+                        </td>
                         <td class="nowrap has-context">
                             <div class="pull-left">
-                                <a href="index.php?option=com_tz_portfolio&task=template.edit&id=<?php echo $item -> id;?>">
-                                    <?php echo $item -> title;?>
-                                </a>
+<!--                                <a href="index.php?option=com_tz_portfolio&task=template.edit&id=--><?php //echo $item -> id;?><!--">-->
+                                    <?php echo $item->name; ?>
+<!--                                </a>-->
                             </div>
                         </td>
 
                         <td class="center">
-                            <?php if ($item->home == '0' || $item->home == '1'):?>
-                                <?php echo JHtml::_('jgrid.isdefault', $item->home != '0', $i, 'templates.', $canChange && $item->home != '1');?>
-                            <?php elseif ($canChange):?>
-                                <a href="<?php echo JRoute::_('index.php?option=com_tz_portfolio&task=templates.unsetDefault&cid[]='.$item->id.'&'.JSession::getFormToken().'=1');?>">
-                                    <?php echo JHtml::_('image', 'mod_languages/'.$item->image.'.gif', $item->language_title, array('title' => JText::sprintf('COM_TEMPLATES_GRID_UNSET_LANGUAGE', $item->language_title)), true);?>
-                                </a>
-                            <?php else:?>
-                                <?php echo JHtml::_('image', 'mod_languages/'.$item->image.'.gif', $item->language_title, array('title' => $item->language_title), true);?>
-                            <?php endif;?>
+                            <?php
+                            $states	= array(
+                                2 => array(
+                                    '',
+                                    'COM_INSTALLER_EXTENSION_PROTECTED',
+                                    '',
+                                    'COM_INSTALLER_EXTENSION_PROTECTED',
+                                    true,
+                                    'protected',
+                                    'protected',
+                                ),
+                                1 => array(
+                                    'unpublish',
+                                    'COM_INSTALLER_EXTENSION_ENABLED',
+                                    'COM_INSTALLER_EXTENSION_DISABLE',
+                                    'COM_INSTALLER_EXTENSION_ENABLED',
+                                    true,
+                                    'publish',
+                                    'publish',
+                                ),
+                                0 => array(
+                                    'publish',
+                                    'COM_INSTALLER_EXTENSION_DISABLED',
+                                    'COM_INSTALLER_EXTENSION_ENABLE',
+                                    'COM_INSTALLER_EXTENSION_DISABLED',
+                                    true,
+                                    'unpublish',
+                                    'unpublish',
+                                ),
+                            );
+                            if($item ->protected){
+                                echo JHtml::_('jgrid.state', $states, 2, $i, 'template.', false, true, 'cb');
+                            }else{
+                                echo JHtml::_('jgrid.state', $states, $item->published, $i, 'templates.', true, true, 'cb');
+                            }
+                            ?>
+                        </td>
+                        <td class="center">
+                            <?php echo $item -> type;?>
+                        </td>
+                        <td class="center hidden-phone">
+                            <?php echo @$item -> version != '' ? $item -> version : '&#160;';?>
+                        </td>
+                        <td class="center hidden-phone">
+
+                            <?php echo @$item-> creationDate != '' ? $item-> creationDate : '&#160;'; ?>
+                        </td>
+                        <td class="hidden-phone">
+                            <?php if ($author = $item-> author) : ?>
+                                <p><?php echo $this->escape($author); ?></p>
+                            <?php else : ?>
+                                &mdash;
+                            <?php endif; ?>
+                            <?php if ($email = $item->authorEmail) : ?>
+                                <p><?php echo $this->escape($email); ?></p>
+                            <?php endif; ?>
+                            <?php if ($url = $item->authorUrl) : ?>
+                                <p><a href="<?php echo $this->escape($url); ?>">
+                                        <?php echo $this->escape($url); ?></a></p>
+                            <?php endif; ?>
                         </td>
 
-                        <td align="center">
-                            <?php if((isset($item -> category_assigned) AND $item -> category_assigned > 0)
-                                OR (isset($item -> content_assigned) AND $item -> content_assigned > 0)):?>
-                            <i class="icon-ok tip hasTooltip" title="<?php echo JText::plural('COM_TZ_PORTFOLIO_ASSIGNED_MORE', $item->category_assigned,$item -> content_assigned); ?>"></i>
-                            <?php endif;?>
-                        </td>
-                        <td align="center"><?php echo $item -> id;?></td>
+                        <td align="center hidden-phone"><?php echo $item -> id;?></td>
                     </tr>
                 <?php endforeach;?>
                 </tbody>
