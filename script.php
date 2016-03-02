@@ -189,19 +189,6 @@ class com_tz_portfolioInstallerScript{
             $query  = 'UPDATE #__extensions SET `enabled`=0 WHERE `type`="plugin" AND `element`="example" AND `folder`="tz_portfolio"';
             $db -> setQuery($query);
             $db -> query();
-
-            // Insert default template
-            $template_sql   = 'SELECT COUNT(*) FROM #__tz_portfolio_templates';
-            $db -> setQuery($template_sql);
-            if(!$db -> loadResult()){
-                $def_file   = JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/views/template/tmpl/default.json';
-                if(JFile::exists($def_file)){
-                    $def_value      = JFile::read($def_file);
-                    $template_sql2  = 'INSERT INTO `#__tz_portfolio_templates`(`id`, `title`, `home`, `params`) VALUES(1, \'Default\', \'1\',\''.$def_value.'\')';
-                    $db -> setQuery($template_sql2);
-                    $db -> query();
-                }
-            }
         }
 
         // Delete menu fields-group in back-end
@@ -330,12 +317,6 @@ class com_tz_portfolioInstallerScript{
         );
         $disableTables  = array_diff($listTable,$db -> getTableList());
 
-        if(count($disableTables)){
-            $installer  = JInstaller::getInstance();
-            $sql        = $adapter -> getParent() -> manifest;
-            $installer ->parseSQLFiles($sql -> install->sql);
-        }
-
         $fields = $db -> getTableColumns('#__tz_portfolio_categories');
 
         if(!array_key_exists('template_id',$fields)){
@@ -459,7 +440,7 @@ class com_tz_portfolioInstallerScript{
             if($arr){
                 $query  = 'ALTER TABLE `#__tz_portfolio_tags` '.$arr;
                 $db -> setQuery($query);
-                $db -> query();
+                $db -> execute();
             }
         }
 
@@ -486,7 +467,7 @@ class com_tz_portfolioInstallerScript{
             if($arr){
                 $query  = 'ALTER TABLE `#__tz_portfolio_templates` '.$arr;
                 $db -> setQuery($query);
-                $db -> query();
+                $db -> execute();
             }
         }
 
@@ -500,13 +481,19 @@ class com_tz_portfolioInstallerScript{
                 $template_sql2  = 'INSERT INTO `#__tz_portfolio_templates`(`id`,`template`, `title`, `home`,'
                     .' `protected`, `layout`) VALUES(1,\'system\', \'Default\', \'1\',1,\''.$def_value.'\')';
                 $db -> setQuery($template_sql2);
-                $db -> query();
+                $db -> execute();
             }
         }else{
             $template_sql   = 'UPDATE #__tz_portfolio_templates SET `template`="system", `protected` = 1'
                 .' WHERE `template`=""';
             $db -> setQuery($template_sql);
             $db -> execute();
+        }
+
+        if(count($disableTables)){
+            $installer  = JInstaller::getInstance();
+            $sql        = $adapter -> getParent() -> manifest;
+            $installer ->parseSQLFiles($sql -> install->sql);
         }
 
         //Tz Portfolio Plugin table

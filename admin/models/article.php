@@ -1563,7 +1563,9 @@ class TZ_PortfolioModelArticle extends JModelAdmin
 				$app = JFactory::getApplication();
 				$data->set('catid', JRequest::getInt('catid', $app->getUserState('com_tz_portfolio.articles.filter.category_id')));
 			}
+            JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_tz_portfolio/models');
             $template   = JModelLegacy::getInstance('Template_Style','TZ_PortfolioModel');
+
             $data -> set('template_id',$template -> getItemTemplate($this -> getState('article.id')));
 		}
 
