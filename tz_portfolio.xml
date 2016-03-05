@@ -7,7 +7,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.3.3</version>
+	<version>3.3.4</version>
 	<description>TZ Portfolio native for Joomla! 2.5.x and 3.0.x</description>
     
     <scriptfile>script.php</scriptfile>

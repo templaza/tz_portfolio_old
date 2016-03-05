@@ -20,6 +20,10 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+03/05/2016 - 3.3.4
+
+	- Fix some errors in Template Styles of version 3.3.3.
+
 02/26/2016 - 3.3.3
 
 	- Fix error:	

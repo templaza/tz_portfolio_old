@@ -440,7 +440,7 @@ class com_tz_portfolioInstallerScript{
             if($arr){
                 $query  = 'ALTER TABLE `#__tz_portfolio_tags` '.$arr;
                 $db -> setQuery($query);
-                $db -> query();
+                $db -> execute();
             }
         }
 
@@ -467,7 +467,7 @@ class com_tz_portfolioInstallerScript{
             if($arr){
                 $query  = 'ALTER TABLE `#__tz_portfolio_templates` '.$arr;
                 $db -> setQuery($query);
-                $db -> query();
+                $db -> execute();
             }
         }
 
@@ -481,7 +481,7 @@ class com_tz_portfolioInstallerScript{
                 $template_sql2  = 'INSERT INTO `#__tz_portfolio_templates`(`id`,`template`, `title`, `home`,'
                     .' `protected`, `layout`) VALUES(1,\'system\', \'Default\', \'1\',1,\''.$def_value.'\')';
                 $db -> setQuery($template_sql2);
-                $db -> query();
+                $db -> execute();
             }
         }else{
             $template_sql   = 'UPDATE #__tz_portfolio_templates SET `template`="system", `protected` = 1'
@@ -489,7 +489,7 @@ class com_tz_portfolioInstallerScript{
             $db -> setQuery($template_sql);
             $db -> execute();
         }
-        
+
         if(count($disableTables)){
             $installer  = JInstaller::getInstance();
             $sql        = $adapter -> getParent() -> manifest;

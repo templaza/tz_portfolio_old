@@ -24,6 +24,7 @@ defined('_JEXEC') or die('Restricted access');
 //JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
+JHtml::_('behavior.tabstate');
 JHtml::_('formbehavior.chosen', '#menuOptions select');
 ?>
 <script>
