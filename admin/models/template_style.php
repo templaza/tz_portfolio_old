@@ -510,63 +510,6 @@ class TZ_PortfolioModelTemplate_Style extends JModelAdmin
             $db->setQuery($query);
             $db->execute();
 
-
-
-
-//            // Assign categories with this template;
-//            if(!empty($categoriesAssignmentOld) && count($categoriesAssignmentOld)){
-//                $query  = $db -> getQuery(true);
-//                $query -> update($db -> quoteName('#__tz_portfolio_categories'));
-//                $query -> set($db -> quoteName('template_id').'= 0');
-//                $query -> where($db -> quoteName('catid').' IN('.implode(',',$categoriesAssignmentOld).')');
-//                $db -> setQuery($query);
-//                $db -> execute();
-//            }
-//
-//            if(!empty($categoriesAssignment) && count($categoriesAssignment)){
-//                $categoriesAssignment   = array_unique($categoriesAssignment);
-//                $query  = $db -> getQuery(true);
-//                $query -> select('catid');
-//                $query -> from($db -> quoteName('#__tz_portfolio_categories'));
-//                $query -> where($db -> quoteName('catid').' IN('.implode(',',$categoriesAssignment).')');
-//                $db -> setQuery($query);
-//
-//                if(!$updateCatIds = $db -> loadColumn()){
-//                    $updateCatIds  = null;
-//                }
-//
-//                if($updateCatIds){
-//                    // Insert article with this template
-//                    if($insertIds  = array_diff($categoriesAssignment,$updateCatIds)){
-//                        $query  = $db -> getQuery(true);
-//                        $query -> insert($db -> quoteName('#__tz_portfolio_categories'));
-//                        $query ->columns('catid,groupid,template_id');
-//                        foreach($insertIds as $cid){
-//                            $query -> values($cid.',0,'.$table -> id);
-//                        }
-//                        $db -> setQuery($query);
-//                        $db -> execute();
-//                    }
-//
-//                    $query  = $db -> getQuery(true);
-//                    $query -> update($db -> quoteName('#__tz_portfolio_categories'));
-//                    $query -> set($db -> quoteName('template_id').'='.$table -> id);
-//                    $query -> where($db -> quoteName('catid').' IN('.implode(',',$categoriesAssignment).')');
-//                    $db -> setQuery($query);
-//                    $db -> execute();
-//                }else{
-//                    $query  = $db -> getQuery(true);
-//                    $query -> insert($db -> quoteName('#__tz_portfolio_categories'));
-//                    $query ->columns('catid,groupid,template_id');
-//                    foreach($categoriesAssignment as $cid){
-//                        $query -> values($cid.',0,'.$table -> id);
-//                    }
-//                    $db -> setQuery($query);
-//                    $db -> execute();
-//                }
-//            }
-
-
             // Clean the cache.
             $this->cleanCache();
 
@@ -590,35 +533,6 @@ class TZ_PortfolioModelTemplate_Style extends JModelAdmin
 
         return true;
     }
-
-//    function save($data=array()){
-//        $post   = JRequest::get();
-//        unset($data['tags']);
-//        $data['params'] = '';
-//        if($attrib = $post['jform']['attrib']){
-//            $data['params'] = json_encode($attrib);
-//        }
-//        if(!$data['id'] || $data['id'] == 0){
-//            $data['title']  = $this ->generateNewTitle(null,null,$data['title']);
-//        }
-//
-//        $home   = false;
-//        if($data['home'] == '1'){
-//            $home   = true;
-//        }
-//        $table  = $this -> getTable();
-//        if(!$table -> hasHome()){
-//            $data['home']   = '1';
-//        }
-//
-//        if(parent::save($data)){
-//            if($data['id'] && $data['home'] == '1'){
-//                $this -> setHome($data['id']);
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
 
     public function getTZLayout(){
         $item   = $this -> getItem();
@@ -722,12 +636,13 @@ class TZ_PortfolioModelTemplate_Style extends JModelAdmin
 
     public function delete(&$pks)
     {
-        $pks	= (array) $pks;
-        $user	= JFactory::getUser();
-        $table	= $this->getTable();
-
-        $db     = $this -> getDbo();
-        $menus  = array();
+        $pks	    = (array) $pks;
+        $user	    = JFactory::getUser();
+        $table	    = $this->getTable();
+        $db         = $this -> getDbo();
+        $menus      = array();
+        $context    = $this->option . '.' . $this->name;
+        $dispatcher = JEventDispatcher::getInstance();
 
         // Process menus links
         if($menuTypes = TZ_PortfolioHelper::getMenuLinks()) {
@@ -749,17 +664,10 @@ class TZ_PortfolioModelTemplate_Style extends JModelAdmin
                     throw new Exception(JText::_('JERROR_CORE_DELETE_NOT_PERMITTED'));
                 }
 
-                if(isset($table -> home) && (int)$table -> home){
+                if ($table->home != '0'){
                     $this -> setError(JText::_('COM_TZ_PORTFOLIO_TEMPLATE_STYLE_CANNOT_DELETE_DEFAULT_STYLE'));
                     return false;
                 }
-
-//                if (!$table->delete($pk))
-//                {
-//                    $this->setError($table->getError());
-//
-//                    return false;
-//                }
 
                 // Set Template id is 0 in tz_portfolio_categories
                 $query  = $db -> getQuery(true);
@@ -793,6 +701,19 @@ class TZ_PortfolioModelTemplate_Style extends JModelAdmin
                         }
                     }
                 }
+
+                // Trigger the before delete event.
+                $result = $dispatcher->trigger($this->event_before_delete, array($context, $table));
+
+                if (in_array(false, $result, true) || !$table->delete($pk))
+                {
+                    $this->setError($table->getError());
+
+                    return false;
+                }
+
+                // Trigger the after delete event.
+                $dispatcher->trigger($this->event_after_delete, array($context, $table));
             }
             else
             {

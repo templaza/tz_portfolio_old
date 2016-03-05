@@ -76,15 +76,19 @@ class TZ_PortfolioControllerLegacy  extends JControllerLegacy{
                     }
                     if($bool_tpl) {
                         if($tplparams -> get('override_html_template_site',0)) {
-                            $path['template'][] = COM_TZ_PORTFOLIO_TEMPLATE_PATH.DIRECTORY_SEPARATOR
-                                . $template->template . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR
-                                . $tplparams -> get('layout','default') . DIRECTORY_SEPARATOR . $name;
+                            if(isset($template -> home_path) && $template -> home_path) {
+                                $path['template'][] = $template->home_path . DIRECTORY_SEPARATOR . $name;
+                            }
+                            if(isset($template -> base_path) && $template -> base_path) {
+                                $path['template'][] = $template->base_path . DIRECTORY_SEPARATOR . $name;
+                            }
                             $path['template'][] = $last_path;
                             $view -> set('_path',$path);
                         }else{
-                            $view ->addTemplatePath(COM_TZ_PORTFOLIO_TEMPLATE_PATH.DIRECTORY_SEPARATOR
-                                .$template -> template.DIRECTORY_SEPARATOR.'html'.DIRECTORY_SEPARATOR
-                                . $tplparams -> get('layout','default') . DIRECTORY_SEPARATOR . $name);
+                            if(isset($template -> home_path) && $template -> home_path) {
+                                $view->addTemplatePath($template->home_path . DIRECTORY_SEPARATOR . $name);
+                            }
+                            $view ->addTemplatePath($template -> base_path . DIRECTORY_SEPARATOR . $name);
                         }
 
                         $this -> docOptions['template']     = $template->template;

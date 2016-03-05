@@ -496,18 +496,6 @@ class com_tz_portfolioInstallerScript{
             $installer ->parseSQLFiles($sql -> install->sql);
         }
 
-        //Tz Portfolio Plugin table
-//        if(!in_array($db -> getPrefix().'tz_portfolio_plugin',$fields = $db ->getTableList())){
-//            $query  =  'CREATE TABLE IF NOT EXISTS `#__tz_portfolio_plugin` (';
-//            $query  .= '`id`  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,';
-//            $query  .= '`contentid` INT NOT NULL ,';
-//            $query  .= '`pluginid` INT NOT NULL,';
-//            $query  .= '`params` TEXT NULL';
-//            $query  .= ') ENGINE = MYISAM  DEFAULT CHARSET=utf8;';
-//            $db -> setQuery($query);
-//            $db -> query();
-//        }
-
         // Insert portfolio's permission
         $query  = $db -> getQuery(true);
         $query -> select('*');
