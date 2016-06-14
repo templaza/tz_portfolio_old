@@ -26,6 +26,7 @@ Demo: http://demo.tzportfolio.com/
 	- Fix error set up column width has No Effect.
 	- Fix error when edit field with French language.
 	- Fix error validate in view date.
+	- Fix error some languages in front-end.
 
 03/05/2016 - 3.3.4
 
