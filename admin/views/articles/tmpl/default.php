@@ -42,6 +42,11 @@ if ($saveOrder)
 }
 
 $sortFields = $this->getSortFields();
+
+$assoc		= false;
+if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+    $assoc		= JLanguageAssociations::isEnabled();
+}
 ?>
 <script type="text/javascript">
 	Joomla.orderTable = function() {
@@ -122,15 +127,27 @@ $sortFields = $this->getSortFields();
                         <th>
                             <?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
                         </th>
+                        <th width="6%" class="nowrap">
+                            <?php echo JHtml::_('grid.sort', 'COM_TZ_PORTFOLIO_TYPE_OF_MEDIA', 'groupname', $listDirn, $listOrder); ?>
+                        </th>
                         <th width="10%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('grid.sort', 'COM_TZ_PORTFOLIO_HEADING_GROUP', 'groupname', $listDirn, $listOrder); ?>
                         </th>
+                        <?php if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
                         <th width="10%">
                             <?php echo JHtml::_('grid.sort', 'JCATEGORY', 'category_title', $listDirn, $listOrder); ?>
                         </th>
-                        <th width="10%" class="nowrap hidden-phone">
+                        <?php endif;?>
+                        <th width="6%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ACCESS', 'a.access', $listDirn, $listOrder); ?>
                         </th>
+
+                        <?php if ($assoc) : ?>
+                        <th width="5%" class="nowrap hidden-phone">
+                            <?php echo JHtml::_('searchtools.sort', 'COM_CONTENT_HEADING_ASSOCIATION', 'association', $listDirn, $listOrder); ?>
+                        </th>
+                        <?php endif;?>
+
                         <th width="10%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('grid.sort', 'JAUTHOR', 'a.created_by', $listDirn, $listOrder); ?>
                         </th>
@@ -139,6 +156,9 @@ $sortFields = $this->getSortFields();
                         </th>
                         <th width="10%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('grid.sort', 'JDATE', 'a.created', $listDirn, $listOrder); ?>
+                        </th>
+                        <th width="1%" class="nowrap hidden-phone">
+                            <?php echo JHtml::_('grid.sort', 'JGLOBAL_HITS', 'a.hits', $listDirn, $listOrder); ?>
                         </th>
                         <th width="1%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
@@ -196,9 +216,17 @@ $sortFields = $this->getSortFields();
                                     <?php else : ?>
                                         <?php echo $this->escape($item->title); ?>
                                     <?php endif; ?>
+                                    <?php if(COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
+                                    <span class="small">
+                                        <?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
+                                    </span>
                                     <div class="small">
-                                        <?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?>
+                                        <?php echo JText::_('JCATEGORY') . ": " . $this->escape($item->category_title); ?>
                                     </div>
+                                    <?php else:?>
+                                        <p class="smallsub">
+                                            <?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?></p>
+                                    <?php endif;?>
                                 </div>
                                 <div class="pull-left">
                                     <?php
@@ -241,17 +269,30 @@ $sortFields = $this->getSortFields();
                                 </div>
                             </td>
                             <td class="small hidden-phone">
-                                    <a href="index.php?option=com_tz_portfolio&task=group.edit&id=<?php echo $item -> groupid?>">
-                                        <?php echo $item -> groupname;?>
-                                    </a>
+                                <?php echo $item -> type;?>
                             </td>
+                            <td class="small hidden-phone">
+                                <a href="index.php?option=com_tz_portfolio&task=group.edit&id=<?php echo $item -> groupid?>">
+                                    <?php echo $item -> groupname;?>
+                                </a>
+                            </td>
+
+                            <?php if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE):?>
                             <td class="small hidden-phone">
                                 <?php echo $this->escape($item->category_title); ?>
                             </td>
+                            <?php endif;?>
                             
                             <td class="small hidden-phone">
                                 <?php echo $this->escape($item->access_level); ?>
                             </td>
+                            <?php if ($assoc) : ?>
+                            <td class="hidden-phone">
+                                <?php if ($item->association) : ?>
+                                    <?php echo JHtml::_('contentadministrator.association', $item->id); ?>
+                                <?php endif; ?>
+                            </td>
+                            <?php endif;?>
                             <td class="small hidden-phone">
                                 <?php echo $this->escape($item->author_name); ?>
                             </td>
@@ -264,6 +305,9 @@ $sortFields = $this->getSortFields();
                             </td>
                             <td class="small nowrap hidden-phone">
                                 <?php echo JHtml::_('date', $item->created, JText::_('DATE_FORMAT_LC4')); ?>
+                            </td>
+                            <td class="center hidden-phone">
+                                <?php echo (int) $item->hits; ?>
                             </td>
                             <td class="center">
                                 <?php echo (int) $item->id; ?>

@@ -22,16 +22,19 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
 /**
  * HTML Article View class for the Content component.
  */
-class TZ_PortfolioViewArticle extends JViewLegacy
+class TZ_PortfolioViewArticle extends TZ_PortfolioViewLegacy
 {
 	protected $item;
 	protected $params;
 	protected $print;
 	protected $state;
 	protected $user;
+	protected $generateLayout;
 
 	function display($tpl = null)
 	{
@@ -77,7 +80,6 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 
 		// Create a shortcut for $item.
 		$item = &$this->item;
-//        var_dump($item -> params);
 
 		// Add router helpers.
 		$item->slug			= $item->alias ? ($item->id.':'.$item->alias) : $item->id;
@@ -109,7 +111,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 
 //        $item -> params -> merge($active -> params);
 
-        
+
 		// Check to see which parameters should take priority
 		if ($active) {
 			$currentLink = $active->link;
@@ -147,6 +149,30 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 			}
 		}
 
+        // Create "link" and "fullLink" for article object
+        $tmpl   = null;
+        if($item -> params -> get('tz_use_lightbox',1) == 1){
+            $tmpl   = '&amp;tmpl=component';
+        }
+
+        $item ->link        = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid).$tmpl,true,-1);
+        $item -> fullLink   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid),true,-1);
+
+        $item -> parent_link    = JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($item->parent_slug));
+        $item -> category_link  = JRoute::_(TZ_PortfolioHelperRoute::getCategoryRoute($item->catslug));
+
+        if($item -> params -> get('tz_portfolio_redirect') == 'p_article'){
+            $configLink = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid).$tmpl, true ,-1);
+        }
+        else{
+            $configLink = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid).$tmpl, true ,-1);
+        }
+
+        // Compare current link and config link to redirect
+        if($item ->link != $configLink){
+            JFactory::getApplication() -> redirect($configLink);
+        }
+
         $url    = JURI::getInstance() -> toString();
 
         $this -> assign('linkCurrent',$url);
@@ -172,14 +198,6 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 		}
 
         $item -> commentCount   = 0;
-        $tzRedirect = $item->params -> get('tz_portfolio_redirect','article');
-
-        if($tzRedirect == 'p_article'){
-            $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid), true ,-1);
-        }
-        else{
-            $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid), true ,-1);
-        }
 
         if($item -> params -> get('comment_function_type','default') != 'js'){
             // Compute the article slugs and prepare introtext (runs content plugins).
@@ -194,9 +212,9 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 
                 if($item -> params -> get('tz_show_count_comment',1) == 1){
                     if($item -> params -> get('tz_comment_type','disqus') == 'disqus'){
-                        $threadLink .= '&thread=link:'.$contentUrl;
+                        $threadLink .= '&thread=link:'.$item -> fullLink;
                     }elseif($item -> params -> get('tz_comment_type','disqus') == 'facebook'){
-                        $threadLink .= '&ids='.$contentUrl;
+                        $threadLink .= '&ids='.$item -> fullLink;
                     }
                 }
             }
@@ -229,6 +247,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                         $url        = 'http://graph.facebook.com/?ids='
                                       .$threadLink;
                         $content    = $fetch -> get($url);
+                        $contentUrl = $item -> fullLink;
 
                         if($content){
                             if($body = $content -> body){
@@ -294,29 +313,11 @@ class TZ_PortfolioViewArticle extends JViewLegacy
             }
         }
 
-        $item ->link    = $contentUrl;
-
-		//
-		// Process the content plugins.
-		//
-		JPluginHelper::importPlugin('content');
-		$results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$item, &$this->params, $offset));
-
-		$item->event = new stdClass();
-		$results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
-		$item->event->afterDisplayTitle = trim(implode("\n", $results));
-
-		$results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
-		$item->event->beforeDisplayContent = trim(implode("\n", $results));
-
-		$results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
-		$item->event->afterDisplayContent = trim(implode("\n", $results));
-
-        $results = $dispatcher -> trigger('onTZPortfolioCommentDisplay',array('com_tz_portfolio.comment',&$item,&$item -> params,$offset));
-        $item -> event -> onTZPortfolioCommentDisplay  = trim(implode("\n",$results));
-
-        $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.article', &$item, &$item -> params, $offset));
-        $item->event->TZPortfolioVote = trim(implode("\n", $results));
+        //
+        // Process the content plugins.
+        //
+        JPluginHelper::importPlugin('content');
+        JPluginHelper::importPlugin('tz_portfolio');
 
         //Get Plugins Model
         $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
@@ -324,9 +325,68 @@ class TZ_PortfolioViewArticle extends JViewLegacy
         $pmodel -> setState('filter.contentid',$item -> id);
         $pluginItems    = $pmodel -> getItems();
         $pluginParams   = $pmodel -> getParams();
-        $item -> pluginparams    = clone($pluginParams);
 
-        JPluginHelper::importPlugin('tz_portfolio');
+        $item -> pluginparams   = clone($pluginParams);
+
+        if ($item->params->get('show_intro', '1')=='1') {
+            $text = $item->introtext.' '.$item->fulltext;
+        }
+        elseif ($item->fulltext) {
+            $text = $item->fulltext;
+        }
+        else  {
+            $text = $item->introtext;
+        }
+
+        if($item -> introtext && !empty($item -> introtext)) {
+            $item->text = $item->introtext;
+            $results = $dispatcher->trigger('onContentPrepare', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+
+            $results = $dispatcher->trigger('onTZPluginPrepare', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $item->introtext = $item->text;
+        }
+        if($item -> fulltext && !empty($item -> fulltext)) {
+            $item->text = $item->fulltext;
+            $results = $dispatcher->trigger('onContentPrepare', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+            $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+//            $results = $dispatcher->trigger('onTZPortfolioCommentDisplay', array('com_tz_portfolio.article', &$item, &$item->params, $offset));
+//            $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.article', &$item, &$item->params, $offset));
+
+            $results = $dispatcher->trigger('onTZPluginPrepare', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.article', &$item, &$item->params, &$pluginParams, $offset));
+            $item->fulltext = $item->text;
+        }
+
+        $item -> text   = $text;
+        $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.article', &$item, &$this->params, $offset));
+
+        $item->event = new stdClass();
+        $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+        $item->event->afterDisplayTitle = trim(implode("\n", $results));
+
+        $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+        $item->event->beforeDisplayContent = trim(implode("\n", $results));
+
+        $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.article', &$item, &$this->params, $offset));
+        $item->event->afterDisplayContent = trim(implode("\n", $results));
+
+        $results = $dispatcher -> trigger('onTZPortfolioCommentDisplay',array('com_tz_portfolio.article',&$item,&$item -> params,$offset));
+        $item -> event -> onTZPortfolioCommentDisplay  = trim(implode("\n",$results));
+
+        $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.article', &$item, &$item -> params, $offset));
+        $item->event->TZPortfolioVote = trim(implode("\n", $results));
+
+
         $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams,$offset));
 
         $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams, $offset));
@@ -337,7 +397,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 
         $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.article', &$item, &$item -> params,&$pluginParams, $offset));
         $item->event->TZafterDisplayContent = trim(implode("\n", $results));
-        
+
 
 		// Increment the hit counter of the article.
 		if (!$this->params->get('intro_only') && $offset == 0) {
@@ -375,15 +435,31 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                 }
             }
         }
-		
+
 		$extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
         $extraFields -> setState('article.id',JRequest::getInt('id'));
+        if($item -> params -> get('fields_option_order')){
+            switch($item -> params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
         $extraFields -> setState('params',$item -> params);
         $extraFields -> setState('orderby',$item -> params -> get('fields_order'));
         $this -> assign('blogFields',$extraFields -> getExtraFields());
 
         $params = $media -> getCatParams($item -> catid);
-        
+
         if($listMedia){
             if($listMedia[0] -> type == 'image'){
                 if($params -> get('detail_article_image_size'))
@@ -391,8 +467,8 @@ class TZ_PortfolioViewArticle extends JViewLegacy
             }
             if($listMedia[0] -> type == 'imagegallery'){
                 $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
-                    $jscompress -> folder.'/jquery.flexslider-min'.$jscompress -> extfile.'.js"></script>');
-                $doc -> addStyleSheet('components/com_tz_portfolio/css/flexslider'.$csscompress.'.css');
+                    '/jquery.flexslider-min.js"></script>');
+                $doc -> addStyleSheet('components/com_tz_portfolio/css/flexslider.min.css');
 
                 if($params -> get('detail_article_image_gallery_size'))
                     $params -> set('article_image_gallery_resize',strtolower($params -> get('detail_article_image_gallery_size')));
@@ -402,15 +478,15 @@ class TZ_PortfolioViewArticle extends JViewLegacy
         }
 
         if($item -> params -> get('useCloudZoom',1) == 1){
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/cloud-zoom'.$csscompress.'.css');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/cloud-zoom.min.css');
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
-                $jscompress -> folder.'/cloud-zoom.1.0.3.min'.$jscompress -> extfile.'.js"></script>');
+                '/cloud-zoom.1.0.3.min.js"></script>');
         }
 
         if($item -> params -> get('tz_use_lightbox',1) == 1 AND !$tmpl){
             $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
-                $jscompress -> folder.'/jquery.fancybox.pack'.$jscompress -> extfile.'.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox'.$csscompress.'.css');
+                '/jquery.fancybox.pack.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox.min.css');
 
             $width      = null;
             $height     = null;
@@ -438,19 +514,139 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                     openSpeed:'.$item -> params -> get('tz_lightbox_speed',350).',
                     openEffect: "'.$item -> params -> get('tz_lightbox_transition','elastic').'",
                     '.$width.$height.$autosize.'
-		            helpers:  {
+                    helpers:  {
                         title : {
                             type : "inside"
                         },
                         overlay : {
-                            opacity:'.$item -> params -> get('tz_lightbox_opacity',0.75).',
+                            css : {background: "rgba(0,0,0,'.$item -> params -> get('tz_lightbox_opacity',0.75).')"}
                         }
                     }
                 });
                 </script>
             ');
         }
-        
+
+        /* Add scrollbar script */
+        if($item -> params -> get('use_custom_scrollbar',1) && JRequest::getString('tmpl') == 'component' && !$this ->print){
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/jquery.mCustomScrollbar.min.css');
+            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+                            '/jquery.mCustomScrollbar.min.js"></script>');
+
+            if($item -> params -> get('horizontalScroll',0)){
+                $horizontalScroll   = 'true';
+            }else{
+                $horizontalScroll   = 'false';
+            }
+            if($item -> params -> get('mouseWheel',1)){
+                $mouseWheel   = 'true';
+            }else{
+                $mouseWheel   = 'false';
+            }
+            if($item -> params -> get('autoDraggerLength',1)){
+                $autoDraggerLength   = 'true';
+            }else{
+                $autoDraggerLength   = 'false';
+            }
+            if($item -> params -> get('autoHideScrollbar',0)){
+                $autoHideScrollbar  = 'true';
+            }else{
+                $autoHideScrollbar   = 'false';
+            }
+            if($item -> params -> get('scrollButtons_enable',1)){
+                $scrollButtons_enable   = 'true';
+            }else{
+                $scrollButtons_enable   = 'false';
+            }
+            if($item -> params -> get('advanced_updateOnBrowserResize',1)){
+                $advanced_updateOnBrowserResize = 'true';
+            }else{
+                $advanced_updateOnBrowserResize = 'false';
+            }
+            if($item -> params -> get('advanced_updateOnContentResize',0)){
+                $advanced_updateOnContentResize = 'true';
+            }else{
+                $advanced_updateOnContentResize = 'false';
+            }
+            if($item -> params -> get('advanced_autoExpandHorizontalScroll',0)){
+                $advanced_autoExpandHorizontalScroll    = 'true';
+            }else{
+                $advanced_autoExpandHorizontalScroll    = 'false';
+            }
+            if($item -> params -> get('advanced_autoScrollOnFocus',1)){
+                $advanced_autoScrollOnFocus = 'true';
+            }else{
+                $advanced_autoScrollOnFocus = 'false';
+            }
+            if($item -> params -> get('advanced_normalizeMouseWheelDelta',0)){
+                $advanced_normalizeMouseWheelDelta  = 'true';
+            }else{
+                $advanced_normalizeMouseWheelDelta  = 'false';
+            }
+            if($item -> params -> get('contentTouchScroll',1)){
+                $contentTouchScroll = 'true';
+            }else{
+                $contentTouchScroll = 'false';
+            }
+            $doc -> addCustomTag('<script type="text/javascript">
+                jQuery(document).ready(function(){
+                    jQuery(".TzItemPage").height(jQuery(window).height()).mCustomScrollbar({
+                        set_width:'.($item -> params -> get('set_width')?$item -> params -> get('set_width'):'false').', /*optional element width: boolean, pixels, percentage*/
+                        set_height:'.($item -> params -> get('set_height')?$item -> params -> get('set_height'):'false').', /*optional element height: boolean, pixels, percentage*/
+                        horizontalScroll:'.$horizontalScroll.', /*scroll horizontally: boolean*/
+                        scrollInertia:'.$item -> params -> get('scrollInertia',40).', /*scrolling inertia: integer (milliseconds)*/
+                        mouseWheel: '.$mouseWheel.', /*mousewheel support: boolean*/
+                        mouseWheelPixels:'.($params -> get('mouseWheelPixels')?$params -> get('mouseWheelPixels'):'"auto"').', /*mousewheel pixels amount: integer, "auto"*/
+                        autoDraggerLength:'.$autoDraggerLength.', /*auto-adjust scrollbar dragger length: boolean*/
+                        autoHideScrollbar: '.$autoHideScrollbar.', /*auto-hide scrollbar when idle*/
+                        snapAmount:'.($item -> params -> get('snapAmount')?$item -> params -> get('snapAmount'):'null').', /* optional element always snaps to a multiple of this number in pixels */
+                        snapOffset:'.($item -> params -> get('snapOffset')?$item -> params -> get('snapOffset'):0).', /* when snapping, snap with this number in pixels as an offset */
+                        scrollButtons:{ /*scroll buttons*/
+                            enable: '.$scrollButtons_enable.', /*scroll buttons support: boolean*/
+                            scrollType:"'.($item -> params -> get('scrollButtons_snapOffset')?$item -> params -> get('scrollButtons_snapOffset'):'continuous').'", /*scroll buttons scrolling type: "continuous", "pixels"*/
+                            scrollSpeed:'.($item -> params -> get('scrollButtons_scrollSpeed')?$item -> params -> get('scrollButtons_scrollSpeed'):'"auto"').', /*scroll buttons continuous scrolling speed: integer, "auto"*/
+                            scrollAmount:'.($item -> params -> get('scrollButtons_scrollAmount')?$item -> params -> get('scrollButtons_scrollAmount'):100).' /*scroll buttons pixels scroll amount: integer (pixels)*/
+                        },
+                        advanced:{
+                            updateOnBrowserResize: '.$advanced_updateOnBrowserResize.', /*update scrollbars on browser resize (for layouts based on percentages): boolean*/
+                            updateOnContentResize: '.$advanced_updateOnContentResize.', /*auto-update scrollbars on content resize (for dynamic content): boolean*/
+                            autoExpandHorizontalScroll: '.$advanced_autoExpandHorizontalScroll.', /*auto-expand width for horizontal scrolling: boolean*/
+                            autoScrollOnFocus: '.$advanced_autoScrollOnFocus.', /*auto-scroll on focused elements: boolean*/
+                            normalizeMouseWheelDelta: '.$advanced_normalizeMouseWheelDelta.' /*normalize mouse-wheel delta (-1/1)*/
+                        },
+                        contentTouchScroll: '.$contentTouchScroll.', /*scrolling by touch-swipe content: boolean*/
+                        callbacks:{
+                            onScrollStart:function(){}, /*user custom callback function on scroll start event*/
+                            onScroll:function(){}, /*user custom callback function on scroll event*/
+                            onTotalScroll:function(){}, /*user custom callback function on scroll end reached event*/
+                            onTotalScrollBack:function(){}, /*user custom callback function on scroll begin reached event*/
+                            onTotalScrollOffset:0, /*scroll end reached offset: integer (pixels)*/
+                            onTotalScrollBackOffset:0, /*scroll begin reached offset: integer (pixels)*/
+                            whileScrolling:function(){} /*user custom callback function on scrolling event*/
+                        },
+                        theme:"'.$item -> params -> get('scrollbar_theme','dark-thick').'"
+                    });
+                });
+                jQuery(window).resize(function(){
+                        jQuery(".TzItemPage").height(jQuery(this).height())
+                });;
+            </script>');
+        }
+        /* End add scrollbar script */
+
+        if($item -> params -> get('show_video',1)){
+            $doc -> addCustomTag('<script src="components/com_tz_portfolio/js'.
+                                        '/fluidvids.min.js" type="text/javascript"></script>');
+            $doc -> addCustomTag('<script type="text/javascript">
+                jQuery(document).ready(function(){
+                fluidvids.init({
+                    selector: [\'.TzArticleMedia iframe\'],
+                    players: [\'www.youtube.com\', \'player.vimeo.com\']
+                });
+              });
+              </script>');
+        }
+
         $params -> merge($temp);
         $params -> merge($item -> params);
 
@@ -462,14 +658,17 @@ class TZ_PortfolioViewArticle extends JViewLegacy
         $extraFields -> setState('params',$params);
         $this -> assign('listFields',$extraFields -> getExtraFields());
 
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio.min.css');
 
 		//Escape strings for HTML output
 		$this->pageclass_sfx = htmlspecialchars($this->item->params->get('pageclass_sfx'));
 
 		$this->_prepareDocument();
 
+        $this -> generateLayout = $this -> generateLayout($item,$params,$dispatcher,$csscompress);
+
 		parent::display($tpl);
+
 	}
 
     protected function FindItemId($_tagid=null)
@@ -580,38 +779,59 @@ class TZ_PortfolioViewArticle extends JViewLegacy
 		elseif ($app->getCfg('sitename_pagetitles', 0) == 2) {
 			$title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
 		}
-		if (empty($title)) {
-			$title = $this->item->title;
-		}
-		$this->document->setTitle($title);
+        if (empty($title)) {
+            $title = $this->item->title;
+        }
+        if(!empty($title)){
+            $title  = htmlspecialchars($title);
+        }
+        $this->document->setTitle($title);
 
-		if ($this->item->metadesc)
-		{
-			$this->document->setDescription($this->item->metadesc);
-		}
-		elseif (!$this->item->metadesc && $this->params->get('menu-meta_description'))
-		{
-			$this->document->setDescription($this->params->get('menu-meta_description'));
-		}
+        $description    = null;
+        if ($this->item->metadesc){
+            $description    = $this -> item -> metadesc;
+        }elseif (!$this->item->metadesc && $this->params->get('menu-meta_description'))
+        {
+            $description    = $this -> params -> get('menu-meta_description');
+        }elseif(!empty($this -> item -> introtext)){
+            $description    = strip_tags($this -> item -> introtext);
+            $description    = explode(' ',$description);
+            $description    = array_splice($description,0,25);
+            $description    = trim(implode(' ',$description));
+            if(!strpos($description,'...'))
+                $description    .= '...';
+        }
 
-		if ($this->item->metakey)
-		{
-			$this->document->setMetadata('keywords', $this->item->metakey);
-		}
-		elseif (!$this->item->metakey && $this->params->get('menu-meta_keywords'))
-		{
-			$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
-		}
+        if($description){
+            $description    = htmlspecialchars($description);
+            $this -> document -> setDescription($description);
+        }
 
-		if ($this->params->get('robots'))
-		{
-			$this->document->setMetadata('robots', $this->params->get('robots'));
-		}
+        $tags   = null;
 
-		if ($app->getCfg('MetaAuthor') == '1')
-		{
-			$this->document->setMetaData('author', $this->item->author);
-		}
+        if ($this->item->metakey)
+        {
+            $tags   = $this->item->metakey;
+        }
+        elseif (!$this->item->metakey && $this->params->get('menu-meta_keywords'))
+        {
+            $tags   = $this->params->get('menu-meta_keywords');
+        }elseif($this -> listTags){
+            foreach($this -> listTags as $tag){
+                $tags[] = $tag -> name;
+            }
+            $tags   = implode(',',$tags);
+        }
+
+        if ($this->params->get('robots'))
+        {
+            $this->document->setMetadata('robots', $this->params->get('robots'));
+        }
+
+        if ($app->getCfg('MetaAuthor') == '1')
+        {
+            $this->document->setMetaData('author', $this->item->author);
+        }
 
         $metaImage  = null;
         if($metaMedia = $this -> listMedia):
@@ -628,47 +848,44 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                 endif;
             endif;
         endif;
-//        $this -> document -> addCustomTag('<meta property="og:locale" content="en_US"/>');
-//        $this -> document -> addCustomTag('<meta property="og:site_name" content="'.JUri::base().'"/>');
-        $this -> document -> addCustomTag('<meta property="og:type" content="article"/>');
 
+        $socialInfo = new stdClass();
+        $socialInfo -> title        = $title;
+        $socialInfo -> image        = $metaImage;
+        $socialInfo -> description  = $description;
+        $this -> assign('socialInfo',$socialInfo);
+
+//        $this -> document -> setMetaData('copyright','Copyright © '.date('Y',time()).' TemPlaza. All Rights Reserved.');
+
+        // Set metadata tags with prefix property "og:"
+        $this -> document -> addCustomTag('<meta property="og:title" content="'.$title.'"/>');
+        $this -> document -> addCustomTag('<meta property="og:url" content="'.
+        JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($this -> item -> slug, $this -> item -> catid),true,-1).'"/>');
+        $this -> document -> addCustomTag('<meta property="og:type" content="article"/>');
         if($metaImage){
             $this -> document -> addCustomTag('<meta property="og:image" content="'.$metaImage.'"/>');
         }
+        if($description){
+            $this -> document -> addCustomTag('<meta property="og:description" content="'.$description.'"/>');
+        }
+        //// End set meta tags with prefix property "og:" ////
+
+        // Set meta tags with prefix property "article:"
         $this -> document -> addCustomTag('<meta property="article:author" content="'.$this->item->author.'"/>');
         $this -> document -> addCustomTag('<meta property="article:published_time" content="'
-            .JHtml::_('date', $this->item->created, JText::_('DATE_FORMAT_LC2')).'"/>');
+            .$this->item->created.'"/>');
         $this -> document -> addCustomTag('<meta property="article:modified_time" content="'
-                    .JHtml::_('date', $this->item->modified, JText::_('DATE_FORMAT_LC2')).'"/>');
+            .$this->item->modified.'"/>');
         $this -> document -> addCustomTag('<meta property="article:section" content="'
             .$this->escape($this->item->category_title).'"/>');
-        if($this -> listTags):
-            foreach($this -> listTags as $tag){
-                $tags[] = $tag -> name;
-            }
-            $tags   = implode(',',$tags);
-            if(!empty($tags)){
-                $this -> document -> addCustomTag('<meta property="article:tag" content="'.$tags.'"/>');
-            }
-        endif;
-
-        // Meta twitter
-        $description    = null;
-        if(!empty($this -> item -> introtext)){
-            $description    = strip_tags($this -> item -> introtext);
-            $description    = explode(' ',$description);
-            $description    = array_splice($description,0,25);
-            $description    = trim(implode(' ',$description));
-            if(!strpos($description,'...'))
-                $description    .= '...';
-        }elseif ($this->item->metakey){
-            $description    = $this -> item -> metadesc;
-        }elseif (!$this->item->metakey && $this->params->get('menu-meta_description'))
-        {
-            $description    = $this -> params -> get('menu-meta_description');
+        if($tags){
+            $tags   = htmlspecialchars($tags);
+            $this -> document-> setMetaData('keywords',$tags);
+            $this -> document -> addCustomTag('<meta property="article:tag" content="'.$tags.'"/>');
         }
+        ///// End set meta tags with prefix property "article:" ////
 
-
+        // Set meta tags with prefix name "twitter:"
         if($author = $this -> listAuthor){
             if(isset($author -> twitter) && !empty($author -> twitter)){
                 $this -> document -> setMetaData('twitter:card','summary');
@@ -686,6 +903,7 @@ class TZ_PortfolioViewArticle extends JViewLegacy
                 }
             }
         }
+        //// End set meta tags with prefix name "twitter:" ////
 
 
 

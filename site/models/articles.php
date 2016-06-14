@@ -27,6 +27,9 @@ jimport('joomla.application.component.modellist');
  */
 class TZ_PortfolioModelArticles extends JModelList
 {
+    protected $parameter_fields = array();
+
+    protected $parameter_merge_fields   = null;
 
 	/**
 	 * Constructor.
@@ -59,6 +62,35 @@ class TZ_PortfolioModelArticles extends JModelList
 				'urls', 'a.urls',
 			);
 		}
+
+        $config['parameter_fields'] = array(
+            'tz_use_image_hover' => array('tz_image_timeout'),
+            'show_image_gallery' => array('image_gallery_animSpeed',
+                'image_gallery_animation_duration',
+                'image_gallery_startAt', 'image_gallery_itemWidth',
+                'image_gallery_itemMargin', 'image_gallery_minItems',
+                'image_gallery_maxItems'),
+            'show_video' => array('video_width','video_height'),
+            'tz_show_gmap' => array('tz_gmap_width', 'tz_gmap_height',
+                'tz_gmap_latitude', 'tz_gmap_longitude',
+                'tz_gmap_address','tz_gmap_custom_tooltip'),
+            'useCloudZoom' => array('zoomWidth','zoomHeight',
+                'adjustX','adjustY','tint','tintOpacity',
+                'lensOpacity','smoothMove'),
+            'show_comment' => array('disqusSubDomain','disqusApiSecretKey'),
+            'show_audio' => array('audio_soundcloud_color','audio_soundcloud_theme_color',
+                'audio_soundcloud_width','audio_soundcloud_height')
+        );
+        // Add the ordering filtering fields white list.
+        if (isset($config['parameter_fields']))
+        {
+            $this->parameter_fields = $config['parameter_fields'];
+        }
+
+        $this -> parameter_merge_fields = array(
+            'show_extra_fields', 'field_show_type',
+            'tz_portfolio_redirect'
+        );
 
 		parent::__construct($config);
 	}
@@ -98,7 +130,14 @@ class TZ_PortfolioModelArticles extends JModelList
 
         $params = $app -> getParams();
 
+        // Set value again for option tz_portfolio_redirect
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
+        }
+
 		$this->setState('params', $params);
+
+
 
 		$user		= JFactory::getUser();
 
@@ -139,16 +178,16 @@ class TZ_PortfolioModelArticles extends JModelList
 	protected function getStoreId($id = '')
 	{
 		// Compile the store id.
-		$id .= ':'.$this->getState('filter.published');
+		$id .= ':'.serialize($this->getState('filter.published'));
 		$id .= ':'.$this->getState('filter.access');
 		$id .= ':'.$this->getState('filter.featured');
-		$id .= ':'.$this->getState('filter.article_id');
+		$id .= ':'.serialize($this->getState('filter.article_id'));
 		$id .= ':'.$this->getState('filter.article_id.include');
-		$id .= ':'.$this->getState('filter.category_id');
+		$id .= ':'.serialize($this->getState('filter.category_id'));
 		$id .= ':'.$this->getState('filter.category_id.include');
-		$id .= ':'.$this->getState('filter.author_id');
+		$id .= ':'.serialize($this->getState('filter.author_id'));
 		$id .= ':'.$this->getState('filter.author_id.include');
-		$id .= ':'.$this->getState('filter.author_alias');
+		$id .= ':'.serialize($this->getState('filter.author_alias'));
 		$id .= ':'.$this->getState('filter.author_alias.include');
 		$id .= ':'.$this->getState('filter.date_filtering');
 		$id .= ':'.$this->getState('filter.date_field');
@@ -184,7 +223,7 @@ class TZ_PortfolioModelArticles extends JModelList
 				// use created if publish_up is 0
 				'CASE WHEN a.publish_up = ' . $db->q($db->getNullDate()) . ' THEN a.created ELSE a.publish_up END as publish_up,' .
 					'a.publish_down, a.images, a.urls, a.attribs, a.metadata, a.metakey, a.metadesc, a.access, ' .
-					'a.hits, a.xreference, a.featured,'.' '.$query->length('a.fulltext').' AS readmore'
+					'a.hits, a.xreference, a.featured, a.language,'.' '.$query->length('a.fulltext').' AS readmore'
 			)
 		);
 
@@ -486,7 +525,6 @@ class TZ_PortfolioModelArticles extends JModelList
 
 		// Add the list ordering clause.
 		$query->order($this->getState('list.ordering', 'a.ordering').' '.$this->getState('list.direction', 'ASC'));
-		$query->group('a.id, a.title, a.alias, a.introtext, a.checked_out, a.checked_out_time, a.catid, a.created, a.created_by, a.created_by_alias, a.created, a.modified, a.modified_by, uam.name, a.publish_up, a.attribs, a.metadata, a.metakey, a.metadesc, a.access, a.hits, a.xreference, a.featured, a.fulltext, a.state, a.publish_down, badcats.id, c.title, c.path, c.access, c.alias, uam.id, ua.name, ua.email, contact.id, parent.title, parent.id, parent.path, parent.alias, v.rating_sum, v.rating_count, c.published, c.lft, a.ordering, parent.lft, fp.ordering, c.id, a.images, a.urls');
 
         return $query;
 	}
@@ -510,9 +548,28 @@ class TZ_PortfolioModelArticles extends JModelList
             // Get the global params
             $globalParams = JComponentHelper::getParams('com_tz_portfolio', true);
 
+
+            $categories = JCategories::getInstance('Content');
+
             // Convert the parameter fields into objects.
             foreach ($items as &$item)
             {
+                $params = clone($this -> getState('params'));
+                $temp   = clone($this -> getState('params'));
+
+                $category   = $categories->get($item -> catid);
+
+                $catParams  = new JRegistry();
+                $catParams -> loadString($category -> params);
+
+                if($this -> parameter_merge_fields){
+                    foreach($this -> parameter_merge_fields as $value){
+                        if($catParams -> get($value) != ''){
+                            $params -> set($value,$catParams -> get($value));
+                        }
+                    }
+                }
+
                 $articleParams = new JRegistry;
                 $articleParams->loadString($item->attribs);
 
@@ -520,15 +577,16 @@ class TZ_PortfolioModelArticles extends JModelList
                 $item->alternative_readmore = $articleParams->get('alternative_readmore');
                 $item->layout = $articleParams->get('layout');
 
-                $item->params = clone $this->getState('params');
+                $item->params = clone $params;
 
                 // For blogs, article params override menu item params only if menu param = 'use_article'
                 // Otherwise, menu item params control the layout
                 // If menu item is 'use_article' and there is no article param, use global
                 if ((JRequest::getString('layout') == 'blog') || (JRequest::getString('view') == 'featured')
                     || ($this->getState('params')->get('layout_type') == 'blog')) {
+
                     // create an array of just the params set to 'use_article'
-                    $menuParamsArray = $this->getState('params')->toArray();
+                    $menuParamsArray = $temp->toArray();
                     $articleArray = array();
 
                     foreach ($menuParamsArray as $key => $value)
@@ -540,8 +598,24 @@ class TZ_PortfolioModelArticles extends JModelList
                                 $articleArray[$key] = $articleParams->get($key);
                             }
                             else {
-                                // otherwise, use the global value
-                                $articleArray[$key] = $globalParams->get($key);
+                                if($params -> get($key) != ''){
+                                    $articleArray[$key] = $params -> get($key);
+                                }else{
+                                    if(!$params -> get($key) || $params -> get($key) == ''){
+                                        // otherwise, use the global value
+                                        $articleArray[$key] = $globalParams->get($key);
+                                    }
+                                }
+                            }
+                            if(count($this -> parameter_fields)){
+                                $parameter_fields   = $this -> parameter_fields;
+                                if(in_array($key,array_keys($this -> parameter_fields))){
+                                    if(count($parameter_fields[$key])){
+                                        foreach($parameter_fields[$key] as $value_field){
+                                            $articleArray[$value_field]   = $articleParams -> get($value_field);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

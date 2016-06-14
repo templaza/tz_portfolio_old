@@ -18,9 +18,9 @@
 -------------------------------------------------------------------------*/
 
 // No direct access
-    defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die('Restricted access');
 
-    jimport('joomla.application.component.modellist');
+jimport('joomla.application.component.modellist');
 
 class TZ_PortfolioModelFields extends JModelList{
     public function __construct($config = array()){
@@ -28,6 +28,9 @@ class TZ_PortfolioModelFields extends JModelList{
     }
 
     public function populateState($ordering = null, $direction = null){
+
+        parent::populateState('id','desc');
+
         $app        = JFactory::getApplication();
         $context    = 'com_tz_portfolio.fields';
 
@@ -43,8 +46,6 @@ class TZ_PortfolioModelFields extends JModelList{
         $this -> setState('filter_order',$order);
         $orderDir  = $app -> getUserStateFromRequest($context.'.filter_order_Dir','filter_order_Dir','asc','string');
         $this -> setState('filter_order_Dir',$orderDir);
-
-        parent::populateState('id','desc');
     }
 
     protected function getListQuery(){

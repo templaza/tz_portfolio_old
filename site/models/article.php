@@ -34,6 +34,18 @@ class TZ_PortfolioModelArticle extends JModelItem
 	 */
 	protected $_context = 'com_tz_portfolio.article';
 
+    protected $parameter_merge_fields = array();
+
+    public function __construct($config = array()){
+        parent::__construct($config);
+
+        // Add the parameter fields white list.
+        $this -> parameter_merge_fields = array(
+            'show_extra_fields', 'field_show_type',
+            'tz_portfolio_redirect'
+        );
+    }
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -56,8 +68,7 @@ class TZ_PortfolioModelArticle extends JModelItem
 
 		// Load the parameters.
 		$params = $app->getParams();
-//        $params = JComponentHelper::getParams('com_content');
-//        var_dump($params);
+
 		$this->setState('params', $params);
 
 		// TODO: Tune these values based on other permissions.
@@ -66,6 +77,8 @@ class TZ_PortfolioModelArticle extends JModelItem
 			$this->setState('filter.published', 1);
 			$this->setState('filter.archived', 2);
 		}
+
+        $this->setState('filter.language', JLanguageMultilang::isEnabled());
 	}
 
     public function download(){
@@ -120,19 +133,26 @@ class TZ_PortfolioModelArticle extends JModelItem
                     $orderBy    = 'c.hits ASC';
                     break;
             }
-            $orderBy    = ' ORDER BY '.$orderBy;
+//            $orderBy    = ' ORDER BY '.$orderBy;
 
             $db     = JFactory::getDbo();
-            $query  = 'SELECT c.*,CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug,'
-                      .' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'
-                      .' FROM #__content AS c'
-                      .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
-                      .' LEFT JOIN #__tz_portfolio_xref_content AS x ON x.contentid = c.id'
-                      .' WHERE c.state = 1 AND NOT c.id='.$pk
-                      .' AND NOT type='.$db -> quote('quote')
-                      .' AND NOT type='.$db -> quote('link')
-                      .' AND c.catid='.$article -> catid
-                      .$orderBy;
+            $query  = $db -> getQuery(true);
+            $query -> select('c.*,CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug');
+            $query -> select('CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug');
+            $query -> from($db -> quoteName('#__content').' AS c');
+            $query -> join('LEFT',$db -> quoteName('#__categories').' AS cc ON cc.id=c.catid');
+            $query -> join('LEFT',$db -> quoteName('#__tz_portfolio_xref_content').' AS x ON x.contentid = c.id');
+            $query -> where('c.state = 1');
+            $query -> where('NOT c.id='.$pk);
+            $query -> where('NOT x.type='.$db -> quote('quote'));
+            $query -> where('NOT x.type='.$db -> quote('link'));
+            $query -> where('c.catid='.$article -> catid);
+            // Filter by language
+            if ($this->getState('filter.language'))
+            {
+                $query->where('c.language in (' . $db->quote(JFactory::getLanguage()->getTag()) . ',' . $db->quote('*') . ')');
+            }
+            $query -> order($orderBy);
 
             $db -> setQuery($query,0,$limit);
             if(!$db -> query()){
@@ -189,6 +209,12 @@ class TZ_PortfolioModelArticle extends JModelItem
 				$query->select('u.name AS author');
 				$query->join('LEFT', '#__users AS u on u.id = a.created_by');
 
+                // Filter by language
+                if ($this->getState('filter.language'))
+                {
+                    $query->where('a.language in (' . $db->quote(JFactory::getLanguage()->getTag()) . ',' . $db->quote('*') . ')');
+                }
+
 				// Join on contact table
 				$subQuery = $db->getQuery(true);
 				$subQuery->select('contact.user_id, MAX(contact.id) AS id, contact.language');
@@ -203,7 +229,7 @@ class TZ_PortfolioModelArticle extends JModelItem
 				$query->join('LEFT', '#__categories as parent ON parent.id = c.parent_id');
 
 				// Join on voting table
-				$query->select('ROUND(v.rating_sum / v.rating_count, 0) AS rating, v.rating_count as rating_count');
+				$query->select('ROUND(v.rating_sum / v.rating_count, 1) AS rating, v.rating_count as rating_count');
 				$query->join('LEFT', '#__content_rating AS v ON a.id = v.content_id');
 
 				$query->where('a.id = ' . (int) $pk);
@@ -250,12 +276,27 @@ class TZ_PortfolioModelArticle extends JModelItem
 					return JError::raiseError(404, JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'));
 				}
 
+                $params = $this->getState('params');
+
+                /*** Merge category params to menu params ***/
+                $categories = JCategories::getInstance('Content');
+
+                $category   = $categories->get($data -> catid);
+                $catParams  = new JRegistry($category -> params);
+
+                if($this -> parameter_merge_fields){
+                    foreach($this -> parameter_merge_fields as $value){
+                        if($catParams -> get($value) != ''){
+                            $params -> set($value,$catParams -> get($value));
+                        }
+                    }
+                }
 
 				// Convert parameter fields to objects.
 				$registry = new JRegistry;
 				$registry->loadString($data->attribs);
 
-				$data->params = clone $this->getState('params');
+				$data->params = clone $params;
 				$data->params->merge($registry);
 
 				$registry = new JRegistry;

@@ -19,17 +19,20 @@
 
 // no direct access
 defined('_JEXEC') or die;
-$doc    = JFactory::getDocument();
 
-$lists  = $this -> itemMore;
-// Create shortcuts to some parameters.
-$params		= $this->item->params;
-$tmpl       = null;
-if($params -> get('tz_use_lightbox') == 1){
-    $tmpl   = '&tmpl=component';
-}
-if($lists):
-    if($params -> get('show_related_article',1)):
+if (!$this->print) :
+    $doc    = JFactory::getDocument();
+
+    $lists  = $this -> itemMore;
+//    var_dump($this -> itemMore);
+    // Create shortcuts to some parameters.
+    $params		= $this->item->params;
+    $tmpl       = null;
+    if($params -> get('tz_use_lightbox') == 1){
+        $tmpl   = '&tmpl=component';
+    }
+    if($lists):
+        if($params -> get('show_related_article',1)):
 ?>
 <div class="TzRelated">
     <?php if($params -> get('show_related_heading',1)):?>
@@ -95,8 +98,8 @@ if($lists):
         <?php endif;?>
         <?php if($params -> get('show_related_type','title_image') == 'title'
                  OR($params -> get('show_related_type','title_image') == 'title_image')):?>
-        <a<?php if($params -> get('tz_use_lightbox',1) == 1){echo ' class="fancybox fancybox.iframe"';}?>
-                href="<?php echo $item -> _link;?>" class="TzTitle">
+        <a href="<?php echo $item -> _link;?>"
+           class="TzTitle<?php if($params -> get('tz_use_lightbox',1) == 1){echo ' fancybox fancybox.iframe';}?>">
             <?php echo $item -> title;?>
         </a>
         <?php endif;?>
@@ -110,5 +113,6 @@ if($lists):
     </ul>
 </div>
  
+        <?php endif;?>
     <?php endif;?>
 <?php endif;?>

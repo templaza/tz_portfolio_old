@@ -52,7 +52,7 @@ class ArticleHTML
 
     // extra text field, date
     static function renderTextField($name,$value=null,$id=null,$javascript=null){
-        $html   = '<input type="text" name="'.$name.'" value="'.$value.'"'
+        $html   = '<input type="text" name="'.$name.'" value="'.htmlspecialchars($value).'"'
                   .(($id)?' id="'.$id.'"':'')
                   .(($javascript)?' '.$javascript:'')
                   .'>';
@@ -70,17 +70,37 @@ class ArticleHTML
         $author = null;
         $params = array();
 
-//        if(!empty($_editor)){
-//            $id = ($id)?' id = '.$id:$name;
-//            //var_dump($id);
-//            $editor = JFactory::getEditor();
-//            $html   = $editor -> display($name,$value,$width,$height,$col,$rows,$button,$id,$asset,$author,$params);
-//        }
-//        else{
+        if(!empty($_editor)){
+            $id         = ($id)?' id = '.$id:$name;
+            $editor     = JFactory::getEditor();
+            $plugin     = JPluginHelper::getPlugin('editors-xtd');
+            $_button    = array();
+            if($plugin){
+                $_plugin    = array();
+                foreach($plugin as $plg){
+                    $_plugin[]  = $plg -> name;
+                }
+                if($button){
+                    if(is_array($button) && count($button)){
+                        foreach($button as $key => $btn){
+                            if(is_string($key) && $btn){
+                                $_button[]  = $key;
+                            }
+                        }
+                        $_button    = array_diff($_plugin,$_button);
+                    }
+                }
+            }
+            if(!count($_button)){
+                $_button    = true;
+            }
+            $html   = $editor -> display($name,$value,$width,$height,$col,$rows,$_button,$id,$asset,$author,$params);
+        }
+        else{
             $html   = '<textarea name="'.$name.'" rows="'.$rows.'" cols="'.$col.'"'
                       .$id
                       .$javascript.'>'.$value.'</textarea>';
-//        }
+        }
         return $html;
     }
 
@@ -92,37 +112,41 @@ class ArticleHTML
         $html   = '<select name="'.$name.'"'.$id.$multiple.' size="'.$size.'"'.$javascript.' >';
         $str    = '';
 
-        foreach($rows as $row){
+        if(count($rows)){
+            foreach($rows as $row){
 
-            if($multiple){
-                if($selected){
-                    if(count($selected)>0){
-                        foreach($selected as $item){
-                            if(($item -> fieldsid) == ($row -> fieldsid) && ($item -> value)==($row -> name)){
-                                $_selected   = ' selected="selected"';
-                                break;
+                if($multiple){
+                    if($selected){
+                        if(count($selected)>0){
+                            foreach($selected as $item){
+                                if(($item -> fieldsid) == ($row -> fieldsid) && ($item -> value)==($row -> name)){
+                                    $_selected   = ' selected="selected"';
+                                    break;
+                                }
+                                else
+                                    $_selected  = '';
                             }
-                            else
-                                $_selected  = '';
                         }
                     }
+                    else
+                        $_selected   = '';
                 }
-                else
-                    $_selected   = '';
-            }
-            else{
-                if($selected){
-                    if(($row -> name == $selected[0] -> value) && ($row -> fieldsid == $selected[0] -> fieldsid))
-                        $_selected  = ' selected="selected"';
+                else{
+                    if($selected){
+
+                        if(($row -> name == $selected[0] -> value) && ($row -> fieldsid == $selected[0] -> fieldsid)){
+                            $_selected  = ' selected="selected"';
+                        }else{
+                            $_selected  = '';
+                        }
+                    }
                     else
                         $_selected  = '';
                 }
-                else
-                    $_selected  = '';
+                    $str .= '<option value="'.addslashes($row -> name).$prefix.$row -> value.'"'
+                            .($_selected).'>'
+                            .$row -> name.'</option>';
             }
-                $str .= '<option value="'.$row -> name.$prefix.$row -> value.'"'
-                        .($_selected).'>'
-                        .$row -> name.'</option>';
         }
         $html   .= $str
                   .'</select>';
@@ -166,7 +190,7 @@ class ArticleHTML
                 $str      .= '</td>';
                 $str      .= '<td>';
                 $str      .='<input type="radio" name="'.$name.'"'
-                    .' value="'.$row -> name.$prefix.$row -> value.'"'
+                    .' value="'.addslashes($row -> name).$prefix.$row -> value.'"'
                     .$id
                     .$_checked
                     .$javascript.'/>';
@@ -219,7 +243,7 @@ class ArticleHTML
                 $str      .= '</td>';
                 $str      .= '<td>';
                 $str      .= '<input type="checkbox" name="'.$name.'"'
-                    .' value="'.$row -> name.$prefix.$row -> value.'"'
+                    .' value="'.addslashes($row -> name).$prefix.$row -> value.'"'
                     .$id
                     .$_checked.$javascript.'/>';
                 $str      .= '&nbsp;'.$row -> name.'</td>';
@@ -239,7 +263,7 @@ class ArticleHTML
         $html   = '<table>';
         $html   .= '<tr>'
             .'<td>'.JText::_('COM_TZ_PORTFOLIO_TEXT').'</td>'
-            .'<td><input type="text" name="'.$name.'" value="'.$text.'"></td>'
+            .'<td><input type="text" name="'.$name.'" value="'.htmlspecialchars($text).'"></td>'
             .'</tr>';
         $html   .='<tr>'
             .'<td>'.JText::_('COM_TZ_PORTFOLIO_URL').'</td>'

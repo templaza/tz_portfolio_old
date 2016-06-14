@@ -23,6 +23,14 @@ defined('_JEXEC') or die;
 <div class="tab-pane" id="tztabsAudio">
     <fieldset>
         <div class="control-group">
+            <a class="modal btn hasTooltip" href="index.php?option=com_tz_portfolio&view=config&layout=image&tmpl=component"
+               rel="{handler: 'iframe', size: {x: 500, y: 300}, onClose: function() {}}"
+               title="<?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG_DESC');?>">
+                <span class="icon-options"></span><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG');?>
+                <small style="display: block; font-style: italic; color: #777;"><?php echo JText::_('COM_TZ_PORTFOLIO_IMAGE_SIZE_GLOBAL_CONFIG_DESC');?></small>
+            </a>
+        </div>
+        <div class="control-group">
             <div class="control-label"><?php echo $this -> form -> getLabel('audio_soundcloud_id');?></div>
             <div class="controls"><?php echo $this -> form -> getInput('audio_soundcloud_id');?></div>
         </div>
@@ -39,14 +47,14 @@ defined('_JEXEC') or die;
 
                     <div class="clearfix"></div>
                     <a class="modal" href="<?php echo JUri::root().str_replace('.'.JFile::getExt($hiddenImage),'_L.'.JFile::getExt($hiddenImage),
-                                                        $hiddenImage)?>"
+                                                        $hiddenImage).'?time='.str_replace('.','',microtime(true)); ?>"
                        rel="{handler: 'image', size: {x: 875, y: 550}, onClose: function() {}}">
                         <img style="max-width: 300px;" src="<?php echo JUri::root().str_replace('.'.JFile::getExt($hiddenImage),'_S.'.JFile::getExt($hiddenImage),
-                                    $hiddenImage)?>"/>
+                                    $hiddenImage).'?time='.str_replace('.','',microtime(true)); ?>"/>
                     </a>
                     <div class="clearfix"></div>
-                    <?php echo $this -> form -> getInput('audio_souncloud_delete_image');?>
-                    <?php echo $this -> form -> getLabel('audio_souncloud_delete_image');?>
+                    <?php echo $this -> form -> getInput('audio_soundcloud_delete_image');?>
+                    <?php echo $this -> form -> getLabel('audio_soundcloud_delete_image');?>
                     <?php echo $this -> form -> getInput('audio_soundcloud_hidden_image');?>
                 <?php endif;?>
             </div>

@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com</authorUrl>
-	<version>3.1.5</version>
+	<version>3.3.5</version>
 	<description>PLG_TZ_PORTFOLIO_VOTE_XML_DESCRIPTION</description>
 	<install>
 		<sql>
@@ -32,6 +32,8 @@
 		<language tag="ja-JP">ja-JP/ja-JP.plg_content_tz_portfolio_vote.sys.ini</language>
 		<language tag="pt-BR">pt-BR/pt-BR.plg_content_tz_portfolio_vote.ini</language>
 		<language tag="pt-BR">pt-BR/pt-BR.plg_content_tz_portfolio_vote.sys.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_content_tz_portfolio_vote.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_content_tz_portfolio_vote.sys.ini</language>
 	</languages>
 	<config>
 		<fields name="params">
@@ -39,63 +41,71 @@
 			<fieldset name="basic">
 				<field name="display" type="list"
 					default="0"
-					label="Main Content Rating"
-					description="Display Rating Stars After the Title or After the Content">
-					<option value="0">afterTitle</option>
-					<option value="1">afterContent</option>
-  	    			<option value="2">none</option>
+					label="PLG_CONTENT_TZ_PORTFOLIO_VOTE_DISPLAY_LABEL"
+					description="PLG_CONTENT_TZ_PORTFOLIO_VOTE_DISPLAY_DESC">
+                    <option value="0">JNONE</option>
+					<option value="1">PLG_CONTENT_TZ_PORTFOLIO_VOTE_PREPARE_CONTENT</option>
+					<option value="2">PLG_CONTENT_TZ_PORTFOLIO_VOTE_AFTER_TITLE</option>
+					<option value="3">PLG_CONTENT_TZ_PORTFOLIO_VOTE_BEFORE_CONTENT</option>
+					<option value="4">PLG_CONTENT_TZ_PORTFOLIO_VOTE_AFTER_CONTENT</option>
 				</field>
 				
 				<field name="extra" type="list"
 					default="1"
-					label="{extravote #} Code"
-					description="Extra Vote for Content">
-					<option value="0">Don't use</option>
-					<option value="1">Replace Allways</option>
-					<option value="2">Hide in Blog Views</option>
+					label="PLG_CONTENT_TZ_PORTFOLIO_VOTE_EXTRA_CODE_LABEL"
+					description="PLG_CONTENT_TZ_PORTFOLIO_VOTE_EXTRA_CODE_DESC">
+					<option value="0">PLG_CONTENT_TZ_PORTFOLIO_VOTE_DO_NOT_USE</option>
+					<option value="1">PLG_CONTENT_TZ_PORTFOLIO_VOTE_REPLACE_ALWAYS</option>
+					<option value="2">PLG_CONTENT_TZ_PORTFOLIO_VOTE_HIDE_BLOG_VIEW</option>
 				</field>
 				
 				<field name="main" type="list"
 					default="1"
-					label="{mainvote} Code"
-					description="Special Code for Main Content Rating">
-					<option value="0">Don't use</option>
-					<option value="1">Replace Allways</option>
-					<option value="2">Hide in Blog Views</option>
+					label="PLG_CONTENT_TZ_PORTFOLIO_VOTE_MAIN_CODE_LABEL"
+					description="PLG_CONTENT_TZ_PORTFOLIO_VOTE_MAIN_CODE_DESC">
+					<option value="0">PLG_CONTENT_TZ_PORTFOLIO_VOTE_DO_NOT_USE</option>
+					<option value="1">PLG_CONTENT_TZ_PORTFOLIO_VOTE_REPLACE_ALWAYS</option>
+					<option value="2">PLG_CONTENT_TZ_PORTFOLIO_VOTE_HIDE_BLOG_VIEW</option>
 				</field>
 				
 				<field name="counter" type="list"
 					default="1"
-					label="Votes Counter"
-					description="Show/Hide Votes Counter">
-					<option value="0">Hide</option>
-					<option value="1">Show All</option>
-					<option value="2">Show only on Mainvote</option>
-					<option value="3">Show only on Extravotes</option>
+					label="PLG_CONTENT_TZ_PORTFOLIO_VOTE_COUNTER_LABEL"
+					description="PLG_CONTENT_TZ_PORTFOLIO_VOTE_COUNTER_DESC">
+					<option value="0">JHIDE</option>
+					<option value="1">PLG_CONTENT_TZ_PORTFOLIO_VOTE_SHOW_ALL</option>
+					<option value="2">PLG_CONTENT_TZ_PORTFOLIO_VOTE_SHOW_ONLY_MAINVOTE</option>
+					<option value="3">PLG_CONTENT_TZ_PORTFOLIO_VOTE_SHOW_ONLY_EXTRAVOTES</option>
 				</field>
 				
 				<field name="unrated" type="radio"
-					default="1"
-					label="Show/Hide (0 Votes)"
-					description="Show/Hide (0 Votes) for Unrated Items">
-					<option value="1">Show</option>
-					<option value="0">Hide</option>
+                   class="btn-group" default="1"
+					label="PLG_CONTENT_TZ_PORTFOLIO_VOTE_UNRATED_LABEL"
+					description="PLG_CONTENT_TZ_PORTFOLIO_VOTE_UNRATED_DESC">
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
 				</field>
 				
 				<field name="access" type="radio"
-					default="0"
-					label="Rating Access"
-					description="Public or Registered Rating Access">
-					<option value="0">Public</option>
-					<option value="1">Registered</option>
+					class="btn-group" default="0"
+					label="PLG_CONTENT_TZ_PORTFOLIO_VOTE_RATING_ACCESS_LABEL"
+					description="PLG_CONTENT_TZ_PORTFOLIO_VOTE_RATING_ACCESS_DESC">
+					<option value="0">PLG_CONTENT_TZ_PORTFOLIO_VOTE_PUBLIC</option>
+					<option value="1">PLG_CONTENT_TZ_PORTFOLIO_VOTE_REGISTERED</option>
 				</field>
 				
 				<field name="css" type="radio"
-					default="1"
-					label="Call ExtraVote Style"
-					description="Call ExtraVote Stylesheet">
-					<option value="0">No</option>
-					<option value="1">Yes</option>
+                   class="btn-group" default="1"
+					label="PLG_CONTENT_TZ_PORTFOLIO_VOTE_CSS_LABEL"
+					description="PLG_CONTENT_TZ_PORTFOLIO_VOTE_CSS_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+                <field name="style" type="list"
+                       default="1"
+                       label="PLG_CONTENT_TZ_PORTFOLIO_VOTE_STYLE_LABEL">
+					<option value="1">PLG_CONTENT_TZ_PORTFOLIO_VOTE_STYLE_ICONMOON</option>
+					<option value="2">PLG_CONTENT_TZ_PORTFOLIO_VOTE_STYLE_CLASSIC</option>
 				</field>
 			</fieldset>
 

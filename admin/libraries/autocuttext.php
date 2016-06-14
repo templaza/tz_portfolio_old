@@ -100,7 +100,7 @@ class AutoCutText{
 		$this->_intronumber	=	$number;
 		
 		$this->encode();
-		$this->wordSub();		
+		$this->wordSub();
 		$this->decode();		
 		$this->makesafehtml();
 	}

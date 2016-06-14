@@ -71,6 +71,10 @@ class TZ_PortfolioModelArticles extends JModelList
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
+
+        // List state information.
+        parent::populateState('a.id', 'desc');
+
 		// Initialise variables.
 		$app = JFactory::getApplication();
 		$session = JFactory::getSession();
@@ -80,8 +84,6 @@ class TZ_PortfolioModelArticles extends JModelList
 		if ($layout = JRequest::getVar('layout')) {
 			$this->context .= '.'.$layout;
 		}
-
-//        var_dump($this->getName(),$this -> context,$layout); die();
 
         $group  = $this -> getUserStateFromRequest($this -> context.'.group','filter_group',0,'int');
         $this -> setState('filter.group',$group);
@@ -108,10 +110,16 @@ class TZ_PortfolioModelArticles extends JModelList
 		$language = $this->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
 
-		// List state information.
-		parent::populateState('a.id', 'desc');
+        // Force a language
+        $forcedLanguage = $app->input->get('forcedLanguage');
+
+        if (!empty($forcedLanguage))
+        {
+            $this->setState('filter.language', $forcedLanguage);
+            $this->setState('filter.forcedLanguage', $forcedLanguage);
+        }
 	}
-    
+
 	/**
 	 * Method to get a store id based on model configuration state.
 	 *
@@ -176,6 +184,9 @@ class TZ_PortfolioModelArticles extends JModelList
             //$query -> join('LEFT','#__tz_portfolio_xref_content AS xc ON g.id=xc.groupid');
         }
 
+        $query -> select('xc2.type');
+        $query -> join('LEFT','#__tz_portfolio_xref_content AS xc2 ON xc2.contentid = a.id');
+
 		// Join over the language
 		$query->select('l.title AS language_title');
 		$query->join('LEFT', $db->quoteName('#__languages').' AS l ON l.lang_code = a.language');
@@ -197,6 +208,17 @@ class TZ_PortfolioModelArticles extends JModelList
 		// Join over the users for the author.
 		$query->select('ua.name AS author_name');
 		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
+
+        if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            // Join over the associations.
+            if (JLanguageAssociations::isEnabled())
+            {
+                $query->select('COUNT(asso2.id)>1 as association')
+                    ->join('LEFT', '#__associations AS asso ON asso.id = a.id AND asso.context=' . $db->quote('com_content.item'))
+                    ->join('LEFT', '#__associations AS asso2 ON asso2.key = asso.key')
+                    ->group('a.id');
+            }
+        }
 
 		// Filter by access level.
 		if ($access = $this->getState('filter.access')) {
@@ -277,7 +299,7 @@ class TZ_PortfolioModelArticles extends JModelList
 		// Add the list ordering clause.
 		$orderCol	= $this->state->get('list.ordering', 'a.title');
 		$orderDirn	= $this->state->get('list.direction', 'asc');
-        
+
 		if ($orderCol == 'a.ordering' || $orderCol == 'category_title') {
 			$orderCol = 'c.title '.$orderDirn.', a.ordering';
 		}
@@ -376,8 +398,38 @@ class TZ_PortfolioModelArticles extends JModelList
 				}
 			}
 		}
+
+        if($items){
+            foreach($items as &$item){
+                if(isset($item -> type)){
+                    switch (strtolower($item -> type)){
+                        default:
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_OPTION_NONE_MEDIA');
+                            break;
+                        case 'image':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_OPTION_IMAGE');
+                            break;
+                        case 'imagegallery':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_OPTION_IMAGE_GALLERY');
+                            break;
+                        case 'video':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_OPTION_VIDEO');
+                            break;
+                        case 'audio':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_AUDIO');
+                            break;
+                        case 'quote':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_QUOTE');
+                            break;
+                        case 'link':
+                            $item -> type  = JText::_('COM_TZ_PORTFOLIO_LINK');
+                            break;
+                    }
+                }
+            }
+        }
 		return $items;
-        
+
 //        return $data;
 	}
 }

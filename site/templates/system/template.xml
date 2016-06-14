@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 2.5//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/2.5/template-install.dtd">
+<extension version="3.1" type="tz_portfolio-template" method="upgrade">
+    <name>system</name>
+    <version>1.0</version>
+    <creationDate>July 17th 2015</creationDate>
+    <author>DuongTVTemplaza</author>
+    <authorEmail>info@templaza.com</authorEmail>
+    <authorUrl>www.templaza.com</authorUrl>
+    <copyright>Copyright (C) 2012 TemPlaza. All rights reserved.</copyright>
+    <description>TZ_PORTFOLIO_TPL_XML_DESCRIPTION</description>
+    <files>
+        <folder>css</folder>
+        <folder>html</folder>
+        <folder>images</folder>
+        <folder>language</folder>
+        <folder>js</folder>
+        <filename>index.html</filename>
+        <filename>template.php</filename>
+        <filename>template.xml</filename>
+    </files>
+    <config>
+        <fields name="params">
+        </fields>
+    </config>
+</extension>

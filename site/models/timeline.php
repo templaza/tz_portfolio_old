@@ -16,15 +16,17 @@
 # Technical Support:  Forum - http://templaza.com/Forum
 
 -------------------------------------------------------------------------*/
- 
+
 //no direct access
 defined('_JEXEC') or die('Restricted access');
-jimport('joomla.application.component.model');
+jimport('joomla.application.component.modellist');
 jimport('joomla.html.pagination');
+jimport('joomla.filesystem.folder');
+jimport('joomla.filesystem.file');
 require_once(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'route.php');
 require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'autocuttext.php');
 
-class TZ_PortfolioModelTimeLine extends JModelLegacy
+class TZ_PortfolioModelTimeLine extends JModelList
 {
     protected   $pagNav     = null;
     protected   $params     = null;
@@ -32,9 +34,65 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
     protected $categories   = null;
     protected $articles     = null;
 
-    function populateState(){
+    protected $parameter_fields = array();
+    protected $parameter_merge_fields = array();
+
+    public function __construct($config = array()){
+        parent::__construct($config);
+
+        $config['parameter_fields'] = array(
+            'tz_use_image_hover' => array('tz_image_timeout'),
+            'show_image_gallery' => array('image_gallery_animSpeed',
+                'image_gallery_animation_duration',
+                'image_gallery_startAt', 'image_gallery_itemWidth',
+                'image_gallery_itemMargin', 'image_gallery_minItems',
+                'image_gallery_maxItems'),
+            'show_video' => array('video_width','video_height'),
+            'tz_show_gmap' => array('tz_gmap_width', 'tz_gmap_height',
+                'tz_gmap_latitude', 'tz_gmap_longitude',
+                'tz_gmap_address','tz_gmap_custom_tooltip'),
+            'useCloudZoom' => array('zoomWidth','zoomHeight',
+                'adjustX','adjustY','tint','tintOpacity',
+                'lensOpacity','smoothMove'),
+            'show_comment' => array('disqusSubDomain','disqusApiSecretKey'),
+            'show_audio' => array('audio_soundcloud_color','audio_soundcloud_theme_color',
+                'audio_soundcloud_width','audio_soundcloud_height')
+        );
+        // Add the parameter fields white list.
+        if (isset($config['parameter_fields']))
+        {
+            $this->parameter_fields = $config['parameter_fields'];
+        }
+
+        // Add the parameter fields white list.
+        $this -> parameter_merge_fields = array(
+            'show_extra_fields', 'field_show_type',
+            'tz_portfolio_redirect'
+        );
+    }
+
+    function populateState($ordering = null, $direction = null){
+        parent::populateState($ordering, $direction);
         $app        = JFactory::getApplication();
         $params = $app -> getParams();
+
+        $global_params    = JComponentHelper::getParams('com_tz_portfolio');
+
+        if($layout_type = $params -> get('layout_type',array())){
+
+            if(!count($layout_type)){
+                $params -> set('layout_type',$global_params -> get('layout_type',array()));
+            }
+        }else{
+            $params -> set('layout_type',$global_params -> get('layout_type',array()));
+        }
+
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
+        }
+
+        $user		= JFactory::getUser();
+
         $this -> params = $params;
         if($params -> get('show_limit_box',0) && $params -> get('tz_timeline_layout','default') == 'classic'){
             $limit  = $app->getUserStateFromRequest('com_tz_portfolio.timeline.limit','limit',$params -> get('tz_article_limit',10));
@@ -42,18 +100,34 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         else{
             $limit  = $params -> get('tz_article_limit',10);
         }
+
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // limit to published for people who can't edit or edit.state.
+            $this->setState('filter.published', 1);
+        }
+        else {
+            $this->setState('filter.published', array(0, 1, 2));
+        }
+
+        $this->setState('filter.language', $app->getLanguageFilter());
+
         $params -> set('useCloudZoom',0);
-        $this -> setState('offset',JRequest::getUInt('limitstart',0));
-        $this -> setState('limit',$limit);
+        $this -> setState('list.start',JRequest::getUInt('limitstart',0));
+        $this -> setState('list.limit',$limit);
         $this -> setState('params',$this -> params);
         $this -> setState('char',JRequest::getString('char',null));
-        
+
     }
 
     function ajax(){
         $data        = null;
 
         $params     = JComponentHelper::getParams('com_tz_portfolio');
+
+        // Set value again for option tz_portfolio_redirect
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
+        }
 
         $Itemid     = JRequest::getInt('Itemid');
         $page       = JRequest::getInt('page');
@@ -69,35 +143,30 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
         $offset = $limit * ($page - 1);
 
-        $this -> setState('limit',$limit);
-        $this -> setState('offset',$offset);
+        $user   = JFactory::getUser();
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // limit to published for people who can't edit or edit.state.
+            $this->setState('filter.published', 1);
+        }
+        else {
+            $this->setState('filter.published', array(0, 1, 2));
+        }
+
+//        var_dump($params); die();
+
+        $app    = JFactory::getApplication();
+        $this->setState('filter.language', $app->getLanguageFilter());
+
+        $this -> setState('list.limit',$limit);
+        $this -> setState('list.start',$offset);
         $this -> setState('params',$params);
         $this -> setState('char',$char);
 
-        require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'timeline'.DIRECTORY_SEPARATOR.'view.html.php';
-        $view   = new TZ_PortfolioViewTimeLine();
-        
-        JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
-
-        $list   = $this -> getArticle();
-
-        $view -> assign('listsArticle',$list);
-        if($params -> get('tz_filter_type','tags') == 'categories'){
-            $view -> assign('listsCatDate',$this -> getDateCategories());
+        if($offset >= $this -> getTotal()){
+            return false;
         }
-        $view -> assign('params',$params);
-        $view -> assign('Itemid',$Itemid);
-        $view -> assign('limitstart',$offset);
 
-        if($page > $this -> pagNav -> get('pages.stop'))
-            return '';
-
-        if($layout)
-            $data        = $view -> loadTemplate('\''.$layout.'\'');
-        else
-            $data        = $view -> loadTemplate('item');
-
-        return $data;
+        return true;
     }
 
     function ajaxtags($limitstart=null) {
@@ -119,17 +188,23 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
         $offset = (int) $limitstart;
 
-        $this -> setState('limit',$limit);
-        $this -> setState('offset',$offset);
+        $user   = JFactory::getUser();
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // limit to published for people who can't edit or edit.state.
+            $this->setState('filter.published', 1);
+        }
+        else {
+            $this->setState('filter.published', array(0, 1, 2));
+        }
+
+        $this -> setState('list.limit',$limit);
+        $this -> setState('list.start',$offset);
         $this -> setState('params',$params);
 
-        $this -> getArticle();
+        $this -> getItems();
 
         $newTags    = null;
         $tags       = null;
-
-        require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'portfolio'.DIRECTORY_SEPARATOR.'view.html.php';
-        $view   = new TZ_PortfolioViewPortfolio();
 
         if($this -> getTags())
             $newTags    = $this ->getTags();
@@ -151,13 +226,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
             }
         }
 
-        $view -> assign('params',$this -> getState('params'));
-        $view -> assign('listsTags',$tags);
-        $data    = $view -> loadTemplate('tags');
-        if(empty($data))
-            return '';
-
-        return $data;
+        return $tags;
     }
 
     function ajaxCategories(){
@@ -178,17 +247,23 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
         $offset = (int) $limitstart;
 
-        $this -> setState('limit',$limit);
-        $this -> setState('offset',$offset);
+        $user   = JFactory::getUser();
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // limit to published for people who can't edit or edit.state.
+            $this->setState('filter.published', 1);
+        }
+        else {
+            $this->setState('filter.published', array(0, 1, 2));
+        }
+
+        $this -> setState('list.limit',$limit);
+        $this -> setState('list.start',$offset);
         $this -> setState('params',$params);
 
-        $list   = $this -> getArticle();
+        $list   = $this -> getItems();
 
         $newCatids    = null;
         $catIds       = null;
-
-        require_once JPATH_COMPONENT.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'portfolio'.DIRECTORY_SEPARATOR.'view.html.php';
-        $view   = new TZ_PortfolioViewPortfolio();
 
         if($this -> getCategories())
             $newCatids    = $this -> getCategories();
@@ -210,49 +285,68 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 }
             }
         }
-
-        $view -> assign('params',$this -> getState('params'));
-        $view -> assign('listsCategories',$catIds);
-        $data    = $view -> loadTemplate('Categories');
-        if(empty($data))
-            return '';
-
-        return $data;
+        return $catIds;
     }
+
     function getCategories(){
         $catids = $this -> categories;
+        $params = $this -> getState('params');
+        $db     = JFactory::getDbo();
+        $query  = $db -> getQuery(true);
 
-        if(count($catids) > 1){
-            if(empty($catids[0])){
-                array_shift($catids);
+        $query -> select('id,title');
+        $query -> from($db -> quoteName('#__categories'));
+        $query -> where('published = 1');
+        $query -> where('extension='.$db -> quote('com_content'));
+
+        if(is_array($catids)){
+            $catids = array_filter($catids);
+            if(count($catids)){
+                $query -> where('id IN('.implode(',',$catids).')');
             }
-            $catids = implode(',',$catids);
-        }
-        else{
-            if(!empty($catids[0])){
-                $catids = $catids[0];
-            }
-            else
-                $catids = null;
+        }elseif(!empty($catids)){
+            $query -> where('id IN('.$catids.')');
         }
 
-        $where  = null;
-        if($catids){
-            $where  = ' AND cc.id IN('.$catids.')';
+        // Order by artilce
+        switch ($params -> get('orderby_pri')){
+            case 'alpha' :
+                $query -> order('title');
+                break;
+
+            case 'ralpha' :
+                $query -> order('title DESC ');
+                break;
+
+            case 'order' :
+                $query -> order('lft');
+                break;
         }
-        $query  = 'SELECT cc.id,cc.title FROM #__categories AS cc'
-                  .' LEFT JOIN #__content AS c ON c.catid=cc.id'
-                  .' WHERE cc.published=1 AND cc.extension="com_content" AND c.state=1'
-                  .$where
-                  .' GROUP BY cc.id';
-        $db = JFactory::getDbo();
+
+        $query -> group('id');
+
         $db -> setQuery($query);
-        if(!$db -> query()){
-            var_dump($db -> getErrorMsg());
-            return false;
-        }
 
         if($rows = $db -> loadObjectList()){
+            if($allCatIds  = $this -> getAllCategories()){
+                foreach($allCatIds as &$allCatId){
+                    $allCatId   = (int) $allCatId -> id;
+                }
+            }
+
+            $array      = array();
+            $revArray   = array();
+            if(is_array($catids)){
+                $array      = array_intersect($allCatIds,$catids);
+                $revArray   = array_flip($array);
+            }
+
+            foreach($rows as $item){
+                $item -> order  = 0;
+                if(in_array($item -> id,$array)){
+                    $item -> order  = $revArray[$item -> id];
+                }
+            }
             return $rows;
         }
 
@@ -276,6 +370,22 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 $query -> where('id IN('.$catid.')');
             }
         }
+
+        // Order by artilce
+        switch ($params -> get('orderby_pri')){
+            case 'alpha' :
+                $query -> order('title');
+                break;
+
+            case 'ralpha' :
+                $query -> order('title DESC ');
+                break;
+
+            case 'order' :
+                $query -> order('lft');
+                break;
+        }
+
         $db -> setQuery($query);
         if($rows = $db -> loadObjectList()){
             return $rows;
@@ -285,7 +395,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
     //Get first letter of title
     function getFirstLetter(){
-        
+
     }
 
 
@@ -296,7 +406,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         }
         //Get Catid, created by article
         $query  = 'SELECT cc.id,cc.title,YEAR(c.created) AS year,MONTH(c.created) AS month,'
-                  .'CONCAT_WS(":",YEAR(c.created),MONTH(c.created)) AS tz_date'
+                  .'CONCAT_WS("-",YEAR(c.created),MONTH(c.created)) AS tz_date'
                   .' FROM #__categories AS cc'
                   .' LEFT JOIN #__content AS c ON c.catid=cc.id'
                   .' WHERE cc.extension="com_content" AND cc.published=1 AND c.state=1'
@@ -331,7 +441,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         $_catid     = $params -> get('tz_catid');
         $catids     = null;
         $limit      = $this -> getState('limit');
-        $limitStart = $this -> getState('offset');
+        $limitStart = $this -> getState('list.start');
 
         if($_catid){
             if(count($_catid) == 1 ){
@@ -383,7 +493,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 $rows   = $db -> loadObjectList();
                 if(count($rows)){
                     foreach($rows as $row){
-                        $tagName[]  = trim(str_replace(' ','-',$row -> name));
+                        $tagName[]  = JApplication::stringURLSafe(trim($row -> name));
                     }
                 }
             }
@@ -395,16 +505,63 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         return false;
     }
 
-    function getArticle(){
+    protected function getListQuery(){
+        $params = $this -> getState('params');
 
-        $user	= JFactory::getUser();
-		$userId	= $user->get('id');
-        $guest	= $user->get('guest');
-        
-        $params     = $this -> getState('params');
-        $total      = 0;
-        $limit      = $this -> getState('limit');
-        $limitstart = $this -> getState('offset');
+        $user		= JFactory::getUser();
+
+        $db     = JFactory::getDbo();
+        $query  = $db -> getQuery(true);
+
+        $subQuery  = $db -> getQuery(true);
+
+        $query -> select('c.*,t.name AS tagName,YEAR(c.created) AS year,MONTH(c.created) AS month');
+        $query -> select('CONCAT_WS("-",YEAR(c.created),MONTH(c.created)) AS tz_date');
+        $query -> select('cc.title AS category_title,u.name AS author');
+        $query -> select('CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug');
+        $query -> select('CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug');
+        $query -> select('CASE WHEN CHAR_LENGTH(c.fulltext) THEN c.fulltext ELSE null END as readmore');
+
+        $query -> from($db -> quoteName('#__content').' AS c');
+
+        $query -> join('LEFT',$db -> quoteName('#__categories').' AS cc ON cc.id=c.catid');
+        $query -> join('LEFT',$db -> quoteName('#__tz_portfolio_tags_xref').' AS x ON x.contentid=c.id');
+        $query -> join('LEFT',$db -> quoteName('#__tz_portfolio_tags').' AS t ON t.id=x.tagsid');
+        $query -> join('LEFT',$db -> quoteName('#__users').' AS u ON u.id=c.created_by');
+
+        $query -> where('cc.published = 1');
+
+//        $query -> where('c.state = 1');
+
+         // Filter by published state
+        $published = $this->getState('filter.published');
+
+        if (is_numeric($published)) {
+            // Use article state if badcats.id is null, otherwise, force 0 for unpublished
+            $query->where('c.state = ' . (int) $published);
+        }
+        elseif (is_array($published)) {
+            JArrayHelper::toInteger($published);
+            $published = implode(',', $published);
+            // Use article state if badcats.id is null, otherwise, force 0 for unpublished
+            $query->where('c.state IN ('.$published.')');
+        }
+
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // Filter by start and end dates.
+            $nullDate = $db->Quote($db->getNullDate());
+            $nowDate = $db->Quote(JFactory::getDate()->toSQL());
+
+            $query->where('(c.publish_up = ' . $nullDate . ' OR c.publish_up <= ' . $nowDate . ')');
+            $query->where('(c.publish_down = ' . $nullDate . ' OR c.publish_down >= ' . $nowDate . ')');
+        }
+
+        // Filter by access level.
+        if (!$params->get('show_noauth')) {
+            $groups	= implode(',', $user->getAuthorisedViewLevels());
+            $query->where('c.access IN ('.$groups.')');
+            $query->where('cc.access IN ('.$groups.')');
+        }
 
         $_catid     = $params -> get('tz_catid');
         $allCatid   = null;
@@ -436,64 +593,49 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 $allCatid[] = 'category'.$catId;
             }
 
-            $where = ' AND c.catid IN('.implode(',',$catids).')';
+            $query -> where('c.catid IN('.implode(',',$catids).')');
+
+            $subQuery -> where('c.catid IN('.implode(',',$catids).')');
         }
 
         if($char   = $this -> getState('char')){
-            $where  .= ' AND ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII("'.mb_strtolower($char).'")';
+            $query -> where('c.title LIKE '.$db -> quote(urldecode(mb_strtolower($char)).'%'));
+            $query -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
+            $subQuery -> where('c.title LIKE'.$db -> quote(urldecode(mb_strtolower($char)).'%'));
+            $subQuery -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
+
+//            $query -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
+//            $subQuery -> where('ASCII(SUBSTR(LOWER(c.title),1,1)) = ASCII('.$db -> quote(mb_strtolower($char)).')');
         }
 
-        $query  = 'SELECT c.*,CONCAT_WS(":",YEAR(c.created),MONTH(c.created)) AS tz_date'
-                  .' FROM #__content AS c'
-                  .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
-                  .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON x.contentid=c.id'
-                  .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid'
-                  .' LEFT JOIN #__users AS u ON u.id=c.created_by'
-                  .' WHERE c.state = 1'
-                  .$where
-                  .' GROUP BY c.id';
-
-        $db     = JFactory::getDbo();
-        $db -> setQuery($query);
-
-        if(!$db -> query()){
-            var_dump($db -> getErrorMsg());
-            die();
-        }
-
-        if($db -> query())
-            $total  = $db -> getNumRows($db -> query());
-        else
-            $total  = 0;
-
-        $this -> pagNav = new JPagination($total,$limitstart,$limit);
+        $query -> group('c.id');
 
         switch ($params -> get('orderby_pri')){
             default:
                 $cateOrder  = null;
                 break;
             case 'alpha' :
-				$cateOrder = 'cc.path, ';
-				break;
+                $cateOrder = ',cc.path ';
+                break;
 
-			case 'ralpha' :
-				$cateOrder = 'cc.path DESC, ';
-				break;
+            case 'ralpha' :
+                $cateOrder = ',cc.path DESC ';
+                break;
 
-			case 'order' :
-				$cateOrder = 'cc.lft, ';
-				break;
+            case 'order' :
+                $cateOrder = ',cc.lft ';
+                break;
         }
-        
+
         switch ($params -> get('orderby_sec')){
             default:
                 $orderby    = 'id DESC';
                 break;
             case 'rdate':
-                $orderby    = 'created DESC';
+                $orderby    = 'c.created DESC';
                 break;
             case 'date':
-                $orderby    = 'created ASC';
+                $orderby    = '';
                 break;
             case 'alpha':
                 $orderby    = 'title ASC';
@@ -502,10 +644,10 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 $orderby    = 'title DESC';
                 break;
             case 'author':
-                $orderby    = 'create_by ASC';
+                $orderby    = 'u.name ASC';
                 break;
             case 'rauthor':
-                $orderby    = 'create_by DESC';
+                $orderby    = 'u.name DESC';
                 break;
             case 'hits':
                 $orderby    = 'hits DESC';
@@ -517,60 +659,127 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 $orderby    = 'ordering ASC';
                 break;
         }
+        $query -> order('c.created DESC'.$cateOrder.(($orderby && !empty($orderby))?','.$orderby:''));
 
-        $query  = 'SELECT c.*,t.name AS tagName,YEAR(c.created) AS year,MONTH(c.created) AS month,'
-                  .'CONCAT_WS(":",YEAR(c.created),MONTH(c.created)) AS tz_date,'
-                  .'cc.title AS category_title,u.name AS author,'
-                  .' CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(":", c.id, c.alias) ELSE c.id END as slug,'
-                  .' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug,'
-                  .' CASE WHEN CHAR_LENGTH(c.fulltext) THEN c.fulltext ELSE null END as readmore'
-                  .' FROM #__content AS c'
-                  .' LEFT JOIN #__categories AS cc ON cc.id=c.catid'
-                  .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON x.contentid=c.id'
-                  .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid'
-                  .' LEFT JOIN #__users AS u ON u.id=c.created_by'
-                  .' WHERE c.state = 1'
-                  .$where
-                  .' GROUP BY c.id'
-                  .' ORDER BY '.$cateOrder.'c.created DESC,'.$orderby;
+        /** Query get max hits for sort filter **/
+        $subQuery -> select('MAX(c.hits)');
+        $subQuery -> from($db -> quoteName('#__content').' AS c');
 
-        if($params -> get('tz_portfolio_layout') == 'default')
-            $db -> setQuery($query,$this -> pagNav -> limitstart,$this -> pagNav -> limit);
-        else
-            $db -> setQuery($query,$limitstart,$limit);
+        $subQuery -> join('LEFT',$db -> quoteName('#__categories').' AS cc ON cc.id=c.catid');
+        $subQuery -> join('LEFT',$db -> quoteName('#__tz_portfolio_tags_xref').' AS x ON x.contentid=c.id');
+        $subQuery -> join('LEFT',$db -> quoteName('#__tz_portfolio_tags').' AS t ON t.id=x.tagsid');
+        $subQuery -> join('LEFT',$db -> quoteName('#__users').' AS u ON u.id=c.created_by');
 
-        if(!$db -> query()){
-            var_dump($db -> getErrorMsg());
-            die();
+        $query -> select('('.$subQuery -> __toString().') AS maxhits');
+        /** End query **/
+
+        // Filter by language
+        if ($this->getState('filter.language')) {
+            $query->where('c.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
+//            $query->where('(contact.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').') OR contact.language IS NULL)');
         }
 
-        $contentId  = array();
-        $tzDate     = array();
-        if($rows   = $db -> loadObjectList()){
-            if($params -> get('comment_function_type','default') != 'js'){
-                if($params -> get('tz_show_count_comment',1) == 1){
-                    require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
-                    require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
-                    $fetch       = new Services_Yadis_PlainHTTPFetcher();
+//        var_dump($query -> dump()); die();
+
+        return $query;
+    }
+
+    public function getItems(){
+        if($items = parent::getItems()){
+            $user	        = JFactory::getUser();
+            $userId	        = $user->get('id');
+            $guest	        = $user->get('guest');
+
+            $params         = $this -> getState('params');
+
+            $contentId      = array();
+            $tzDate         = array();
+            $content_ids    = array();
+
+            $_params        = null;
+            $categories     = JCategories::getInstance('Content');
+
+            $threadLink     = null;
+            $comments       = null;
+
+            foreach($items as &$item){
+                $content_ids[]  = $item -> id;
+                $_params        = clone($params);
+                $temp           = clone($params);
+
+                // Get the global params
+                $globalParams = JComponentHelper::getParams('com_tz_portfolio', true);
+
+                /*** New source ***/
+                $category   = $categories->get($item -> catid);
+                $catParams  = new JRegistry($category -> params);
+
+                if($this -> parameter_merge_fields){
+                    foreach($this -> parameter_merge_fields as $value){
+                        if($catParams -> get($value) != ''){
+                            $_params -> set($value,$catParams -> get($value));
+                        }
+                    }
                 }
 
-                $threadLink = null;
-                $comments   = null;
-                foreach($rows as $key => $item){
-                    $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-                    $itemParams = new JRegistry($item -> attribs); //Get Article's Params
+                $item->params   = clone($_params);
 
-                    //Check redirect to view article
-                    if($itemParams -> get('tz_portfolio_redirect')){
-                        $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
+                $articleParams = new JRegistry;
+                $articleParams->loadString($item->attribs);
+
+                // create an array of just the params set to 'use_article'
+                $menuParamsArray = $temp->toArray();
+                $articleArray = array();
+
+                foreach ($menuParamsArray as $key => $value)
+                {
+                    if ($value === 'use_article') {
+                        // if the article has a value, use it
+                        if ($articleParams->get($key) != '') {
+                            // get the value from the article
+                            $articleArray[$key] = $articleParams->get($key);
+                        }
+                        else {
+                            if($_params -> get($key) != ''){
+                                $articleArray[$key] = $_params -> get($key);
+                            }else{
+                                if(!$_params -> get($key) || $_params -> get($key) == ''){
+                                    // otherwise, use the global value
+                                    $articleArray[$key] = $globalParams->get($key);
+                                }
+                            }
+                        }
+
+                        if(count($this -> parameter_fields)){
+                            $parameter_fields   = $this -> parameter_fields;
+                            if(in_array($key,array_keys($this -> parameter_fields))){
+                                if(count($parameter_fields[$key])){
+                                    foreach($parameter_fields[$key] as $value_field){
+                                        $articleArray[$value_field]   = $articleParams -> get($value_field);
+                                    }
+                                }
+                            }
+                        }
                     }
+                }
 
-                    if($tzRedirect == 'article'){
-                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid), true ,-1);
+                // merge the selected article params
+                if (count($articleArray) > 0) {
+                    $articleParams = new JRegistry;
+                    $articleParams->loadArray($articleArray);
+                    $item->params->merge($articleParams);
+                }
+
+                if($params -> get('comment_function_type','default') != 'js'){
+                    /*** New source ***/
+                    //Check redirect to view article
+                    if($item -> params -> get('tz_portfolio_redirect','p_article') == 'article'){
+                        $contentUrl   = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid),true,-1);
                     }
                     else{
-                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid), true ,-1);
+                        $contentUrl   = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid),true,-1);
                     }
+                    /*** End New Source ***/
 
                     if($params -> get('tz_show_count_comment',1) == 1){
                         if($params -> get('tz_comment_type','disqus') == 'disqus'){
@@ -579,6 +788,14 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                             $threadLink .= '&urls[]='.$contentUrl;
                         }
                     }
+                }
+            }
+
+            if($params -> get('comment_function_type','default') != 'js'){
+                if($params -> get('tz_show_count_comment',1) == 1){
+                    require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'HTTPFetcher.php');
+                    require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'readfile.php');
+                    $fetch       = new Services_Yadis_PlainHTTPFetcher();
                 }
 
                 // Get comment counts for all items(articles)
@@ -638,43 +855,49 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 }
                 // End Get comment counts for all items(articles)
             }
-            
+
+            $tags   = null;
+            if(count($content_ids) && $params -> get('show_tags',1)) {
+                $m_tag = JModelLegacy::getInstance('Tag', 'TZ_PortfolioModel', array('ignore_request' => true));
+                $m_tag->setState('params',$params);
+                $m_tag->setState('article.id', $content_ids);
+                $m_tag -> setState('list.ordering','x.contentid');
+                $tags   = $m_tag -> getArticleTags();
+            }
+
             //Get Plugins Model
             $pmodel = JModelLegacy::getInstance('Plugins','TZ_PortfolioModel',array('ignore_request' => true));
-            
-            foreach($rows as $i => $item){
-                if ($params->get('show_intro', '1')=='1') {
-                    $item->text = $item->introtext.' '.$item->fulltext;
-                }
-                elseif ($item->fulltext) {
-                    $item->text = $item->fulltext;
-                }
-                else  {
-                    $item->text = $item->introtext;
+
+            foreach($items as $i => &$item){
+                if($tags && count($tags) && isset($tags[$item -> id])){
+                    $item -> tags   = $tags[$item -> id];
                 }
 
-                $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-                $itemParams = new JRegistry($item -> attribs); //Get Article's Params
+                /*** Start New Source ***/
+                $tmpl   = null;
+                if($item->params -> get('tz_use_lightbox',1) == 1){
+                    $tmpl   = '&tmpl=component';
+                }
+
+                //Check redirect to view article
+                if($item->params -> get('tz_portfolio_redirect') == 'p_article'){
+                    $item ->link         = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid).$tmpl);
+                    $item -> fullLink    = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid),true,-1);
+                }
+                else{
+                    $item ->link         = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid).$tmpl);
+                    $item -> fullLink = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid),true,-1);
+                }
+                /*** End New Source ***/
 
                 if($params -> get('comment_function_type','default') != 'js'){
-                    //Check redirect to view article
-                    if($itemParams -> get('tz_portfolio_redirect')){
-                        $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-                    }
-
-                    if($tzRedirect == 'article'){
-                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid), true ,-1);
-                    }
-                    else{
-                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid), true ,-1);
-                    }
 
                     if($params -> get('tz_show_count_comment',1) == 1){
                         if($params -> get('tz_comment_type','disqus') == 'disqus' ||
                             $params -> get('tz_comment_type','disqus') == 'facebook'){
                             if($comments){
-                                if(array_key_exists($contentUrl,$comments)){
-                                    $item -> commentCount   = $comments[$contentUrl];
+                                if(array_key_exists($item ->fullLink,$comments)){
+                                    $item -> commentCount   = $comments[$item ->fullLink];
                                 }else{
                                     $item -> commentCount   = 0;
                                 }
@@ -695,13 +918,13 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
                     // Check general edit permission first.
                     if ($user->authorise('core.edit', $asset)) {
-                        $itemParams->set('access-edit', true);
+                        $item->params->set('access-edit', true);
                     }
                     // Now check if edit.own is available.
                     elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
                         // Check for a valid user and that they are the owner.
                         if ($userId == $item->created_by) {
-                            $itemParams->set('access-edit', true);
+                            $item->params->set('access-edit', true);
                         }
                     }
                 }
@@ -711,47 +934,56 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 $pluginItems    = $pmodel -> getItems();
                 $pluginParams   = $pmodel -> getParams();
                 $item -> pluginparams   = clone($pluginParams);
-                
+
                 // Add feed links
                 if (!JRequest::getCmd('format',null) AND !JRequest::getCmd('type',null)) {
                     $dispatcher	= JDispatcher::getInstance();
+
+                    // Old plugins: Ensure that text property is available
+                    if (!isset($item->text))
+                    {
+                        $item->text = $item->introtext;
+                    }
+
                     //
                     // Process the content plugins.
                     //
                     JPluginHelper::importPlugin('content');
-                    $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('offset')));
+
+                    $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('list.start')));
+                    $item->introtext = $item->text;
 
                     $item->event = new stdClass();
-                    $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('list.start')));
                     $item->event->afterDisplayTitle = trim(implode("\n", $results));
 
-                    $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('list.start')));
                     $item->event->beforeDisplayContent = trim(implode("\n", $results));
 
-                    $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onContentAfterDisplay', array('com_tz_portfolio.timeline', &$item, &$params, $this -> getState('list.start')));
                     $item->event->afterDisplayContent = trim(implode("\n", $results));
 
                     $results = $dispatcher->trigger('onContentTZPortfolioVote', array('com_tz_portfolio.timeline', &$item, &$params, 0));
-				    $item->event->TZPortfolioVote = trim(implode("\n", $results));
+                    $item->event->TZPortfolioVote = trim(implode("\n", $results));
 
 
 
                     JPluginHelper::importPlugin('tz_portfolio');
-                    $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.timeline', &$item, &$this->params,&$pluginParams,$this -> getState('offset')));
+                    $results   = $dispatcher -> trigger('onTZPluginPrepare',array('com_tz_portfolio.timeline', &$item, &$this->params,&$pluginParams,$this -> getState('list.start')));
 
-                    $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onTZPluginAfterTitle', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('list.start')));
                     $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
 
-                    $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('list.start')));
                     $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
 
-                    $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('offset')));
+                    $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('com_tz_portfolio.timeline', &$item, &$params,&$pluginParams, $this -> getState('list.start')));
                     $item->event->TZafterDisplayContent = trim(implode("\n", $results));
                 }
 
                 if($introLimit = $params -> get('tz_article_intro_limit')){
-                    $text   = new AutoCutText($item -> text,$introLimit);
-                    $item -> text   = $text -> getIntro();
+                    $text   = new AutoCutText($item -> introtext,$introLimit);
+                    $item -> introtext   = $text -> getIntro();
                 }
 
                 $this -> articles[]   = $item -> id;
@@ -769,7 +1001,7 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                 if($model  = JModelLegacy::getInstance('Media','TZ_PortfolioModel')){
                     if($media  = $model -> getMedia($item -> id)){
 
-                        if($media[0] -> type != 'video'){
+                        if($media[0] -> type != 'video' && $media[0] -> type != 'audio'){
                             if($params -> get('portfolio_image_size','M')){
 
 
@@ -801,23 +1033,6 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
                         $item -> tz_image       = null;
                     }
                 }
-                $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-
-                //Check redirect to view article
-                if($itemParams -> get('tz_portfolio_redirect')){
-                    $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-                }
-
-                $item -> attribs    = $itemParams -> toString();
-
-
-                if($tzRedirect == 'article'){
-                    $item -> _link = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug, $item -> catid));
-                }
-                else{
-                    $item -> _link = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug, $item -> catid));
-                }
-
 
                 if($params -> get('tz_filter_type','tags') == 'tags'){
                     $item -> allTags    = $this -> _getAllTags($item -> created);
@@ -827,58 +1042,73 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
 
             $this -> _getTags($contentId);
 
-            return $rows;
+            return $items;
         }
         return false;
     }
 
+    function getArticle(){
+        return $this -> getItems();
+    }
+
     protected function _getAllTags($date = null){
+        $db     = JFactory::getDbo();
+        $query  = $db -> getQuery(true);
+
         $params = $this -> getState('params');
-        $query  = 'SELECT c.*,t.name AS tagName FROM #__content AS c'
-                  .' LEFT JOIN #__tz_portfolio_tags_xref AS x ON c.id=x.contentid'
-                  .' LEFT JOIN #__tz_portfolio_tags AS t ON t.id=x.tagsid';
-        $db = JFactory::getDbo();
+
+        $query -> select('t.name');
+        $query -> from($db -> quoteName('#__content').' AS c');
+
+        $query -> join('INNER',$db -> quoteName('#__tz_portfolio_tags_xref').' AS x ON c.id=x.contentid');
+        $query -> join('LEFT',$db -> quoteName('#__tz_portfolio_tags').' AS t ON t.id=x.tagsid');
+
+        $_catid     = $params -> get('tz_catid');
+        $catids     = null;
+        $where      = null;
+        if($_catid){
+            if(count($_catid) == 1 ){
+                if(!empty($_catid[0])){
+                    $catids[]   = $_catid[0];
+                }
+            }
+            else{
+                if(empty($_catid[0])){
+                    array_shift($_catid);
+                }
+                $catids = $_catid;
+            }
+        }
+
+        if($catids){
+            $query -> where('c.catid IN('.implode(',',$catids).')');
+        }
+
+        if($date){
+
+            if($params -> get('tz_timeline_time_type') == 'month-year'){
+                $query -> where('CONCAT_WS(":",YEAR(c.created),MONTH(c.created)) ='.$db -> quote(date('Y:n',strtotime($date))));
+            }
+            elseif($params -> get('tz_timeline_time_type') == 'month'){
+                $query -> where('MONTH(c.created) ='.$db -> quote(date('n',strtotime($date))));
+            }
+            elseif($params -> get('tz_timeline_time_type') == 'year'){
+                $query -> where('YEAR(c.created) ='.$db -> quote(date('Y',strtotime($date))));
+            }
+        }
+
+        $query -> group('t.id');
+
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
             die();
         }
-        $tags   = null;
-        if($rows = $db -> loadObjectList()){
-            if($params -> get('tz_timeline_time_type') == 'month-year'){
-                $format = 'Y:n';
-            }
-            elseif($params -> get('tz_timeline_time_type') == 'month'){
-                $format = 'n';
-            }
-            elseif($params -> get('tz_timeline_time_type') == 'year'){
-                $format = 'Y';
-            }
 
-            foreach($rows as $item){
-                if( date($format,strtotime($item -> created)) == date($format,strtotime($date))){
-                    $tags[] = $item -> tagName;
-                }
-            }
-        }
-        $newTags    = null;
-
-        if($tags){
-            for($i=0; $i<count($tags); $i++){
-                $bool   = true;
-                for($j= $i + 1; $j<count($tags); $j++){
-                    if($tags[$i] == $tags[$j]){
-                        $bool   = false;
-                        break;
-                    }
-                }
-                if($bool != false && !empty($tags[$i])){
-                    $newTags[]    = str_replace(' ','-',trim($tags[$i]));
-                }
-            }
-        }
-        if($newTags){
-            return implode(' ',$newTags);
+        if($rows = $db -> loadColumn()){
+            return implode(' ',array_map(function($value){
+                return JApplication::stringURLSafe($value);
+            },$rows));
         }
         return false;
 
@@ -901,6 +1131,11 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
             if(count($rows)>0){
                 foreach($rows as &$item){
                     $item -> name   = trim($item -> name);
+                    $item -> tagFilter  = JApplication::stringURLSafe($item -> name);
+                    $item -> params      = null;
+                    if(isset($item -> attribs) && !empty($item -> attribs)){
+                        $item -> params  = new JRegistry($item -> attribs);
+                    }
                 }
                 $this -> rowsTag    = $rows;
             }
@@ -925,15 +1160,17 @@ class TZ_PortfolioModelTimeLine extends JModelLegacy
         $query -> group('t.id');
         $db -> setQuery($query);
         if($rows = $db -> loadObjectList()){
+            foreach($rows as $row){
+                $row -> name    = trim($row -> name);
+                $row -> tagFilter   = JApplication::stringURLSafe($row -> name);
+                $row -> params      = null;
+                if(isset($row -> attribs) && !empty($row -> attribs)){
+                    $row -> params  = new JRegistry($row -> attribs);
+                }
+            }
             return $rows;
         }
         return null;
-    }
-
-    function getPagination(){
-        if($this -> pagNav)
-            return $this -> pagNav;
-        return false;
     }
 
     function getParams(){

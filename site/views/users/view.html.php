@@ -20,20 +20,50 @@
 //no direct access
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
+jimport('joomla.filesystem.file');
 
 class TZ_PortfolioViewUsers extends JViewLegacy
 {
-    protected $item = null;
+    protected $item         = null;
+    protected $media        = null;
+    protected $extraFields  = null;
     function __construct($config = array()){
-        $this -> item   = new stdClass();
+        $this -> item           = new stdClass();
+        $this -> media          = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $this -> extraFields    = JModelLegacy::getInstance('ExtraFields','TZ_PortfolioModel',array('ignore_request' => true));
         parent::__construct($config);
     }
     function display($tpl = null){
-        $doc    = JFactory::getDocument();
+        $doc        = JFactory::getDocument();
+        $menus		= JMenu::getInstance('site');
+        $active     = $menus->getActive();
 
         $state  = $this -> get('State');
         $params = $state -> params;
-        $list   = $this -> get('Users');
+
+        if($params -> get('fields_option_order')){
+            switch($params -> get('fields_option_order')){
+                case 'alpha':
+                    $fieldsOptionOrder  = 't.value ASC';
+                    break;
+                case 'ralpha':
+                    $fieldsOptionOrder  = 't.value DESC';
+                    break;
+                case 'ordering':
+                    $fieldsOptionOrder  = 't.ordering ASC';
+                    break;
+            }
+            if(isset($fieldsOptionOrder)){
+                $this -> extraFields -> setState('filter.option.order',$fieldsOptionOrder);
+            }
+        }
+
+        // Set value again for option tz_portfolio_redirect
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
+        }
+
+        $list   = $this -> get('Items');
 
         $csscompress    = null;
         if($params -> get('css_compression',0)){
@@ -67,31 +97,15 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                 $comments   = null;
                 if($list){
                     foreach($list as $key => $item){
-
-                        $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-                        $itemParams = new JRegistry($item -> attribs); //Get Article's Params
-
-                        //Check redirect to view article
-                        if($itemParams -> get('tz_portfolio_redirect')){
-                            $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-                        }
-
-                        if($tzRedirect == 'article'){
-                            $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($item -> slug,$item -> catid), true ,-1);
-                        }
-                        else{
-                            $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($item -> slug,$item -> catid), true ,-1);
-                        }
-
                         if($params -> get('tz_show_count_comment',1) == 1){
                             if($params -> get('tz_comment_type','disqus') == 'disqus'){
-                                $threadLink .= '&thread[]=link:'.$contentUrl;
+                                $threadLink .= '&thread[]=link:'.$item -> fullLink;
                             }elseif($params -> get('tz_comment_type','disqus') == 'facebook'){
-                                $threadLink .= '&urls[]='.$contentUrl;
+                                $threadLink .= '&urls[]='.$item -> fullLink;
                             }
                         }
-                    }
-                }
+                    }//End Foreach
+                }// Endif
 
                 // Get comment counts for all items(articles)
                 if($params -> get('tz_show_count_comment',1) == 1){
@@ -108,8 +122,13 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                             if($content){
                                 if($body    = json_decode($content -> body)){
                                     if($responses = $body -> response){
-                                        foreach($responses as $response){
-                                            $comments[$response ->link]   = $response -> posts;
+                                        if(!is_array($responses)){
+                                            JError::raiseNotice('300',JText::_('COM_TZ_PORTFOLIO_DISQUS_INVALID_SECRET_KEY'));
+                                        }
+                                        if(is_array($responses) && count($responses)){
+                                            foreach($responses as $response){
+                                                $comments[$response ->link]   = $response -> posts;
+                                            }
                                         }
                                     }
                                 }
@@ -193,29 +212,35 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                 }
             }
 
-            foreach($list as $row){
-                $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-                $itemParams = new JRegistry($row -> attribs); //Get Article's Params
+            $content_ids    = array();
+            if($list) {
+                for ($i = 0, $n = count($list); $i < $n; $i++) {
+                    $content_ids[]  = $list[$i] -> id;
+                }
+            }
+
+            $tags   = null;
+            if(count($content_ids) && $params -> get('show_tags',1)) {
+                $m_tag = JModelLegacy::getInstance('Tag', 'TZ_PortfolioModel', array('ignore_request' => true));
+                $m_tag->setState('params',$params);
+                $m_tag->setState('article.id', $content_ids);
+                $m_tag -> setState('list.ordering','x.contentid');
+                $tags   = $m_tag -> getArticleTags();
+            }
+
+            foreach($list as &$row){
+
+                if($tags && count($tags) && isset($tags[$row -> id])){
+                    $row -> tags   = $tags[$row -> id];
+                }
 
                 if($params -> get('comment_function_type','default') != 'js'){
-                    //Check redirect to view article
-                    if($itemParams -> get('tz_portfolio_redirect')){
-                        $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-                    }
-
-                    if($tzRedirect == 'article'){
-                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row -> slug,$row -> catid), true ,-1);
-                    }
-                    else{
-                        $contentUrl =JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row -> slug,$row -> catid), true ,-1);
-                    }
-
                     if($params -> get('tz_show_count_comment',1) == 1){
                         if($params -> get('tz_comment_type','disqus') == 'disqus' ||
                             $params -> get('tz_comment_type','disqus') == 'facebook'){
                             if($comments){
-                                if(array_key_exists($contentUrl,$comments)){
-                                    $row -> commentCount   = $comments[$contentUrl];
+                                if(array_key_exists($row -> fullLink,$comments)){
+                                    $row -> commentCount   = $comments[$row -> fullLink];
                                 }else{
                                     $row -> commentCount   = 0;
                                 }
@@ -236,22 +261,27 @@ class TZ_PortfolioViewUsers extends JViewLegacy
 
                     // Check general edit permission first.
                     if ($user->authorise('core.edit', $asset)) {
-                        $itemParams->set('access-edit', true);
+                        $row -> params ->set('access-edit', true);
                     }
                     // Now check if edit.own is available.
                     elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
                         // Check for a valid user and that they are the owner.
                         if ($userId == $row->created_by) {
-                            $itemParams->set('access-edit', true);
+                            $row -> params ->set('access-edit', true);
                         }
                     }
                 }
 
-                $row -> attribs = $itemParams -> toString();
-
-                $row -> text    = null;
-                if ($params->get('show_intro', 1)==1) {
+                // Old plugins: Ensure that text property is available
+                if (!isset($row->text))
+                {
                     $row -> text = $row -> introtext;
+                }
+                if(version_compare(COM_TZ_PORTFOLIO_VERSION,'3.1.7','<')){
+                    $row -> text    = null;
+                    if ($params->get('show_intro', 1)) {
+                        $row -> text = $row -> introtext;
+                    }
                 }
 
                 JPluginHelper::importPlugin('content');
@@ -264,6 +294,7 @@ class TZ_PortfolioViewUsers extends JViewLegacy
 
                 $row->event = new stdClass();
                 $results = $dispatcher->trigger('onContentPrepare', array ('com_tz_portfolio.users', &$row, &$params, $state -> get('offset')));
+                $row -> introtext   = $row -> text;
 
                 $results = $dispatcher->trigger('onContentAfterTitle', array('com_tz_portfolio.users', &$row, &$params, $state -> get('offset')));
                 $row->event->afterDisplayTitle = trim(implode("\n", $results));
@@ -296,7 +327,19 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                 $row->event->TZafterDisplayContent = trim(implode("\n", $results));
             }
         }
-        
+
+        //Escape strings for HTML output
+        $this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
+        if ($active)
+        {
+            $params->def('page_heading', $params->get('page_title', $active->title));
+        }
+        else
+        {
+            $params->def('page_heading', JText::_('JGLOBAL_ARTICLES'));
+        }
+
         $this -> assign('listsUsers',$list);
         $this -> assign('authorParams',$params);
         $this -> assign('params',$params);
@@ -332,9 +375,9 @@ class TZ_PortfolioViewUsers extends JViewLegacy
         endif;
 
         if($params -> get('tz_use_lightbox',1) == 1){
-            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'.
-                $jscompress -> folder.'/jquery.fancybox.pack'.$jscompress -> extfile.'.js"></script>');
-            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox'.$csscompress.'.css');
+            $doc -> addCustomTag('<script type="text/javascript" src="components/com_tz_portfolio/js'
+                .'/jquery.fancybox.pack.js"></script>');
+            $doc -> addStyleSheet('components/com_tz_portfolio/css/fancybox.min.css');
 
             $width      = null;
             $height     = null;
@@ -356,6 +399,13 @@ class TZ_PortfolioViewUsers extends JViewLegacy
             if($width || $height){
                 $autosize   = 'fitToView: false,autoSize: false,';
             }
+            $scrollHidden   = null;
+            if($params -> get('use_custom_scrollbar',1)){
+                $scrollHidden   = ',scrolling: "no"
+                                    ,iframe: {
+                                        scrolling : "no",
+                                    }';
+            }
             $doc -> addCustomTag('<script type="text/javascript">
                 jQuery(\'.fancybox\').fancybox({
                     type:\'iframe\',
@@ -367,15 +417,18 @@ class TZ_PortfolioViewUsers extends JViewLegacy
                             type : "inside"
                         },
                         overlay : {
-                            opacity:'.$params -> get('tz_lightbox_opacity',0.75).',
+                            css : {background: "rgba(0,0,0,'.$params -> get('tz_lightbox_opacity',0.75).')"}
                         }
-                    }
+                    }'
+                    .$scrollHidden.'
                 });
                 </script>
             ');
         }
 
-        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio'.$csscompress.'.css');
+        $doc -> addStyleSheet('components/com_tz_portfolio/css/tzportfolio.min.css');
+
+        $this -> _prepareDocument();
 
         // Add feed links
 		if ($params->get('show_feed_link', 1)) {
@@ -388,6 +441,43 @@ class TZ_PortfolioViewUsers extends JViewLegacy
         
         parent::display($tpl);
 
+    }
+
+    protected function _prepareDocument()
+    {
+        $app    = JFactory::getApplication();
+        $title  = $this->params->get('page_title', '');
+
+        if (empty($title)) {
+            $title = $app->getCfg('sitename');
+        }
+        elseif ($app->getCfg('sitename_pagetitles', 0) == 1) {
+            $title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
+        }
+        elseif ($app->getCfg('sitename_pagetitles', 0) == 2) {
+            $title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
+        }
+
+        $this->document->setTitle($title);
+
+        if ($this->params->get('menu-meta_description'))
+        {
+            $this->document->setDescription($this->params->get('menu-meta_description'));
+        }
+
+        if ($this->params->get('menu-meta_keywords'))
+        {
+            $this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+        }
+
+        if ($this->params->get('robots'))
+        {
+            $this->document->setMetadata('robots', $this->params->get('robots'));
+        }
+
+        if ($app->getCfg('MetaAuthor') == '1' && $this -> listAuthor) {
+            $this->document->setMetaData('author', $this -> listAuthor -> name);
+        }
     }
 
 

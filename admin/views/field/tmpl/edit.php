@@ -23,7 +23,11 @@ $fields = $this -> item -> defvalue;
 
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.tooltip');
+JHtml::_('behavior.modal');
 JHtml::_('formbehavior.chosen', 'select');
+
+//$saveOrderingUrl = 'index.php?option=com_tz_portfolio&task=fields.saveOrderAjax&tmpl=component';
+//JHtml::_('sortablelist.sortable', 'articleList', 'adminForm', strtolower($this -> state -> filter_order_Dir), $saveOrderingUrl);
 ?>
 
 <script type="text/javascript ">
@@ -32,7 +36,7 @@ Joomla.submitbutton = function(task) {
         Joomla.submitform(task, document.getElementById('field-form'));
     }
     else {
-        alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+        alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED', true));?>');
     }
 }
 
@@ -60,11 +64,11 @@ window.addEvent('load', function() {
             tz_b = (new Element("a", {
                 class: "btn",
                 "id": "tz_img_button"+tz_count
-            })).set('html', "<\i class=\"icon-file\"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_BROWSE_SERVER');?>").inject(tz_a,'after'),
+            })).set('html', "<\i class=\"icon-file\"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_BROWSE_SERVER', true);?>").inject(tz_a,'after'),
             tz_f = (new Element("a", {
                 class: 'btn',
                 "name": "tz_img_cancel_"+tz_count,
-                html:'<i class="icon-refresh"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_RESET');?>'
+                html:'<i class="icon-refresh"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_RESET', true);?>'
             })).inject(tz_b,'after'),
             tz_g = (new Element("div", {
                 "class": "tz-image-preview",
@@ -82,7 +86,8 @@ window.addEvent('load', function() {
             tz_a.getParent().getElement("div.tz-image-preview").empty()
         });
 
-        tz_b.addEvent("click", function (h) { (h).stop();
+        tz_b.addEvent("click", function (h) {
+            (h).stop();
             SqueezeBox.fromElement(this, {
                 handler: "iframe",
                 url: "index.php?option=com_media&view=images&tmpl=component&e_name=" + tz_d,
@@ -111,10 +116,13 @@ window.addEvent('load', function() {
             var tz_count = 0;
             var myButton = new Element('a', {
                 class: 'btn',
-                html: '<i class="icon-plus"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_ADD_NEW');?>',
+                html: '<i class="icon-plus"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_ADD_NEW', true);?>',
                 events: {
                     click: function(e){
                         e.stop();
+
+                        var myDivm = new Element('div');
+                        myDivm.inject($('fieldvalue'));
 
                         var myDiv = new Element('div',{
                             styles:{
@@ -124,7 +132,7 @@ window.addEvent('load', function() {
                                 'padding-top':'25px'
                             }
                         });
-                        myDiv.inject($('fieldvalue'));
+                        myDiv.inject(myDivm);
                         //value
                         var myValue = new Element('input',{
                             type: 'text',
@@ -134,16 +142,12 @@ window.addEvent('load', function() {
 
                         var myRemove = new Element('a',{
                             class: 'btn',
-                            html:'<i class="icon-remove"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_REMOVE');?>',
+                            html:'<i class="icon-remove"></i>&nbsp;<?php echo JText::_('COM_TZ_PORTFOLIO_REMOVE', true);?>',
                             events:{
                                 click: function(e){
                                     e.stop();
-                                    myDiv.dispose();
-                                    myValue.dispose();
-                                    myDefault.dispose();
-                                    myRemove.dispose();
-                                    myBox.dispose();
-                                    tz_count--;
+                                    this.getParent().getParent().dispose();
+//                                    tz_count--;
                                 }
                             }
                         });
@@ -153,20 +157,23 @@ window.addEvent('load', function() {
                             var myDefault = new Element('div',{
                                 style:"display:inline-block; padding-left:10px; width:20%;",
                                 html:'<\input type="checkbox" name="jform[default][]" value="'+tz_count+'" \style="margin:0;"/><\span style="padding-left:5px; font-size: 11px;">'+
-                                    '<i><?php echo JText::_('COM_TZ_PORTFOLIO_DEFAULT_VALUES');?></i></span>'
+                                    '<i><?php echo JText::_('COM_TZ_PORTFOLIO_DEFAULT_VALUES', true);?></i></span>'
                             }).inject(myRemove,'after');
                         }
                         if($('type').value == 'select' || $('type').value == 'radio'){
                             var myDefault = new Element('div',{
                                 style:"display:inline-block; padding-left:10px; width:20%;",
                                 html:'<\input type="radio" name="jform[default][]" value="'+tz_count+'" \style="margin:0;"/><\span style="padding-top:5px; font-size: 11px;">'+
-                                    '<i><?php echo JText::_('COM_TZ_PORTFOLIO_DEFAULT_VALUE');?></i></span>'
+                                    '<i><?php echo JText::_('COM_TZ_PORTFOLIO_DEFAULT_VALUE', true);?></i></span>'
                             }).inject(myRemove,'after');
                         }
 
-                        var myBox = createBox($('fieldvalue'),'jform[option_icon][]',tz_count+1,'');
+                        var myBox = createBox(myDivm,'jform[option_icon][]',tz_count+1,'');
 
-
+                        var myOrder = new Element('div',{
+                            style: 'padding-top: 10px; clear: both;',
+                            html: '<span style="padding-right: 10px;"><?php echo JText::_('JFIELD_ORDERING_LABEL', true);?></span><input type="text" name="jform[ordering][]">'
+                        }).inject(myBox,'after');
                         tz_count++;
                     }
                 }
@@ -180,9 +187,12 @@ window.addEvent('load', function() {
             var optionName  = '';
             var image       = '';
             if(type == $('type').value){
-                optionName  = '<?php echo $fields[$i] -> name;?>';
+                optionName  = '<?php echo addslashes(htmlspecialchars_decode($fields[$i] -> name));?>';
                 image       = '<?php echo $fields[$i] -> image;?>';
             }
+
+            var myDivm = new Element('div');
+            myDivm.inject($('fieldvalue'));
 
             var myDiv = new Element('div',{
                 styles:{
@@ -191,7 +201,7 @@ window.addEvent('load', function() {
                     'padding-top':'25px'
                 }
             });
-            myDiv.inject($('fieldvalue'));
+            myDiv.inject(myDivm);
             var myValue = new Element('input',{
                 type: 'text',
                 'name': 'jform[option_name][]',
@@ -204,11 +214,8 @@ window.addEvent('load', function() {
                 events:{
                     click: function(e){
                         e.stop();
-                        myDiv.dispose();
-                        myValue.dispose();
-                        myRemove.dispose();
-                        myBox.dispose();
-                        tz_count--;
+                        this.getParent().getParent().dispose();
+//                        tz_count--;
                     }
                 }
             });
@@ -222,6 +229,7 @@ window.addEvent('load', function() {
                         ' \style="margin:0;"/><\span style="padding-left:5px; font-size: 11px;">'+
                         '<i><?php echo JText::_('COM_TZ_PORTFOLIO_DEFAULT_VALUES');?></i></span>'
                 }).inject(myRemove,'after');
+
             }
 
             if($('type').value == 'select' || $('type').value == 'radio'){
@@ -234,7 +242,12 @@ window.addEvent('load', function() {
                 }).inject(myRemove,'after');
             }
 
-            var myBox = createBox($('fieldvalue'),'jform[option_icon][]',<?php echo $i+1;?>,image);
+            var myBox = createBox(myDivm,'jform[option_icon][]',<?php echo $i+1;?>,image);
+            var myOrder = new Element('div',{
+                style: 'padding-top: 10px; clear: both;',
+                html: '<span style="padding-right: 10px;"><?php echo JText::_('JFIELD_ORDERING_LABEL', true)?></span>'
+                    +'<input type="text" name="jform[ordering][]" value="<?php echo $fields[$i] -> ordering;?>">'
+            }).inject(myBox,'after');
 
             tz_count++;
             <?php $i++;?>
@@ -280,8 +293,8 @@ window.addEvent('load', function() {
                     value:'<?php echo ($fields[0] -> type == 'textarea')?$fields[0] -> name:'';?>'
                 });
                 myField.inject($('fieldvalue'));
-                /*var myDiv = new Element('div',{
-                html:<?php echo '\'<strong><i>'.JText::_('Use editor').'</i></strong>\'';?>,
+                var myDiv = new Element('div',{
+                html:<?php echo '\'<strong><i>'.JText::_('COM_TZ_PORTFOLIO_USE_EDITOR').'</i></strong>\'';?>,
                         styles:{
                             display:'block',
                             float:'left',
@@ -292,10 +305,10 @@ window.addEvent('load', function() {
                     var myField = new Element('input',{
                        type:'checkbox',
                        value : '1',
-                       'name':'option_editor',
+                       'name':'jform[option_editor]',
                         checked:'<?php echo ($fields[0]-> editor == '1')?'checked':'';?>'
                     });
-                    myField.inject(myDiv);*/
+                    myField.inject(myDiv);
                 createBox($('fieldvalue'),'jform[option_icon][]',0,'<?php echo ($fields[0] -> type == 'textarea')?$fields[0] -> image:'';?>');
                 break;
             case 'link':
@@ -362,13 +375,13 @@ window.addEvent('load', function() {
 
     renderElement(0);
 
-//        $('type').addEvent('change', function (e) {
-//            var tz_count_gb = 0;
-//            renderElement(tz_count_gb);
-//        });
-
     $$('.chzn-drop li').addEvent('click',function(e){
         e.stop();
+        var tz_count_gb = 0;
+        renderElement(tz_count_gb);
+    })
+    jQuery('#type').bind('change',function(e){
+        e.preventDefault();
         var tz_count_gb = 0;
         renderElement(tz_count_gb);
     })

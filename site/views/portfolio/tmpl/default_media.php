@@ -20,8 +20,8 @@
 defined('_JEXEC') or die();
 
 $media      = $this -> listMedia;
-$link       = $this -> itemLink;
-$params     = $this -> mediaParams;
+$link       = $this -> item ->link;
+$params     = $this -> item -> params;
 $imgSize    = null;
 $src        = null;
 
@@ -34,14 +34,14 @@ if(isset($media[0] -> featured) && $media[0] -> featured == 1){
     }
 }
 if($imgSize){
-    if(!empty($media[0] -> images))
-        $src    = str_replace('.'.JFile::getExt($media[0] -> images),'_'.$imgSize
-                                                  .'.'.JFile::getExt($media[0] -> images),$media[0] -> images);
+    if (!empty($media[0]->images))
+        $src = str_replace('.' . JFile::getExt($media[0]->images), '_' . $imgSize
+            . '.' . JFile::getExt($media[0]->images), $media[0]->images);
 
-    if(!empty($media[0] -> images_hover))
-        $srcHover   = JURI::root().str_replace('.'.JFile::getExt($media[0] -> images_hover),'_'
-                                           .$imgSize
-                                          .'.'.JFile::getExt($media[0] -> images_hover),$media[0] -> images_hover);
+    if (!empty($media[0]->images_hover))
+        $srcHover = JURI::root() . str_replace('.' . JFile::getExt($media[0]->images_hover), '_'
+                . $imgSize
+                . '.' . JFile::getExt($media[0]->images_hover), $media[0]->images_hover);
 }
 $class  = null;
 if($params -> get('tz_use_lightbox',1) == 1){
@@ -58,14 +58,16 @@ if($params -> get('tz_use_lightbox',1) == 1){
                     <?php if($src): $src    = JURI::root().$src;?>
                         <div class="tz_portfolio_image">
                             <a<?php echo $class;?> href="<?php echo $link?>">
-                                <img src="<?php echo $src;?>" alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                                         title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"/>
+                                <img src="<?php echo $src;?>"
+                                     alt="<?php echo isset($media[0] -> imagetitle)?$media[0] -> imagetitle:$this -> item -> title;?>"
+                                     title="<?php echo isset($media[0] -> imagetitle)?$media[0] -> imagetitle:$this -> item -> title;?>"
+                                     itemprop="thumbnailUrl"/>
                                 <?php if($params -> get('tz_use_image_hover',1) == 1 AND $params -> get('show_image',1) == 1):?>
                                     <?php if(isset($srcHover)):?>
                                         <img width="100%" class="tz_image_hover"
                                             src="<?php echo $srcHover;?>"
-                                         alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                                         title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"/>
+                                         alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                                         title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"/>
                                     <?php endif;?>
                                 <?php endif;?>
                             </a>
@@ -79,9 +81,10 @@ if($params -> get('tz_use_lightbox',1) == 1){
                     <?php if($src): ?>
                         <div class="tz_portfolio_image_gallery">
                             <a<?php echo $class;?> href="<?php echo $link?>">
-                                <img src="<?php echo $src;?>"
-                                     alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                                     title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"/>
+                                <img src="<?php echo JURI::root().$src;?>"
+                                     alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                                     title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                                     itemprop="thumbnailUrl"/>
                             </a>
                         </div>
                     <?php endif;?>
@@ -110,8 +113,10 @@ if($params -> get('tz_use_lightbox',1) == 1){
                 ?>
                     <div class="tz_portfolio_video">
                         <a<?php echo $class;?> href="<?php echo $link?>">
-                            <img width="100%" src="<?php echo $srcVideo;?>" title="<?php echo $media[0] -> imagetitle;?>"
-                                     alt="<?php echo $media[0] -> imagetitle;?>"/>
+                            <img src="<?php echo $srcVideo;?>"
+                                 title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                                 alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                                 itemprop="thumbnailUrl"/>
                         </a>
                     </div>
                 <?php endif;?>

@@ -177,7 +177,9 @@ class plgContentTZ_Portfolio extends JPlugin
 			return false;
 		}
 
-		if ($params->get('show_item_navigation') == 1 && ((($context == 'com_tz_portfolio.article') && ($view == 'article'))||(($context == 'com_tz_portfolio.p_article') && $view == 'p_article'))) {
+		if (((($context == 'com_tz_portfolio.article') && ($view == 'article'))||
+		(($context == 'com_tz_portfolio.p_article') && $view == 'p_article')) 
+		&& $params && $params->get('show_item_navigation') == 1) {
 			$html = '';
 			$db		= JFactory::getDbo();
 			$user	= JFactory::getUser();
@@ -309,12 +311,17 @@ class plgContentTZ_Portfolio extends JPlugin
 				$pnSpace = " ";
 			}
 
+            $tmpl   = null;
+            if($params -> get('tz_use_lightbox')){
+                $tmpl   = '&amp;tmpl=component';
+            }
+
 			if ($row->prev) {
                 if($view == 'p_article'){
-				    $row->prev = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row->prev->slug, $row->prev->catslug));
+				    $row->prev = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row->prev->slug, $row->prev->catslug).$tmpl);
                 }
                 else{
-				    $row->prev = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row->prev->slug, $row->prev->catslug));
+				    $row->prev = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row->prev->slug, $row->prev->catslug).$tmpl);
                 }
 			} else {
 				$row->prev = '';
@@ -322,10 +329,10 @@ class plgContentTZ_Portfolio extends JPlugin
 
 			if ($row->next) {
                 if($view == 'p_article'){
-				    $row->next = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row->next->slug, $row->next->catslug));
+				    $row->next = JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($row->next->slug, $row->next->catslug).$tmpl);
                 }
                 else{
-				    $row->next = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row->next->slug, $row->next->catslug));
+				    $row->next = JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($row->next->slug, $row->next->catslug).$tmpl);
                 }
 			} else {
 				$row->next = '';

@@ -13,7 +13,7 @@
     <fields name="params">
 
         <!-- Add fields to the request variables for the layout. -->
-        <fieldset name="request">
+        <fieldset name="request" addfieldpath="/administrator/components/com_tz_portfolio/models/fields">
 
             <field name="tz_catid" type="category"
                 description="JGLOBAL_CHOOSE_CATEGORY_DESC"
@@ -23,6 +23,12 @@
                 label="JGLOBAL_CHOOSE_CATEGORY_LABEL"
             >
                 <option value="">JOPTION_ALL_CATEGORIES</option>
+            </field>
+            <field type="tztemplates" name="tz_template_style_id"
+                   default="0"
+                   label="COM_TZ_PORTFOLIO_TEMPLATE_STYLE_LABEL"
+                   description="COM_TZ_PORTFOLIO_TEMPLATE_STYLE_DESC">
+                <option value="0">JOPTION_USE_DEFAULT</option>
             </field>
         </fieldset>
         <fieldset name="basic"
@@ -34,6 +40,7 @@
                 label="JGLOBAL_SHOW_TITLE_LABEL"
                 description="JGLOBAL_SHOW_TITLE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -44,6 +51,7 @@
                 label="JGLOBAL_LINKED_TITLES_LABEL"
                 description="JGLOBAL_LINKED_TITLES_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -53,6 +61,7 @@
                 label="JGLOBAL_SHOW_INTRO_LABEL"
                 >
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -63,6 +72,7 @@
                 label="JGLOBAL_SHOW_CATEGORY_LABEL"
                 description="JGLOBAL_SHOW_CATEGORY_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -73,6 +83,7 @@
                 label="JGLOBAL_LINK_CATEGORY_LABEL"
                 description="JGLOBAL_LINK_CATEGORY_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JNO</option>
                 <option	value="1">JYES</option>
             </field>
@@ -83,6 +94,7 @@
                 label="JGLOBAL_SHOW_PARENT_CATEGORY_LABEL"
                 description="JGLOBAL_SHOW_PARENT_CATEGORY_DESC">
                 <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -93,6 +105,7 @@
                 label="JGLOBAL_LINK_PARENT_CATEGORY_LABEL"
                 description="JGLOBAL_LINK_PARENT_CATEGORY_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JNO</option>
                 <option	value="1">JYES</option>
             </field>
@@ -103,6 +116,7 @@
                 label="JGLOBAL_SHOW_AUTHOR_LABEL"
                 description="JGLOBAL_SHOW_AUTHOR_DESC">
                 <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -113,6 +127,7 @@
                 label="JGLOBAL_LINK_AUTHOR_LABEL"
                 description="JGLOBAL_LINK_AUTHOR_DESC">
                 <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JNO</option>
                 <option	value="1">JYES</option>
             </field>
@@ -123,6 +138,7 @@
                 label="JGLOBAL_SHOW_CREATE_DATE_LABEL"
                 description="JGLOBAL_SHOW_CREATE_DATE_DESC">
                 <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -133,6 +149,7 @@
                 label="JGLOBAL_SHOW_MODIFY_DATE_LABEL"
                 description="JGLOBAL_SHOW_MODIFY_DATE_DESC">
                 <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -143,6 +160,7 @@
                 label="JGLOBAL_SHOW_PUBLISH_DATE_LABEL"
                 description="JGLOBAL_SHOW_PUBLISH_DATE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -153,6 +171,7 @@
                 label="JGLOBAL_SHOW_NAVIGATION_LABEL"
                 description="JGLOBAL_SHOW_NAVIGATION_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -161,6 +180,7 @@
                 label="JGLOBAL_SHOW_READMORE_LABEL"
                 description="JGLOBAL_SHOW_READMORE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -172,6 +192,7 @@
                 description="JGLOBAL_SHOW_VOTE_DESC"
             >
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -182,6 +203,7 @@
                 label="JGLOBAL_SHOW_ICONS_LABEL"
                 description="JGLOBAL_SHOW_ICONS_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -192,6 +214,7 @@
                 label="JGLOBAL_SHOW_PRINT_ICON_LABEL"
                 description="JGLOBAL_SHOW_PRINT_ICON_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -202,6 +225,7 @@
                 label="JGLOBAL_SHOW_EMAIL_ICON_LABEL"
                 description="JGLOBAL_SHOW_EMAIL_ICON_DESC">
                 <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -212,6 +236,7 @@
                 label="JGLOBAL_SHOW_HITS_LABEL"
                 description="JGLOBAL_SHOW_HITS_DESC">
                 <option	value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option	value="0">JHIDE</option>
                 <option	value="1">JSHOW</option>
             </field>
@@ -222,24 +247,27 @@
                 label="JGLOBAL_SHOW_UNAUTH_LINKS_LABEL"
                 description="JGLOBAL_SHOW_UNAUTH_LINKS_DESC">
                     <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                     <option value="0">JNO</option>
                     <option value="1">JYES</option>
             </field>
-            <field
-                name="urls_position"
-                type="list"
-                label="COM_CONTENT_FIELD_URLSPOSITION_LABEL"
-                description="COM_CONTENT_FIELD_URLSPOSITION_DESC">
-                <option value="">JGLOBAL_USE_GLOBAL</option>
-                <option value="0">JABOVE</option>
-                <option value="1">JBELOW</option>
-            </field>
+            <!--<field-->
+                <!--name="urls_position"-->
+                <!--type="list"-->
+                <!--label="COM_CONTENT_FIELD_URLSPOSITION_LABEL"-->
+                <!--description="COM_CONTENT_FIELD_URLSPOSITION_DESC">-->
+                <!--<option value="">JGLOBAL_USE_GLOBAL</option>-->
+                <!--<option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>-->
+                <!--<option value="0">JABOVE</option>-->
+                <!--<option value="1">JBELOW</option>-->
+            <!--</field>-->
             <field name="spacer12" type="spacer" hr="true"/>
 
             <field name="spacer13" type="spacer" label="COM_TZ_PORTFOLIO_RELATED_ARTICLE"/>
             <field type="list" name="show_related_article"
                    label="COM_TZ_PORTFOLIO_SHOW_RELATED_ARTICLE">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -247,6 +275,7 @@
             <field name="show_related_heading" type="list"
                    label="COM_TZ_PORTFOLIO_SHOW_RELATED_HEADING">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -254,6 +283,7 @@
             <field name="show_related_type" type="list"
                    label="COM_TZ_PORTFOLIO_SHOW_RELATED_TYPE">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="title">COM_TZ_PORTFOLIO_RELATED_TITLE</option>
                 <option value="image">COM_TZ_PORTFOLIO_RELATED_IMAGE</option>
                 <option value="title_image">COM_TZ_PORTFOLIO_RELATED_TITLE_IMAGE</option>
@@ -262,6 +292,7 @@
                    default=""
                    label="COM_TZ_PORTFOLIO_SHOW_RELATED_FEATURED">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="1">JSHOW</option>
                 <option value="0">JHIDE</option>
                 <option value="2">COM_TZ_PORTFOLIO_RELATED_ONLY_SHOW_FEATURED</option>
@@ -269,6 +300,7 @@
             <field name="related_image_size" type="list"
                    label="COM_TZ_PORTFOLIO_RELATED_IMAGE_SIZE">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
                 <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
                 <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -277,6 +309,7 @@
             </field>
             <field name="related_orderby" type="list" label="COM_TZ_PORTFOLIO_RELATED_ORDERBY">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="rdate">COM_TZ_PORTFOLIO_MOST_RECENT</option>
                 <option value="date">COM_TZ_PORTFOLIO_MOST_OLDEST</option>
                 <option value="hits">JGLOBAL_MOST_HITS</option>
@@ -289,7 +322,7 @@
                    label="COM_TZ_PORTFOLIO_REDIRECT"
                    description="COM_TZ_PORTFOLIO_REDIRECT_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
-                <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="article">COM_TZ_PORTFOLIO_BLOG_ARTICLE</option>
                 <option value="p_article">COM_TZ_PORTFOLIO_PORTFOLIO_ARTICLE</option>
             </field>
@@ -403,6 +436,7 @@
                    label="COM_TZ_PORTFOLIO_SHOW_ATTACHMENTS"
                    description="COM_TZ_PORTFOLIO_SHOW_ATTACHMENTS_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -412,6 +446,7 @@
                    label="COM_TZ_PORTFOLIO_SHOW_EXTRA_FIELDS"
                    description="COM_TZ_PORTFOLIO_SHOW_EXTRA_FIELDS_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -419,6 +454,7 @@
                 label="COM_TZ_PORTFOLIO_FIELD_SHOW_TYPE"
                 description="COM_TZ_PORTFOLIO_FIELD_SHOW_TYPE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="text">COM_TZ_PORTFOLIO_FIELD_TEXT</option>
                 <option value="image">COM_TZ_PORTFOLIO_FIELD_IMAGE</option>
                 <option value="textimage">COM_TZ_PORTFOLIO_FIELD_TEXT_AND_IMAGE</option>
@@ -431,6 +467,14 @@
                 <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
                 <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
                 <option value="order">JGLOBAL_ARTICLE_MANAGER_ORDER</option>
+            </field>
+            <field name="fields_option_order" type="list"
+                   label="COM_TZ_PORTFOLIO_TZ_FIELDS_OPTION_ORDER_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">JFIELD_OPTION_NONE</option>
+                <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+                <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+                <option value="ordering">COM_TZ_PORTFOLIO_ORDERING</option>
             </field>
             <field type="spacer" name="spacer9" hr="true"/>
 
@@ -542,6 +586,7 @@
                    label="COM_TZ_PORTFOLIO_SHOW_IMAGE"
                    description="COM_TZ_PORTFOLIO_SHOW_IMAGE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -549,6 +594,7 @@
                    label="COM_TZ_PORTFOLIO_TZ_USE_IMAGE_HOVER"
                    description="COM_TZ_PORTFOLIO_TZ_USE_IMAGE_HOVER_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -559,6 +605,7 @@
                     label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE"
                     description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
                 <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
                 <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -569,6 +616,7 @@
                     label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE"
                     description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
                 <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
                 <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -580,6 +628,7 @@
                    label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE"
                    description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
                 <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
                 <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -593,6 +642,7 @@
                    type="list"
                    label="COM_TZ_PORTFOLIO_SHOW_IMAGE_GALLERY"
                    description="COM_TZ_PORTFOLIO_SHOW_IMAGE_GALLERY_DESC">
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
@@ -601,6 +651,7 @@
                    type="list"
                    label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE"
                    description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE_DESC">
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
                 <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
@@ -617,6 +668,7 @@
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SLIDESHOW"
                    description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SLIDESHOW_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -625,6 +677,7 @@
                    label="COM_TZ_PORTFOLIO_SHOW_ARROWS_IMAGE_GALLERY"
                    description="COM_TZ_PORTFOLIO_SHOW_ARROWS_IMAGE_GALLERY_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -633,14 +686,23 @@
                    label="COM_TZ_PORTFOLIO_SHOW_CONTROLNAV_IMAGE_GALLERY"
                    description="COM_TZ_PORTFOLIO_SHOW_CONTROLNAV_IMAGE_GALLERY_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
+            </field>
+            <field name="controlnav_type"
+                   type="list" class="btn-group"
+                   label="COM_TZ_PORTFOLIO_CONTROLNAV_IMAGE_GALLERY_TYPE_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">COM_TZ_PORTFOLIO_DEFAULT</option>
+                <option value="thumbnails">COM_TZ_PORTFOLIO_THUMBNAILS</option>
             </field>
             <field name="image_gallery_pausePlay"
                    type="list"
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_PAUSEPLAY"
                    description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_PAUSEPLAY_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -649,6 +711,7 @@
                     label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_PAUSEONACTION"
                     description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_PAUSEONACTION_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -657,6 +720,7 @@
                     label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_PAUSEONHOVER"
                     description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_PAUSEONHOVER_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -665,6 +729,7 @@
                     label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_USECSS"
                     description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_USECSS_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -673,6 +738,7 @@
                     label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SLIDE_DIRECTION"
                     description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SLIDE_DIRECTION_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="horizontal">COM_TZ_PORTFOLIO_HORIZONTAL</option>
                 <option value="vertical">COM_TZ_PORTFOLIO_VERTICAL</option>
             </field>
@@ -680,6 +746,7 @@
                    type="list"
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_AMINATION">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="slide">COM_TZ_PORTFOLIO_IMAGE_GALLERY_SLIDE</option>
                 <option value="fade">COM_TZ_PORTFOLIO_IMAGE_GALLERY_FADE</option>
             </field>
@@ -692,6 +759,7 @@
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_LOOP"
                    description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_ANIMATION_LOOP_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -699,6 +767,7 @@
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SMOOTH_HEIGHT"
                    description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_SMOOTH_HEIGHT_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -706,6 +775,7 @@
                    label="COM_TZ_PORTFOLIO_IMAGE_GALLERY_RANDOMIZE"
                    description="COM_TZ_PORTFOLIO_IMAGE_GALLERY_RANDOMIZE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -736,6 +806,7 @@
                    label="COM_TZ_PORTFOLIO_SHOW_VIDEO"
                    description="COM_TZ_PORTFOLIO_SHOW_VIDEO_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -747,6 +818,7 @@
             <field name="tz_show_gmap" type="list"
                    label="COM_TZ_PORTFOLIO_SHOW_GMAP">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -760,6 +832,7 @@
                    label="COM_TZ_PORTFOLIO_GMAP_MOUSEWHEEL_ZOOM"
                    description="COM_TZ_PORTFOLIO_GMAP_MOUSEWHEEL_ZOOM_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -767,6 +840,7 @@
                    label="COM_TZ_PORTFOLIO_GMAP_ZOOMLEVEL"
                    description="COM_TZ_PORTFOLIO_GMAP_ZOOMLEVEL_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="21">21</option>
                 <option value="20">20</option>
                 <option value="19">19</option>
@@ -843,6 +917,7 @@
                    class="btn-group"
                    label="COM_TZ_PORTFOLIO_USE_CLOUD_ZOOM">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -850,6 +925,7 @@
                    label="COM_TZ_PORTFOLIO_ARTICLE_IMAGE_ZOOM_SIZE"
                    description="COM_TZ_PORTFOLIO_ARTICLE_IMAGE_ZOOM_SIZE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
                 <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
                 <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -866,6 +942,7 @@
                    label="COM_TZ_PORTFOLIO_POSITION"
                    description="COM_TZ_PORTFOLIO_POSITION_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="inside">COM_TZ_PORTFOLIO_INSIDE</option>
                 <option value="left">COM_TZ_PORTFOLIO_LEFT</option>
                 <option value="right">COM_TZ_PORTFOLIO_RIGHT</option>
@@ -894,6 +971,7 @@
                    label="COM_TZ_PORTFOLIO_SOFTFOCUS"
                    description="COM_TZ_PORTFOLIO_SOFTFOCUS_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -905,6 +983,7 @@
                    label="COM_TZ_PORTFOLIO_CLOUD_ZOOM_SHOW_TITLE"
                    description="COM_TZ_PORTFOLIO_CLOUD_ZOOM_SHOW_TITLE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -920,12 +999,14 @@
                    label="COM_TZ_PORTFOLIO_SHOW_COMMENT"
                    description="COM_TZ_PORTFOLIO_SHOW_COMMENT_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
             <field name="tz_comment_type" type="list"
                    label="COM_TZ_PORTFOLIO_TZ_COMMENT_TYPE">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="facebook">COM_TZ_PORTFOLIO_COMMENT_FACEBOOK</option>
                 <option value="jcomment">COM_TZ_PORTFOLIO_COMMENT_JCOMMENT</option>
                 <option value="disqus">COM_TZ_PORTFOLIO_COMMENT_DISQUS</option>
@@ -934,6 +1015,7 @@
                    label="COM_TZ_PORTFOLIO_SHOW_COUNT_COMMENT"
                    description="COM_TZ_PORTFOLIO_SHOW_COUNT_COMMENT_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -946,6 +1028,7 @@
                    label="COM_TZ_PORTFOLIO_TEST_DISQUS_COMMENTS_ON_A_LOCALDEVELOPMENT_SERVER"
                    description="COM_TZ_PORTFOLIO_THIS_OPTION_WILL_ENABLE_DISQUS_COMMENTS_WITHOUT_HAVING_TO_UPLOAD_YOUR_WEBSITE_ON_THE_ACTUAL_DOMAIN_ASSOCIATED_WITH_DISQUS">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JDISABLED</option>
                 <option value="1">JENABLED</option>
             </field>
@@ -959,6 +1042,7 @@
                    label="COM_TZ_PORTFOLIO_SHOW_TWITTER_BUTTON"
                    description="COM_TZ_PORTFOLIO_SHOW_TWITTER_BUTTON_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -967,6 +1051,7 @@
                    label="COM_TZ_PORTFOLIO_SHOW_FACEBOOK_BUTTON"
                    description="COM_TZ_PORTFOLIO_SHOW_FACEBOOK_BUTTON_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -975,6 +1060,23 @@
                    label="COM_TZ_PORTFOLIO_SHOW_GOOGLE_BUTTON"
                    description="COM_TZ_PORTFOLIO_SHOW_GOOGLE_BUTTON_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_pinterest_button" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_LABEL"
+                   description="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_linkedin_button" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_LABEL"
+                   description="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -984,12 +1086,14 @@
             <field name="show_quote_text" type="list"
                     label="COM_TZ_PORTFOLIO_SHOW_QUOTE_TEXT_LABEL">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
             <field name="show_quote_author" type="list"
                     label="COM_TZ_PORTFOLIO_SHOW_QUOTE_AUTHOR_LABEL">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -1003,6 +1107,7 @@
                     label="COM_TZ_PORTFOLIO_SHOW_AUDIO_LABEL"
                     description="COM_TZ_PORTFOLIO_SHOW_AUDIO_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -1010,12 +1115,14 @@
                     label="COM_TZ_PORTFOLIO_AUDIO_LAYOUT_TYPE_LABEL"
                     description="COM_TZ_PORTFOLIO_AUDIO_LAYOUT_TYPE_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="thumbnail">COM_TZ_PORTFOLIO_THUMBNAIL</option>
                 <option value="audio">COM_TZ_PORTFOLIO_AUDIO</option>
             </field>
             <field name="show_soundcloud_artwork" type="list"
                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_ARTWORK_LABEL">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -1023,12 +1130,14 @@
                     label="COM_TZ_PORTFOLIO_SOUNDCLOUD_AUTO_PLAY_LABEL"
                     description="COM_TZ_PORTFOLIO_SOUNDCLOUD_AUTO_PLAY_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
             <field name="show_soundcloud_sharing" type="list"
                     label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_SHARING_LABEL">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -1036,30 +1145,35 @@
                     label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_BUYING_BUTTON_LABEL"
                     description="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_BUYING_BUTTON_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
             <field name="show_soundcloud_download" type="list"
                     label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_DOWNLOAD_BUTTON_LABEL">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
             <field name="show_soundcloud_user" type="list"
                     label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_USER_LABEL">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
             <field name="show_soundcloud_playcount" type="list"
                     label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_PLAYCOUNT_LABEL">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
             <field name="show_soundcloud_comments" type="list"
                    label="COM_TZ_PORTFOLIO_SHOW_SOUNDCLOUD_COMMENTS_LABEL">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
@@ -1074,6 +1188,117 @@
             <field name="audio_soundcloud_height" type="text"
                    label="COM_TZ_PORTFOLIO_AUDIO_HEIGHT_LABEL"/>
         </fieldset>
+
+        <!-- START THE SCROLLBAR'S PARAMETERS -->
+        <fieldset name="scrollbar_options" label="COM_TZ_PORTFOLIO_SCROLLBAR_FIELDSET_LABEL">
+            <field name="use_custom_scrollbar" type="list"
+                   label="COM_TZ_PORTFOLIO_USE_CUSTOM_SCROLLBAR_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="scrollbar_theme" type="list"
+                   label="COM_TZ_PORTFOLIO_SCROLLBAR_THEME_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="light">COM_TZ_PORTFOLIO_LIGHT</option>
+                <option value="dark">COM_TZ_PORTFOLIO_DARK</option>
+                <option value="light-2">COM_TZ_PORTFOLIO_LIGHT_2</option>
+                <option value="dark-2">COM_TZ_PORTFOLIO_DARK_2</option>
+                <option value="light-thick">COM_TZ_PORTFOLIO_LIGHT_THICK</option>
+                <option value="dark-thick">COM_TZ_PORTFOLIO_DARK_THICK</option>
+                <option value="light-thin">COM_TZ_PORTFOLIO_LIGHT_THIN</option>
+                <option value="dark-thin">COM_TZ_PORTFOLIO_DARK_THIN</option>
+            </field>
+            <field name="set_width" type="text" label="COM_TZ_PORTFOLIO_SET_WIDTH_LABEL"/>
+            <field name="set_height" type="text" label="COM_TZ_PORTFOLIO_SET_HEIGHT_LABEL"/>
+            <field name="horizontalScroll" type="list"
+                   label="COM_TZ_PORTFOLIO_HORIZONTAL_SCROLL_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="scrollInertia" type="text"
+                   label="COM_TZ_PORTFOLIO_SCROLL_INERTIA_LABEL"/>
+            <field name="autoDraggerLength" type="list"
+                   label="COM_TZ_PORTFOLIO_AUTO_DRAGGER_LENGTH_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="mouseWheel" type="list"
+                   label="COM_TZ_PORTFOLIO_MOUSE_WHEEL_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="mouseWheelPixels" type="text" label="COM_TZ_PORTFOLIO_MOUSE_WHEEL_PIXEL_LABEL"/>
+            <field name="autoHideScrollbar" type="list"
+                   label="COM_TZ_PORTFOLIO_AUTO_HIDE_SCROLLBAR_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="snapAmount" type="text"
+                   label="COM_TZ_PORTFOLIO_SNAP_AMOUNT_LABEL"
+                    description="COM_TZ_PORTFOLIO_SNAP_AMOUNT_DESC"/>
+            <field name="snapOffset" type="text"
+                   label="COM_TZ_PORTFOLIO_SNAP_OFFSET_LABEL"
+                   description="COM_TZ_PORTFOLIO_SNAP_OFFSET_DESC"/>
+            <field name="scrollButtons_enable" type="list"
+                   label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_ENABLE_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="scrollButtons_scrollType" type="list"
+                    label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_TYPE_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="continuous">COM_TZ_PORTFOLIO_CONTINUOUS</option>
+                <option value="pixels">COM_TZ_PORTFOLIO_PIXELS</option>
+            </field>
+            <field name="scrollButtons_scrollSpeed" type="text"
+                   label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_SPEED_LABEL"/>
+            <field name="scrollButtons_scrollAmount" type="text"
+                   label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_AMOUNT_LABEL"/>
+            <field name="advanced_updateOnBrowserResize" type="list"
+                   label="COM_TZ_PORTFOLIO_ADVANCED_UPDATE_BROWSER_RESIZE_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="advanced_updateOnContentResize" type="list"
+                   label="COM_TZ_PORTFOLIO_ADVANCED_UPDATE_CONTENT_RESIZE_LABEL"
+                   description="COM_TZ_PORTFOLIO_ADVANCED_UPDATE_CONTENT_RESIZE_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="advanced_autoExpandHorizontalScroll" type="list"
+                   label="COM_TZ_PORTFOLIO_ADVANCED_AUTO_EXPAND_HORIZONTAL_SCROLL_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="advanced_autoScrollOnFocus" type="list"
+                   label="COM_TZ_PORTFOLIO_ADVANCED_AUTO_SCROLL_ON_FOCUS_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="advanced_normalizeMouseWheelDelta"  type="list"
+                   label="COM_TZ_PORTFOLIO_ADVANCED_NORMALIZE_MOUSE_WHEEL_DELTA_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="contentTouchScroll" type="list"
+                   label="COM_TZ_PORTFOLIO_CONTENT_TOUCH_SCROLL_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+        </fieldset>
+        <!-- END THE SCROLLBAR'S PARAMETERS -->
 
         <fieldset name="integration">
             <field name="show_feed_link" type="list"

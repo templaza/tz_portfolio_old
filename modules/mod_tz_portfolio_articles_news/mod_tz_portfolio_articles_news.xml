@@ -11,10 +11,11 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.1.5</version>
+	<version>3.3.5</version>
 	<description>MOD_ARTICLES_NEWS_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_tz_portfolio_articles_news">mod_tz_portfolio_articles_news.php</filename>
+		<folder>css</folder>
 		<folder>tmpl</folder>
 		<filename>helper.php</filename>
 		<filename>index.html</filename>
@@ -45,18 +46,31 @@
 					description="MOD_ARTICLES_NEWS_FIELD_CATEGORY_DESC" >
 					<option value="">JOPTION_ALL_CATEGORIES</option>
 				</field>
+                <field name="show_article" type="radio"
+                       class="btn-group" default="1"
+                       label="MOD_TZ_PORTFOLIO_ARTICLES_NEWS_SHOW_ARTICLE_LABEL">
+                    <option value="1">JSHOW</option>
+                    <option value="0">JHIDE</option>
+                </field>
 
-				<field
-					name="image"
+				<field name="show_image"
 					 type="radio" class="btn-group"
 					default="0"
 					label="MOD_ARTICLES_NEWS_FIELD_IMAGES_LABEL"
 					description="MOD_ARTICLES_NEWS_FIELD_IMAGES_DESC">
-					<option
-						value="1">JYES</option>
-					<option
-						value="0">JNO</option>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
 				</field>
+                <field name="tz_image_size" type="list"
+                        default="S"
+                        label="MOD_TZ_PORTFOLIO_ARTICLES_NEWS_TZ_IMAGE_SIZE">
+                    <option value="o">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_ORIGINAL</option>
+                    <option value="XS">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_XSMALL</option>
+                    <option value="S">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_SMALL</option>
+                    <option value="M">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_MEDIUM</option>
+                    <option value="L">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_LARGE</option>
+                    <option value="XL">MOD_TZ_PORTFOLIO_ARTICLES_NEWS_XLARGE</option>
+                </field>
 
 				<field
 					name="item_title"
@@ -149,6 +163,27 @@
 				</field>
 
 			</fieldset>
+
+            <fieldset name="quote_link_options" label="MOD_TZ_PORTFOLIO_ARTICLES_NEWS_QUOTE_LINK_FIELDSET_LABEL">
+                <field name="show_quote" type="radio"
+                    class="btn-group" default="1"
+                    label="MOD_TZ_PORTFOLIO_ARTICLES_NEWS_FIELD_QUOTE_LABEL">
+                    <option value="1">JSHOW</option>
+                    <option value="0">JHIDE</option>
+                </field>
+                <field name="show_quote_author" type="radio"
+                       class="btn-group" default="1"
+                       label="MOD_TZ_PORTFOLIO_ARTICLES_NEWS_SHOW_QUOTE_AUTHOR_LABEL">
+                    <option value="0">JHIDE</option>
+                    <option value="1">JSHOW</option>
+                </field>
+                <field name="show_link" type="radio"
+                    class="btn-group" default="1"
+                    label="MOD_TZ_PORTFOLIO_ARTICLES_NEWS_FIELD_LINK_LABEL">
+                    <option value="1">JSHOW</option>
+                    <option value="0">JHIDE</option>
+                </field>
+            </fieldset>
 
 			<fieldset
 				name="advanced">

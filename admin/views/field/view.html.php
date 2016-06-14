@@ -30,6 +30,12 @@ class TZ_PortfolioViewField extends JViewLegacy
     public function display($tpl = null){
         $this -> item   = $this -> get('Item');
 
+        $buttons_plugin = JPluginHelper::getPlugin('editors-xtd');
+
+        if($buttons_plugin){
+
+        }
+
         $groupModel = JModelLegacy::getInstance('Groups','TZ_PortfolioModel',array('ignore_request' => true));
         $groupModel -> setState('filter_order','name');
         $groupModel -> setState('filter_order_Dir','ASC');
@@ -77,10 +83,10 @@ class TZ_PortfolioViewField extends JViewLegacy
 
         // If the joomla is version 3.0
         if(COM_TZ_PORTFOLIO_JVERSION_COMPARE){
-            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-v3.0.2/css/font-awesome.css');
+            $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/fonts/font-awesome-v3.0.2/css/font-awesome.min.css');
         }
 
-        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.css');
+        $doc -> addStyleSheet(JURI::base(true).'/components/com_tz_portfolio/css/style.min.css');
 
         // Special HTML workaround to get send popup working
         $docClass       = ' class="btn btn-small"';

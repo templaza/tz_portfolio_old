@@ -24,6 +24,14 @@
 
 	<!-- Add fields to the parameters object for the layout. -->
 	<fields name="params">
+        <fieldset name="request" addfieldpath="administrator/components/com_tz_portfolio/models/fields">
+            <field type="tztemplates" name="tz_template_style_id"
+                   default="0"
+                   label="COM_TZ_PORTFOLIO_TEMPLATE_STYLE_LABEL"
+                   description="COM_TZ_PORTFOLIO_TEMPLATE_STYLE_DESC">
+                <option value="0">JOPTION_USE_DEFAULT</option>
+            </field>
+        </fieldset>
 
 		<!-- Basic options. -->
 		<fieldset name="basic"
@@ -321,6 +329,14 @@
                 <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
                 <option value="order">JGLOBAL_ARTICLE_MANAGER_ORDER</option>
             </field>
+            <field name="fields_option_order" type="list"
+                   label="COM_TZ_PORTFOLIO_TZ_FIELDS_OPTION_ORDER_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">JFIELD_OPTION_NONE</option>
+                <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+                <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+                <option value="ordering">COM_TZ_PORTFOLIO_ORDERING</option>
+            </field>
             <field type="spacer" name="spacer9" hr="true"/>
 
             <field name="tz_portfolio_tag_user" type="spacer" class="spacer"
@@ -451,6 +467,13 @@
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
+            </field>
+            <field name="controlnav_type"
+                   type="list" class="btn-group"
+                   label="COM_TZ_PORTFOLIO_CONTROLNAV_IMAGE_GALLERY_TYPE_LABEL">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">COM_TZ_PORTFOLIO_DEFAULT</option>
+                <option value="thumbnails">COM_TZ_PORTFOLIO_THUMBNAILS</option>
             </field>
             <field name="image_gallery_pausePlay"
                    type="list"
@@ -623,6 +646,36 @@
                    label="COM_TZ_PORTFOLIO_GMAP_CUSTOM_TOOLTIP"/>
         </fieldset>
 
+        <fieldset name="tz_fieldset_lightbox" label="COM_TZ_PORTFOLIO_FIELDSET_LIGHTBOX_OPTIONS_LABEL">
+            <field type="list" name="tz_use_lightbox"
+                   label="COM_TZ_PORTFOLIO_USE_LIGHTBOX"
+                   description="COM_TZ_PORTFOLIO_USE_LIGHTBOX_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="tz_lightbox_transition" type="list"
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_TRANSITION"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_TRANSITION_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="none">COM_TZ_PORTFOLIO_NONE</option>
+                <option value="elastic">COM_TZ_PORTFOLIO_ELASTIC</option>
+                <option value="fade">COM_TZ_PORTFOLIO_FADE</option>
+            </field>
+            <field name="tz_lightbox_speed" type="text"
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_SPEED"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_SPEED_DESC"/>
+            <field name="tz_lightbox_opacity" type="text"
+                   label="COM_TZ_PORTFOLIO_OPACITY"
+                   description="COM_TZ_PORTFOLIO_OPACITY_DESC"/>
+            <field name="tz_lightbox_width" type="text"
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_WIDTH"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_WIDTH_DESC"/>
+            <field name="tz_lightbox_height" type="text"
+                   label="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT"
+                   description="COM_TZ_PORTFOLIO_LIGHT_BOX_HEIGHT_DESC"/>
+        </fieldset>
+
         <fieldset name="tz_fieldset_cloud_zoom_options"
                   label="COM_TZ_PORTFOLIO_FIELDSET_CLOUD_ZOOM_OPTIONS_LABEL">
             <field name="useCloudZoom"
@@ -763,6 +816,20 @@
                    type="list"
                    label="COM_TZ_PORTFOLIO_SHOW_GOOGLE_BUTTON"
                    description="COM_TZ_PORTFOLIO_SHOW_GOOGLE_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_pinterest_button" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_LABEL"
+                   description="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_DESC">
+                <option value="">JGLOBAL_USE_GLOBAL</option>
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+            <field name="show_linkedin_button" type="list"
+                   label="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_LABEL"
+                   description="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_DESC">
                 <option value="">JGLOBAL_USE_GLOBAL</option>
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>

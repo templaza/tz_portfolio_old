@@ -20,7 +20,7 @@
 defined('_JEXEC') or die();
 
 $media  = $this -> listMedia;
-$params = $this -> mediaParams;
+$params = $this -> item -> params;
 
 $src    = '';
 if($params -> get('detail_article_image_size','L')):
@@ -91,14 +91,16 @@ endif;
                     <a<?php if($class) echo ' class="'.$class.'"'?> href="<?php echo $href;?>"<?php if($rel) echo $rel?>>
                     <?php endif;?>
 
-                        <img src="<?php echo $src;?>" alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                                 title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>">
+                        <img src="<?php echo $src;?>"
+                             alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                             title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                             itemprop="thumbnailUrl">
                         <?php if($params -> get('tz_use_image_hover',1) == 1):?>
                             <?php if(isset($srcHover)):?>
                                 <img class="tz_image_hover"
                                     src="<?php echo $srcHover;?>"
-                                 alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                                 title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>">
+                                 alt="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>"
+                                 title="<?php echo ($media[0] -> imagetitle)?($media[0] -> imagetitle):($this -> item -> title);?>">
                             <?php endif;?>
                         <?php endif;?>
                     <?php if($params -> get('useCloudZoom',1) == 1):?>
@@ -115,10 +117,13 @@ endif;
                     $dirNav   = 'true';
                 else
                     $dirNav   = 'false';
-                if($params -> get('show_controlNav_image_gallery',1) == 1)
-                    $controlNav   = 'true';
-                else
-                    $controlNav   = 'false';
+                if($params -> get('show_controlNav_image_gallery',1) == 1)  {
+                    $controlNav = 'true';
+                    if ($params->get('controlnav_type', 'none') == 'thumbnails')
+                        $controlNav = $params->get('controlnav_type', 'none');
+                }else {
+                    $controlNav = 'false';
+                }
 
                 if($params -> get('image_gallery_pausePlay',1) == 1)
                     $pausePlay   = 'true';
@@ -197,7 +202,7 @@ endif;
                             slideshowSpeed: '.$params -> get('image_gallery_animSpeed').',
                             animationSpeed: '.$params -> get('image_gallery_animation_duration').',
                             directionNav: '.$dirNav.',
-                            controlNav: '.$controlNav.',
+                            controlNav: '.(($controlNav=='thumbnails')?'"'.$controlNav.'"':$controlNav).',
                             prevText: "'.JText::_('Previous').'",
                             nextText: "'.JText::_('Next').'",
                             pausePlay: '.$pausePlay.',
@@ -229,9 +234,12 @@ endif;
                                     $src    = JURI::root().str_replace('.'.JFile::getExt($rowMedia -> images),
                                                 '_'.$params -> get('detail_article_image_gallery_size','L')
                                               .'.'.JFile::getExt($rowMedia -> images),$rowMedia -> images);
+                                $thumb_src  = JURI::root().str_replace('.'.JFile::getExt($rowMedia -> images),
+                                        '_S.'.JFile::getExt($rowMedia -> images),$rowMedia -> images);
                                 ?>
-                                <li>
-                                    <img src="<?php echo $src;?>" alt="<?php echo $rowMedia -> imagetitle;?>"
+                                <li<?php echo ($controlNav=='thumbnails')?' data-thumb="'.$thumb_src.'"':''?>>
+                                    <img src="<?php echo $src;?>"
+                                         alt="<?php echo ($rowMedia -> imagetitle)?($rowMedia -> imagetitle):($this -> item -> title);?>"
                                         <?php if(!empty($rowMedia -> imagetitle)):?>
                                             title="<?php echo $rowMedia -> imagetitle;?>"
                                         <?php endif; ?>
@@ -262,7 +270,7 @@ endif;
                             break;
                             case 'vimeo':
                     ?>
-                        <iframe src="http://player.vimeo.com/video/<?php echo $media[0] -> images;?>?title=0&amp;byline=0&amp;portrait=0"
+                        <iframe src="http://player.vimeo.com/video/<?php echo $media[0] -> images;?>?title=0&amp;byline=0&amp;portrait=0&amp;wmode=transparent"
                             width="<?php echo ($params -> get('video_width'))?$params -> get('video_width'):'600';?>"
                             height="<?php echo ($params -> get('video_height'))?$params -> get('video_height'):'255';?>"
                             frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen>
@@ -273,12 +281,11 @@ endif;
                     ?>
                             <iframe  width="<?php echo ($params -> get('video_width'))?$params -> get('video_width'):'600';?>"
                                     height="<?php echo ($params -> get('video_height'))?$params -> get('video_height'):'315';?>"
-                                    src="http://www.youtube.com/embed/<?php echo $media[0] -> images;?><?php echo (!empty($media[0] -> imagetitle))?'?title='.$media[0] -> imagetitle:'';?>"
-                                    frameborder="0" allowfullscreen>
+                                    src="http://www.youtube.com/embed/<?php echo $media[0] -> images;?>?wmode=transparent<?php echo (!empty($media[0] -> imagetitle))?'&amp;title='.$media[0] -> imagetitle:'';?>"
+                                    frameborder="0" allowfullscreen >
                             </iframe>
                         <?php break;?>
                     <?php endswitch;?>
-                    <script type="text/javascript" src="components/com_tz_portfolio/js/fluidvids.min.js"></script>
                 </div>
             <?php endif;?>
         <?php endif;?>

@@ -25,14 +25,53 @@ jimport('joomla.application.component.modellist');
 class TZ_PortfolioModelDate extends JModelList{
     protected $_item = null;
 
+    protected $parameter_fields = array();
+    protected $parameter_merge_fields = array();
+
+    public function __construct($config = array()){
+        parent::__construct($config);
+
+        $config['parameter_fields'] = array(
+            'tz_use_image_hover' => array('tz_image_timeout'),
+            'show_image_gallery' => array('image_gallery_animSpeed',
+                'image_gallery_animation_duration',
+                'image_gallery_startAt', 'image_gallery_itemWidth',
+                'image_gallery_itemMargin', 'image_gallery_minItems',
+                'image_gallery_maxItems'),
+            'show_video' => array('video_width','video_height'),
+            'tz_show_gmap' => array('tz_gmap_width', 'tz_gmap_height',
+                'tz_gmap_latitude', 'tz_gmap_longitude',
+                'tz_gmap_address','tz_gmap_custom_tooltip'),
+            'useCloudZoom' => array('zoomWidth','zoomHeight',
+                'adjustX','adjustY','tint','tintOpacity',
+                'lensOpacity','smoothMove'),
+            'show_comment' => array('disqusSubDomain','disqusApiSecretKey'),
+            'show_audio' => array('audio_soundcloud_color','audio_soundcloud_theme_color',
+                'audio_soundcloud_width','audio_soundcloud_height')
+        );
+        // Add the parameter fields white list.
+        if (isset($config['parameter_fields']))
+        {
+            $this->parameter_fields = $config['parameter_fields'];
+        }
+
+        // Add the parameter fields white list.
+        $this -> parameter_merge_fields = array(
+            'show_extra_fields', 'field_show_type',
+            'tz_portfolio_redirect'
+        );
+    }
+
     public function populateState($ordering = null, $direction = null){
         // Initiliase variables.
         $app	= JFactory::getApplication('site');
 
-
         // Load the parameters. Merge Global and Menu Item params into new object
         $params = $app->getParams();
-//        $params = JComponentHelper::getParams('com_content');
+
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
+        }
 
         $menuParams = new JRegistry;
 
@@ -102,14 +141,6 @@ class TZ_PortfolioModelDate extends JModelList{
         $this->setState('list.links', $params->get('num_links'));
 
         $this->setState('list.limit', $limit);
-
-        // set the depth of the category query based on parameter
-//        $showSubcategories = $params->get('show_subcategory_content', '0');
-
-//        if ($showSubcategories) {
-//            $this->setState('filter.max_category_levels', $params->get('show_subcategory_content', '1'));
-//            $this->setState('filter.subcategories', true);
-//        }
 
         //Filter by first letter of article's title
         $this -> setState('filter.char',JRequest::getString('char',null));
@@ -274,58 +305,6 @@ class TZ_PortfolioModelDate extends JModelList{
             $query -> where('a.catid IN('.implode(',',$catIds).')');
         }
 
-        // Filter by a single or group of articles.
-//        $articleId = $this->getState('filter.article_id');
-//
-//        if (is_numeric($articleId)) {
-//            $type = $this->getState('filter.article_id.include', true) ? '= ' : '<> ';
-//            $query->where('a.id '.$type.(int) $articleId);
-//        }
-//        elseif (is_array($articleId)) {
-//            JArrayHelper::toInteger($articleId);
-//            $articleId = implode(',', $articleId);
-//            $type = $this->getState('filter.article_id.include', true) ? 'IN' : 'NOT IN';
-//            $query->where('a.id '.$type.' ('.$articleId.')');
-//        }
-
-        // Filter by a single or group of categories
-//        $categoryId = $this->getState('filter.category_id');
-
-//        if (is_numeric($categoryId)) {
-//            $type = $this->getState('filter.category_id.include', true) ? '= ' : '<> ';
-//
-//            // Add subcategory check
-//            $includeSubcategories = $this->getState('filter.subcategories', false);
-//            $categoryEquals = 'a.catid '.$type.(int) $categoryId;
-//
-//            if ($includeSubcategories) {
-//                $levels = (int) $this->getState('filter.max_category_levels', '1');
-//                // Create a subquery for the subcategory list
-//                $subQuery = $db->getQuery(true);
-//                $subQuery->select('sub.id');
-//                $subQuery->from('#__categories as sub');
-//                $subQuery->join('INNER', '#__categories as this ON sub.lft > this.lft AND sub.rgt < this.rgt');
-//                $subQuery->where('this.id = '.(int) $categoryId);
-//                if ($levels >= 0) {
-//                    $subQuery->where('sub.level <= this.level + '.$levels);
-//                }
-//
-//                // Add the subquery to the main query
-//                $query->where('('.$categoryEquals.' OR a.catid IN ('.$subQuery->__toString().'))');
-//            }
-//            else {
-//                $query->where($categoryEquals);
-//            }
-//        }
-//        elseif (is_array($categoryId) && (count($categoryId) > 0)) {
-//            JArrayHelper::toInteger($categoryId);
-//            $categoryId = implode(',', $categoryId);
-//            if (!empty($categoryId)) {
-//                $type = $this->getState('filter.category_id.include', true) ? 'IN' : 'NOT IN';
-//                $query->where('a.catid '.$type.' ('.$categoryId.')');
-//            }
-//        }
-
         // Filter by author
         $authorId = $this->getState('filter.author_id');
         $authorWhere = '';
@@ -488,6 +467,8 @@ class TZ_PortfolioModelDate extends JModelList{
         // Variable date
         $date   = null;
 
+        $categories = JCategories::getInstance('Content');
+
         // Convert the parameter fields into objects.
         foreach ($items as &$item)
         {
@@ -497,20 +478,34 @@ class TZ_PortfolioModelDate extends JModelList{
                 $date   = $item -> created;
             }
 
+            $params = clone($this -> getState('params'));
+            $temp   = clone($this -> getState('params'));
+
+            $category   = $categories->get($item -> catid);
+            $catParams  = new JRegistry($category -> params);
+
+            if($this -> parameter_merge_fields){
+                foreach($this -> parameter_merge_fields as $value){
+                    if($catParams -> get($value) != ''){
+                        $params -> set($value,$catParams -> get($value));
+                    }
+                }
+            }
+
             $articleParams = new JRegistry;
             $articleParams->loadString($item->attribs);
 
             // Unpack readmore and layout params
             $item->alternative_readmore = $articleParams->get('alternative_readmore');
 
-            $item->params = clone $this->getState('params');
+            $item->params = clone($params);
 
             // For blogs, article params override menu item params only if menu param = 'use_article'
             // Otherwise, menu item params control the layout
             // If menu item is 'use_article' and there is no article param, use global
             if ((JRequest::getString('view') == 'date')) {
                 // create an array of just the params set to 'use_article'
-                $menuParamsArray = $this->getState('params')->toArray();
+                $menuParamsArray = $temp->toArray();
                 $articleArray = array();
 
                 foreach ($menuParamsArray as $key => $value)
@@ -522,8 +517,25 @@ class TZ_PortfolioModelDate extends JModelList{
                             $articleArray[$key] = $articleParams->get($key);
                         }
                         else {
-                            // otherwise, use the global value
-                            $articleArray[$key] = $globalParams->get($key);
+                            if($params -> get($key) != ''){
+                                $articleArray[$key] = $params -> get($key);
+                            }else{
+                                if(!$params -> get($key) || $params -> get($key) == ''){
+                                    // otherwise, use the global value
+                                    $articleArray[$key] = $globalParams->get($key);
+                                }
+                            }
+                        }
+
+                        if(count($this -> parameter_fields)){
+                            $parameter_fields   = $this -> parameter_fields;
+                            if(in_array($key,array_keys($this -> parameter_fields))){
+                                if(count($parameter_fields[$key])){
+                                    foreach($parameter_fields[$key] as $value_field){
+                                        $articleArray[$value_field]   = $articleParams -> get($value_field);
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -7,7 +7,7 @@
 	<license>GNU/GPL v2 or later http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<authorEmail>support@templaza.com</authorEmail>
 	<authorUrl>www.templaza.com/</authorUrl>
-	<version>3.1.5</version>
+	<version>3.3.5</version>
 	<description>TZ Portfolio native for Joomla! 2.5.x and 3.0.x</description>
     
     <scriptfile>script.php</scriptfile>
@@ -27,11 +27,12 @@
         <folder>assets</folder>
         <folder>bootstrap</folder>
         <folder>controllers</folder>
+        <folder>fonts</folder>
         <folder>css</folder>
         <folder>helpers</folder>
         <folder>js</folder>
-        <folder>less</folder>
         <folder>models</folder>
+        <folder>templates</folder>
         <folder>views</folder>
 
         <filename>tz_portfolio.php</filename>
@@ -78,6 +79,8 @@
             <menu link="option=com_tz_portfolio&amp;view=articles">Articles</menu>
             <menu link="option=com_tz_portfolio&amp;view=tags">Tags</menu>
             <menu link="option=com_tz_portfolio&amp;view=users">Users</menu>
+            <menu link="option=com_tz_portfolio&amp;view=template_styles">com_tz_portfolio_template_styles</menu>
+            <menu link="option=com_tz_portfolio&amp;view=templates">com_tz_portfolio_templates</menu>
         </submenu>
         <languages folder="admin/languages">
             <language tag="en-GB">en-GB/en-GB.com_tz_portfolio.ini</language>
@@ -285,10 +288,6 @@
             <field name="tz_letters" default="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z"/>
             <field name="filter_tags_categories_order" default="auto"/>
 
-            <field name="devmode" default="0"/>
-            <field name="css_compression" default="0"/>
-            <field name="js_compression" default="1"/>
-
             <field name="menu_active" default="auto"/>
             <field name="show_all_filter" default="0"/>
 
@@ -320,6 +319,20 @@
             <field name="show_quote_text" default="1"/>
             <field name="show_quote_author" default="1"/>
             <field name="comment_function_type" default="default"/>
+			
+			<field name="show_pinterest_button" default="1"/>
+            <field name="show_linkedin_button" default="1"/>
+
+            <field name="sort_fields" multiple="true">
+                <option value="date"/>
+                <option value="hits"/>
+                <option value="title"/>
+            </field>
+
+            <field name="enable_jquery" default="1"/>
+            <field name="enable_bootstrap" default="1"/>
+
+            <field name="controlnav_type" default=""/>
 
         </fields>
     </config>
@@ -347,4 +360,9 @@
 		<plugin plugin="example" group="tz_portfolio" folder="example" />
     </plugins>
 
+    <updateservers>
+        <server type="extension" pirority="1" name="TZ Portfolio Updates">
+            <![CDATA[http://tzportfolio.com/tzupdates/tz_portfolio_update.xml]]>
+        </server>
+    </updateservers>
 </extension>

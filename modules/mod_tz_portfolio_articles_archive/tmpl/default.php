@@ -26,6 +26,9 @@ defined('_JEXEC') or die;
 	<li>
 		<a href="<?php echo $item->link; ?>">
 			<?php echo $item->text; ?>
+            <?php if($params -> get('show_article_count',1)):?>
+                <span class="muted count"><?php echo JText::sprintf('MOD_TZ_PORTFOLIO_ARTICLES_ARCHIVE_ARTICLE_COUNT',$item -> total);?></span>
+            <?php endif;?>
 		</a>
 	</li>
 	<?php endforeach; ?>

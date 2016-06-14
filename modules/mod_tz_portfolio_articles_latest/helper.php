@@ -47,7 +47,7 @@ abstract class modTZ_PortfolioArticlesLatestHelper
 		$model->setState('filter.published', 1);
 
 		// Access filter
-		$access = !JComponentHelper::getParams('com_content')->get('show_noauth');
+		$access = !JComponentHelper::getParams('com_tz_portfolio')->get('show_noauth');
 		$authorised = JAccess::getAuthorisedViewLevels(JFactory::getUser()->get('id'));
 		$model->setState('filter.access', $access);
 
@@ -106,10 +106,52 @@ abstract class modTZ_PortfolioArticlesLatestHelper
 
 		$items = $model->getItems();
 
-        $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel');
+        $model2 = JModelLegacy::getInstance('Media','TZ_PortfolioModel',array('ignore_request' => true));
 
         if($items){
-            foreach ($items as &$item) {
+
+            $dispatcher = JDispatcher::getInstance();
+            foreach ($items as $i => &$item) {
+                $item -> text   = $item -> introtext;
+
+                JPluginHelper::importPlugin('content');
+                $results = $dispatcher->trigger('onContentPrepare', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, 0));
+                $item->introtext = $item->text;
+                $item->event = new stdClass();
+
+                $results = $dispatcher->trigger('onContentAfterTitle', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, 0));
+                $item->event->afterDisplayTitle = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onContentBeforeDisplay', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, 0));
+                $item->event->beforeDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onContentAfterDisplay', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, 0));
+                $item->event->afterDisplayContent = trim(implode("\n", $results));
+
+                //Get Plugins Model
+                $pmodel = JModelLegacy::getInstance('Plugins', 'TZ_PortfolioModel', array('ignore_request' => true));
+                //Get plugin Params for this article
+                $pmodel->setState('filter.contentid', $item->id);
+                $pluginItems = $pmodel->getItems();
+                $pluginParams = $pmodel->getParams();
+
+                $item->pluginparams = clone($pluginParams);
+
+                JPluginHelper::importPlugin('tz_portfolio');
+                $results = $dispatcher->trigger('onTZPluginPrepare', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, &$pluginParams, 0));
+
+                $results = $dispatcher->trigger('onTZPluginAfterTitle', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, &$pluginParams, 0));
+                $item->event->TZafterDisplayTitle = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginBeforeDisplay', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, &$pluginParams, 0));
+                $item->event->TZbeforeDisplayContent = trim(implode("\n", $results));
+
+                $results = $dispatcher->trigger('onTZPluginAfterDisplay', array('mod_tz_portfolio_articles_latest.content', &$item, &$params, &$pluginParams, 0));
+                $item->event->TZafterDisplayContent = trim(implode("\n", $results));
+
+
+                $item -> media  = null;
+
                 $item->slug = $item->id.':'.$item->alias;
                 $item->catslug = $item->catid.':'.$item->category_alias;
 
@@ -119,9 +161,17 @@ abstract class modTZ_PortfolioArticlesLatestHelper
                 } else {
                     $item->link = JRoute::_('index.php?option=com_users&view=login');
                 }
+                $model2 -> setState('article.id',$item -> id);
+                if($media  = $model2 -> getMedia()){
+                    $item -> media  = $media[0];
+                    if( ($media[0] -> type == 'quote' AND !$params -> get('show_quote',1))
+                        OR ($media[0] -> type == 'link' AND !$params -> get('show_link',1)) ){
+                        unset($items[$i]);
+                    }
+                }
 
             }
 		}
-		return $items;
+		return array_reverse($items);
 	}
 }

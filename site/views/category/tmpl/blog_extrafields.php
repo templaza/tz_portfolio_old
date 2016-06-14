@@ -19,7 +19,7 @@
  
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-$params = $this -> extraParams;
+$params = $this -> item -> params;
 $list   = $this -> listFields;
 ?>
 <?php if($params -> get('show_extra_fields') != '0'):?>
@@ -90,7 +90,8 @@ $list   = $this -> listFields;
 
                                         ?>
 											<?php if($src AND !empty($images[$j])):?>
-                                            <img src="<?php echo $src?>"/>
+                                            <img src="<?php echo $src?>"
+                                                alt="<?php  echo isset($row -> title)?$row -> title:''; ?>"/>
 											<?php endif;?>
                                         <?php
                                                     if(preg_match('/^<a.*?>.*?<\/a>$/',htmlspecialchars_decode($item),$match)):

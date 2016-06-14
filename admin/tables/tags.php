@@ -29,6 +29,8 @@ class TableTags extends JTable
     /** @var int */
     var $published  		= null;
     /** @var string*/
+    var $attribs		    = null;
+    /** @var string*/
     var $description		= null;
 
     function __construct(&$db) {
@@ -76,6 +78,8 @@ class TableTags extends JTable
                 $query -> from($this -> _tbl);
                 $query -> where($this -> _db -> quoteName('name').'='
                     .$this -> _db -> quote($this -> name));
+                $query -> where('NOT '.$this -> _db -> quoteName('id').'='
+                    .$this -> id);
                 $this -> _db -> setQuery($query);
 
                 if($this -> _db -> loadResult() > 0){

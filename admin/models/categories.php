@@ -72,6 +72,10 @@ class TZ_PortfolioModelCategories extends JModelList
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
+
+        // List state information.
+        parent::populateState('a.lft', 'asc');
+
 		// Initialise variables.
 		$app		= JFactory::getApplication();
 		$context	= $this->context;
@@ -105,8 +109,14 @@ class TZ_PortfolioModelCategories extends JModelList
 		$language = $this->getUserStateFromRequest($context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
 
-		// List state information.
-		parent::populateState('a.lft', 'asc');
+        // Force a language
+        $forcedLanguage = $app->input->get('forcedLanguage');
+
+        if (!empty($forcedLanguage))
+        {
+            $this->setState('filter.language', $forcedLanguage);
+            $this->setState('filter.forcedLanguage', $forcedLanguage);
+        }
 	}
 
 	/**

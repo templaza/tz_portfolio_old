@@ -19,6 +19,7 @@
 
 // no direct access
 defined('_JEXEC') or die;
+if($list):
 ?>
 <div class="newsflash<?php echo $moduleclass_sfx; ?>">
 <?php foreach ($list as $item) :?>
@@ -26,3 +27,4 @@ defined('_JEXEC') or die;
 	 require JModuleHelper::getLayoutPath('mod_tz_portfolio_articles_news', '_item');?>
 <?php endforeach; ?>
 </div>
+<?php endif;?>

@@ -66,6 +66,10 @@ class TZ_PortfolioModelUsers extends JModelList
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
+
+        // List state information.
+        parent::populateState('a.name', 'asc');
+
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
 
@@ -108,9 +112,6 @@ class TZ_PortfolioModelUsers extends JModelList
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_users');
 		$this->setState('params', $params);
-
-		// List state information.
-		parent::populateState('a.name', 'asc');
 	}
 
 	/**

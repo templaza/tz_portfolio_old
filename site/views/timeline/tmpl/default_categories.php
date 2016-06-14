@@ -22,7 +22,8 @@ defined('_JEXEC') or die();
 ?>
 <?php if($this -> listsCategories):?>
     <?php foreach($this -> listsCategories as $item):?>
-        <a class="btn btn-small" href="#<?php echo str_replace(' ','-',$item -> title)?>" data-option-value=".<?php echo 'category'.$item -> id;?>">
+        <a class="btn btn-small" href="#<?php echo str_replace(' ','-',$item -> title)?>"
+           data-option-value=".<?php echo 'category'.$item -> id;?>" data-order="<?php echo $item -> order;?>">
             <?php echo $item -> title;?>
         </a>
     <?php endforeach;?>

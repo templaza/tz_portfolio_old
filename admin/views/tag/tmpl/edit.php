@@ -26,6 +26,11 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.formvalidation');
 JHtml::_('formbehavior.chosen', 'select');
 $published  = $this -> item -> published;
+
+$fieldSets  = null;
+if($this -> form){
+    $fieldSets = $this->form->getFieldsets('attribs');
+}
 ?>
 <script type="text/javascript ">
     Joomla.submitbutton = function(task) {
@@ -41,7 +46,7 @@ $published  = $this -> item -> published;
       action="index.php?option=com_tz_portfolio&view=tag&layout=edit&id=<?php echo $this -> item -> id?>">
 
     <!-- Begin Content -->
-    <div class="span12 form-horizontal">
+    <div class="span<?php echo ($fieldSets)?8:12;?> form-horizontal">
         <fieldset class="adminForm">
             <legend><?php echo JText::_('COM_TZ_PORTFOLIO_FIELDSET_DETAILS');?></legend>
             <div class="control-group">
@@ -95,10 +100,41 @@ $published  = $this -> item -> published;
 
         </fieldset>
         <?php ?>
-<!--        <input type="hidden" value="com_tz_portfolio" name="option">-->
-<!--        <input type="hidden" name="return" value="--><?php //echo JRequest::getCmd('return');?><!--" />-->
         <input type="hidden" value="" name="task">
         <?php echo JHTML::_('form.token');?>
     </div>
+
+    <?php
+    // Start generate form's params for attribs field in database
+    if($fieldSets):
+    ?>
+    <div class="span4 form-vertical">
+    <?php
+            echo JHtml::_('bootstrap.startAccordion', 'menuOptions', array('active' => 'collapse0'));
+            $i = 1;
+            foreach ($fieldSets as $name => $fieldSet) :
+                echo JHtml::_('bootstrap.addSlide', 'menuOptions', JText::_($fieldSet->label), 'collapse' . $i++);
+    ?>
+            <?php if (isset($fieldSet->description) && trim($fieldSet->description)) : ?>
+                <p class="tip"><?php echo $this->escape(JText::_($fieldSet->description));?></p>
+            <?php endif; ?>
+            <fieldset>
+                <?php foreach ($this->form->getFieldset($name) as $field) : ?>
+                <div class="control-group">
+                    <div class="control-label"><?php echo $field->label; ?></div>
+                    <div class="controls"><?php echo $field->input; ?></div>
+                </div>
+                <?php endforeach; ?>
+            </fieldset>
+            <?php echo JHtml::_('bootstrap.endSlide');?>
+    <?php
+            endforeach;
+            echo JHtml::_('bootstrap.endAccordion');
+    ?>
+    </div>
+    <?php
+        endif;
+    ///// End generate form's params for attribs field in database
+    ?>
     <!-- End Content -->
 </form>

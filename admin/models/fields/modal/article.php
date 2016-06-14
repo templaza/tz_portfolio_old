@@ -33,6 +33,24 @@ class JFormFieldModal_Article extends JFormField
 	 */
 	protected $type = 'Modal_Article';
 
+    public function __construct($form = null)
+    {
+        parent::__construct($form);
+        // If the joomla's version is more than or equal to 3.0
+        if(!COM_TZ_PORTFOLIO_JVERSION_COMPARE){
+            $doc    = JFactory::getDocument();
+
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery.min.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery-noconflict.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/bootstrap.min.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/chosen.jquery.min.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery.ui.core.min.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/jquery.ui.sortable.min.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/jui/js/sortablelist.js');
+            $doc -> addScript(COM_TZ_PORTFOLIO_ADMIN_HOST_PATH.'/js/template.min.js');
+        }
+    }
+
 	/**
 	 * Method to get the field input markup.
 	 *
@@ -41,6 +59,9 @@ class JFormFieldModal_Article extends JFormField
 	 */
 	protected function getInput()
 	{
+        $allowEdit		= ((string) $this->element['edit'] == 'true') ? true : false;
+        $allowClear		= ((string) $this->element['clear'] != 'false') ? true : false;
+
 		// Load the modal behavior script.
 		JHtml::_('behavior.modal', 'a.modal');
 
@@ -49,8 +70,37 @@ class JFormFieldModal_Article extends JFormField
 		$script[] = '	function jSelectArticle_'.$this->id.'(id, title, catid, object) {';
 		$script[] = '		document.id("'.$this->id.'_id").value = id;';
 		$script[] = '		document.id("'.$this->id.'_name").value = title;';
+
+        if ($allowEdit)
+        {
+            $script[] = '		jQuery("#' . $this->id . '_edit").removeClass("hidden");';
+        }
+
+        if ($allowClear)
+        {
+            $script[] = '		jQuery("#' . $this->id . '_clear").removeClass("hidden");';
+        }
+
 		$script[] = '		SqueezeBox.close();';
 		$script[] = '	}';
+
+        // Clear button script
+        static $scriptClear;
+
+        if ($allowClear && !$scriptClear)
+        {
+            $scriptClear = true;
+
+            $script[] = '	function jClearArticle(id) {';
+            $script[] = '		document.getElementById(id + "_id").value = "";';
+            $script[] = '		document.getElementById(id + "_name").value = "' . htmlspecialchars(JText::_('COM_CONTENT_SELECT_AN_ARTICLE', true), ENT_COMPAT, 'UTF-8') . '";';
+            $script[] = '		jQuery("#"+id + "_clear").addClass("hidden");';
+            $script[] = '		if (document.getElementById(id + "_edit")) {';
+            $script[] = '			jQuery("#"+id + "_edit").addClass("hidden");';
+            $script[] = '		}';
+            $script[] = '		return false;';
+            $script[] = '	}';
+        }
 
 		// Add the script to the document head.
 		JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
@@ -61,6 +111,11 @@ class JFormFieldModal_Article extends JFormField
 		// Setup variables for display.
 		$html	= array();
 		$link	= 'index.php?option=com_tz_portfolio&amp;view=articles&amp;layout=modal&amp;tmpl=component&amp;function=jSelectArticle_'.$this->id;
+
+        if (isset($this->element['language']))
+        {
+            $link .= '&amp;forcedLanguage=' . $this->element['language'];
+        }
 
 		$db	= JFactory::getDBO();
 		$db->setQuery(
@@ -106,11 +161,34 @@ class JFormFieldModal_Article extends JFormField
             $textLink   = JText::_('COM_TZ_PORTFOLIO_CHANGE_ARTICLE_BUTTON');
             $class      = 'modal modal_jform_article';
         }
+
+        // The active article id field.
+        if (0 == (int) $this->value)
+        {
+            $value = '';
+        }
+        else
+        {
+            $value = (int) $this->value;
+        }
         
 		// The user select button.
 		$html[] = '	<a class="modal btn" title="'.$title.'"'
             .' href="'.$link.'&amp;'.JSession::getFormToken().'=1" rel="{handler: \'iframe\', size: {x: 800, y: 450}}">'
             .$textLink.'</a>';
+
+        // Edit article button
+        if ($allowEdit)
+        {
+            $html[] = '<a class="btn hasTooltip' . ($value ? '' : ' hidden') . '" href="index.php?option=com_tz_portfolio&task=article.edit&id=' . $value . '" target="_blank" title="' . JHtml::tooltipText('COM_CONTENT_EDIT_ARTICLE') . '" ><span class="icon-edit"></span> ' . JText::_('JACTION_EDIT') . '</a>';
+        }
+
+        // Clear article button
+        if ($allowClear)
+        {
+            $html[] = '<button id="' . $this->id . '_clear" class="btn' . ($value ? '' : ' hidden') . '" onclick="return jClearArticle(\'' . $this->id . '\')"><span class="icon-remove"></span> ' . JText::_('JCLEAR') . '</button>';
+        }
+
 		$html[] = '</div>';
 
 		// The active article id field.

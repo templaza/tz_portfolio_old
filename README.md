@@ -1,4 +1,4 @@
-# TZ Portfolio v3 - Joomla 2.5 and 3.0
+# TZ Portfolio v3 - Joomla 2.5 and 3.x
 
 If you are a Joomla lover, you must see that is the best Content management system in the world (com_content). But the reality is that this system has not satisfied all of our needs. That why we build TZ Portfolio, which is an ideal content management system to fulfill all weaknesses of com_content.
 
@@ -19,6 +19,164 @@ Documentation can be found on the wiki project page: http://wiki.templaza.com/TZ
 Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
+
+06/014/2016 - 3.3.5
+
+	- Fix error with plugin tz_portfolio in group content.
+	- Fix error set up column width has No Effect.
+	- Fix error when edit field with French language.
+	- Fix error validate in view date.
+	- Fix error some languages in front-end.
+
+03/05/2016 - 3.3.4
+
+	- Fix some errors in Template Styles of version 3.3.3.
+
+02/26/2016 - 3.3.3
+
+	- Fix error:	
+		+ If set "No" for option "Upload original image", the image alway uploaded.
+		+ Module TZ Categories Menu: Not work with the view: slider, Not show images.
+		+ SEF URL with Portfolio submenu Item.
+		+ Layout type doesn't work with view portfolio and timeline.
+		+ IcoMoon font files  missing with some server.
+	- Featured:	
+		+ Multiple Templates and template style (like Joomla's Template).	
+
+06/11/2015 - 3.3.2
+
+	- Fix error:	+ Option Show introtext in module TZ Articles Popular
+		+ Display image in module TZ Categories Menu
+		+ Sort in view portfolio and timeline.
+		+ Grouping option in module TZ Articles Category.
+		+ Filter character with unicode font (not done).
+		+ Extrafield with type is link (when edit article if this extrafield was assigned this article).
+	- Featured:	
+		+ Insert some options for SEF Url in tab advanced options:
+			+) Prefix Users (Author) URLs
+			+) Article ID And Alias Separator
+			+) Use Article ID
+			+) .....
+		+ Call content joomla trigger for modules: TZ Latest News, TZ Most Popular, TZ Portfolio Feature Article
+	- Update languages : Japan, Portuguese and Russian from https://www.transifex.com/projects/p/tzportfolio/ page
+	
+
+03/24/2015 - 3.3.1
+
+	Fix can't display comment for views article and p_article in front-end.
+	Add image size and image slider global config to article view (add or edit article) in back-end.
+	Add feature resize all images in back-end.
+	Add option original image for all module of TZ Portfolio.
+	Remove less, Compile less to css and Compress JS feature. Remove Options: "CSS Compression" and "Jvascript Compression" in "Advanced Options".
+	Update Flexslider script.
+	Update Fluidvids script.
+
+03/09/2015 - 3.3.0
+
+	Add option "No parent" for list category when create article in front-end.
+	Fix display category's image and subcategory's image in view blog.
+	Fix article's sort of portfolio view.(change "sortby" option of isotope script in portfolio/tmpl/default.php file).
+	Fix containertype (Fixed Width, Full Width) for p_article view.
+	Fix padding for p_article view.
+	Remove option show_introtext in views p_article and article (in file: view.html.php).
+	Add option upload original image.
+	Display tags for views: portfolio, category, featured, timeline, date, portfolio user.
+	Add hits column for articles view in back-end (like com_content).
+
+12/09/2014 - 3.2.9
+
+	Fix template error:  when using Default Template, your article does not show content of version 3.2.8.
+	Update some meta tags: description, keywords, robots or author for portfolio, timeline, tag, user views.
+	Update editor for extrafield.
+	Fix js of feature template.
+
+11/19/2014 - 3.2.8
+
+	Can add parameters options for tag (when add or edit tag) with trigger "onContentPrepareForm" of plugin's events content.
+	Fix error javascript in create article view in front-end.
+	Fix template error:  when using Default Template, your article does not show content.
+
+10/08/2014 - 3.2.7
+
+	Fix toggle button and some css in layout builder for single article.
+
+10/03/2014 - 3.2.6
+
+	Fix error JHtml icon in view p_article.
+	Fix special characters of extrafield's option.
+	Fix error edit of article assignment when edit layout builder.
+	Add option row's width, toggle row for layout builder and support feature template for joomla 2.5
+
+09/29/2014 - 3.2.5
+
+	Fix error duplicate introtext.
+	Fix create article in front-end.
+	Fix error pagination in blog view.
+
+08/28/2014 - 3.2.4
+
+	Fix error with introtext in 2 detail view.
+	Fix code in plugin plg_user_tz_portfolio with joomla 3.3.3
+	Fix sort category filter in portfolio and timeline view (if the option "Category Order" was chosen).
+	Fix some warnings in script.php file when install or uninstall this extension.
+
+07/09/2014 - 3.2.3
+	
+	New Feature: Layout builder of template style for Article Single.
+
+06/20/2014 - 3.2.2
+
+	Fix some error: with plazart v3.5 (hidden menu when press mouse on right), js when create or edit field in admin.
+	Insert Association for category and article with joomla 3.3.1
+	Update languages: Portuguese (Brazil), Japanese (Japan), Russian (Russia) from transifex
+	
+05/07/2014 - 3.2.1
+	
+	Fix some error with joomla 3.3
+	Update Portuguese(Brazil) and Russian(Russia) languages from transifex.com
+
+03/14/2014 - 3.2.0
+
+	Fix some mootool code when edit article in admin with joomla 3.2.3.
+	Fix Publish start date for Portfolio and Timeline view.
+	Insert rating rich snippet for Portfolio Single Article and Single Article view.
+	Change some languages in files: admin/en-GB.com_tz_portfolio.ini, module/en-GB.mod_tz_portfolio_articles_categories.ini and plugin/en-GB.plg_content_tz_portfolio.ini
+	
+03/14/2014 - 3.1.9
+
+	Fix Twitter share button for 2 views: article  and p_article.
+	Fix notice for view archive.
+	Fix some notices and category's link for module mod_tz_categories.
+	Fix error with function "TzSortfilter" for 2 views: portfolio and timeline.
+	Quality for Audio's thumbnail.
+
+02/11/2014 - 3.1.8
+
+	Update bootrap library to version 2.3 and icon_moon(insert some icons).
+	Update some code for module Tz_portfolio_articles_latest (in file helper.php)
+	Update jQuery-migrate library for jQuery-1.9.1
+	Remove code css in module tz_portfolio_articles_lates.php
+	Insert option show Created date for module "mod_tz_portfolio_articles_lates".
+	Insert options On/Off bootstrap and on/off jQuery libraries.
+	Insert attribute alt for img tag in all views.
+	Fix bug: Download Attachment when Enable Engine Friendly URLs.
+	Fix bug: Tag is not filter when it is separated by dot "."
+	Fix bug: Pagination after editting article.
+	Fix bug: media type displays in Articles Manager (in admin).
+	Fix bug: Image author in views: Single Article and Portfolio Single Article.
+
+11/19/2013 - 3.1.7
+
+    Fix some bugs (Error when create article with some php version. and some warning).
+    New Features: - A article only display with a single view (Portfolio Single Article or Single Article).
+                  - Can change "item" router name (have option) and switch it for Portfolio's article or Blog's article.
+                  - Insert custom scrollbar (can change css for it) for lightbox.
+                  - Insert some options to display Quote's article, Link's article or Original article for modules: "TZ Portfolio Feature Article", "TZ Most Popular" and " TZ Articles - Newsflash".
+
+08/29/2013 - 3.1.6
+
+	Fix error with meta tags.
+	Insert 2 social buttons: Pinterest and LinkedIn (have 2 options: "Show Pinterest Button" and "Show LinkedIn Options" in global tab "Social Network - Comments") for Single Article and Portfolio Single Article view.
 
 08/24/2013 - 3.1.5
 

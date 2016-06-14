@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fieldset name="template_details">
+        <field name="install_package" type="file"
+               label="Upload Package File"/>
+    </fieldset>
+</form>

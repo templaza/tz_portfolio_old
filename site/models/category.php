@@ -101,6 +101,36 @@ class TZ_PortfolioModelCategory extends JModelList
 		parent::__construct($config);
 	}
 
+    function getChildrenImages(){
+        if($this -> _children && count($this -> _children)){
+            $child_ids  = array();
+            foreach($this -> _children as $i => $child){
+                $child_ids[]    = $child -> id;
+            }
+            if(count($child_ids)) {
+                $db     = JFactory::getDbo();
+                $query  = $db->getQuery(true);
+
+                $query -> select('*');
+                $query -> from('#__tz_portfolio_categories');
+                $query -> where('catid IN('.implode(',',$child_ids).')');
+                $db -> setQuery($query);
+                if($child_images = $db -> loadObjectList()){
+                    $childImages    = array();
+                    foreach($child_images as $item){
+                        $childImages[$item -> catid]    = $item;
+                    }
+                    foreach($this -> _children as $i => &$child){
+                        $child -> tz_image  = null;
+                        if(count($childImages) && isset($childImages[$child -> id])){
+                            $child -> tz_image  = $childImages[$child -> id] -> images;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     function getCatImages(){
         $query  = 'SELECT * FROM #__tz_portfolio_categories'
                   .' WHERE catid='.$this -> getState('category.id');
@@ -134,6 +164,11 @@ class TZ_PortfolioModelCategory extends JModelList
 
 		// Load the parameters. Merge Global and Menu Item params into new object
 		$params = $app->getParams();
+
+        // Set value again for option tz_portfolio_redirect
+        if($params -> get('tz_portfolio_redirect') == 'default'){
+            $params -> set('tz_portfolio_redirect','article');
+        }
 //        $params = JComponentHelper::getParams('com_content');
 
 		$menuParams = new JRegistry;
@@ -232,15 +267,14 @@ class TZ_PortfolioModelCategory extends JModelList
 	 */
 	function getItems()
 	{
-		$params = $this->getState()->get('params');
+		$params = $this->getState('params');
 
 		$limit = $this->getState('list.limit');
 
 		if ($this->_articles === null && $category = $this->getCategory()) {
-            $params -> merge($category -> params);
             $this -> setState('catParams',$params);
 			$model = JModelLegacy::getInstance('Articles', 'TZ_PortfolioModel', array('ignore_request' => true));
-			$model->setState('params',JFactory::getApplication()->getParams());
+			$model->setState('params',$params);
 			$model->setState('filter.category_id', $category->id);
 			$model->setState('filter.published', $this->getState('filter.published'));
 			$model->setState('filter.access', $this->getState('filter.access'));
@@ -374,6 +408,13 @@ class TZ_PortfolioModelCategory extends JModelList
 				$this->_parent = false;
 			}
 		}
+        if($this -> _item) {
+            $this->_item -> tz_image = null;
+            if($image = $this -> getCatImages()){
+                $this -> _item -> tz_image  = $image -> images;
+            }
+            $this -> getChildrenImages();
+        }
 
 		return $this->_item;
 	}

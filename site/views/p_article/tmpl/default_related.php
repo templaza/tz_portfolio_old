@@ -93,15 +93,15 @@ if($lists):
                 <div class="TzImage">
                     <a<?php if($params -> get('tz_use_lightbox',1) == 1){echo ' class="fancybox fancybox.iframe"';}?>
                             href="<?php echo $item -> _link;?>">
-                        <img src="<?php echo $src;?>" alt="<?php echo $item -> title?>" title="<?php echo $item -> title;?>"/>
+                        <img src="<?php echo $src;?>" alt="<?php echo $item -> title; ?>" title="<?php echo $item -> title;?>"/>
                     </a>
                 </div>
                 <?php endif;?>
             <?php endif;?>
             <?php if($params -> get('show_related_type','title_image') == 'title'
                      OR($params -> get('show_related_type','title_image') == 'title_image')):?>
-            <a<?php if($params -> get('tz_use_lightbox',1) == 1){echo ' class="fancybox fancybox.iframe"';}?>
-                    href="<?php echo $item -> _link;?>" class="TzTitle">
+            <a href="<?php echo $item -> _link;?>"
+               class="TzTitle<?php if($params -> get('tz_use_lightbox',1) == 1){echo ' fancybox fancybox.iframe';}?>">
                 <?php echo $item -> title;?>
             </a>
             <?php endif;?>

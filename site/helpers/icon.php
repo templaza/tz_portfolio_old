@@ -50,21 +50,14 @@ class JHtmlIcon
 		$base	= $uri->toString(array('scheme', 'host', 'port'));
 		$template = JFactory::getApplication()->getTemplate();
 
-        $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-        $itemParams = new JRegistry($article -> attribs); //Get Article's Params
-        //Check redirect to view article
-        if($itemParams -> get('tz_portfolio_redirect')){
-            $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
+        if($params -> get('tz_portfolio_redirect') == 'p_article'){
+            $link   = TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article -> slug,$article -> catid);
+        }else{
+            $link   = TZ_PortfolioHelperRoute::getArticleRoute($article -> slug,$article -> catid);
         }
-        if($tzRedirect == 'article'){
-            $link = $base.JRoute::_(TZ_PortfolioHelperRoute::getArticleRoute($article -> slug, $article -> catid), false);
-        }
-        else{
-            $link = $base.JRoute::_(TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article -> slug, $article -> catid), false);
-        }
+		$link	= $base . JRoute::_($link,false);
 
-//        var_dump($link); die();
-		$url	= 'index.php?option=com_mailto&tmpl=component&template='.$template.'&link='.MailToHelper::addLink($link);
+		$url	= 'index.php?option=com_mailto&amp;tmpl=component&amp;template='.$template.'&amp;link='.MailToHelper::addLink($link);
 
 		$status = 'width=400,height=350,menubar=yes,resizable=yes';
 
@@ -126,7 +119,7 @@ class JHtmlIcon
             $tmpl   = '&tmpl=component';
         }
 
-		$url	= 'index.php?option=com_tz_portfolio&task=article.edit&a_id='.$article->id.'&return='.base64_encode($uri)
+		$url	= 'index.php?option=com_tz_portfolio&amp;task=article.edit&amp;a_id='.$article->id.'&amp;return='.base64_encode($uri)
                   .$tmpl;
 
 		if ($article->state == 0) {
@@ -155,20 +148,13 @@ class JHtmlIcon
 
 	public static function print_popup($article, $params, $attribs = array())
 	{
-        $tzRedirect = $params -> get('tz_portfolio_redirect','p_article'); //Set params for $tzRedirect
-        $itemParams = new JRegistry($article -> attribs); //Get Article's Params
-        //Check redirect to view article
-        if($itemParams -> get('tz_portfolio_redirect')){
-            $tzRedirect = $itemParams -> get('tz_portfolio_redirect');
-        }
-        if($tzRedirect == 'article'){
-            $url = TZ_PortfolioHelperRoute::getArticleRoute($article -> slug, $article -> catid);
-        }
-        else{
-            $url = TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article -> slug, $article -> catid);
+        if($params -> get('tz_portfolio_redirect') == 'p_article'){
+            $url    = TZ_PortfolioHelperRoute::getPortfolioArticleRoute($article -> slug,$article -> catid);
+        }else{
+            $url    = TZ_PortfolioHelperRoute::getArticleRoute($article -> slug,$article -> catid);
         }
 
-		$url .= '&tmpl=component&print=1&layout=default&page='.@ $request->limitstart;
+		$url .= '&amp;tmpl=component&amp;print=1&amp;layout=default&amp;page='.@ $request->limitstart;
 
 		$status = 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
 

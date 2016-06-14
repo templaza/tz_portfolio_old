@@ -20,8 +20,8 @@
 defined('_JEXEC') or die();
 
 $media  = $this -> listMedia;
-$link   = $this -> itemLink;
-$params = $this -> mediaParams;
+$link   = $this -> item ->link;
+$params = $this -> item -> params;
 $class  = null;
 if($params -> get('tz_use_lightbox',1) == 1){
     $class=' class = "fancybox fancybox.iframe"';
@@ -61,7 +61,8 @@ if($params -> get('tz_use_lightbox',1) == 1){
                 <div class="tz_portfolio_image" style="position: relative;">
                     <a<?php echo $class;?> href="<?php echo $link?>">
                         <img src="<?php echo $src;?>" alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                                 title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"/>
+                                 title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
+                                 itemprop="thumbnailUrl"/>
                         <?php if($params -> get('tz_use_image_hover',1) == 1):?>
                             <?php if(isset($srcHover)):?>
                                 <img class="tz_image_hover"
@@ -96,7 +97,8 @@ if($params -> get('tz_use_lightbox',1) == 1){
                     <a<?php echo $class;?> href="<?php echo $link?>">
                         <img src="<?php echo $srcgallery;?>"
                              alt="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
-                             title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"/>
+                             title="<?php if(isset($media[0] -> imagetitle)) echo $media[0] -> imagetitle;?>"
+                             itemprop="thumbnailUrl"/>
                     </a>
                 </div>
             <?php endif;?>
@@ -112,7 +114,8 @@ if($params -> get('tz_use_lightbox',1) == 1){
                 <div class="tz_portfolio_video">
                     <a<?php echo $class;?> href="<?php echo $link?>">
                         <img src="<?php echo $srcVideo;?>" title="<?php echo $media[0] -> imagetitle;?>"
-                             alt="<?php echo $media[0] -> imagetitle;?>"/>
+                             alt="<?php echo $media[0] -> imagetitle;?>"
+                             itemprop="thumbnailUrl"/>
                     </a>
                 </div>
             <?php endif;?>

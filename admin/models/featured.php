@@ -95,6 +95,9 @@ class TZ_PortfolioModelFeatured extends TZ_PortfolioModelArticles
             $query -> join('LEFT','#__tz_portfolio_fields_group AS g ON xc.groupid=g.id');
         }
 
+        $query -> select('xc2.type');
+        $query -> join('LEFT','#__tz_portfolio_xref_content AS xc2 ON xc2.contentid = a.id');
+
 		// Join over the language
 		$query->select('l.title AS language_title');
 		$query->join('LEFT', $db->quoteName('#__languages').' AS l ON l.lang_code = a.language');

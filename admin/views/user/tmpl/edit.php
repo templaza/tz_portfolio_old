@@ -25,6 +25,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/libraries/cms/html');
 
 // Load the tooltip behavior.
 JHtml::_('behavior.tooltip');
+JHtml::_('behavior.tabstate');
 JHtml::_('behavior.formvalidation');
 JHtml::_('formbehavior.chosen', 'select');
 

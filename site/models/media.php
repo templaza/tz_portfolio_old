@@ -21,6 +21,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.model');
+jimport('joomla.filesystem.file');
 
 class TZ_PortfolioModelMedia extends JModelLegacy
 {
@@ -30,6 +31,17 @@ class TZ_PortfolioModelMedia extends JModelLegacy
     function populateState(){
         $pk = JRequest::getInt('id');
         $this -> setState('article.id',$pk);
+
+        $user   = JFactory::getUser();
+        if ((!$user->authorise('core.edit.state', 'com_tz_portfolio')) &&  (!$user->authorise('core.edit', 'com_tz_portfolio'))){
+            // limit to published for people who can't edit or edit.state.
+            $this->setState('filter.published', 1);
+        }
+        else {
+            $this->setState('filter.published', array(0, 1, 2));
+        }
+
+        $this -> setState('params',null);
     }
 
     function getCatParams($catid = null){
@@ -58,10 +70,34 @@ class TZ_PortfolioModelMedia extends JModelLegacy
         
         $data   = array();
 
-        $query  = 'SELECT c.featured,xc.*,c.catid,c.attribs AS param FROM #__tz_portfolio_xref_content AS xc'
-                  .' LEFT JOIN #__content AS c ON c.id=xc.contentid'
-                  .' WHERE c.state=1 AND xc.contentid='.$articleId;
-        $db = JFactory::getDbo();
+        $db     = JFactory::getDbo();
+        $query  = $db -> getQuery(true);
+
+        $query -> select('c.featured,xc.*,c.catid,c.attribs AS param,c.title AS c_title');
+
+        $query -> from('#__tz_portfolio_xref_content AS xc');
+
+        $query -> join('LEFT','#__content AS c ON c.id=xc.contentid');
+
+        // Filter by published state
+        $published = $this->getState('filter.published');
+
+        if (is_numeric($published)) {
+            // Use article state if badcats.id is null, otherwise, force 0 for unpublished
+            $query->where('c.state = ' . (int) $published);
+        }
+        elseif (is_array($published)) {
+            JArrayHelper::toInteger($published);
+            $published = implode(',', $published);
+            // Use article state if badcats.id is null, otherwise, force 0 for unpublished
+            $query->where('c.state IN ('.$published.')');
+        }
+
+        $query -> where('xc.contentid='.$articleId);
+
+//        $query  = 'SELECT c.featured,xc.*,c.catid,c.attribs AS param FROM #__tz_portfolio_xref_content AS xc'
+//                  .' LEFT JOIN #__content AS c ON c.id=xc.contentid'
+//                  .' WHERE c.state=1 AND xc.contentid='.$articleId;
         $db -> setQuery($query);
         if(!$db -> query()){
             var_dump($db -> getErrorMsg());
@@ -77,6 +113,10 @@ class TZ_PortfolioModelMedia extends JModelLegacy
             if($this -> _params)
                 $params -> merge($this -> _params);
 
+            if($_params = $this -> getState('params')){
+                $params = $_params;
+            }
+
             if(!empty($rows -> type)){
 
                 switch (trim(strtolower($rows -> type))){
@@ -85,7 +125,13 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                         $data[0] -> type           = strtolower($rows -> type);
                         $data[0] -> featured       = $rows -> featured;
                         $data[0] -> images         = $rows -> images;
-                        $data[0] -> imagetitle     = htmlspecialchars($rows -> imagetitle);
+                        $data[0] -> imagetitle     = '';
+
+                        if(isset($rows -> imagetitle) && !empty($rows -> imagetitle)){
+                            $data[0] -> imagetitle     = htmlspecialchars($rows -> imagetitle);
+                        }elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
+                            $data[0] -> imagetitle     = $rows -> c_title;
+                        }
                         $data[0] -> images_hover    = $rows -> images_hover;
                         $data[0] -> articleId   = $articleId;
                         break;
@@ -98,10 +144,14 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                                 $data[$i] -> type           = strtolower($rows -> type);
                                 $data[$i] -> featured       = $rows -> featured;
                                 $data[$i] -> images         = $item;
-                                if(isset($title[$i]))
+                                $data[$i] -> imagetitle     = '';
+
+                                if(isset($title[$i]) && !empty($title[$i])){
                                     $data[$i] -> imagetitle     = htmlspecialchars(trim($title[$i]));
-                                else
-                                    $data[$i] -> imagetitle     = '';
+                                }
+//                                elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
+//                                    $data[$i] -> imagetitle     = $rows -> c_title;
+//                                }
 
                                 $data[$i] -> articleId   = $articleId;
                             }
@@ -124,8 +174,14 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                                 $data[0] -> featured    = $rows -> featured;
                                 $data[0] -> images      = substr($rows -> video,$pos + 1,strlen($rows -> video));
                                 $data[0] -> from        = substr($rows -> video,0,$pos);
-                                $data[0] -> imagetitle  = htmlspecialchars($rows -> videotitle);
                                 $data[0] -> thumb       = $rows -> videothumb;
+                                $data[0] -> imagetitle  = '';
+
+                                if(isset($rows -> videotitle) && !empty($rows -> videotitle)){
+                                    $data[0] -> imagetitle  = htmlspecialchars($rows -> videotitle);
+                                }elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
+                                    $data[0] -> imagetitle  = $rows -> c_title;
+                                }
                             }
                         }
                         break;
@@ -135,8 +191,14 @@ class TZ_PortfolioModelMedia extends JModelLegacy
                             $data[0] -> type        = $rows -> type;
                             $data[0] -> featured    = $rows -> featured;
                             $data[0] -> audio_id    = $rows -> audio;
-                            $data[0] -> imagetitle  = htmlspecialchars($rows -> audiotitle);
                             $data[0] -> thumb       = $rows -> audiothumb;
+                            $data[0] -> imagetitle  = '';
+
+                            if(isset($rows -> audiotitle) && !empty($rows -> audiotitle)){
+                                $data[0] -> imagetitle  = htmlspecialchars($rows -> audiotitle);
+                            }elseif(isset($rows -> c_title) && !empty($rows -> c_title)){
+                                $data[0] -> imagetitle  = $rows -> c_title;
+                            }
                         }
                         break;
                     case 'quote':

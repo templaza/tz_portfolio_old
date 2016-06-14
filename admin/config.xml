@@ -4,9 +4,9 @@
     <fieldset name="tz_fieldset_general" label="COM_TZ_PORTFOLIO_FIELDSET_GENERAL"
             description="COM_TZ_PORTFOLIO_CONFIG_SETTINGS_DESC">
         <field name="tz_portfolio_redirect" type="list" label="COM_TZ_PORTFOLIO_REDIRECT"
-               default="default"
+               default="article"
                description="COM_TZ_PORTFOLIO_REDIRECT_DESC">
-            <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
+            <!--<option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>-->
             <option value="article">COM_TZ_PORTFOLIO_BLOG_ARTICLE</option>
             <option value="p_article">COM_TZ_PORTFOLIO_PORTFOLIO_ARTICLE</option>
         </field>
@@ -55,13 +55,6 @@
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
         </field>
-        <field name="comment_function_type" type="list"
-               default="default"
-               label="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_LABEL"
-                description="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_DESC">
-            <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
-            <option value="js">COM_TZ_PORTFOLIO_JAVASCRIPT</option>
-        </field>
         <field name="spacer2" type="spacer" hr="true"/>
 
         <field name="tz_portfolio_custom" type="spacer"
@@ -107,6 +100,14 @@
 			<option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
 			<option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
 			<option value="order">JGLOBAL_ARTICLE_MANAGER_ORDER</option>
+        </field>
+        <field name="fields_option_order" type="list"
+               default="none"
+               label="COM_TZ_PORTFOLIO_TZ_FIELDS_OPTION_ORDER_LABEL">
+            <option value="none">JFIELD_OPTION_NONE</option>
+            <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+            <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+			<option value="ordering">COM_TZ_PORTFOLIO_ORDERING</option>
         </field>
     </fieldset>
     <!-- END PARAMETERS FOR ALL PAGE -->
@@ -158,6 +159,13 @@
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
         </field>
+        <field type="list" name="sort_fields"
+               multiple="true"
+               label="COM_TZ_PORTFOLIO_SORT_FIELDS_FILTER">
+            <option value="date">JDATE</option>
+            <option value="hits">JGLOBAL_HITS</option>
+            <option value="title">JGLOBAL_TITLE</option>
+        </field>
         <field type="radio"
                class="btn-group"
                name="show_layout"
@@ -203,6 +211,58 @@
             <option value="month">COM_TZ_PORTFOLIO_MONTH</option>
             <option value="year">COM_TZ_PORTFOLIO_YEAR</option>
             <option value="month-year">COM_TZ_PORTFOLIO_MONTH_YEAR</option>
+        </field>
+        <field type="list" name="classic_page_easing"
+               default="easeInOutExpo"
+               label="COM_TZ_PORTFOLIO_TIMELINE_CLASSIC_SCROLL_PAGE_EASING_LABEL">
+            <option value="linear">linear</option>
+            <option value="swing">swing</option>
+            <option value="easeInQuad">easeInQuad</option>
+            <option value="easeOutQuad">easeOutQuad</option>
+            <option value="easeInOutQuad">easeInOutQuad</option>
+            <option value="easeInCubic">easeInCubic</option>
+            <option value="easeOutCubic">easeOutCubic</option>
+            <option value="easeInOutCubic">easeInOutCubic</option>
+            <option value="easeInQuart">easeInQuart</option>
+            <option value="easeOutQuart">easeOutQuart</option>
+            <option value="easeInOutQuart">easeInOutQuart</option>
+            <option value="easeInQuint">easeInQuint</option>
+            <option value="easeOutQuint">easeOutQuint</option>
+            <option value="easeInOutQuint">easeInOutQuint</option>
+            <option value="easeInExpo">easeInExpo</option>
+            <option value="easeOutExpo">easeOutExpo</option>
+            <option value="easeInOutExpo">easeInOutExpo</option>
+            <option value="easeInSine">easeInSine</option>
+            <option value="easeOutSine">easeOutSine</option>
+            <option value="easeInOutSine">easeInOutSine</option>
+            <option value="easeInCirc">easeInCirc</option>
+            <option value="easeOutCirc">easeOutCirc</option>
+            <option value="easeInOutCirc">easeInOutCirc</option>
+            <option value="easeInElastic">easeInElastic</option>
+            <option value="easeOutElastic">easeOutElastic</option>
+            <option value="easeInOutElastic">easeInOutElastic</option>
+            <option value="easeInBack">easeInBack</option>
+            <option value="easeOutBack">easeOutBack</option>
+            <option value="easeInOutBack">easeInOutBack</option>
+            <option value="easeInBounce">easeInBounce</option>
+            <option value="easeOutBounce">easeOutBounce</option>
+            <option value="easeInOutBounce">easeInOutBounce</option>
+        </field>
+        <field type="text" name="classic_page_speed"
+                label="COM_TZ_PORTFOLIO_TIMELINE_CLASSIC_PAGE_SCROLL_SPEED_LABEL"/>
+        <field type="radio" name="classic_perspective"
+               class="btn-group" default="0"
+                label="COM_TZ_PORTFOLIO_TIMELINE_CLASSIC_PERSPECTIVE_LABEL"
+                description="COM_TZ_PORTFOLIO_TIMELINE_CLASSIC_PERSPECTIVE_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field type="radio" name="class_show_time_links"
+                class="btn-group" default="1"
+                label="COM_TZ_PORTFOLIO_TIMELINE_SHOW_TIME_LINKS_LABEL"
+                description="COM_TZ_PORTFOLIO_TIMELINE_SHOW_TIME_LINKS_DESC">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
         </field>
     </fieldset>
     <!-- END PARAMETERS FOR THE PORTFOLIO AND THE TIMELINE PAGE -->
@@ -372,6 +432,7 @@
                default="M"
                label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE"
                 description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -382,6 +443,7 @@
                default="L"
                 label="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE"
                 description="COM_TZ_PORTFOLIO_PORTFOLIO_IMAGE_FEATURED_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -392,6 +454,7 @@
                default="L"
                label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE"
                description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -402,6 +465,7 @@
                default="L"
                label="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -412,6 +476,7 @@
                default="M"
                label="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -458,6 +523,7 @@
                default="L"
                label="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE"
                description="COM_TZ_PORTFOLIO_DETAIL_ARTICLE_IMAGE_GALLERY_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -468,6 +534,7 @@
                default="L"
                label="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_LEADING_IMAGE_GALLERY_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -479,6 +546,7 @@
                default="M"
                label="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_SECONDARY_IMAGE_GALLERY_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -511,6 +579,13 @@
                description="COM_TZ_PORTFOLIO_SHOW_CONTROLNAV_IMAGE_GALLERY_DESC">
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
+        </field>
+        <field name="controlnav_type"
+               type="list" class="btn-group"
+               default="none"
+               label="COM_TZ_PORTFOLIO_CONTROLNAV_IMAGE_GALLERY_TYPE_LABEL">
+            <option value="none">COM_TZ_PORTFOLIO_DEFAULT</option>
+            <option value="thumbnails">COM_TZ_PORTFOLIO_THUMBNAILS</option>
         </field>
         <field name="image_gallery_pausePlay"
                type="radio" class="btn-group"
@@ -746,6 +821,7 @@
                default="XL"
                label="COM_TZ_PORTFOLIO_ARTICLE_IMAGE_ZOOM_SIZE"
                description="COM_TZ_PORTFOLIO_ARTICLE_IMAGE_ZOOM_SIZE_DESC">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -841,13 +917,20 @@
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
         </field>
+        <field name="comment_function_type" type="list"
+               default="default"
+               label="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_LABEL"
+               description="COM_TZ_PORTFOLIO_COMMENT_FUNCTION_TYPE_DESC">
+            <option value="default">COM_TZ_PORTFOLIO_DEFAULT</option>
+            <option value="js">COM_TZ_PORTFOLIO_JAVASCRIPT</option>
+        </field>
         <field name="disqusSubDomain" type="text"
                default="templazatoturials"
                label="COM_TZ_PORTFOLIO_DISQUS_SUBDOMAIN"
                description="COM_TZ_PORTFOLIO_DISQUS_SUBDOMAIN_DESC"/>
         <field name="disqusApiSecretKey" type="text"
                size="50"
-               default="DGBlgtq5QMvrAKQaiLh0yqC9GE82jYIHrF3W43go0rks9UBeiho4sLAYadcMks4x"
+               default="4sLbLjSq7ZCYtlMkfsG7SS5muVp7DsGgwedJL5gRsfUuXIt6AX5h6Ae6PnNREMiB"
                label="COM_TZ_PORTFOLIO_DISQUS_API_SECRET_KEY"
                description="COM_TZ_PORTFOLIO_DISQUS_API_SECRET_KEY_DESC"/>
         <field name="disqusDevMode" type="radio" class="btn-group"
@@ -884,6 +967,20 @@
                default="1"
                label="COM_TZ_PORTFOLIO_SHOW_GOOGLE_BUTTON"
                description="COM_TZ_PORTFOLIO_SHOW_GOOGLE_BUTTON_DESC">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="show_pinterest_button" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_LABEL"
+               description="COM_TZ_PORTFOLIO_SHOW_PINTEREST_BUTTON_DESC">
+            <option value="0">JHIDE</option>
+            <option value="1">JSHOW</option>
+        </field>
+        <field name="show_linkedin_button" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_LABEL"
+               description="COM_TZ_PORTFOLIO_SHOW_LINKEDIN_BUTTON_DESC">
             <option value="0">JHIDE</option>
             <option value="1">JSHOW</option>
         </field>
@@ -992,6 +1089,117 @@
                label="COM_TZ_PORTFOLIO_AUDIO_HEIGHT_LABEL"/>
     </fieldset>
     <!--END THE AUDIO'S PARAMETERS-->
+
+    <!-- START THE SCROLLBAR'S PARAMETERS -->
+    <fieldset name="scrollbar_options" label="COM_TZ_PORTFOLIO_SCROLLBAR_FIELDSET_LABEL">
+        <field name="use_custom_scrollbar" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_USE_CUSTOM_SCROLLBAR_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="scrollbar_theme" type="list"
+               default="dark-thick"
+               label="COM_TZ_PORTFOLIO_SCROLLBAR_THEME_LABEL">
+            <option value="light">COM_TZ_PORTFOLIO_LIGHT</option>
+            <option value="dark">COM_TZ_PORTFOLIO_DARK</option>
+            <option value="light-2">COM_TZ_PORTFOLIO_LIGHT_2</option>
+            <option value="dark-2">COM_TZ_PORTFOLIO_DARK_2</option>
+            <option value="light-thick">COM_TZ_PORTFOLIO_LIGHT_THICK</option>
+            <option value="dark-thick">COM_TZ_PORTFOLIO_DARK_THICK</option>
+            <option value="light-thin">COM_TZ_PORTFOLIO_LIGHT_THIN</option>
+            <option value="dark-thin">COM_TZ_PORTFOLIO_DARK_THIN</option>
+        </field>
+        <field name="set_width" type="text" label="COM_TZ_PORTFOLIO_SET_WIDTH_LABEL"/>
+        <field name="set_height" type="text" label="COM_TZ_PORTFOLIO_SET_HEIGHT_LABEL"/>
+        <field name="horizontalScroll" type="radio"
+               class="btn-group" default="0"
+               label="COM_TZ_PORTFOLIO_HORIZONTAL_SCROLL_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="scrollInertia" type="text"
+                default="40" label="COM_TZ_PORTFOLIO_SCROLL_INERTIA_LABEL"/>
+        <field name="autoDraggerLength" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_AUTO_DRAGGER_LENGTH_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="mouseWheel" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_MOUSE_WHEEL_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="mouseWheelPixels" type="text" label="COM_TZ_PORTFOLIO_MOUSE_WHEEL_PIXEL_LABEL"/>
+        <field name="autoHideScrollbar" type="radio"
+               class="btn-group"  default="0"
+               label="COM_TZ_PORTFOLIO_AUTO_HIDE_SCROLLBAR_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="snapAmount" type="text"
+               label="COM_TZ_PORTFOLIO_SNAP_AMOUNT_LABEL"
+                description="COM_TZ_PORTFOLIO_SNAP_AMOUNT_DESC"/>
+        <field name="snapOffset" type="text"
+               label="COM_TZ_PORTFOLIO_SNAP_OFFSET_LABEL"
+               description="COM_TZ_PORTFOLIO_SNAP_OFFSET_DESC"/>
+        <field name="scrollButtons_enable" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_ENABLE_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="scrollButtons_scrollType" type="list"
+                default="1"
+                label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_TYPE_LABEL">
+            <option value="continuous">COM_TZ_PORTFOLIO_CONTINUOUS</option>
+            <option value="pixels">COM_TZ_PORTFOLIO_PIXELS</option>
+        </field>
+        <field name="scrollButtons_scrollSpeed" type="text"
+               label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_SPEED_LABEL"/>
+        <field name="scrollButtons_scrollAmount" type="text"
+               label="COM_TZ_PORTFOLIO_SCROLL_BUTTON_AMOUNT_LABEL"/>
+        <field name="advanced_updateOnBrowserResize" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_ADVANCED_UPDATE_BROWSER_RESIZE_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="advanced_updateOnContentResize" type="radio"
+               class="btn-group" default="0"
+               label="COM_TZ_PORTFOLIO_ADVANCED_UPDATE_CONTENT_RESIZE_LABEL"
+               description="COM_TZ_PORTFOLIO_ADVANCED_UPDATE_CONTENT_RESIZE_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="advanced_autoExpandHorizontalScroll" type="radio"
+               class="btn-group" default="0"
+               label="COM_TZ_PORTFOLIO_ADVANCED_AUTO_EXPAND_HORIZONTAL_SCROLL_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="advanced_autoScrollOnFocus" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_ADVANCED_AUTO_SCROLL_ON_FOCUS_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="advanced_normalizeMouseWheelDelta"  type="radio"
+               class="btn-group" default="0"
+               label="COM_TZ_PORTFOLIO_ADVANCED_NORMALIZE_MOUSE_WHEEL_DELTA_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="contentTouchScroll" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_CONTENT_TOUCH_SCROLL_LABEL">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+    </fieldset>
+    <!-- END THE SCROLLBAR'S PARAMETERS -->
 
     <!-- START PARAMETERS FOR THE ARTICLE -->
     <fieldset name="articles"
@@ -1223,6 +1431,7 @@
         <field name="related_image_size" type="list"
                default="S"
                label="COM_TZ_PORTFOLIO_RELATED_IMAGE_SIZE">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -1232,6 +1441,7 @@
         <field name="related_orderby" type="list"
                default="rdate"
                label="COM_TZ_PORTFOLIO_RELATED_ORDERBY">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="rdate">COM_TZ_PORTFOLIO_MOST_RECENT</option>
             <option value="date">COM_TZ_PORTFOLIO_MOST_OLDEST</option>
             <option value="hits">JGLOBAL_MOST_HITS</option>
@@ -1278,8 +1488,8 @@
 		</field>
 		<field name="spacer3" type="spacer" hr="true"/>
 
-		<field name="targeta" type="radio"
-               class="inputbox btn-group"
+		<field name="targeta" type="list"
+               class="inputbox"
                default="Parent"
                filter="int"
                label="COM_CONTENT_URL_FIELD_A_BROWSERNAV_LABEL"
@@ -1665,6 +1875,7 @@
         <field name="feed_image_size" type="list"
                default="S"
                label="COM_TZ_PORTFOLIO_FEED_IMAGE_SIZE">
+            <option value="o">COM_TZ_PORTFOLIO_ORIGINAL</option>
             <option value="XS">COM_TZ_PORTFOLIO_XSMALL</option>
             <option value="S">COM_TZ_PORTFOLIO_SMALL</option>
             <option value="M">COM_TZ_PORTFOLIO_MEDIUM</option>
@@ -1676,24 +1887,115 @@
 
     <!-- START ADVANCED'S PARAMTERS -->
     <fieldset name="advanced" label="COM_TZ_PORTFOLIO_FIELDSET_ADVANCED">
-        <field name="devmode" type="radio" class="btn-group"
-               default="0"
-                label="COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE"
-                description="COM_TZ_PORTFOLIO_ENABLE_DEVELOPMENT_MODE_DESC">
+        <field type="radio" name="enable_jquery"
+               default="1" class="btn-group"
+               label="COM_TZ_PORTFOLIO_ENABLE_JQUERY_LIBRARY_LABEL">
             <option value="0">JNO</option>
             <option value="1">JYES</option>
         </field>
-        <field name="css_compression" type="radio" class="btn-group"
-               default="0"
-                label="COM_TZ_PORTFOLIO_CSS_COMPRESSION"
-                description="COM_TZ_PORTFOLIO_CSS_COMPRESSION_DESC">
+
+        <field type="radio" name="enable_bootstrap"
+               default="1" class="btn-group"
+               label="COM_TZ_PORTFOLIO_ENABLE_BOOTSTRAP_LIBRARY_LABEL">
             <option value="0">JNO</option>
             <option value="1">JYES</option>
         </field>
-        <field name="js_compression" type="radio" class="btn-group"
-               default="1"
-                label="COM_TZ_PORTFOLIO_JAVASCRIPT_COMPRESSION"
-                description="COM_TZ_PORTFOLIO_JAVASCRIPT_COMPRESSION_DESC">
+        <field name="allow_upload_original_image"
+               type="radio" default="1"
+               class="btn-group"
+               label="COM_TZ_PORTFOLIO_ALLOW_UPLOAD_ORIGINAL_IMAGE_LABEL"
+               description="COM_TZ_PORTFOLIO_ALLOW_UPLOAD_ORIGINAL_IMAGE_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field name="tz_portfolio_router" type="spacer" label="COM_TZ_PORTFOLIO_ROUTER"/>
+        <field name="tzSef" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_ADVANCED_SEF_LABEL"
+                description="COM_TZ_PORTFOLIO_ADVANCED_SEF_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="view_router_switch" type="radio"
+               class="btn-group" default="1"
+                label="COM_TZ_PORTFOLIO_ROUTER_SWITCH_LABEL"
+                description="COM_TZ_PORTFOLIO_ROUTER_SWITCH_DESC">
+            <option value="1">COM_TZ_PORTFOLIO_ROUTER_PORTFOLIO</option>
+            <option value="2">COM_TZ_PORTFOLIO_ROUTER_BLOG</option>
+        </field>
+        <field name="view_router_name" type="text"
+                default="item"
+                label="COM_TZ_PORTFOLIO_SINGLE_PORTFOLIO_ROUTER_NAME_LABEL"
+                description="COM_TZ_PORTFOLIO_SINGLE_PORTFOLIO_ROUTER_NAME_DESC"/>
+        <field name="sef_users_prefix" type="text"
+               default="users"
+               label="COM_TZ_PORTFOLIO_SEF_USERS_PREFIX_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_USERS_PREFIX_DESC"/>
+        <field name="sef_tags_prefix" type="text"
+               default="tags"
+               label="COM_TZ_PORTFOLIO_SEF_TAGS_PREFIX_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_TAGS_PREFIX_DESC"/>
+        <field name="sef_date_prefix" type="text"
+               default="date"
+               label="COM_TZ_PORTFOLIO_SEF_DATE_PREFIX_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_DATE_PREFIX_DESC"/>
+        <field name="sef_article_separator" type="list"
+               default="slash_revert_id"
+                label="COM_TZ_PORTFOLIO_SEF_ARTICLE_SEPARATOR_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_ARTICLE_SEPARATOR_DESC">
+            <option value="dash">COM_TZ_PORTFOLIO_USE_DASH</option>
+            <option value="slash">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH</option>
+            <option value="slash_revert_id">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH_AND_REVERT_ID</option>
+        </field>
+        <field name="sef_use_article_id" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_ARTICLE_ID_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_USE_ARTICLE_ID_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="sef_use_article_alias" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_ARTICLE_ALIAS_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_USE_ARTICLE_ALIAS_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="sef_use_parent_category" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_PARENT_CATEGORY_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_USE_PARENT_CATEGORY_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="sef_user_separator" type="list"
+               default="slash_revert_id"
+               label="COM_TZ_PORTFOLIO_SEF_USER_SEPARATOR_LABEL"
+                description="COM_TZ_PORTFOLIO_SEF_USER_SEPARATOR_DESC">
+            <option value="dash">COM_TZ_PORTFOLIO_USE_DASH</option>
+            <option value="slash">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH</option>
+            <option value="slash_revert_id">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH_AND_REVERT_ID</option>
+        </field>
+        <field name="sef_use_user_alias" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_USER_ALIAS_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_USE_USER_ALIAS_DESC">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field name="sef_tag_separator" type="list"
+               default="slash_revert_id"
+               label="COM_TZ_PORTFOLIO_SEF_TAG_SEPARATOR_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_TAG_SEPARATOR_DESC">
+            <option value="dash">COM_TZ_PORTFOLIO_USE_DASH</option>
+            <option value="slash">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH</option>
+            <option value="slash_revert_id">COM_TZ_PORTFOLIO_USE_FORWARD_SLASH_AND_REVERT_ID</option>
+        </field>
+        <field name="sef_use_tag_alias" type="radio"
+               class="btn-group" default="1"
+               label="COM_TZ_PORTFOLIO_SEF_USE_TAG_ALIAS_LABEL"
+               description="COM_TZ_PORTFOLIO_SEF_USE_TAG_ALIAS_DESC">
             <option value="0">JNO</option>
             <option value="1">JYES</option>
         </field>
