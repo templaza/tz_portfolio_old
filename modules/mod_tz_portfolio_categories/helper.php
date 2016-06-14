@@ -23,6 +23,7 @@ defined('_JEXEC') or die;
 require_once JPATH_SITE.'/components/com_tz_portfolio/helpers/route.php';
 
 jimport('joomla.application.component.model');
+jimport('joomla.filesystem.folder');
 
 abstract class modTZ_PortfolioCategoriesHelper
 {
@@ -44,50 +45,11 @@ abstract class modTZ_PortfolioCategoriesHelper
             }
             $catIds = implode(',', $catIds);
         }
-//        if($catIds){
-//            $categoryName   = strtolower(self::getCategoryName($catIds));
-//        }
         if($params -> get('show_total',1))
             $total  = ',(SELECT COUNT(*) FROM #__content AS c WHERE c.catid = a.id) AS total';
 
-//        if($categoryName == strtolower('Uncategorised'))
-//            $query  = 'SELECT a.id, a.title, a.alias, a.note, a.published, a.access,'
-//                .' a.checked_out, a.checked_out_time, a.created_user_id, a.path,'
-//                .' a.parent_id, a.description, a.params, a.level, a.lft, a.rgt, a.language,'
-//                .'l.title AS language_title,ag.title AS access_level,'
-//                .'ua.name AS author_name'
-//                .$total
-//                .' FROM #__categories AS a'
-//                .' LEFT JOIN `#__languages` AS l ON l.lang_code = a.language'
-//                .' LEFT JOIN #__users AS uc ON uc.id=a.checked_out'
-//                .' LEFT JOIN #__viewlevels AS ag ON ag.id = a.access'
-//                .' LEFT JOIN #__users AS ua ON ua.id = a.created_user_id'
-//                .' WHERE a.extension = \'com_content\' AND (a.published = 1)'
-//                .' AND NOT a.title="Uncategorised"'
-//                .' GROUP BY a.id'
-//                .' ORDER BY a.lft asc';
-//        else
-
-//        $query  = 'SELECT a.id, a.description, a.params, a.title, a.alias, a.note, a.published, a.access,'
-//            .' a.checked_out, a.checked_out_time, a.created_user_id, a.path,'
-//            .' a.parent_id, a.level, a.lft, a.rgt, a.language,'
-//            .'l.title AS language_title,ag.title AS access_level,'
-//            .'ua.name AS author_name'
-//            .$total
-//            .' FROM #__categories AS a'
-//            .' LEFT JOIN '.$db -> quoteName('#__tz_portfolio_categories').' AS l ON l.lang_code = a.language'
-//            .' LEFT JOIN `#__languages` AS l ON l.lang_code = a.language'
-//            .' LEFT JOIN #__users AS uc ON uc.id=a.checked_out'
-//            .' LEFT JOIN #__viewlevels AS ag ON ag.id = a.access'
-//            .' LEFT JOIN #__users AS ua ON ua.id = a.created_user_id'
-//            .' WHERE a.extension = \'com_content\' AND (a.published = 1)'
-//            .($catIds?' AND a.id IN('.$catIds.')':'')
-//            .' GROUP BY a.id'
-//            .' ORDER BY a.lft asc';
         $query  = $db -> getQuery(true);
         $query -> select('a.*,tz.images');
-//        $query -> select('a.checked_out, a.checked_out_time, a.created_user_id, a.path');
-//        $query -> select(' a.parent_id, a.level, a.lft, a.rgt, a.language');
         $query -> select('l.title AS language_title,ag.title AS access_level');
         $query -> select('ua.name AS author_name'.$total);
         $query -> from($db -> quoteName('#__categories').' AS a');

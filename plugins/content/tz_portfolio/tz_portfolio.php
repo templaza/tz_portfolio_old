@@ -177,7 +177,9 @@ class plgContentTZ_Portfolio extends JPlugin
 			return false;
 		}
 
-		if ($params->get('show_item_navigation') == 1 && ((($context == 'com_tz_portfolio.article') && ($view == 'article'))||(($context == 'com_tz_portfolio.p_article') && $view == 'p_article'))) {
+		if (((($context == 'com_tz_portfolio.article') && ($view == 'article'))||
+		(($context == 'com_tz_portfolio.p_article') && $view == 'p_article')) 
+		&& $params && $params->get('show_item_navigation') == 1) {
 			$html = '';
 			$db		= JFactory::getDbo();
 			$user	= JFactory::getUser();

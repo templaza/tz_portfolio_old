@@ -20,6 +20,13 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
+06/014/2016 - 3.3.5
+
+	- Fix error with plugin tz_portfolio in group content.
+	- Fix error set up column width has No Effect.
+	- Fix error when edit field with French language.
+	- Fix error validate in view date.
+
 03/05/2016 - 3.3.4
 
 	- Fix some errors in Template Styles of version 3.3.3.

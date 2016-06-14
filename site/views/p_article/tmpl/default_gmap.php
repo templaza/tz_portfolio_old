@@ -26,12 +26,11 @@ if($params -> get('tz_show_gmap',1) == 1):
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         jQuery(window).load(function(){
-            var map;
-            var geocoder;
             var InitializeMap = function () {
 
-                var latlng = new google.maps.LatLng(<?php echo $params -> get('tz_gmap_latitude',21.0333333);?>,
-                                <?php echo $params -> get('tz_gmap_longitude',105.8500000);?>);
+                var latlng = {lat: parseFloat(<?php echo $params -> get('tz_gmap_latitude',21.0333333);?>),
+                    lng: parseFloat(<?php echo $params -> get('tz_gmap_longitude',105.8500000);?>)};
+
                 var myOptions =
                 {
                     zoom: <?php echo $params -> get('tz_gmap_zoomlevel',10);?>,
@@ -40,80 +39,83 @@ if($params -> get('tz_show_gmap',1) == 1):
                     scrollwheel: <?php if($params -> get('tz_gmap_mousewheel_zoom',1) == 1) echo 'true'; else echo 'false';?>,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
-                map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-            }
+                return new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+            };
             var FindLocaiton = function () {
-                geocoder = new google.maps.Geocoder();
-                InitializeMap();
+                var map = InitializeMap();
+
+                var geocoder = new google.maps.Geocoder();
 
                 <?php if(!$params -> get('tz_gmap_address')):?>
-                    var latlng = new google.maps.LatLng(<?php echo $params -> get('tz_gmap_latitude',20.9815260);?>,
-                                    <?php echo $params -> get('tz_gmap_longitude',105.7890379);?>);
-                    geocoder.geocode({ 'location': latlng }, function (results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            map.setCenter(results[0].geometry.location);
-                            var marker = new google.maps.Marker({
-                                map: map,
-                                position: results[0].geometry.location
-                            });
-                            if (results[0].formatted_address) {
-                                region = results[0].formatted_address + '<br/>';
-                            }
-                            var infowindow = new google.maps.InfoWindow({
-                                content: <?php if($params -> get('tz_gmap_custom_tooltip')):?>
-                                            <?php echo '\''.$params -> get('tz_gmap_custom_tooltip').'\'';?>
-                                        <?php else:?>
-                                            'Location info:<br/>Country Name:' + region +
-                                            '<br/>LatLng:' + results[0].geometry.location + ''
-                                        <?php endif;?>
-                            });
+                geocoder.geocode({ 'location': {
+                    lat: parseFloat(<?php echo $params -> get('tz_gmap_latitude',21.0333333);?>),
+                    lng: parseFloat(<?php echo $params -> get('tz_gmap_longitude',105.8500000);?>)
+                }
+                }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        map.setCenter(results[0].geometry.location);
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: results[0].geometry.location
+                        });
+                        if (results[0].formatted_address) {
+                            region = results[0].formatted_address + '<br/>';
+                        }
+                        var infowindow = new google.maps.InfoWindow({
+                            content: <?php if($params -> get('tz_gmap_custom_tooltip')):?>
+                                <?php echo '\''.$params -> get('tz_gmap_custom_tooltip').'\'';?>
+                                <?php else:?>
+                            'Location info:<br/>Country Name:' + region +
+                            '<br/>LatLng:' + results[0].geometry.location + ''
+                            <?php endif;?>
+                        });
+                        infowindow.open(map, marker);
+                        google.maps.event.addListener(marker, 'click', function () {
+                            // Calling the open method of the infoWindow
                             infowindow.open(map, marker);
-                            google.maps.event.addListener(marker, 'click', function () {
-                                // Calling the open method of the infoWindow
-                                infowindow.open(map, marker);
-                            });
+                        });
 
-                        }
-                        else {
-                            alert("Geocode was not successful for the following reason: " + status);
-                        }
-                    });
+                    }
+                    else {
+                        alert("Geocode was not successful for the following reason: " + status);
+                    }
+                });
                 <?php endif;?>
 
                 <?php if($params -> get('tz_gmap_address')):?>
-                    var address = "<?php echo $params -> get('tz_gmap_address');?>";
-                    geocoder.geocode({ 'address': address }, function (results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            map.setCenter(results[0].geometry.location);
-                            var marker = new google.maps.Marker({
-                                map: map,
-                                position: results[0].geometry.location
-                            });
-                            if (results[0].formatted_address) {
-                                region = results[0].formatted_address + '<br/>';
-                            }
-                            var infowindow = new google.maps.InfoWindow({
-                                content: <?php if($params -> get('tz_gmap_custom_tooltip')):?>
-                                            <?php echo '\''.$params -> get('tz_gmap_custom_tooltip').'\'';?>
-                                        <?php else:?>
-                                            'Location info:<br/>Country Name:' + region +
-                                            '<br/>LatLng:' + results[0].geometry.location + ''
-                                        <?php endif;?>
-                            });
+                var address = "<?php echo $params -> get('tz_gmap_address');?>";
+                geocoder.geocode({ 'address': address }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+//                            map.setCenter(results[0].geometry.location);
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: results[0].geometry.location
+                        });
+                        if (results[0].formatted_address) {
+                            region = results[0].formatted_address + '<br/>';
+                        }
+                        var infowindow = new google.maps.InfoWindow({
+                            content: <?php if($params -> get('tz_gmap_custom_tooltip')):?>
+                                <?php echo '\''.$params -> get('tz_gmap_custom_tooltip').'\'';?>
+                                <?php else:?>
+                            'Location info:<br/>Country Name:' + region +
+                            '<br/>LatLng:' + results[0].geometry.location + ''
+                            <?php endif;?>
+                        });
+                        infowindow.open(map, marker);
+                        google.maps.event.addListener(marker, 'click', function () {
+                            // Calling the open method of the infoWindow
                             infowindow.open(map, marker);
-                            google.maps.event.addListener(marker, 'click', function () {
-                                // Calling the open method of the infoWindow
-                                infowindow.open(map, marker);
-                            });
+                        });
 
-                        }
-                        else {
-                            alert("Geocode was not successful for the following reason: " + status);
-                        }
+                    }
+                    else {
+                        alert("Geocode was not successful for the following reason: " + status);
+                    }
 
-                    });
+                });
                 <?php endif;?>
-            }
+            };
             FindLocaiton();
 
         });

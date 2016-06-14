@@ -259,7 +259,7 @@ $this -> assign('listMedia',$listMedia);
         ?>
 
         <?php if($this -> item -> introtext):?>
-            <div class="TzDescription" itemprop="description>
+            <div class="TzDescription" itemprop="description">
             <?php echo $this->item->introtext; ?>
             </div>
         <?php endif;?>
