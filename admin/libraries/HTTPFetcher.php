@@ -21,8 +21,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 class Services_Yadis_HTTPResponse {
-    function Services_Yadis_HTTPResponse($final_url = null, $status = null,
-                                         $headers = null, $body = null)
+    public function __construct($final_url = null, $status = null, $headers = null, $body = null)
     {
         $this->final_url = $final_url;
         $this->status = $status;
@@ -49,7 +48,7 @@ class Services_Yadis_HTTPFetcher {
      *
      * By default, will attempt to fetch any http or https URL.
      */
-    function allowedURL($url)
+    public function allowedURL($url)
     {
         return $this->URLHasAllowedScheme($url);
     }
@@ -59,7 +58,7 @@ class Services_Yadis_HTTPFetcher {
      *
      * @access private
      */
-    function URLHasAllowedScheme($url)
+    public function URLHasAllowedScheme($url)
     {
         return (bool)preg_match('/^https?:\/\//i', $url);
     }
@@ -67,7 +66,7 @@ class Services_Yadis_HTTPFetcher {
     /**
      * @access private
      */
-    function _findRedirect($headers)
+    public function _findRedirect($headers)
     {
         foreach ($headers as $line) {
             if (strpos($line, "Location: ") === 0) {
@@ -90,10 +89,8 @@ class Services_Yadis_HTTPFetcher {
      * pass the URLHasAllowedScheme check or if the server's response
      * is malformed.
      */
-    function get($url, $headers)
+    public function get($url, $headers)
     {
         trigger_error("not implemented", E_USER_ERROR);
     }
 }
-
-?>
