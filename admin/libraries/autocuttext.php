@@ -81,7 +81,7 @@ class AutoCutText{
 	 * @param String $data
 	 * @param Int $number
 	 */
-	function AutoCutText($data, $number){
+	public function __construct($data, $number){
 		$data	=	preg_replace('/&nbsp;/', ' ', $data );
 		$data	=	preg_replace('/&gt;/', '>', $data );
 		$data	=	preg_replace('/&lt;/', '<', $data );
@@ -109,7 +109,7 @@ class AutoCutText{
 	 * Encode data
 	 *
 	 */
-	function encode(){
+	public function encode(){
 		$this->_data_code	=	$this->_data;
 
 		if (preg_match_all('/<table.*?>.*?<\/table>/si', $this->_data_code, $matches)) {
@@ -172,7 +172,7 @@ class AutoCutText{
 	 * Cut word
 	 *
 	 */
-	function wordSub() {
+	public function wordSub() {
 		$str_in	=	$this->_data_code;
 		$numberWord	=	$this->_intronumber;
 		$arr_text = preg_split('/ /',trim($str_in));
@@ -223,7 +223,7 @@ class AutoCutText{
 	 * Decode Data
 	 *
 	 */
-	function decode(){
+	public function decode(){
 		
 		for ($i = 0; $i< $this->_numbercode; $i++){
 			
@@ -236,7 +236,7 @@ class AutoCutText{
 		
 	}
 	
-	function makesafehtml(){
+	public function makesafehtml(){
 		$subtext	=	$this->_subtext;
 		$subtext	=	preg_replace('/<table.*?>.*?<\/table>/si','', $subtext );
 		$subtext	=	preg_replace('/<select.*?>.*?<\/select>/si','',$subtext);
@@ -309,7 +309,7 @@ class AutoCutText{
 		
 	}
 	
-	function delAnArrayElement($i,$array){
+	public function delAnArrayElement($i,$array){
 		$newarray	=	array();
 		for ($j=0; $j<count($array); $j++){
 			if ($j!=$i) {
@@ -319,11 +319,11 @@ class AutoCutText{
 		return $newarray;
 	}
 	
-	function getIntro(){
+	public function getIntro(){
 		return $this->_subtext;
 	}
 	
-	function getFulltext(){
+	public function getFulltext(){
 		return $this->_remaintext;
 	}
 }
