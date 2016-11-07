@@ -24,12 +24,12 @@ jimport('joomla.plugin.plugin');
 
 class plgUserTZ_Portfolio extends JPlugin
 {
-    function plgUserTZ_Portfolio(&$subject, $config) {
+    public function __construct(&$subject, $config) {
 
         parent::__construct($subject, $config);
     }
 
-    function onUserAfterSave($user, $isnew, $success, $msg){
+    public function onUserAfterSave($user, $isnew, $success, $msg){
         return $this -> onAfterSaveUser($user, $isnew, $success, $msg);
     }
 
@@ -41,7 +41,7 @@ class plgUserTZ_Portfolio extends JPlugin
 //        //var_dump($isNew,'<hr>',$user); die();
 //    }
 
-    function onAfterSaveUser($user, $isnew, $success, $msg){
+    public function onAfterSaveUser($user, $isnew, $success, $msg){
 
         $mainframe = JFactory::getApplication();
         $task = JRequest::getCmd('task');
