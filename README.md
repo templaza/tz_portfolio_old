@@ -20,7 +20,11 @@ Demo: http://demo.tzportfolio.com/
 
 *** Changelog ***
 
-06/014/2016 - 3.3.5
+06/15/2017 - 3.3.6
+
+	- Fix error call plugin's trigger for portfolio  and timeline view  when enable option "Adds Suffix to URL" (in Global Configuration).
+
+06/14/2016 - 3.3.5
 
 	- Fix error with plugin tz_portfolio in group content.
 	- Fix error set up column width has No Effect.

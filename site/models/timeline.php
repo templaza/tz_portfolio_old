@@ -936,7 +936,7 @@ class TZ_PortfolioModelTimeLine extends JModelList
                 $item -> pluginparams   = clone($pluginParams);
 
                 // Add feed links
-                if (!JRequest::getCmd('format',null) AND !JRequest::getCmd('type',null)) {
+                if (JRequest::getCmd('format',null) != 'feed') {
                     $dispatcher	= JDispatcher::getInstance();
 
                     // Old plugins: Ensure that text property is available
